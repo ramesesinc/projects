@@ -1,12 +1,15 @@
 <workunit schemaName="waterworks_consumption" allowDelete="false" allowCreate="false">
     <invokers>
+         <invoker type="waterworks_consumption:create" action="create"  
+                 caption="New Consumption Entry" target="popup"/>
+         
         <invoker type="waterworks_consumption:open" action="open" 
                  caption="Consumption Entry" target="popup" /> 
     </invokers>
 
-    <code class="com.rameses.gov.etracs.waterworks.models.CaptureConsumptionModel"/>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterConsumptionModel"/>
 
     <pages>
-        <page template="com.rameses.gov.etracs.waterworks.views.CaptureConsumptionPage"/>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterConsumptionPage"/>
     </pages>
 </workunit>

@@ -2,69 +2,47 @@ import com.rameses.annotations.*;
 
 class WaterworksChangeInfoInterceptor {
 
-	@DataContext('waterworks_account') 
-	def wacct; 
-
 	@DataContext('waterworks_meter') 
 	def wmeter; 
 
 	@DataContext('waterworks_stubout_node') 
 	def wstuboutnode;
 
-	@Before( pattern="ChangeInfoService.update" ) 
-	public void beforeUpdateStubout1( evt ) {
-		def info = evt.args[0].info;
-		throw new Exception("info is " + info);
+	@Before( pattern="ChangeInfoService.save", eval="#{ args[0]._schemaname == 'waterworks_account' && args[0]._tag == 'meter' }" )
+	public void updateMeter( evt ) {
+		def info = evt.args[0];
+		if( info.meter == null ) {
+			info.meterid = null;
+		}	
+		else {
+			info.meterid = info.meter.objid;
+			wmeter.find( [objid: info.meterid ] ).update( [currentacctid: info.objid ] );
+		}
+		//update the previous meter
+		def old = info._loginfo.oldvalue;
+		if( old.meter?.objid ) {
+			wmeter.find( [objid: old.meter.objid ] ).update( [currentacctid: "{NULL}" ] );
+		}
 	} 
 
-	@Before( pattern="ChangeInfoService.update", eval="#{args[0].info._schemaname=='waterworks_account' && args[0].info.stuboutnode != null}" ) 
-	public void beforeUpdateStubout( evt ) {
-		def info = evt.args[0].info;
-		info.stuboutnodeid = info.stuboutnode?.objid; 
-		if ( !info.stuboutnodeid ) throw new Exception('Please specify stubout node'); 
-
-		info.acctid = info.findBy?.objid; 
-		if ( !info.acctid ) info.acctid = info.objid;
-
-		wstuboutnode.find([ acctid: info.acctid ]).update([ acctid:'{NULL}' ]); 
+	@Before( pattern="ChangeInfoService.save", eval="#{args[0]._schemaname=='waterworks_account' && args[0]._tag == 'stuboutnode' }" ) 
+	public void updateStubout( evt ) {
+		def info = evt.args[0];
+		if( info.stuboutnode == null ) {
+			info.stuboutnodeid = null;
+		}
+		else {
+			info.stuboutnodeid = info.stuboutnode.objid;
+			wstuboutnode.find( [objid: info.stuboutnodeid ] ).update( [currentacctid: info.objid ] );
+		}
+		//update the previous meter
+		def old = info._loginfo.oldvalue;
+		if( old.stuboutnode?.objid ) {
+			wstuboutnode.find( [objid: old.stuboutnode.objid ] ).update( [currentacctid: "{NULL}" ] );
+		}
 	} 
 
-	@After( pattern="ChangeInfoService.update", eval="#{args[0].info._schemaname=='waterworks_account' && args[0].info.stuboutnodeid != null}" ) 
-	public void afterUpdateStubout( evt ) {
-		def info = evt.args[0].info; 
-		def node = wstuboutnode.find([ objid: info.stuboutnodeid ]).first();
-		if ( !node ) throw new Exception('Stubout node does not exist');
 
-		throw new Exception("stop stubotu node update ");
-
-		def acctid = info.acctid; 
-		if ( !acctid ) acctid = info.objid; 
-
-		wstuboutnode.find([ objid: info.stuboutnodeid ]).update([ currentacctid: acctid ]); 
-	} 
-
-	@Before( pattern="ChangeInfoService.update", eval="#{args[0].info._schemaname=='waterworks_account' && args[0].info.meter != null}" ) 
-	public void beforeUpdateMeter( evt ) {
-		def info = evt.args[0].info;
-		if ( !info.meter?.objid ) throw new Exception('Please specify meter'); 
-		
-		info.meterid = info.meter.objid; 
-		info.remove('meter'); 
-
-		def acctid = info.objid; 
-		if ( info.findBy ) acctid = info.findBy?.objid; 
-
-		def o = wacct.select('meterid').find([ objid: acctid ]).first(); 
-		wmeter.find([ objid: o.meterid ]).update([ currentacctid:'{NULL}']); 
-		info.acctid = acctid; 
-	} 
-
-	@After( pattern="ChangeInfoService.update", eval="#{args[0].info._schemaname=='waterworks_account' && args[0].info.meterid != null}" ) 
-	public void afterUpdateMeter( evt ) {
-		def info = evt.args[0].info;
-		if ( info.acctid ) {
-			wmeter.find([ objid: info.meterid ]).update([ currentacctid: info.acctid ]); 	
-		} 
-	} 
+	
 
 }

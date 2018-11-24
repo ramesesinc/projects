@@ -66,6 +66,14 @@ class CTCReceiptInterceptor {
 		if ( info ) res.putAll( info ); 
 	} 
 
+	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'cashreceipt' && result.formno.toString().matches('0017|907')==true }")
+	public void loadCtcInfoCorp( evt ) { 
+		def res = evt.result; 
+		if ( !res ) return; 
+
+		def info = ctc_db.find([ objid: res.objid ]).first(); 
+		if ( info ) res.putAll( info ); 
+	} 	
 
 	// ---------------------------------------------
 	//   CTC Corporate handlers 
@@ -105,14 +113,7 @@ class CTCReceiptInterceptor {
 		evt.result.putAll( ctc ); 
 	}
 
-	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'cashreceipt' && result.formno.toString().matches('0017|907')==true }")
-	public void loadCtcInfo( evt ) { 
-		def res = evt.result; 
-		if ( !res ) return; 
-
-		def info = ctc_db.find([ objid: res.objid ]).first(); 
-		if ( info ) res.putAll( info ); 
-	} 	
+	
 
 
 	// ---------------------------------------------

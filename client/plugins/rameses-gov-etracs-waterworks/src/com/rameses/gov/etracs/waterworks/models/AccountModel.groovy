@@ -19,7 +19,6 @@ public class AccountModel extends CrudFormModel {
         entity.units = 1;
         entity.meter = [:];
         entity.stuboutnode = [:];
-        meterStates = ["ACTIVE","DISCONNECTED","DEFECTIVE"];
     }
 
     def edit() {

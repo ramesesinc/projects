@@ -1,47 +1,39 @@
-<workunit extends="com/rameses/seti2/templates/DataEditor.xml" schemaName="waterworks_account" 
-    reftype="waterworks_account" >
+<workunit extends="com/rameses/seti2/templates/DataEditor.xml" schemaName="waterworks_account"
+    logSchemaName="waterworks_changelog">
     <invokers>
-        <invoker type="waterworks_account:form:edit" caption="Change Address" 
-                 target="popup" action="init" index="10" tag="address" />
+        <invoker type="waterworks_account:form:edit" caption="Change Acct No" action="init"  
+                 target="popup" index="8" fields="acctno"/> 
+        
+        <invoker type="waterworks_account:form:edit" caption="Change Acct Name" action="init"  
+                 target="popup" index="9" fields="acctname"/>
         
         <invoker type="waterworks_account:form:edit" caption="Change Owner" action="init"  
-                 target="popup" index="11" tag="owner"/>            
+                 target="popup" index="10" tag="owner"/>   
+
+        <invoker type="waterworks_account:form:edit" caption="Change Address" 
+                 target="popup" action="init" index="11" tag="address" />
+        
+        <invoker type="waterworks_account:form:edit" caption="Change Classification" action="init"  
+                 target="popup" index="12" tag="classification"/>          
         
         <invoker type="waterworks_account:form:edit" caption="Change No. of Units" action="init"  
-                 target="popup" index="13" tag="units"  />
+                 target="popup" index="13" tag="units" fields="units" />
         
         <invoker type="waterworks_account:form:edit" caption="Change Stubout Node" action="init"  
                  target="popup" index="14" tag="stuboutnode"/>
         
         <!-- Meter actions -->
         <invoker type="waterworks_account:form:edit" caption="Change Meter" action="init" 
-                 visibleWhen="#{entity.meter?.objid!=null}"
-                 target="popup" index="12" tag="change_meter" />
+                 target="popup" index="15" tag="meter" />
         
-        <invoker type="waterworks_account:form:edit" caption="Attach Meter" 
-                visibleWhen="#{entity.meter?.objid==null}" action="init" 
-                target="popup" index="16" tag="attach_meter"/>
+        <invoker type="waterworks_account:form:edit" caption="Edit Last Meter Reading" action="init"  
+                visibleWhen="#{entity.meter?.objid!=null}"
+                target="popup" index="18" fields="lastreading" schemaName="waterworks_meter"/>   
         
-        <invoker type="waterworks_account:form:edit" caption="Detach Meter" 
-                visibleWhen="#{entity.meter?.objid!=null}" action="init" 
-                target="popup" index="15" tag="detach"/>
-        
-        <invoker type="waterworks_account:form:edit" caption="Change status to Defective" 
-                visibleWhen="#{entity.meter?.state=='ACTIVE'}" action="init" 
-                target="popup" index="16" tag="set_as_defective" />
-                
-        <invoker type="waterworks_account:form:edit" caption="Disconnect" 
-                visibleWhen="#{entity.meter?.state=='ACTIVE'}" action="init" 
-                 target="popup" index="16" tag="disconnect" />
-        
-        <invoker type="waterworks_account:form:edit" caption="Reconnect" 
-                visibleWhen="#{entity.meter?.state?.matches('DISCONNECTED|DEFECTIVE')}"
-                action="init" 
-                target="popup" index="17" tag="reconnect"  />
-        
-        <invoker type="waterworks_account:form:edit" caption="Edit Meter Reading" 
-                visibleWhen="#{entity.meter?.objid!=null}" action="init" 
-                 target="popup" index="16" tag="reading" />
+        <invoker type="waterworks_account:form:edit" caption="Change Meter Status" action="init"  
+                visibleWhen="#{entity.meter?.objid!=null}"
+                target="popup" index="19" tag="meter_state" schemaName="waterworks_meter"/>   
+
     </invokers>
     
     <code class="com.rameses.gov.etracs.waterworks.models.AccountEditModel" />

@@ -1,0 +1,51 @@
+import com.rameses.annotations.*;
+import com.rameses.functions.*;
+
+/***************************************************
+* This service will update each record and set the billrefno
+* The billrefno is the printed number on paper e.g. a receipt 
+* if the client passed a printed list (i.e. list of ids successfully printed), 
+* update it first to printed then process next batch
+*****************************************************/
+
+class WaterworksBatchBillPrintingService {
+	
+	@Service
+	def self;
+
+	@DataContext('vw_waterworks_billing')
+	def billEm; 
+
+	@ProxyMethod
+	public def formatReport( def o ) {
+		return [];
+	}
+
+	//process records by 10;
+	@ProxyMethod 
+	def process( param ) { 
+		if(!param.batchid) throw new Exception("batchid is reqiuired in WaterworksBatchBillPrintingService.process ");
+		if( param.printed_list ) {
+			def list = param.printed_list
+			def str = "('" + list.join("','") + "')";
+			billEm.where( "objid IN " + str ).update( [printed: 1 ]);
+		}
+		def idx = param.refbillno;
+		def blist = billEm.find( [batchid: param.batchid ] ).where( "printed = 0" ).orderBy("billno").list(0,10);
+		if(!blist) return [];
+
+		blist.each {
+			def u = [refbillno: idx++];
+			billEm.find([objid: it.objid]).update( u );
+			it.refbillno = u.refbillno;
+			println it.refbillno;
+		}
+
+		def plist = self.formatReport( blist );
+		if(!plist) throw new Exception("WaterworksBatchBillPrintingService.process error! Please override WaterworksBatchBillPrintingService.process @After");
+		return [list: plist, refbillno: idx];
+	} 
+
+
+	
+} 

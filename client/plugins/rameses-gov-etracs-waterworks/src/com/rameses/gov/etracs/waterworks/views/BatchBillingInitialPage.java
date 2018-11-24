@@ -4,14 +4,14 @@
  */
 package com.rameses.gov.etracs.waterworks.views;
 
+import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.Template;
-import com.rameses.seti2.views.CrudFormPage;
 
 /**
  *
  * @author Elmo Nazareno
  */
-@Template(CrudFormPage.class)
+@Template(FormPage.class)
 public class BatchBillingInitialPage extends javax.swing.JPanel {
 
     /**
@@ -30,170 +30,134 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
-        xLabel8 = new com.rameses.rcp.control.XLabel();
-        monthList1 = new com.rameses.enterprise.components.MonthList();
+        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
-        monthList2 = new com.rameses.enterprise.components.MonthList();
+        monthList1 = new com.rameses.enterprise.components.MonthList();
         xLookupField3 = new com.rameses.rcp.control.XLookupField();
-        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
-        xDateField5 = new com.rameses.rcp.control.XDateField();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
-        xDateField6 = new com.rameses.rcp.control.XDateField();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
-        xDateField2 = new com.rameses.rcp.control.XDateField();
-        xDateField3 = new com.rameses.rcp.control.XDateField();
-        xDateField4 = new com.rameses.rcp.control.XDateField();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xLookupField2 = new com.rameses.rcp.control.XLookupField();
+        schemaList1 = new com.rameses.seti2.components.SchemaList();
 
-        xFormPanel1.setDepends(new String[] {"entity.zone"});
-        xFormPanel1.setVisibleWhen("#{ entity.zone.schedule?.objid  != null }");
-        xFormPanel1.setCaptionWidth(120);
+        xFormPanel4.setCaptionWidth(150);
 
-        xLabel1.setCaption("Sector");
-        xLabel1.setDepends(new String[] {"entity.zone"});
-        xLabel1.setExpression("#{ entity.zone.sector.code }");
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel1);
-
-        xLabel8.setCaption("Start Year");
-        xLabel8.setDepends(new String[] {"entity.zone"});
-        xLabel8.setExpression("#{ entity.year }");
-        xLabel8.setVisibleWhen("#{ hasDate == true }");
-        xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel8);
-
-        monthList1.setCaption("Start Month");
-        monthList1.setDepends(new String[] {"entity.zone"});
-        monthList1.setDisableWhen("#{ 1 == 1 }");
-        monthList1.setName("entity.month"); // NOI18N
-        monthList1.setPreferredSize(new java.awt.Dimension(0, 20));
-        monthList1.setVisibleWhen("#{ hasDate == true }");
-        xFormPanel1.add(monthList1);
-
-        xIntegerField1.setCaption("Start Year");
-        xIntegerField1.setDepends(new String[] {"entity.zone"});
+        xIntegerField1.setCaption("Year to Bill");
+        xIntegerField1.setDisableWhen("");
         xIntegerField1.setName("entity.year"); // NOI18N
-        xIntegerField1.setVisibleWhen("#{ hasDate == false }");
-        xFormPanel1.add(xIntegerField1);
+        xIntegerField1.setRequired(true);
+        xFormPanel4.add(xIntegerField1);
 
-        monthList2.setCaption("Start Month");
-        monthList2.setDepends(new String[] {"entity.zone"});
-        monthList2.setDisableWhen("");
-        monthList2.setName("entity.month"); // NOI18N
-        monthList2.setPreferredSize(new java.awt.Dimension(0, 20));
-        monthList2.setVisibleWhen("#{ hasDate == false }");
-        xFormPanel1.add(monthList2);
+        monthList1.setCaption("Month");
+        monthList1.setName("entity.month"); // NOI18N
+        monthList1.setRequired(true);
+        xFormPanel4.add(monthList1);
 
         xLookupField3.setCaption("Assign To Reader");
         xLookupField3.setExpression("#{ entity.reader.name }");
-        xLookupField3.setHandler("waterworksreader:lookup");
+        xLookupField3.setHandler("waterworks_reader:lookup");
         xLookupField3.setName("entity.reader"); // NOI18N
-        xLookupField3.setCaptionWidth(120);
         xLookupField3.setCellPadding(new java.awt.Insets(0, 0, 10, 0));
         xLookupField3.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField3.setRequired(true);
-        xFormPanel1.add(xLookupField3);
+        xFormPanel4.add(xLookupField3);
 
-        xFormPanel3.setCaption("Period covered");
-        xFormPanel3.setCaptionPadding(new java.awt.Insets(10, 1, 0, 5));
-        xFormPanel3.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel3.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel3.setRequired(true);
-
-        xDateField5.setCaption("From Period");
-        xDateField5.setDisableWhen("#{1==1}");
-        xDateField5.setEditable(false);
-        xDateField5.setName("entity.fromperiod"); // NOI18N
-        xDateField5.setRequired(true);
-        xDateField5.setShowCaption(false);
-        xFormPanel3.add(xDateField5);
-
-        xLabel2.setShowCaption(false);
-        xLabel2.setText("To");
-        xFormPanel3.add(xLabel2);
-
-        xDateField6.setCaption("To Period");
-        xDateField6.setDisableWhen("#{1==1}");
-        xDateField6.setEditable(false);
-        xDateField6.setName("entity.toperiod"); // NOI18N
-        xDateField6.setRequired(true);
-        xDateField6.setShowCaption(false);
-        xFormPanel3.add(xDateField6);
-
-        xFormPanel1.add(xFormPanel3);
-
-        xDateField1.setCaption("Reading Date");
-        xDateField1.setName("entity.readingdate"); // NOI18N
-        xDateField1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
-        xDateField1.setRequired(true);
-        xFormPanel1.add(xDateField1);
-
-        xDateField2.setCaption("Reading Due Date");
-        xDateField2.setName("entity.readingduedate"); // NOI18N
-        xDateField2.setRequired(true);
-        xFormPanel1.add(xDateField2);
-
-        xDateField3.setCaption("Discount Due Date");
-        xDateField3.setName("entity.discdate"); // NOI18N
-        xDateField3.setRequired(true);
-        xFormPanel1.add(xDateField3);
-
-        xDateField4.setCaption("Penalty Due Date");
-        xDateField4.setName("entity.duedate"); // NOI18N
-        xDateField4.setRequired(true);
-        xFormPanel1.add(xDateField4);
-
-        xFormPanel2.setCaptionWidth(120);
-
-        xLookupField2.setName("entity.zone"); // NOI18N
-        xLookupField2.setCaption("Zone");
-        xLookupField2.setExpression("#{ entity.zone.code }");
-        xLookupField2.setHandler("waterworks_zone:lookup");
-        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLookupField2.setRequired(true);
-        xFormPanel2.add(xLookupField2);
+        schemaList1.setColumns(new com.rameses.rcp.common.Column[]{
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "code"}
+                , new Object[]{"caption", "Code"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "description"}
+                , new Object[]{"caption", "Zone"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "schedule.objid"}
+                , new Object[]{"caption", "Schedule"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", null}
+                , new Object[]{"caption", "Bill Date"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"expression", "#{ item.nextbillyear ? item.nextbillmonthname  + ' ' + item.nextbillyear : '' }"}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.LabelColumnHandler()}
+            })
+        });
+        schemaList1.setCustomFilter("nextbillyear IS NULL OR ((nextbillyear * 12) + nextbillmonth <= :yearmonth)");
+        schemaList1.setHandlerName("listHandler");
+        schemaList1.setName("selectedItem"); // NOI18N
+        schemaList1.setQueryName("query");
+        schemaList1.setSchemaName("waterworks_zone");
+        schemaList1.setAllowOpen(false);
+        schemaList1.setDynamic(true);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(54, 54, 54)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(475, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(schemaList1, javax.swing.GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
+                        .addGap(413, 413, 413))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(80, Short.MAX_VALUE))
+                .addComponent(schemaList1, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.enterprise.components.MonthList monthList1;
-    private com.rameses.enterprise.components.MonthList monthList2;
-    private com.rameses.rcp.control.XDateField xDateField1;
-    private com.rameses.rcp.control.XDateField xDateField2;
-    private com.rameses.rcp.control.XDateField xDateField3;
-    private com.rameses.rcp.control.XDateField xDateField4;
-    private com.rameses.rcp.control.XDateField xDateField5;
-    private com.rameses.rcp.control.XDateField xDateField6;
-    private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel2;
-    private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.seti2.components.SchemaList schemaList1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
-    private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLabel xLabel2;
-    private com.rameses.rcp.control.XLabel xLabel8;
-    private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XLookupField xLookupField3;
     // End of variables declaration//GEN-END:variables
 }

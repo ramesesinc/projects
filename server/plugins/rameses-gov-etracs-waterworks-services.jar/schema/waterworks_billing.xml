@@ -1,0 +1,40 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_billing">
+		<field name="objid" primary="true"  prefix="WBILL"/>
+		<field name="state" />
+		<field name="billno" />
+
+		<field name="batchid" required="true"/>
+		<complex name="batch" ref="waterworks_batch_billing" jointype="many-to-one" required="false"> 
+			<key field="batchid" target="objid" />
+		</complex>
+		
+		<field name="acctid" required="true"/>
+		<complex name="account" ref="waterworks_account" jointype="many-to-one" required="false" 
+			includefields="acct.*,owner.*,address.*,units,classificationid,stuboutnode.*">
+			<key field="acctid" target="objid"/>
+		</complex>
+
+		<field name="consumptionid" required="true"/>
+		<complex name="consumption" jointype="many-to-one" ref="waterworks_account" required="false" includefields="meter.*">
+			<key field="acctid" target="objid"/>
+		</complex>
+
+		<field name="surcharge" type="decimal"/>
+		<field name="interest" type="decimal"/>
+		<field name="otherfees" type="decimal"/>
+		<field name="credits" type="decimal"/>
+		<field name="arrears" type="decimal"/>
+		<field name="averageconsumption" type="integer"/>
+		<field name="unpaidmonths"/>
+		<field name="billed"/>	
+
+		<field name="meterstatus" expr="CASE WHEN consumption.meterid IS NULL THEN 'UNMETERED' ELSE consumption.meter.state END" />
+
+		<field name="printed"/>
+		<field name="refbillno"/>
+	</element>
+</schema>
+
+
+	

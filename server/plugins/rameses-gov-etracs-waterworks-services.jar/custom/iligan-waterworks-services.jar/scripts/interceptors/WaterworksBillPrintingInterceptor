@@ -1,0 +1,33 @@
+import com.rameses.annotations.*;
+
+class WaterworksBillPrintingInterceptor{
+	
+	@Service("TemplateService")
+	def template;
+
+	@After(pattern="WaterworksBatchBillPrintingService.formatReport")
+	public void afterFormatReport( evt ) {
+		def list = evt.args[0];
+		def result = evt.result;
+
+		def df = new java.text.SimpleDateFormat("yyyy-MM-dd"); 
+		list.each {
+            def p = [:];
+            p.putAll( it );
+            p.address = 'iligan city';
+            p.penalty = it.surcharge + it.interest;
+            p.grandtotal = it.amount + p.penalty;
+            p.classification = p.classificationid.toString().padRight(3," ")[0..2];
+            p.blockseqno = p.indexno;
+            p.duedate = new Date();
+            p.prevreadingdate = new Date();
+            p.readingdate = new Date();
+            p.discdate = new Date();
+            def res = template.get( "reports/waterbillreport", [o:p] ).toString();
+    		throw new Exception("stop at report!" + res );
+    		result << res;
+       }
+	}
+
+
+}

@@ -12,8 +12,8 @@
 		
 		<field name="capacity" required="true" type="integer" caption="Capacity" />
 
-		<field name="lastreading" indexed="true" caption="Lst Reading"/>
-		<field name="lastreadingdate" indexed="true" caption="Last Reading Date"/>
+		<field name="lastreading" indexed="true" caption="Lst Reading" type="integer"/>
+		<field name="lastreadingdate" indexed="true" caption="Last Reading Date" type="date"/>
 		<field name="currentacctid" />
 		
 		<!-- for link with application -->

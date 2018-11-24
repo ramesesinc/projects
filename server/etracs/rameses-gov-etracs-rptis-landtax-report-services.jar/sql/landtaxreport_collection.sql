@@ -31,10 +31,8 @@ select
 
   0.0 as levynet 
 from remittance rem 
-  inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-  inner join liquidation liq on liqr.liquidationid = liq.objid
-  inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-  inner join cashreceipt cr on remc.objid = cr.objid 
+  inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+  inner join cashreceipt cr on cr.remittanceid = rem.objid 
   inner join rptpayment rp on cr.objid = rp.receiptid 
   inner join vw_rptpayment_item ri on rp.objid = ri.parentid
   left join rptledger rl ON rp.refid = rl.objid  
@@ -61,10 +59,8 @@ select
   sum( ri.basic - ri.basicdisc + ri.sef - ri.sefdisc + 
     ri.basicidle - ri.basicidledisc ) as netgrandtotal
 from remittance rem 
-  inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-  inner join liquidation liq on liqr.liquidationid = liq.objid
-  inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-  inner join cashreceipt cr on remc.objid = cr.objid 
+  inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+  inner join cashreceipt cr on cr.remittanceid = rem.objid 
   inner join rptpayment rp on cr.objid = rp.receiptid 
   inner join vw_rptpayment_item ri on rp.objid = ri.parentid
   inner join rptledger rl ON rp.refid = rl.objid  
@@ -94,10 +90,8 @@ from (
     case when ri.revtype in ('sef', 'sefint') and ri.sharetype in ('municipality') then ri.amount else 0.0 end as munisefshare,
     0.0 as brgysefshare 
   from remittance rem 
-    inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-    inner join liquidation liq on liqr.liquidationid = liq.objid
-    inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-    inner join cashreceipt cr on remc.objid = cr.objid 
+    inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+    inner join cashreceipt cr on cr.remittanceid = rem.objid 
     inner join rptpayment rp on cr.objid = rp.receiptid 
     inner join rptpayment_share ri on rp.objid = ri.parentid
   where ${filter}  
@@ -123,10 +117,8 @@ from (
     case when ri.revtype in ('sef', 'sefint') and ri.sharetype in ('municipality') then ri.amount else 0.0 end as munisefshare,
     case when ri.revtype in ('sef', 'sefint') and ri.sharetype in ('barangay') then ri.amount else 0.0 end as brgysefshare 
   from remittance rem 
-    inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-    inner join liquidation liq on liqr.liquidationid = liq.objid
-    inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-    inner join cashreceipt cr on remc.objid = cr.objid 
+    inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+    inner join cashreceipt cr on cr.remittanceid = rem.objid 
     inner join rptpayment rp on cr.objid = rp.receiptid 
     inner join rptpayment_share ri on rp.objid = ri.parentid
   where ${filter}  
@@ -145,10 +137,8 @@ select
   sum(ri.sef) as sef,
   sum(ri.sefdisc) as sefdisc
 from remittance rem 
-  inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-  inner join liquidation liq on liqr.liquidationid = liq.objid
-  inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-  inner join cashreceipt cr on remc.objid = cr.objid 
+  inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+  inner join cashreceipt cr on cr.remittanceid = rem.objid 
   inner join rptpayment rp on cr.objid = rp.receiptid 
   inner join vw_rptpayment_item ri on rp.objid = ri.parentid
 where ${filter}  

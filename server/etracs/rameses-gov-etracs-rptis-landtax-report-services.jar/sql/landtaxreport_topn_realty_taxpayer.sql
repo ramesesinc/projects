@@ -15,9 +15,8 @@ from (
         inner join rptpayment rp on cr.objid = rp.receiptid 
         inner join vw_rptpayment_item cro on rp.objid = cro.parentid
         inner join rptledger rl on rp.refid = rl.objid 
-        inner join remittance_cashreceipt rc on c.objid = rc.objid
-        inner join liquidation_remittance lr on rc.remittanceid = lr.objid
-        inner join liquidation l on lr.liquidationid = l.objid 
+        inner join remittance rem on rem.objid = c.remittanceid 
+        inner join collectionvoucher l on l.objid = rem.collectionvoucherid 
         left join cashreceipt_void cv on c.objid = cv.receiptid
     where year(l.dtposted) = $P{year}
         and rl.rputype like $P{type}
@@ -48,9 +47,8 @@ from (
         inner join rptpayment rp on cr.objid = rp.receiptid 
         inner join vw_rptpayment_item cro on rp.objid = cro.parentid
         inner join rptledger rl on rp.refid = rl.objid 
-        inner join remittance_cashreceipt rc on c.objid = rc.objid
-        inner join liquidation_remittance lr on rc.remittanceid = lr.objid
-        inner join liquidation l on lr.liquidationid = l.objid 
+        inner join remittance rem on rem.objid = c.remittanceid 
+        inner join collectionvoucher l on l.objid = rem.collectionvoucherid 
         left join cashreceipt_void cv on c.objid = cv.receiptid
     where year(l.dtposted) = $P{year}
         and rl.rputype like $P{type}

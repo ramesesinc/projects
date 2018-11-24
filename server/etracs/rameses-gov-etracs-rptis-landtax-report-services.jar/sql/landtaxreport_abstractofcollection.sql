@@ -48,9 +48,8 @@ from (
     ) as total,
 
     max(case when cv.objid is null then cri.partialled else 0 end) as partialled
-  from liquidation liq 
-    inner join liquidation_remittance lr on liq.objid = lr.liquidationid 
-    inner join remittance rem on lr.objid =rem.objid 
+  from collectionvoucher liq 
+    inner join remittance rem on rem.collectionvoucherid = liq.objid 
     inner join cashreceipt cr on cr.remittanceid = rem.objid 
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
     inner join rptpayment rp on cr.objid = rp.receiptid
@@ -106,9 +105,8 @@ from (
     sum(case when cv.objid is null then cri.firecode else 0.0 end) as firecode,
     sum(case when cv.objid is null then cri.sef - cri.sefdisc + cri.sefint else 0.0 end ) as total,
     max(case when cv.objid is null then cri.partialled else 0.0 end) as partialled
-  from liquidation liq 
-    inner join liquidation_remittance lr on liq.objid = lr.liquidationid 
-    inner join remittance rem on lr.objid =rem.objid 
+  from collectionvoucher liq 
+    inner join remittance rem on rem.collectionvoucherid = liq.objid 
     inner join cashreceipt cr on cr.remittanceid = rem.objid 
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
     inner join rptpayment rp on cr.objid = rp.receiptid
@@ -180,9 +178,8 @@ from (
         else 0.0 end 
     ) as total
 
-  from liquidation liq 
-    inner join liquidation_remittance lr on liq.objid = lr.liquidationid 
-    inner join remittance rem on lr.objid =rem.objid 
+  from collectionvoucher liq 
+    inner join remittance rem on rem.collectionvoucherid = liq.objid 
     inner join cashreceipt cr on cr.remittanceid = rem.objid
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
     inner join rptpayment rp on cr.objid = rp.receiptid
@@ -239,9 +236,8 @@ from (
 
     sum(case when cv.objid is null then cri.firecode else 0.0 end) as firecode,
     sum(case when cv.objid is null then cri.sef - cri.sefdisc + cri.sefint else 0.0 end ) as total
-  from liquidation liq 
-    inner join liquidation_remittance lr on liq.objid = lr.liquidationid 
-    inner join remittance rem on lr.objid =rem.objid 
+  from collectionvoucher liq 
+    inner join remittance rem on rem.collectionvoucherid = liq.objid 
     inner join cashreceipt cr on cr.remittanceid = rem.objid 
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
     inner join rptpayment rp on cr.objid = rp.receiptid

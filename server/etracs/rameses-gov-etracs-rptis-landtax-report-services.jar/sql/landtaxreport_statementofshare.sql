@@ -22,10 +22,8 @@ select
     sum(0.0) as provpenaltyshare,
     sum(case when cra.revperiod <> 'advance' and  cra.revtype in ('basicidle','basicidleint') and cra.sharetype = 'province' then cra.amount else 0 end) as provsharetotal
 from remittance rem 
-    inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-    inner join liquidation liq on liqr.liquidationid = liq.objid
-    inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-    inner join cashreceipt cr on remc.objid = cr.objid 
+    inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+    inner join cashreceipt cr on cr.remittanceid = rem.objid 
     inner join rptpayment rp on cr.objid = rp.receiptid 
     inner join rptpayment_share cra on rp.objid = cra.parentid
     left join rptledger rl on rp.refid = rl.objid
@@ -49,10 +47,8 @@ select
     sum(0.0) as provpenaltyshare,
     sum(case when cra.revperiod <> 'advance' and  cra.revtype = 'basicidle' and cra.sharetype = 'province' then cra.amount else 0 end) as provsharetotal
 from remittance rem 
-    inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-    inner join liquidation liq on liqr.liquidationid = liq.objid
-    inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-    inner join cashreceipt cr on remc.objid = cr.objid 
+    inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+    inner join cashreceipt cr on cr.remittanceid = rem.objid 
     inner join rptpayment rp on cr.objid = rp.receiptid 
     inner join rptpayment_share cra on rp.objid = cra.parentid
 where ${filter} 
@@ -75,10 +71,8 @@ select
     sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basic' and cra.sharetype in ('province', 'municipality') then cra.amount else 0 end) as provmuniprevshare,
     sum(case when cra.revtype = 'basicint' and cra.sharetype in ('province', 'municipality') then cra.amount else 0 end) as provmunipenaltyshare
 from remittance rem 
-    inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-    inner join liquidation liq on liqr.liquidationid = liq.objid
-    inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-    inner join cashreceipt cr on remc.objid = cr.objid 
+    inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+    inner join cashreceipt cr on cr.remittanceid = rem.objid 
     inner join rptpayment rp on cr.objid = rp.receiptid 
     inner join rptpayment_share cra on rp.objid = cra.parentid
     left join rptledger rl on rp.refid = rl.objid
@@ -118,10 +112,8 @@ from (
         case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basic' and cra.sharetype = 'province' then cra.amount else 0 end as provprevshare,
         case when cra.revtype = 'basicint' and cra.sharetype = 'province' then cra.amount else 0 end as provpenaltyshare
     from remittance rem 
-        inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-        inner join liquidation liq on liqr.liquidationid = liq.objid
-        inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-        inner join cashreceipt cr on remc.objid = cr.objid 
+        inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+        inner join cashreceipt cr on cr.remittanceid = rem.objid 
         inner join rptpayment rp on cr.objid = rp.receiptid 
         inner join rptpayment_share cra on rp.objid = cra.parentid
         left join rptledger rl on rp.refid = rl.objid
@@ -155,10 +147,8 @@ from (
         sum(case when cra.revtype = 'basicint' and cra.sharetype = 'province' then cra.amount else 0 end) as  provpenaltyshare,
         sum(case when cra.sharetype = 'province' then cra.amount else 0 end) as  provtotalshare 
     from remittance rem 
-        inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-        inner join liquidation liq on liqr.liquidationid = liq.objid
-        inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-        inner join cashreceipt cr on remc.objid = cr.objid 
+        inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+        inner join cashreceipt cr on cr.remittanceid = rem.objid 
         inner join rptpayment rp on cr.objid = rp.receiptid 
         inner join rptpayment_share cra on rp.objid = cra.parentid
     where ${filter}   
@@ -180,10 +170,8 @@ select
     sum(case when cra.revtype = 'sefint' and cra.sharetype = 'province' then cra.amount else 0 end) as provpenaltyshare,
     sum(case when cra.revtype in ('sef', 'sefint') and cra.sharetype = 'province' then cra.amount else 0 end) as provsharetotal
 from remittance rem 
-    inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-    inner join liquidation liq on liqr.liquidationid = liq.objid
-    inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-    inner join cashreceipt cr on remc.objid = cr.objid 
+    inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+    inner join cashreceipt cr on cr.remittanceid = rem.objid 
     inner join rptpayment rp on cr.objid = rp.receiptid 
     inner join rptpayment_share cra on rp.objid = cra.parentid
 where ${filter} 
@@ -201,10 +189,8 @@ select
     sum(case when cra.revperiod in ('previous', 'prior') and revtype ='basic' then cra.amount else 0.0 end) as basicprevamt,    
     sum(case when cra.revperiod in ('previous', 'prior') and revtype ='basicint' then cra.amount else 0.0 end) as basicprevintamt   
 from remittance rem 
-    inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-    inner join liquidation liq on liqr.liquidationid = liq.objid
-    inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-    inner join cashreceipt cr on remc.objid = cr.objid 
+    inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+    inner join cashreceipt cr on cr.remittanceid = rem.objid 
     inner join rptpayment rp on cr.objid = rp.receiptid 
     inner join rptpayment_share cra on rp.objid = cra.parentid
     left join rptledger rl on rp.refid = rl.objid
@@ -227,7 +213,7 @@ from cashreceipt cr
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
     left join rptledger rl on rp.refid = rl.objid
     left join barangay b on rl.barangayid = b.objid 
-    inner join remittance_cashreceipt rc on cr.objid = rc.objid
+    inner join remittance r on r.objid = cr.remittanceid 
 where cr.receiptdate >= $P{fromdate} and cr.receiptdate < $P{todate}
     and cra.sharetype ='barangay'
      and cv.objid is null  

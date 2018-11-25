@@ -8,7 +8,7 @@ import com.rameses.seti2.models.*;
 import java.text.*;
 import com.rameses.treasury.common.models.*;
 
-class MeterEditModel extends DataEditorModel {
+class MeterEditModel extends ChangeInfoModel {
 
     def meterStates =  ["ACTIVE","DISCONNECTED","DEFECTIVE"];
     

@@ -10,7 +10,14 @@
                  orderBy="dtfiled DESC"
                  visibleWhen="#{mode=='read'}"  />
         
-         <invoker type="waterworks_meter:section" caption="Change Info" 
+        <invoker type="waterworks_meter:section" caption="Change Info" 
+                 index="100" action="init" 
+                 parentid="refid"
+                 cols="controlno,dtfiled,filedby.name,action,keyfield,oldvalue,newvalue,remarks"
+                 orderBy="dtfiled DESC"
+                 visibleWhen="#{mode=='read'}"  />
+        
+        <invoker type="waterworks_consumption:section" caption="Change Info" 
                  index="100" action="init" 
                  parentid="refid"
                  cols="controlno,dtfiled,filedby.name,action,keyfield,oldvalue,newvalue,remarks"

@@ -121,7 +121,6 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.LabelColumnHandler()}
             })
         });
-        schemaList1.setCustomFilter("nextbillyear IS NULL OR ((nextbillyear * 12) + nextbillmonth <= :yearmonth)");
         schemaList1.setHandlerName("listHandler");
         schemaList1.setName("selectedItem"); // NOI18N
         schemaList1.setQueryName("query");

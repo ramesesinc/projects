@@ -44,7 +44,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
    } 
     
    public String getTitle() {
-        return "Zone " + entity.zone?.code + " " + entity.year + "-" + String.format('%06d', entity.month) + " (" + task.title + ")";
+        return "Zone " + entity.zone?.code + " " + entity.schedule.year + "-" + String.format('%02d', entity.schedule.month) + " (" + task.title + ")";
    } 
     
    public def open() {
@@ -132,11 +132,24 @@ public class BatchBillingModel extends WorkflowTaskModel {
         batchSvc.processBilling( [objid:item.objid,acctid:item.acctid,consumptionid:item.consumptionid] );
         billHandler.reload();
     }
+    
+    def hold = { item->
+        def i = item.hold ? 0 : 1;
+        def h = [:];
+        h.data = [hold: i, objid: item.consumptionid ];
+        h.fields = [];
+        h._schemaname = "waterworks_consumption";
+        h._log_schemaname = "waterworks_changelog";
+        h._bypass_check_diff = true;
+        //h.beforeSave = { o-> }
+        h.handler = {item.hold = i;}
+        Modal.show("changeinfo", h, [title: "Change Hold Status"]);
+    }
    
     def getBillHandlerList() {
         def mnuList = [];
         mnuList << [value: 'View Account', func: viewAccount];
-        if(task?.state == 'for-review|for-reading' ) {
+        if(task?.state.matches('for-review|for-reading') ) {
             mnuList << [value: 'Recompute Bill', func:rebill]
         } 
         mnuList << [value: 'View Bill', func: viewBilling];
@@ -147,7 +160,9 @@ public class BatchBillingModel extends WorkflowTaskModel {
         def meterid = item.meterid; 
         def mnuList = [];
         if( task?.state == "for-reading" ) {
-            mnuList << [value: 'Edit Consumption', func:editConsumption];
+            if(item.hold == 0 ) mnuList << [value: 'Edit Reading/Volume', func:editConsumption];
+            if(item.hold == 0 ) mnuList << [value: 'Hold', func:hold];
+            if(item.hold == 1 ) mnuList << [value: 'Activate', func:hold];
         }
         mnuList << [value: 'View Account', func:viewAccount];
         mnuList << [value: 'View Consumption History', func: viewConsumptionHistory];

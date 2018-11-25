@@ -1,4 +1,4 @@
-<workunit extends="com/rameses/seti2/templates/DataEditor.xml" schemaName="waterworks_meter" 
+<workunit extends="com/rameses/seti2/templates/ChangeInfo.xml" schemaName="waterworks_meter" 
     logSchemaName="waterworks_changelog">
     <invokers>
         <!-- menus inside meter -->    

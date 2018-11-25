@@ -15,6 +15,9 @@ public class CaptureConsumptionModel extends CrudFormModel {
     @Service("WaterworksComputationService")
     def compSvc;
     
+    @Service("WaterworksScheduleService")
+    def skedSvc;
+
     @Service("DateService")
     def dateSvc;
     
@@ -68,6 +71,21 @@ public class CaptureConsumptionModel extends CrudFormModel {
             meterstate: (masterEntity.meter?.objid==null)? "UNMETERED" : masterEntity.meter?.state 
         ];
         consumptionUtil.compute( p, h);
+    }
+    
+    def lookupSchedule() {
+        def h = [:];
+        h.handler = { o->
+            o.scheduleid = masterEntity.stuboutnode.schedule.objid;
+            def r = skedSvc.getSchedule( o );
+            entity.scheduleid = r.objid;
+            entity.schedule = r;
+            binding.refresh();
+        }
+        h.fields = [];
+        h.fields << [name: 'year', caption: 'From Year', type:'integer'];
+        h.fields << [name: 'month', caption: 'From Month', type:'monthlist', datatype:'monthlist', preferredSize:[100,20]];
+        Modal.show("dynamic:form", h, [title:"Specify Schedule"] );
     }
     
 }

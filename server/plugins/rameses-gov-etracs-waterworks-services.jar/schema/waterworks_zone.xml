@@ -17,10 +17,11 @@
 			<key field="batchid" target="objid" />
 		</complex>	
 
-		<field name="nextbillmonth" />
-		<field name="nextbillyear"/>
-		<field name="nextbillmonthname" expr="MONTH_ARRAY( nextbillmonth )" caption="Month"/>
-
+		<field name="nextscheduleid" />
+		<complex name="nextschedule" ref="waterworks_billing_schedule" jointype="many-to-one" required="true">
+			<key field="nextscheduleid" target="objid"/>
+		</complex>
+		
 	</element>
 
 </schema>

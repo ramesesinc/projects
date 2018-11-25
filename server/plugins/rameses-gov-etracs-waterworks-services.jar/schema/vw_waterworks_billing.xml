@@ -31,7 +31,9 @@
 
 		<!-- pahabol in waterworks_billing -->
 		<field name="refbillno" />	
-		<field name="printed" />	
+		<field name="printed" />
+		<field name="hold" />	
+		<field name="amtpaid" />		
 
 	</element>
 </schema>

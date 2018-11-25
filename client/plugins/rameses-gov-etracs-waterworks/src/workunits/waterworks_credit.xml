@@ -1,0 +1,13 @@
+<workunit schemaName="waterworks_credit">
+    <invokers>
+        <invoker type="waterworks_credit:create"  
+                 caption="Add Credit" target="popup" action="create"/>
+        <invoker type="waterworks_credit:open"  
+                 caption="Credit" target="popup" action="open"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.CreditEntryModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.CreditEntryPage"/>
+    </pages>
+</workunit>
+

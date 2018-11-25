@@ -12,9 +12,6 @@ class WaterworksBatchBillingInterceptor {
 	@Service("DateService")
 	def dateSvc;
 
-	@Service("WaterworksBatchBillingService")
-	def batchBillingSvc;
-
 	@DataContext("waterworks_zone")
 	def zoneEm;
 
@@ -34,9 +31,11 @@ class WaterworksBatchBillingInterceptor {
 	public void beforeCreate( evt ) { 
 		def o = evt.args[0];
 		def zone = o.zone;
-		def r = skedSvc.getSchedule( [year:o.year, month:o.month, scheduleid: zone.schedule.objid ] );
-		o.putAll(r);
-		o.schedule= zone.schedule; 
+
+		def sked = skedSvc.getSchedule( [year:o.year, month:o.month, scheduleid: zone.schedule.objid ] );
+
+		o.schedule = sked; 
+		o.scheduleid = sked.objid;
 		o.objid = 'WBILL' + zone.code + o.year + String.format( "%02d", o.month);
 		o.state = 'DRAFT';		
 	}
@@ -47,16 +46,19 @@ class WaterworksBatchBillingInterceptor {
 		def result = evt.result;
 		def m = [ batchid: result.objid ];
 
+		def sked = o.schedule;
+		def zone = o.zone;
+
 		//update the zone specifically the batchid and next billyear and month
-		int ym = ((o.year*12)+o.month)+1;
+		int ym = ((sked.year*12)+sked.month)+1;
 		int ny = (int)(ym/12);
 		int nm = (ym % 12);
 		if( nm == 0 ) {
 			nm = 12;
 			ny = ny - 1;
 		};
-		def u = [nextbillyear: ny, nextbillmonth: nm, batchid: result.objid ];
-		zoneEm.find( [objid: o.zone.objid] ).update( u );
+		sked = skedSvc.getSchedule( [year:ny, month:nm, scheduleid: zone.schedule.objid ] );
+		zoneEm.find( [objid: o.zone.objid] ).update( [nextscheduleid : sked.objid] );
 
 		//build the consumptions first
 		batchEm.buildConsumptions( m );
@@ -94,12 +96,14 @@ class WaterworksBatchBillingInterceptor {
 
 	}
 
+	/*
 	@Before(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname == 'waterworks_batch_billing' && args[0].taskstate == 'approved' && args[0].action == 'post'  }")
 	public void beforePost( def evt ) {
 		def p = evt.args[0];
 		if(!p.refid) throw new Exception("Error WorkflowTaskService.signal post error. refid is required");
 		batchBillingSvc.post([ batchid: p.refid ]);
 	}
+	*/
 
 	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'waterworks_batch_billing'}")
 	void beforeRemoveEntity( evt ) {

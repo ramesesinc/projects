@@ -59,8 +59,8 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="xFormPanel2" min="-2" pref="400" max="-2" attributes="0"/>
-                      <EmptySpace pref="85" max="32767" attributes="0"/>
+                      <Component id="xFormPanel2" min="-2" pref="457" max="-2" attributes="0"/>
+                      <EmptySpace pref="28" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -121,10 +121,11 @@
                 </Component>
                 <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField2">
                   <Properties>
-                    <Property name="name" type="java.lang.String" value="entity.schedule" noResource="true"/>
                     <Property name="caption" type="java.lang.String" value="Block Schedule"/>
+                    <Property name="disableWhen" type="java.lang.String" value="#{ entity.nextscheduleid != null }"/>
                     <Property name="expression" type="java.lang.String" value="#{ entity.schedule.objid }"/>
                     <Property name="handler" type="java.lang.String" value="waterworks_block_schedule:lookup"/>
+                    <Property name="name" type="java.lang.String" value="entity.schedule" noResource="true"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[0, 20]"/>
                     </Property>
@@ -143,20 +144,36 @@
                     <Property name="text" type="java.lang.String" value="Next Billing "/>
                   </Properties>
                 </Component>
-                <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField1">
+                <Component class="com.rameses.rcp.control.XLabel" name="xLabel3">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Next Bill Year"/>
-                    <Property name="disableWhen" type="java.lang.String" value="#{ mode == &apos;read&apos; || entity.batchid != null }"/>
-                    <Property name="name" type="java.lang.String" value="entity.nextbillyear" noResource="true"/>
-                    <Property name="required" type="boolean" value="true"/>
+                    <Property name="expression" type="java.lang.String" value="#{ entity.nextschedule.year }"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                        <LineBorder>
+                          <Color PropertyName="color" blue="b4" green="b4" red="b4" type="rgb"/>
+                        </LineBorder>
+                      </Border>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[0, 20]"/>
+                    </Property>
                   </Properties>
                 </Component>
-                <Component class="com.rameses.enterprise.components.MonthList" name="monthList1">
+                <Component class="com.rameses.rcp.control.XLabel" name="xLabel4">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Next Bill Month"/>
-                    <Property name="disableWhen" type="java.lang.String" value="#{ mode == &apos;read&apos; || entity.batchid != null }"/>
-                    <Property name="name" type="java.lang.String" value="entity.nextbillmonth" noResource="true"/>
-                    <Property name="required" type="boolean" value="true"/>
+                    <Property name="expression" type="java.lang.String" value="#{ entity.nextschedule.month }"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                        <LineBorder>
+                          <Color PropertyName="color" blue="b4" green="b4" red="b4" type="rgb"/>
+                        </LineBorder>
+                      </Border>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[0, 20]"/>
+                    </Property>
                   </Properties>
                 </Component>
               </SubComponents>

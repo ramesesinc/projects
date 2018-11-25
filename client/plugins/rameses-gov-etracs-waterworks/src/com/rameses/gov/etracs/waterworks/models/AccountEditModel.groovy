@@ -7,7 +7,7 @@ import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 import java.text.*;
 
-class AccountEditModel extends DataEditorModel {
+class AccountEditModel extends ChangeInfoModel {
 
     @Service("QueryService")
     def qrySvc;

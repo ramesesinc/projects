@@ -11,6 +11,8 @@ SELECT wb.*,
    wc.volume,
    wc.rate,
    wc.amount,
+   wc.amtpaid,
+   wc.hold,
    ((wb.arrears + wb.otherfees + wb.surcharge + wb.interest) - wb.credits) AS subtotal,
    wm.objid AS meter_objid,
    wm.objid AS meterid,   
@@ -21,3 +23,6 @@ INNER JOIN waterworks_consumption wc ON wb.consumptionid=wc.objid
 LEFT JOIN waterworks_meter wm ON wc.meterid = wm.objid
 INNER JOIN waterworks_account wa ON wb.acctid = wa.objid
 LEFT JOIN waterworks_stubout_node sn ON wa.stuboutnodeid = sn.objid
+
+
+

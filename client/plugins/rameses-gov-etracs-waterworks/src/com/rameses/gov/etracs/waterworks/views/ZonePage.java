@@ -38,8 +38,8 @@ public class ZonePage extends javax.swing.JPanel {
         xTextField4 = new com.rameses.rcp.control.XTextField();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
-        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
-        monthList1 = new com.rameses.enterprise.components.MonthList();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
 
         xTabbedPane1.setItems("sections");
         xTabbedPane1.setDynamic(true);
@@ -68,10 +68,11 @@ public class ZonePage extends javax.swing.JPanel {
         xTextField4.setRequired(true);
         xFormPanel2.add(xTextField4);
 
-        xLookupField2.setName("entity.schedule"); // NOI18N
         xLookupField2.setCaption("Block Schedule");
+        xLookupField2.setDisableWhen("#{ entity.nextscheduleid != null }");
         xLookupField2.setExpression("#{ entity.schedule.objid }");
         xLookupField2.setHandler("waterworks_block_schedule:lookup");
+        xLookupField2.setName("entity.schedule"); // NOI18N
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField2.setRequired(true);
         xFormPanel2.add(xLookupField2);
@@ -82,17 +83,17 @@ public class ZonePage extends javax.swing.JPanel {
         xLabel1.setText("Next Billing ");
         xFormPanel2.add(xLabel1);
 
-        xIntegerField1.setCaption("Next Bill Year");
-        xIntegerField1.setDisableWhen("#{ mode == 'read' || entity.batchid != null }");
-        xIntegerField1.setName("entity.nextbillyear"); // NOI18N
-        xIntegerField1.setRequired(true);
-        xFormPanel2.add(xIntegerField1);
+        xLabel3.setCaption("Next Bill Year");
+        xLabel3.setExpression("#{ entity.nextschedule.year }");
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel3);
 
-        monthList1.setCaption("Next Bill Month");
-        monthList1.setDisableWhen("#{ mode == 'read' || entity.batchid != null }");
-        monthList1.setName("entity.nextbillmonth"); // NOI18N
-        monthList1.setRequired(true);
-        xFormPanel2.add(monthList1);
+        xLabel4.setCaption("Next Bill Month");
+        xLabel4.setExpression("#{ entity.nextschedule.month }");
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel4);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -100,8 +101,8 @@ public class ZonePage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(85, Short.MAX_VALUE))
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -131,11 +132,11 @@ public class ZonePage extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
-    private com.rameses.enterprise.components.MonthList monthList1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
-    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextField xTextField3;

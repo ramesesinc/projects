@@ -1,20 +1,22 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_credit">
-		<field name="objid" primary="true" />
+		<field name="objid" primary="true" prefix="WCRED"/>
 		<field name="parentid" required="true" />
 		<field name="rootid" required="true" />
-		<field name="refno" required="true" />
-		<field name="refid" required="true" />
-		<field name="reftype" required="true" />
-		<field name="refdate" required="true" type="date"/>
 
+		<!--
 		<field name="item_objid" required="true"/>
 		<field name="item_code"  />
 		<field name="item_title" required="true"/>
+		-->
 
 		<field name="amount" required="true" type="decimal"/>
 		<field name="amtpaid" required="true" type="decimal" />
 		<field name="balance" expr="amount-amtpaid" />
 		<field name="remarks" />
+		<field name="refno" />
+		<field name="refid"  />
+		<field name="reftype" />
+		<field name="refdate" type="date"/>
 	</element>
 </schema>

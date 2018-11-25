@@ -1,4 +1,4 @@
-<workunit extends="com/rameses/seti2/templates/DataEditor.xml" schemaName="waterworks_account"
+<workunit extends="com/rameses/seti2/templates/ChangeInfo.xml" schemaName="waterworks_account"
     logSchemaName="waterworks_changelog">
     <invokers>
         <invoker type="waterworks_account:form:edit" caption="Change Acct No" action="init"  

@@ -31,7 +31,7 @@ class WaterworksBatchBillPrintingService {
 			billEm.where( "objid IN " + str ).update( [printed: 1 ]);
 		}
 		def idx = param.refbillno;
-		def blist = billEm.find( [batchid: param.batchid ] ).where( "printed = 0" ).orderBy("billno").list(0,10);
+		def blist = billEm.find( [batchid: param.batchid ] ).where( "printed = 0 AND hold=0" ).orderBy("billno").list(0,10);
 		if(!blist) return [];
 
 		blist.each {

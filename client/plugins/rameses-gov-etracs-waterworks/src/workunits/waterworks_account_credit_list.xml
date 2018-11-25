@@ -5,5 +5,9 @@
         <invoker type="waterworks_account:section" caption="Credits" 
                  index="3" action="init" 
                  visibleWhen="#{mode=='read'}"  />
+        
+         <!-- List Actions -->
+        <invoker type="formActions" caption="Add New Entry" action="addNewEntry"/> 
+        <invoker type="formActions" caption="Edit Entry" action="editEntry"/> 
     </invokers>
 </workunit>

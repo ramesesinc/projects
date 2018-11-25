@@ -24,6 +24,9 @@ class WaterworksBatchBillingInterceptor {
 	@DataContext("waterworks_consumption")
 	def wcEm;
 
+	@DataContext("vw_waterworks_consumption")
+	def vw_wcEm;
+
 	@DataContext("waterworks_billing")
 	def wbillEm;
 
@@ -64,7 +67,7 @@ class WaterworksBatchBillingInterceptor {
 		batchEm.buildConsumptions( m );
 
 		//scan thru each item and assign the billing no
-		def items = wcEm.find(m).orderBy("account.stuboutnode.indexno").list();
+		def items = vw_wcEm.find(m).orderBy("indexno,acctno").list();
 
 		if(!items)
 			throw new Exception("No accounts processed. Please check accounts under this zone");
@@ -75,6 +78,7 @@ class WaterworksBatchBillingInterceptor {
 			wb.batchid = result.objid;
 			wb.acctid = it.acctid;
 			wb.billno = result.objid + "-" + String.format("%04d", i++);
+			wb.objid = wb.billno;
 			wb.consumptionid = it.objid;
 			wb.discount = 0;
 			wb.surcharge = 0;

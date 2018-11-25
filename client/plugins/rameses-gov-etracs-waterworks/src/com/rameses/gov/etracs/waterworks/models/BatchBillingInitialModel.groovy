@@ -26,7 +26,7 @@ public class BatchBillingInitialModel extends CrudFormModel {
        entity.year = dateSvc.getServerYear();
        entity.month = dateSvc.getServerMonth();
        query.yearmonth = getFilterValue();
-       query.where = "nextscheduleid IS NULL OR ((nextschedule.year * 12) + nextschedule.month <= :yearmonth)";
+       //query.where = "nextscheduleid IS NULL OR ((nextschedule.year * 12) + nextschedule.month <= :yearmonth)";
    } 
     
    public def getFilterValue() {

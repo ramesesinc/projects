@@ -69,7 +69,8 @@ public class BatchBillingModel extends WorkflowTaskModel {
         fetchList: { o->
             def p = [ _schemaname: 'vw_waterworks_billing' ];
             p.putAll( o );
-            p.select = 'objid,acctid,meterid,consumptionid,meterstate';
+            p._start = 0;
+            p.select = 'objid,billno,acctid,meterid,consumptionid,meterstate';
             p.findBy = [ batchid: entity.objid ];
             p.where = ["billed = 0"];
             p.orderBy = "billno";

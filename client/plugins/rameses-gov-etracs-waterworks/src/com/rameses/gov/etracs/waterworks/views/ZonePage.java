@@ -69,7 +69,7 @@ public class ZonePage extends javax.swing.JPanel {
         xFormPanel2.add(xTextField4);
 
         xLookupField2.setCaption("Block Schedule");
-        xLookupField2.setDisableWhen("#{ entity.nextscheduleid != null }");
+        xLookupField2.setDisableWhen("#{ entity.nextscheduleid != null || mode == 'read' }");
         xLookupField2.setExpression("#{ entity.schedule.objid }");
         xLookupField2.setHandler("waterworks_block_schedule:lookup");
         xLookupField2.setName("entity.schedule"); // NOI18N
@@ -102,13 +102,13 @@ public class ZonePage extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General Info", jPanel1);

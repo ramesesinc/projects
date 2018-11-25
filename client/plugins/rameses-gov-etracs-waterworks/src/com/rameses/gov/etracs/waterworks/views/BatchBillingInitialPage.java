@@ -126,6 +126,7 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
         schemaList1.setQueryName("query");
         schemaList1.setSchemaName("waterworks_zone");
         schemaList1.setAllowOpen(false);
+        schemaList1.setAllowSearch(true);
         schemaList1.setDynamic(true);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

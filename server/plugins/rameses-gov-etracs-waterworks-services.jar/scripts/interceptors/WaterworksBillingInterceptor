@@ -110,11 +110,12 @@ class WaterworksBillingInterceptor {
 			}
 		} 
 		
-		if(data.attributes) {
-			data.attributes.each {
-				factBuilder.facts << new Attribute( it.attribute );
+		if( data.attributes ) {
+			data.attributes*.attribute.each {
+				factBuilder.facts << new WaterworksAttribute(name:it.name);
 			}
 		}
+
 	}
 
 	/*******************************************

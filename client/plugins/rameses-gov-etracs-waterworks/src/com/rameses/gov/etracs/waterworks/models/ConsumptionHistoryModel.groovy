@@ -17,7 +17,9 @@ public class ConsumptionHistoryModel {
     def qryService;
     
     int months = 3;
-    def item;
+    def acctid;
+    int year;
+    int month;
     
     int average;
     def minimum;
@@ -36,9 +38,9 @@ public class ConsumptionHistoryModel {
     
     void buildList() {
         def m = [_schemaname: 'vw_waterworks_consumption'];
-        m.findBy = [acctid: item.acctid];
-        m.where = ["NOT( objid = :id )", [id:item.objid] ];
-        m.orderBy = "year DESC,month DESC";
+        m.findBy = [acctid: acctid];
+        m.where = ["((year * 12)+month) < :ym", [ ym: ((year * 12)+month)]];
+        m.orderBy = "year DESC, month DESC";
         m._start = 0;
         m._limit = months;
         list = qryService.getList( m );

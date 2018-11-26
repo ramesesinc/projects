@@ -26,9 +26,11 @@ class WaterworksBatchBillPrintingService {
 	def process( param ) { 
 		if(!param.batchid) throw new Exception("batchid is reqiuired in WaterworksBatchBillPrintingService.process ");
 		if( param.printed_list ) {
-			def list = param.printed_list
+			def list = param.printed_list; 
+			println list; 
 			def str = "('" + list.join("','") + "')";
-			billEm.where( "objid IN " + str ).update( [printed: 1 ]);
+			billEm.where( "objid IN " + str ).update( [printed: 1 ]); 
+			//throw new Exception('stop ' + str); 
 		}
 		def idx = param.refbillno;
 		def blist = billEm.find( [batchid: param.batchid ] ).where( "printed = 0 AND hold=0" ).orderBy("billno").list(0,10);
@@ -43,7 +45,7 @@ class WaterworksBatchBillPrintingService {
 
 		def plist = self.formatReport( blist );
 		if(!plist) throw new Exception("WaterworksBatchBillPrintingService.process error! Please override WaterworksBatchBillPrintingService.process @After");
-		return [list: plist, refbillno: idx];
+		return [list: plist, refbillno: idx, printed_list: blist*.objid ];
 	} 
 
 

@@ -223,8 +223,8 @@ public class BatchBillingModel extends WorkflowTaskModel {
     ];
     
    def getPrinterList() {
-       def list = printerService.getPrinters(); 
-       return ['EPSON FX-2175'];
+       return printerService.getPrinters(); 
+       //return ['EPSON FX-2175'];
    }
    
    def cancelPrint = false;
@@ -242,7 +242,8 @@ public class BatchBillingModel extends WorkflowTaskModel {
        Modal.show("dynamic:form", h, [title: 'Start Bill Printing'] );
        if(!startno) return;
        
-       def parm = [refbillno: startno, batchid : entity.objid ]
+       
+       def parm = [refbillno: startno, batchid : entity.objid ]; 
        while(true) {
            def res = printSvc.process( parm );
            def list = res.list;
@@ -250,10 +251,17 @@ public class BatchBillingModel extends WorkflowTaskModel {
            if(cancelPrint) break;
            list.each {
                printerService.printString(printerName, it.toString() );
+               waitProc(500);
            }
            parm.refbillno = res.refbillno;
+           parm.printed_list = res.printed_list; 
        }
        MsgBox.alert("printing finished");
    } 
-    
+   
+   private void waitProc( time ) {
+       try {
+           Thread.sleep( time ); 
+       } catch(Throwable t) {;} 
+   }
 }

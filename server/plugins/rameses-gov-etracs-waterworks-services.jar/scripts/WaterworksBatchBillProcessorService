@@ -9,6 +9,9 @@ class WaterworksBatchBillProcessorService {
 	@DataContext("waterworks_billing")
 	def wbillEm;
 
+	@DataContext("vw_waterworks_billing")
+	def vw_billEm;
+
 	@DataContext("waterworks_consumption")
 	def wConsumptionEm;
 
@@ -30,6 +33,11 @@ class WaterworksBatchBillProcessorService {
 		def m = [batchid: param.objid]; 
 		return batchEm.findBilledStatus( m ); 
 	} 
+
+	@ProxyMethod
+	public def getForBillingList(def o) {
+		return vw_billEm.find([batchid:o.batchid]).where("billed=0").orderBy("billno").select("objid,billno,acctid,meterid,consumptionid,meterstate").list(0, o._limit);
+	}
 
 	@ProxyMethod
 	public void processBilling( o ) {

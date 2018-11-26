@@ -23,7 +23,7 @@ WHERE br.objid = $P{batchid}
 select tmp1.*, (totalcount-billedcount) as balance 
 from ( 
 	select 
-		(select count(*) from waterworks_billing where batchid = $P{batchid}) as totalcount, 
+		(select count(*) from waterworks_billing where batchid = $P{batchid} ) as totalcount, 
 		(select count(*) from waterworks_billing where batchid = $P{batchid} and billed=1) as billedcount  
 )tmp1 
 

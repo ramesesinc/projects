@@ -67,14 +67,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
             return stat.totalcount;
         },
         fetchList: { o->
-            def p = [ _schemaname: 'vw_waterworks_billing' ];
-            p.putAll( o );
-            p._start = 0;
-            p.select = 'objid,billno,acctid,meterid,consumptionid,meterstate';
-            p.findBy = [ batchid: entity.objid ];
-            p.where = ["billed = 0"];
-            p.orderBy = "billno";
-            return queryService.getList( p );
+            return batchSvc.getForBillingList([batchid:entity.objid])
         },
         processItem: { o->
             batchSvc.processBilling( o );

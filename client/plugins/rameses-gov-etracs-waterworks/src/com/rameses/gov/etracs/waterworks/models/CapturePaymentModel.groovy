@@ -34,6 +34,16 @@ class CapturePaymentModel extends PageFlowController  {
         },
         fetchList: {
             return consumptionList;
+        },
+        isColumnEditable: {item,colName->
+            if(colName.matches("amount|surcharge|interest|discount")) {
+                return true;
+            }
+        },
+        onColumnUpdate: { item,colName->
+            if(colName.matches("amount|surcharge|interest|discount")) {
+                item.total = item.amount + item.surcharge + item.interest - item.discount;
+            }
         }
     ] as EditorListModel;
     
@@ -43,6 +53,16 @@ class CapturePaymentModel extends PageFlowController  {
         },
         fetchList: {
             return otherFeeList;
+        },
+        isColumnEditable: {item,colName->
+            if(colName.matches("amount|surcharge|interest|discount")) {
+                return true;
+            }
+        },
+        onColumnUpdate: { item,colName->
+            if(colName.matches("amount|surcharge|interest|discount")) {
+                item.total = item.amount + item.surcharge + item.interest - item.discount;
+            }
         }
     ] as EditorListModel;
     
@@ -59,9 +79,10 @@ class CapturePaymentModel extends PageFlowController  {
         
         def m1 = [_schemaname:"waterworks_otherfee"];
         m1.findBy = [acctid: entity.payer.objid ];
+        m.select = "objid,year,month,item.*,amtdue:{amount-amtpaid}";
         m1.where = ["amount - amtpaid > 0"]; 
         m1.orderBy = "year ASC,month ASC";
-        otherFeeList =  querySvc.getList( m );
+        otherFeeList =  querySvc.getList( m1 );
         otherFeeList.each {
             it.amount = 0;it.discount=0;it.surcharge=0;it.interest=0;it.total=0;
         }

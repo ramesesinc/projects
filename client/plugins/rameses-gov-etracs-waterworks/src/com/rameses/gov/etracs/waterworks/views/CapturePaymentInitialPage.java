@@ -31,19 +31,39 @@ public class CapturePaymentInitialPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
+
+        xFormPanel1.setCaptionWidth(120);
+
+        xLookupField1.setCaption("Enter Acct No");
+        xLookupField1.setExpression("#{ entity.payer.acctno } #{ entity.payer.acctname }");
+        xLookupField1.setHandler("waterworks_account:lookup");
+        xLookupField1.setName("entity.payer"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLookupField1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(258, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(241, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
     // End of variables declaration//GEN-END:variables
 }

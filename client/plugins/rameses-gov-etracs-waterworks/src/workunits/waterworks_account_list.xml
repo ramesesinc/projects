@@ -1,7 +1,8 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
-          schemaName="waterworks_account" 
-          cols="acctno,acctname,address.text,stuboutnode.zone.code,stuboutnode.indexno,stuboutnode.sector.code,meter.serialno,lastdateread,stuboutnode.stubout.code,currentreading"
-          orderBy="acctname">
+          schemaName="vw_waterworks_account" 
+          entitySchemaName="waterworks_account"
+          cols="indexno,acctno,acctname,address.text,classification,meterstatus,meter.serialno"
+          orderBy="indexno,acctno"  >
     <invokers>
         <invoker folderid="/menucategory/waterworks/account" caption="View Customer Accounts" action="init" role="MASTER"/>
     </invokers>

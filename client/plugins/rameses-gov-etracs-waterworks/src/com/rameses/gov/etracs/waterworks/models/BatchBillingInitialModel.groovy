@@ -18,6 +18,7 @@ public class BatchBillingInitialModel extends CrudFormModel {
    @FormTitle
    String title = "Batch Billing";
     
+
    @PropertyChangeListener
    def listener = [
        "entity.zone" : { o->

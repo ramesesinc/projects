@@ -26,5 +26,7 @@ LEFT JOIN waterworks_account wa ON wa.stuboutnodeid = son.objid;
 		<field name="sector_objid" />
 		<field name="schedule_objid" />
 		<field name="barangay_objid" />
+		<field name="acctno" />
+		<field name="acctname" />
 	</element>
 </schema>

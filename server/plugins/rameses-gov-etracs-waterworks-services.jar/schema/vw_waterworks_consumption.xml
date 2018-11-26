@@ -1,0 +1,30 @@
+<schema adapter="waterworks">
+	<element tablename="vw_waterworks_consumption">
+		<field name="objid" primary="true"/> 
+		<field name="acctid" required="true"/> 
+		<field name="txnmode" required="true"/> 
+		<field name="prevreading" required="true"/> 
+		<field name="reading" required="true"/> 
+		<field name="volume" required="true"/> 
+		<field name="rate" required="true"/> 
+		<field name="amount" required="true"/> 
+		<field name="amtpaid" required="true"/> 
+		<field name="batchid" required="true"/> 
+		<field name="state" required="true"/> 
+		<field name="meterid" required="true"/> 
+		<field name="scheduleid" required="true"/> 
+		<field name="hold" required="true"/> 
+		<field name="year" required="true"/> 
+		<field name="month" required="true"/> 
+		<field name="fromperiod" required="true"/> 
+		<field name="toperiod" required="true"/> 
+		<field name="readingdate" required="true"/> 
+		<field name="readingduedate" required="true"/> 
+		<field name="billingduedate" required="true"/> 
+		<field name="discdate" required="true"/> 
+		<field name="duedate" required="true"/> 
+		<field name="indexno" required="true"/> 
+		<field name="acctno" required="true"/> 
+		<field name="acctname" required="true"/> 
+	</element>
+</schema>

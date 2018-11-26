@@ -69,6 +69,7 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
         xLookupField3.setRequired(true);
         xFormPanel4.add(xLookupField3);
 
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(

@@ -60,7 +60,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="xFormPanel2" min="-2" pref="457" max="-2" attributes="0"/>
-                      <EmptySpace pref="28" max="32767" attributes="0"/>
+                      <EmptySpace pref="40" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -68,7 +68,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="xFormPanel2" pref="238" max="32767" attributes="0"/>
+                      <Component id="xFormPanel2" pref="251" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -122,7 +122,7 @@
                 <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField2">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Block Schedule"/>
-                    <Property name="disableWhen" type="java.lang.String" value="#{ entity.nextscheduleid != null }"/>
+                    <Property name="disableWhen" type="java.lang.String" value="#{ entity.nextscheduleid != null || mode == &apos;read&apos; }"/>
                     <Property name="expression" type="java.lang.String" value="#{ entity.schedule.objid }"/>
                     <Property name="handler" type="java.lang.String" value="waterworks_block_schedule:lookup"/>
                     <Property name="name" type="java.lang.String" value="entity.schedule" noResource="true"/>

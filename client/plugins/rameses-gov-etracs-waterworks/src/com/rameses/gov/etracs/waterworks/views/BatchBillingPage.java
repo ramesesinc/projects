@@ -278,8 +278,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
+                , new Object[]{"editable", false}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
@@ -294,8 +293,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
+                , new Object[]{"editable", false}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
@@ -336,7 +334,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
         schemaList1.setCustomFilter("batchid = :batchid");
         schemaList1.setHandler("readingHandler");
         schemaList1.setName("selectedItem"); // NOI18N
-        schemaList1.setOrderBy("indexno");
+        schemaList1.setOrderBy("billno");
         schemaList1.setQueryName("query");
         schemaList1.setSchemaName("vw_waterworks_billing");
         schemaList1.setAllowOpen(false);
@@ -533,7 +531,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
         schemaList2.setCustomFilter("batchid = :batchid");
         schemaList2.setHandler("billHandler");
         schemaList2.setName("selectedBillItem"); // NOI18N
-        schemaList2.setOrderBy("indexno");
+        schemaList2.setOrderBy("billno");
         schemaList2.setQueryName("query");
         schemaList2.setSchemaName("vw_waterworks_billing");
         schemaList2.setAllowOpen(false);

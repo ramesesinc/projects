@@ -13,7 +13,7 @@ class WaterworksBillingInterceptor {
 	@DataContext('waterworks_account')
 	def acctEm; 
 
-	@DataContext("waterworks_consumption")
+	@DataContext("vw_waterworks_consumption")
 	def wcEm;
 
 	@DataContext("waterworks_credit")

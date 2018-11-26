@@ -50,11 +50,9 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
 
         jSplitPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
         jSplitPane1.setDividerLocation(500);
-        jSplitPane1.setDividerSize(5);
 
         jSplitPane2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jSplitPane2.setDividerLocation(200);
-        jSplitPane2.setDividerSize(5);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 1, 1, 1));
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -71,12 +69,12 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addGap(0, 4, Short.MAX_VALUE)
+                .addGap(0, 5, Short.MAX_VALUE)
                 .addComponent(jLabel1))
         );
 
@@ -142,12 +140,12 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(144, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addGap(0, 4, Short.MAX_VALUE)
+                .addGap(0, 5, Short.MAX_VALUE)
                 .addComponent(jLabel2))
         );
 
@@ -206,7 +204,6 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
 
         jSplitPane3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jSplitPane3.setDividerLocation(280);
-        jSplitPane3.setDividerSize(5);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 1, 1, 1));
         jPanel3.setPreferredSize(new java.awt.Dimension(353, 100));
@@ -224,12 +221,12 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(129, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addGap(0, 4, Short.MAX_VALUE)
+                .addGap(0, 5, Short.MAX_VALUE)
                 .addComponent(jLabel3))
         );
 
@@ -284,12 +281,12 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(230, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                .addGap(0, 4, Short.MAX_VALUE)
+                .addGap(0, 5, Short.MAX_VALUE)
                 .addComponent(jLabel4))
         );
 
@@ -312,7 +309,7 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.acctno"}
+                new Object[]{"name", "acctno"}
                 , new Object[]{"caption", "Acct No"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -327,7 +324,7 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.acctname"}
+                new Object[]{"name", "acctname"}
                 , new Object[]{"caption", "Acct Name"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -344,11 +341,12 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
         });
         schemaList2.setCustomFilter("stuboutid = :stuboutid");
         schemaList2.setDepends(new String[] {});
+        schemaList2.setEntityName("waterworks_stubout_node");
         schemaList2.setHandlerName("stuboutNodeListHandler");
         schemaList2.setName("selectedStuboutNode"); // NOI18N
         schemaList2.setOrderBy("indexno");
         schemaList2.setQueryName("query");
-        schemaList2.setSchemaName("waterworks_stubout_node");
+        schemaList2.setSchemaName("vw_waterworks_stubout_node");
         schemaList2.setAllowCreate(true);
         schemaList2.setAllowDelete(true);
         schemaList2.setAllowSearch(true);

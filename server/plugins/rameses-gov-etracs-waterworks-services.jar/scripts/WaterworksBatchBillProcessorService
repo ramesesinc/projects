@@ -34,7 +34,6 @@ class WaterworksBatchBillProcessorService {
 	@ProxyMethod
 	public void processBilling( o ) {
 		//parameters must be objid,acctid and consumptionid 
-
 		def u = [:];
 		u.billed = 1;
 		u.arrears = 0;

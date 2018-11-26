@@ -5,10 +5,7 @@
 
 		<!-- BEGIN_BALANCE,CAPTURE,ONLINE-->
 		<field name="txnmode" />
-
-		<complex name="account" jointype="many-to-one" ref="waterworks_account" required="false" includefields="acct.*,owner.*,address.*,units,classificationid,stuboutnode.*">
-			<key field="acctid" target="objid"/>
-		</complex>
+		<field name="acctid" />
 	
 		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="false"
 			includefields="objid,serialno,capacity,reading,state">

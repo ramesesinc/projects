@@ -68,7 +68,8 @@ public class BatchBillingModel extends WorkflowTaskModel {
             return stat.totalcount;
         },
         fetchList: { o->
-            return batchSvc.getForBillingList([batchid:entity.objid])
+            o.batchid = entity.objid; 
+            return batchSvc.getForBillingList( o );
         },
         processItem: { o->
             batchSvc.processBilling( o );
@@ -148,7 +149,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
         o.consumptionid = item.consumptionid;
         o.meterstate = item.meterstate;
         o.volume = item.volume;
-        return compSvc.compute( z );
+        return compSvc.compute( o );
     } 
     
     def getBillHandlerList() {

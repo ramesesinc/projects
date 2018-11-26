@@ -35,12 +35,11 @@ public class ConsumptionHistoryModel {
     ];
     
     void buildList() {
-        def m = [_schemaname: 'waterworks_consumption'];
-        int yr = item.year.toString().toInteger();
-        int mon = item.month.toString().toInteger();
+        def m = [_schemaname: 'vw_waterworks_consumption'];
         m.findBy = [acctid: item.acctid];
-        m.where = [" ((year*12)+month) < :yearmonth", [yearmonth: ((yr*12)+mon) ]];
+        m.where = ["NOT( objid = :id )", [id:item.objid] ];
         m.orderBy = "year DESC,month DESC";
+        m._start = 0;
         m._limit = months;
         list = qryService.getList( m );
         average = 0;

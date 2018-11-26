@@ -20,6 +20,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
     
    @Service("WaterworksBatchBillPrintingService")
    def printSvc;
+   
     
    def consumptionUtil = ManagedObjects.instance.create(ConsumptionUtil.class);
     
@@ -140,6 +141,16 @@ public class BatchBillingModel extends WorkflowTaskModel {
         Modal.show("changeinfo", h, [title: "Change Hold Status"]);
     }
    
+    def recomputeConsumption = {item->
+        def o = [prevreading: item.prevreading, reading:item.reading];
+        o.acctid = item.acctid;
+        o.meterid = item.meterid;
+        o.consumptionid = item.consumptionid;
+        o.meterstate = item.meterstate;
+        o.volume = item.volume;
+        return compSvc.compute( z );
+    } 
+    
     def getBillHandlerList() {
         def mnuList = [];
         mnuList << [value: 'View Account', func: viewAccount];
@@ -160,6 +171,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
         }
         mnuList << [value: 'View Account', func:viewAccount];
         mnuList << [value: 'View Consumption History', func: viewConsumptionHistory];
+        mnuList << [value: 'Recompute', func: recomputeConsumption];
         return  mnuList; 
     }
    
@@ -179,7 +191,18 @@ public class BatchBillingModel extends WorkflowTaskModel {
 	}, 
 	callContextMenu: { item, menuitem-> 
            menuitem.func( item );
-	}
+	},
+        isColumnEditable: {item,colName->
+            if(colName == "reading") {
+                return (item.meterstate=="ACTIVE"); 
+            }
+        },
+        onColumnUpdate: { item,colName->
+            if(colName=="reading") {
+                def res = recomputeConsumption(item);
+                item.putAll(res);
+            }
+        }
     ];
     
    def cancelPrint = false;

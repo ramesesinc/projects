@@ -79,11 +79,8 @@ class WaterworksComputationService  {
 		}
 		//if there is consumption id then update it. update also the current reading of the meter
 		if(o.consumptionid) {
-			if( meterid ) {
-				res.prevreading = o.prevreading;
-				res.reading = o.reading;
-				meterEm.find([objid: meterid]).update( [lastreading: o.reading ] );
-			}
+			res.reading = o.reading; 
+			res.prevreading = o.prevreading; 
 			consEm.find( [objid: o.consumptionid ] ).update( res );
 		}
 		//throw new Exception("res is " + res);

@@ -43,8 +43,18 @@ public class CaptureConsumptionModel extends CrudFormModel {
         entity.account = masterEntity;
         entity.meterid = masterEntity.meter?.objid;
         entity.meter = masterEntity.meter;
-        entity.prevreading = masterEntity.meter?.lastreading;
+        entity.prevreading = 0;
+        entity.reading = 0;
         entity.volume = 0;
+        
+        if ( masterEntity.meter?.objid ) {
+            def p = [_schemaname: 'waterworks_meter'];
+            p.findBy = [ objid: masterEntity.meter.objid]; 
+            p.select = 'lastreading'; 
+            entity.prevreading = queryService.findFirst( p )?.lastreading;  
+            if ( !entity.prevreading ) entity.prevreading = 0; 
+            entity.reading = entity.prevreading; 
+        }
     }
     
     public def getMasterEntity() {

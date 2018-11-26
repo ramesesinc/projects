@@ -5,12 +5,12 @@ class WaterworksAccountConsumptionPersistenceInterceptor{
 	@DataContext("waterworks_meter")
 	def meterEm; 
 
-	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_consumption'}")
-	public void afterCreate( evt ) {
+	@After(pattern="PersistenceService.(create|update)", eval="#{args[0]._schemaname == 'waterworks_consumption'}")
+	public void afterCreateUpdate( evt ) {
 		def zz = evt.args[0];
-		if( zz.meter?.objid ) {
-			meterEm.find( [objid:zz.meter.objid ]).update( [lastreading: zz.reading, lastreadingdate: zz.readingdate] );
-		}
+		if( zz.meterid ) {
+			meterEm.find( [objid:zz.meterid ]).update( [lastreading: zz.reading, lastreadingdate: zz.schedule.readingdate] );
+		} 
 	}
 
 	@Before(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'waterworks_consumption'}")

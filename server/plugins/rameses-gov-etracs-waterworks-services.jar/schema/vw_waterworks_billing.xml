@@ -35,6 +35,7 @@
 		<field name="meter_size" /> 
 		<field name="readingdate" /> 
 		<field name="discdate" /> 
+		<field name="duedate" /> 
 		<field name="fromperiod" /> 
 		<field name="toperiod" /> 
 		<field name="zone_objid" /> 

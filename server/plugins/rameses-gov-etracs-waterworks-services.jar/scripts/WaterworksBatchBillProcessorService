@@ -12,17 +12,12 @@ class WaterworksBatchBillProcessorService {
 	@DataContext("vw_waterworks_billing")
 	def vw_billEm;
 
-	@DataContext("waterworks_consumption")
-	def wConsumptionEm;
 
 	@Service("CreditPaymentService")
 	def crPmtSvc;
 
 	@Service("WaterworksComputationService")
 	def computeSvc;
-
-	@Service("DateService")
-	def dateSvc;
 
 	@Service("BillingProcessService")
 	def billingSvc;

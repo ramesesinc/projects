@@ -121,7 +121,8 @@ public class BatchBillingModel extends WorkflowTaskModel {
     }
     
     def viewConsumptionHistory = { item->
-        Modal.show("waterworks_consumption_history", [item: item] );
+        def p = [acctid: item.acctid, year: entity.schedule?.year, month: entity.schedule?.month]; 
+        Modal.show("waterworks_consumption_history", p );
     }
     
     def rebill = { item->
@@ -142,7 +143,15 @@ public class BatchBillingModel extends WorkflowTaskModel {
         Modal.show("changeinfo", h, [title: "Change Hold Status"]);
     }
    
-    def recomputeConsumption = {item->
+    def calcConsumption( item ) {
+        if ( item.meterid ) {
+            def p = [_schemaname: 'waterworks_meter'];
+            p.findBy = [ objid: item.meterid]; 
+            p.select = 'lastreading'; 
+            item.prevreading = queryService.findFirst( p )?.lastreading;  
+            if ( !item.prevreading ) item.prevreading = 0;
+        }
+        
         def o = [prevreading: item.prevreading, reading:item.reading];
         o.acctid = item.acctid;
         o.meterid = item.meterid;
@@ -150,6 +159,13 @@ public class BatchBillingModel extends WorkflowTaskModel {
         o.meterstate = item.meterstate;
         o.volume = item.volume;
         return compSvc.compute( o );
+    }
+   
+    def recomputeConsumption = {item-> 
+        def r = calcConsumption( item ); 
+        if ( r ) item.putAll( r ); 
+        readingHandler.refresh();
+        return null; 
     } 
     
     def getBillHandlerList() {
@@ -200,29 +216,29 @@ public class BatchBillingModel extends WorkflowTaskModel {
         },
         onColumnUpdate: { item,colName->
             if(colName=="reading") {
-                def res = recomputeConsumption(item);
+                def res = calcConsumption(item);
                 item.putAll(res);
             }
         }
     ];
     
+   def getPrinterList() {
+       def list = printerService.getPrinters(); 
+       return ['EPSON FX-2175'];
+   }
+   
    def cancelPrint = false;
    public void printBill() {
-       def printerList = printerService.getPrinters();
-       /*
-       if(printerList.size()==0)
-            throw new Exception("There are no printer names registered in printer list");
-       def printerName = printerList.iterator().next();
-       */
-        def printerName = "epson";
-       
+       def printerName = null;
        def startno = null;
        def h = [:];
        h.handler = { v->
            startno = v.billno;
+           printerName = v.printername; 
        };
        h.fields = [];
        h.fields << [name:"billno", caption:'Enter Start Bill No', type:'integer', required:true ];
+       h.fields << [name:"printername", caption:'Select Printer', type:'combo', required:true, itemsObject:getPrinterList() ];
        Modal.show("dynamic:form", h, [title: 'Start Bill Printing'] );
        if(!startno) return;
        

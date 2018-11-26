@@ -1,40 +1,45 @@
 <schema adapter="waterworks">
 	<element tablename="vw_waterworks_billing">
-		<field name="objid"	primary="true"/>
-		<field name="batchid"/>
-		<field name="acctid"/>
-		<field name="billno" searchable="true"/>
-		<field name="consumptionid"	/>
-		<field name="state"/>
-		<field name="surcharge"/>
-		<field name="interest"/>
-		<field name="otherfees"/>
-		<field name="credits"/>
-		<field name="arrears"/>
-		<field name="averageconsumption"/>
-		<field name="billed"/>
-		<field name="unpaidmonths"/>
-		<field name="acctno" searchable="true"/>
-		<field name="acctname"	searchable="true"/>
-		<field name="classificationid"	indexed="true"/>
-		<field name="indexno"	/>
-		<field name="meterstate" indexed="true"/>
-		<field name="prevreading" type="integer"/>
-		<field name="reading" type="integer"/>
-		<field name="volume" type="integer"/>
-		<field name="rate" type="decimal"/>
-		<field name="amount" type="decimal"/>	
-		<field name="subtotal" type="decimal"/>	
-		<field name="meterid" type="decimal"/>	
-		<field name="meter_capacity" type="decimal"/>	
-		<field name="meter_size" type="decimal"/>	
-
-		<!-- pahabol in waterworks_billing -->
-		<field name="refbillno" />	
-		<field name="printed" />
-		<field name="hold" />	
-		<field name="amtpaid" />		
-
+		<field name="objid" primary="key"/> 
+		<field name="batchid" /> 
+		<field name="acctid" /> 
+		<field name="billno" searchable="true"/> 
+		<field name="consumptionid" /> 
+		<field name="state" /> 
+		<field name="surcharge" type="decimal"/> 
+		<field name="interest" type="decimal"/> 
+		<field name="otherfees" type="decimal"/> 
+		<field name="credits" type="decimal"/> 
+		<field name="arrears" type="decimal"/> 
+		<field name="averageconsumption" /> 
+		<field name="billed" /> 
+		<field name="unpaidmonths" /> 
+		<field name="refbillno" /> 
+		<field name="printed" /> 
+		<field name="acctno" searchable="true"/> 
+		<field name="acctname" searchable="true"/> 
+		<field name="addresstext" /> 
+		<field name="classificationid" /> 
+		<field name="meterstate" /> 
+		<field name="prevreading" type="integer"/> 
+		<field name="reading" type="integer"/> 
+		<field name="volume" type="integer"/> 
+		<field name="amount" type="decimal"/> 
+		<field name="amtpaid" type="decimal"/> 
+		<field name="rate" type="decimal"/> 
+		<field name="hold" /> 
+		<field name="subtotal" type="decimal"/> 
+		<field name="meterid" /> 
+		<field name="meter_objid" /> 
+		<field name="meter_capacity" type="decimal"/> 
+		<field name="meter_size" /> 
+		<field name="readingdate" /> 
+		<field name="discdate" /> 
+		<field name="fromperiod" /> 
+		<field name="toperiod" /> 
+		<field name="zone_objid" /> 
+		<field name="zone_code" /> 
+		<field name="indexno" /> 
 	</element>
 </schema>
 

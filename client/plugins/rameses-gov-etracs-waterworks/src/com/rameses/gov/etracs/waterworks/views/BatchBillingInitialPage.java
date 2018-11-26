@@ -31,20 +31,31 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         monthList1 = new com.rameses.enterprise.components.MonthList();
         xLookupField3 = new com.rameses.rcp.control.XLookupField();
-        schemaList1 = new com.rameses.seti2.components.SchemaList();
 
         xFormPanel4.setCaptionWidth(150);
 
-        xIntegerField1.setCaption("Year to Bill");
-        xIntegerField1.setDisableWhen("");
+        xLookupField1.setCaption("Enter Zone / Block");
+        xLookupField1.setExpression("#{ entity.zone.code }");
+        xLookupField1.setHandler("waterworks_zone:lookup");
+        xLookupField1.setName("entity.zone"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLookupField1.setRequired(true);
+        xFormPanel4.add(xLookupField1);
+
+        xIntegerField1.setCaption("From Year");
+        xIntegerField1.setDepends(new String[] {"entity.zone"});
+        xIntegerField1.setEditable(false);
         xIntegerField1.setName("entity.year"); // NOI18N
+        xIntegerField1.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
         xIntegerField1.setRequired(true);
         xFormPanel4.add(xIntegerField1);
 
-        monthList1.setCaption("Month");
+        monthList1.setCaption("From Month");
+        monthList1.setDepends(new String[] {"entity.zone"});
         monthList1.setName("entity.month"); // NOI18N
         monthList1.setRequired(true);
         xFormPanel4.add(monthList1);
@@ -53,110 +64,33 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
         xLookupField3.setExpression("#{ entity.reader.name }");
         xLookupField3.setHandler("waterworks_reader:lookup");
         xLookupField3.setName("entity.reader"); // NOI18N
-        xLookupField3.setCellPadding(new java.awt.Insets(0, 0, 10, 0));
+        xLookupField3.setCellPadding(new java.awt.Insets(20, 0, 10, 0));
         xLookupField3.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField3.setRequired(true);
         xFormPanel4.add(xLookupField3);
-
-        schemaList1.setColumns(new com.rameses.rcp.common.Column[]{
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "code"}
-                , new Object[]{"caption", "Code"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "description"}
-                , new Object[]{"caption", "Zone"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "schedule.objid"}
-                , new Object[]{"caption", "Schedule"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", null}
-                , new Object[]{"caption", "Bill Date"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"expression", "#{ item.nextbillyear ? item.nextbillmonthname  + ' ' + item.nextbillyear : '' }"}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.LabelColumnHandler()}
-            })
-        });
-        schemaList1.setHandlerName("listHandler");
-        schemaList1.setName("selectedItem"); // NOI18N
-        schemaList1.setQueryName("query");
-        schemaList1.setSchemaName("waterworks_zone");
-        schemaList1.setAllowOpen(false);
-        schemaList1.setDynamic(true);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(schemaList1, javax.swing.GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
-                        .addGap(413, 413, 413))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                .addGap(20, 20, 20)
+                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(703, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(25, 25, 25)
                 .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(schemaList1, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(260, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.enterprise.components.MonthList monthList1;
-    private com.rameses.seti2.components.SchemaList schemaList1;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XLookupField xLookupField3;
     // End of variables declaration//GEN-END:variables
 }

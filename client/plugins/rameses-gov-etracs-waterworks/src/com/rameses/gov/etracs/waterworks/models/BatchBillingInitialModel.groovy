@@ -18,40 +18,30 @@ public class BatchBillingInitialModel extends CrudFormModel {
    @FormTitle
    String title = "Batch Billing";
     
-   def selectedItem;
-   def listHandler;
-   def query = [:];
-    
-   void afterCreate() {
-       entity.year = dateSvc.getServerYear();
-       entity.month = dateSvc.getServerMonth();
-       query.yearmonth = getFilterValue();
-       query.where = "nextscheduleid IS NULL OR ((nextschedule.year * 12) + nextschedule.month <= :yearmonth)";
-   } 
-    
-   public def getFilterValue() {
-       return (entity.year * 12)+entity.month;
-   } 
-    
    @PropertyChangeListener
    def listener = [
-       "entity.(year|month)" : { o->
-            query.yearmonth = getFilterValue();
-            listHandler.reload();
+       "entity.zone" : { o->
+            if(o.nextschedule?.objid ) {
+                entity.year = o.nextschedule?.year;
+                entity.month = o.nextschedule?.month;
+            }
+            else {
+                entity.year = dateSvc.getServerYear();
+                entity.month = dateSvc.getServerMonth();
+            }
        }
    ];
-   
-   void processBill() {
-       if(!selectedItem) throw new Exception("Please select an item first");
-       entity.zone = selectedItem;
+    
+   def processBill() {
        def z = [_schemaname:schemaName];
        z.putAll( entity );
        z.objid = null;
        z = persistenceService.create(z);
        if( !z.objid  ) return;
        MsgBox.alert( "Batch " + z.objid +  " is created" );
-       create();
-       listHandler.reload();
+       def op = Inv.lookupOpener("waterworks_batch_billing:open", [entity: [objid:z.objid]]); 
+       op.target = "window";
+       return op;
    } 
     
     

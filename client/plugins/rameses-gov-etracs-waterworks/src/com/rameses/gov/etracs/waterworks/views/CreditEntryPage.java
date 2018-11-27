@@ -32,31 +32,42 @@ public class CreditEntryPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
-        monthList1 = new com.rameses.enterprise.components.MonthList();
+        xTextField2 = new com.rameses.rcp.control.XTextField();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
+        xTextField3 = new com.rameses.rcp.control.XTextField();
+        xTextField1 = new com.rameses.rcp.control.XTextField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
-        xTextField1 = new com.rameses.rcp.control.XTextField();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
 
         xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel2.setCaptionWidth(100);
 
-        xIntegerField1.setName("entity.year"); // NOI18N
-        xIntegerField1.setCaption("Year");
-        xIntegerField1.setRequired(true);
-        xFormPanel2.add(xIntegerField1);
+        xTextField2.setCaption("Ref No");
+        xTextField2.setName("entity.refno"); // NOI18N
+        xTextField2.setPreferredSize(new java.awt.Dimension(120, 20));
+        xFormPanel2.add(xTextField2);
 
-        monthList1.setCaption("Month");
-        monthList1.setName("entity.month"); // NOI18N
-        monthList1.setRequired(true);
-        xFormPanel2.add(monthList1);
+        xDateField1.setCaption("Ref Date");
+        xDateField1.setName("entity.refdate"); // NOI18N
+        xDateField1.setPreferredSize(new java.awt.Dimension(120, 20));
+        xFormPanel2.add(xDateField1);
+
+        xTextField3.setCaption("Ref Type");
+        xTextField3.setName("entity.reftype"); // NOI18N
+        xTextField3.setPreferredSize(new java.awt.Dimension(120, 20));
+        xFormPanel2.add(xTextField3);
+
+        xTextField1.setCaption("Particulars");
+        xTextField1.setName("entity.remarks"); // NOI18N
+        xTextField1.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
+        xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField1.setRequired(true);
+        xFormPanel2.add(xTextField1);
 
         xDecimalField2.setCaption("Amount");
         xDecimalField2.setDisableWhen("#{ mode=='read' || entity.refid != null }");
         xDecimalField2.setName("entity.amount"); // NOI18N
+        xDecimalField2.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
         xDecimalField2.setPreferredSize(new java.awt.Dimension(120, 20));
         xDecimalField2.setRequired(true);
         xFormPanel2.add(xDecimalField2);
@@ -66,33 +77,6 @@ public class CreditEntryPage extends javax.swing.JPanel {
         xDecimalField3.setName("entity.amtpaid"); // NOI18N
         xDecimalField3.setPreferredSize(new java.awt.Dimension(120, 20));
         xFormPanel2.add(xDecimalField3);
-
-        xTextField1.setCaption("Particulars");
-        xTextField1.setDisableWhen("#{ entity.refid != null }");
-        xTextField1.setName("entity.remarks"); // NOI18N
-        xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField1.setRequired(true);
-        xFormPanel2.add(xTextField1);
-
-        xLabel1.setCaption("Ref No");
-        xLabel1.setExpression("#{ entity.refno }");
-        xLabel1.setName(""); // NOI18N
-        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel1.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
-        xLabel1.setPreferredSize(new java.awt.Dimension(120, 20));
-        xFormPanel2.add(xLabel1);
-
-        xLabel2.setCaption("Ref Type");
-        xLabel2.setExpression("#{ entity.reftype }");
-        xLabel2.setName(""); // NOI18N
-        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel2.setPreferredSize(new java.awt.Dimension(120, 20));
-        xFormPanel2.add(xLabel2);
-
-        xDateField1.setCaption("Ref Date");
-        xDateField1.setDisableWhen("#{ true }");
-        xDateField1.setName("entity.refdate"); // NOI18N
-        xFormPanel2.add(xDateField1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -114,14 +98,12 @@ public class CreditEntryPage extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.enterprise.components.MonthList monthList1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
-    private com.rameses.rcp.control.XIntegerField xIntegerField1;
-    private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XTextField xTextField1;
+    private com.rameses.rcp.control.XTextField xTextField2;
+    private com.rameses.rcp.control.XTextField xTextField3;
     // End of variables declaration//GEN-END:variables
 }

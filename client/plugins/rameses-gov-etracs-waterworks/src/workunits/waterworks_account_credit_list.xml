@@ -1,12 +1,15 @@
 <workunit extends="com/rameses/treasury/common/templates/CreditList.xml"
           contextName="waterworks"
+          schemaName="waterworks_credit"
+          parentkey="acctid"
+          debug="true"
           title="Credits">
     <invokers>
         <invoker type="waterworks_account:section" caption="Credits" 
                  index="3" action="init" 
                  visibleWhen="#{mode=='read'}"  />
         
-         <!-- List Actions -->
+        <!-- List Actions -->
         <invoker type="formActions" caption="Add New Entry" action="addNewEntry"/> 
         <invoker type="formActions" caption="Edit Entry" action="editEntry"/> 
     </invokers>

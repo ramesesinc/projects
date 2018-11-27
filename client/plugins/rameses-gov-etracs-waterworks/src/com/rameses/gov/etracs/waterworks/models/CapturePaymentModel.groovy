@@ -13,7 +13,7 @@ class CapturePaymentModel extends PageFlowController  {
     @Service("QueryService")
     def querySvc;
     
-    @Service("PaymentService")
+    @Service("PaymentPostingService")
     def paymentSvc;
     
     def entity;
@@ -25,13 +25,10 @@ class CapturePaymentModel extends PageFlowController  {
     def paymentRefTypes = ["cashreceipt", "other"];
     
     void initNew() {
-        entity = [:];
+        entity = [amount:0];
     }
     
     def consumptionListHandler = [
-        isMultiSelect: {
-            return true;
-        },
         fetchList: {
             return consumptionList;
         },
@@ -43,14 +40,13 @@ class CapturePaymentModel extends PageFlowController  {
         onColumnUpdate: { item,colName->
             if(colName.matches("amount|surcharge|interest|discount")) {
                 item.total = item.amount + item.surcharge + item.interest - item.discount;
+                amount = (consumptionList+otherFeeList).sum{ it.total }; 
+                binding.refresh("amount")
             }
         }
     ] as EditorListModel;
     
     def otherFeeHandler = [
-        isMultiSelect: {
-            return true;
-        },
         fetchList: {
             return otherFeeList;
         },
@@ -62,6 +58,8 @@ class CapturePaymentModel extends PageFlowController  {
         onColumnUpdate: { item,colName->
             if(colName.matches("amount|surcharge|interest|discount")) {
                 item.total = item.amount + item.surcharge + item.interest - item.discount;
+                amount = (consumptionList+otherFeeList).sum{ it.total }; 
+                binding.refresh("amount")
             }
         }
     ] as EditorListModel;
@@ -89,11 +87,25 @@ class CapturePaymentModel extends PageFlowController  {
     }
     
     void post() {
+        //check first if totals amount + credit
+        if( entity.amount <= 0 )
+            throw new Exception("amount to pay must not be zero");
+        if( entity.amount != (amount+credit))
+            throw new Exception("Amount to pay must equal to amount + credit");
+        def errList =  (consumptionList + otherFeeList).findAll{it.amtdue < it.amount};
+        if( errList ) {
+            def str = errList.collect{ it.year+"-"+it.month+ " due:" + it.amtdue + " paid:" + it.amount  }.join("\n");
+            throw new Exception("amount paid must be less than or equal to amt due. Please check the items\n" + str);
+        }
+        
         if(!MsgBox.confirm("You are about to post this entry. Proceed?")) 
             throw new BreakException();
             
-        def pmt = [:];
+        def pmt = [_schemaname:"waterworks_payment"];
+        pmt.putAll( entity );
+        pmt.txnmode = "CAPTURE";
         pmt.items = [];
+        pmt.credits = [];
         pmt.items.addAll(
             consumptionList.findAll{ it.total > 0 }.collect{
             [ refid: it.objid, reftype:'waterworks_consumption', amount:it.amount, discount:it.discount, surcharge: it.surcharge, interest:it.interest ]
@@ -103,9 +115,10 @@ class CapturePaymentModel extends PageFlowController  {
             [ refid: it.objid, reftype:'waterworks_otherfee', amount:it.amount, discount:it.discount, surcharge: it.surcharge, interest:it.interest ]
         });
         if(credit>0) {
-            pmt.items << [ reftype:"waterworks_credit", amount: credit ];
+            pmt.credits << [ reftype:"waterworks_credit", amount: credit, remarks: "CAPTURE", txntype: "credit", amtpaid:0 ];
         }
-        paymentSvc.post(entity)
+        paymentSvc.post(pmt);
+        MsgBox.alert("post success!");
     }
     
     void postAndAdd() {

@@ -37,17 +37,18 @@ public class CapturePaymentPage extends javax.swing.JPanel {
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         jPanel2 = new javax.swing.JPanel();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
+        jPanel3 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField4 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xDateField1 = new com.rameses.rcp.control.XDateField();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField4 = new com.rameses.rcp.control.XDecimalField();
 
         xDecimalField1.setText("xDecimalField1");
 
@@ -192,7 +193,7 @@ public class CapturePaymentPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
+                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -354,7 +355,7 @@ public class CapturePaymentPage extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
+                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -374,21 +375,6 @@ public class CapturePaymentPage extends javax.swing.JPanel {
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel2);
 
-        xFormPanel2.setCaptionWidth(200);
-
-        xDecimalField2.setCaption("Amount To Pay");
-        xDecimalField2.setName("entity.amount"); // NOI18N
-        xFormPanel2.add(xDecimalField2);
-
-        xDecimalField4.setCaption("Excess to apply as credit");
-        xDecimalField4.setName("credit"); // NOI18N
-        xFormPanel2.add(xDecimalField4);
-
-        xDecimalField3.setCaption("Total Payment Applied");
-        xDecimalField3.setDisableWhen("#{ true }");
-        xDecimalField3.setName("amount"); // NOI18N
-        xFormPanel2.add(xDecimalField3);
-
         xFormPanel3.setCaptionWidth(120);
 
         xTextField2.setCaption("Ref No");
@@ -400,6 +386,7 @@ public class CapturePaymentPage extends javax.swing.JPanel {
         xComboBox2.setItems("paymentRefTypes");
         xComboBox2.setName("entity.reftype"); // NOI18N
         xComboBox2.setPreferredSize(new java.awt.Dimension(160, 27));
+        xComboBox2.setRequired(true);
         xFormPanel3.add(xComboBox2);
 
         xDateField1.setCaption("Ref Date");
@@ -408,6 +395,48 @@ public class CapturePaymentPage extends javax.swing.JPanel {
         xDateField1.setRequired(true);
         xFormPanel3.add(xDateField1);
 
+        xFormPanel2.setCaptionWidth(200);
+
+        xDecimalField2.setCaption("Amount Paid");
+        xDecimalField2.setName("entity.amount"); // NOI18N
+        xDecimalField2.setRequired(true);
+        xFormPanel2.add(xDecimalField2);
+
+        xDecimalField3.setCaption("Total Payment Applied");
+        xDecimalField3.setDisableWhen("#{ true }");
+        xDecimalField3.setName("amount"); // NOI18N
+        xDecimalField3.setBackground(new java.awt.Color(204, 204, 204));
+        xDecimalField3.setEnabled(false);
+        xFormPanel2.add(xDecimalField3);
+
+        xDecimalField4.setCaption("Excess to apply as credit");
+        xDecimalField4.setName("credit"); // NOI18N
+        xFormPanel2.add(xDecimalField4);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 609, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(96, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -415,26 +444,17 @@ public class CapturePaymentPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 609, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(xTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 864, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(112, Short.MAX_VALUE))
+                    .addComponent(xTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 864, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(112, 112, 112))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(11, 11, 11)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -443,6 +463,7 @@ public class CapturePaymentPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;

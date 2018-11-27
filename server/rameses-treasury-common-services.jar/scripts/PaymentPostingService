@@ -32,30 +32,30 @@ class PaymentPostingService {
 		
 		def postitems = [];
 		postitems.addAll( pmt.items ); 
+
+		//this is for overpaymen
+		if( pmt.credits ) postitems.addAll( pmt.credits );
+
 		if ( pmt.creditpayments ) postitems.addAll( pmt.creditpayments ); 
 
 		//save or update the reference first
 		postitems.each {
 			if( it.txntype== "credit" ) {
-				if( !pmt.creditschemaname ) throw new Exception('please specify a creditschemaname'); 
+				def reftype = it.reftype;
+				if(!reftype) reftype = pmt.creditschemaname
+				if(!reftype )
+					throw new Exception('please specify a creditschemaname or specify a reftype to referenece credit table'); 
 
 				//if there is overpayment or credit items, create a new xxx_credit item
 				def p = [:];
-				p.parentid = pmt.parentid;
-				p.rootid = pmt.rootid;
+				p.putAll( it );
+				p.parentid = pmt.objid;
 				p.refno = pmt.refno;
-				p.reftype = pmt.reftype;
-				p.refid = pmt.refid;
 				p.refdate = pmt.refdate;
-				p.item = it.item;
-				p.amount = it.amount;
-				p.amtpaid = 0;
-				p.remarks = it.remarks;
-				def reftype = pmt.creditschemaname;
+				p.reftype = (pmt.reftype == null) ? "cashreceipt" : pmt.reftype;
+
 				def crEm = emLookup( reftype );
-				def vv = crEm.create( p );
-				it.refid = vv.objid;
-				it.reftype = reftype;
+				crEm.create( p );
 			}
 			else if( it.txntype == "creditpayment") {
 				if( !pmt.creditschemaname ) throw new Exception('please specify a creditschemaname'); 

@@ -14,7 +14,7 @@
         </page>
         <page name="entry" title="Waterworks Capture Payment">
             <transition to="initial" caption="Back" immediate="true"/>   
-            <transition to="entry" caption="Post and Add Another" action="postAndAdd"/>   
+            <transition to="initial" caption="Post and Add Another" action="postAndAdd"/>   
             <transition to="end" caption="Post and Close" action="post"/>               
         </page>
         <end/>

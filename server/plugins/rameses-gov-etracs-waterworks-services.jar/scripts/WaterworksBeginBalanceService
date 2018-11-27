@@ -20,6 +20,9 @@ class WaterworksBeginBalanceService {
 	@DataContext('waterworks_meter')
 	def meter_db; 
 
+	@DataContext('waterworks_credit')
+	def wc_credit; 
+
 	@ProxyMethod 
 	public void save( param ) {
 		def sched = schedSvc.getSchedule([ scheduleid: param.scheduleid, year: param.year, month: param.month ]); 
@@ -38,6 +41,16 @@ class WaterworksBeginBalanceService {
 		wc.state = 'DRAFT'; 
 		wc.rate = 0.0;
 		cons_db.create( wc );
+
+		//if there are credits, add the credit
+		if( param.credits ) {
+			def cc = [:];
+			cc.acctid = param.acctid;
+			cc.amount = param.credits;
+			cc.amtpaid = 0;
+			cc.remarks = "BEGIN_BALANCE";
+			wc_credit.create( cc );		
+		}
 
 		def u = [:]; 
 		u.prevreading = param.reading; 

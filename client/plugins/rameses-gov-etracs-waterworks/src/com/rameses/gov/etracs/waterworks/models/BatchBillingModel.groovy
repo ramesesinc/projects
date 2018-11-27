@@ -147,7 +147,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
         h.handler = {item.hold = i;}
         Modal.show("changeinfo", h, [title: "Change Hold Status"]);
     }
-   
+    
     def calcConsumption( item ) {
         if ( item.meterid ) {
             def p = [_schemaname: 'waterworks_meter'];

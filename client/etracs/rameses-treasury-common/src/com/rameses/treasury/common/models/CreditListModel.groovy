@@ -29,16 +29,18 @@ public class CreditListModel extends CrudListModel {
     public String getSchemaName() {
         String s = super.getSchemaName();
         if(!s) return getContextName() + "_credit";
+        return s;
     }
     
-    def _parentkey = "parentid";
+    def _parentkey;
     public String getParentkey() {
         if(_parentkey ) return _parentkey;
         _parentkey = invoker.properties.parentkey;
         if(_parentkey) return _parentkey;
         _parentkey = workunit?.info?.workunit_properties?.parentkey;
-        if ( _parentkey ) return _parentkey; 
-        throw new Exception("Please indicate a parentkey")      
+        if ( _parentkey ) return _parentkey;
+        _parentkey = "parentid";
+        return _parentkey;     
     }
     
     public String getPaymentSchemaName() {
@@ -68,10 +70,10 @@ public class CreditListModel extends CrudListModel {
             throw new Exception("caller entity must not be null in CreditListModel.getCustomFilter")
         arr <<  parentkey + "= :parentid";
         if( includePaid  != true ) {
-            arr << " amount - amtpaid > 0 ";
+            arr << " (amount - amtpaid) > 0 ";
         } 
         def p = [ parentid : caller.entity.objid];
-        return [arr.join(" AND "), p ]
+        return [arr.join(" AND "), p ];
     }
     
     public def open() {

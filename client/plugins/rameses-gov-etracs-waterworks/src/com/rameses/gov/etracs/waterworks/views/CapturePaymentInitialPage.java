@@ -33,6 +33,7 @@ public class CapturePaymentInitialPage extends javax.swing.JPanel {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
 
         xFormPanel1.setCaptionWidth(120);
 
@@ -42,6 +43,13 @@ public class CapturePaymentInitialPage extends javax.swing.JPanel {
         xLookupField1.setName("entity.payer"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLookupField1);
+
+        xLabel1.setCaption("Acct Name");
+        xLabel1.setDepends(new String[] {"entity.payer"});
+        xLabel1.setExpression("#{ entity.payer.acctname }");
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -56,14 +64,15 @@ public class CapturePaymentInitialPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(241, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(218, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     // End of variables declaration//GEN-END:variables
 }

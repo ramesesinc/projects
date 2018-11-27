@@ -5,29 +5,139 @@ class WaterworksBillPrintingInterceptor{
 	@Service("TemplateService")
 	def template;
 
+    @DataContext('vw_waterworks_billing') 
+    def bill_db;
+
+    @DataContext('vw_waterworks_consumption') 
+    def cons_db;
+
 	@After(pattern="WaterworksBatchBillPrintingService.formatReport")
 	public void afterFormatReport( evt ) {
-		def list = evt.args[0];
-		def result = evt.result;
+        def list = evt.args[0];
+        def result = evt.result;
 
-		def df = new java.text.SimpleDateFormat("yyyy-MM-dd"); 
-		list.each {
-            def p = [:];
-            p.putAll( it );
-            p.address = 'iligan city';
-            p.penalty = it.surcharge + it.interest;
-            p.grandtotal = it.amount + p.penalty;
-            p.classification = p.classificationid.toString().padRight(3," ")[0..2];
-            p.blockseqno = p.indexno;
-            p.duedate = new Date();
-            p.prevreadingdate = new Date();
-            p.readingdate = new Date();
-            p.discdate = new Date();
-            def res = template.get( "reports/waterbillreport", [o:p] ).toString();
-    		throw new Exception("stop at report!" + res );
-    		result << res;
-       }
-	}
+        def df = new java.text.SimpleDateFormat("yyyy-MM-dd"); 
+        list.each { 
+            def bill = bill_db.find([ objid: it.objid ]).first(); 
+            if ( !bill ) throw new Exception('No available bill info for acct# '+ it.acctno); 
+
+            def param = [periodindexno : bill.periodindexno];
+            def prevcon = cons_db.find([ acctid: it.acctid ]).select('objid,readingdate').where('periodindexno < :periodindexno', param).orderBy('periodindexno desc').first(); 
+            if ( prevcon?.readingdate ) bill.prevreadingdate = prevcon.readingdate; 
+            
+            resolveData( bill ); 
+
+            def res = template.get( "reports/waterbillreport", [ o: bill ]).toString();
+            result << res; 
+        }
+	} 
 
 
+
+    // 
+    // helper methods 
+    // 
+    private def MMM_YYYY = new java.text.SimpleDateFormat("MMM yyyy"); 
+    private def MMDDYYYY = new java.text.SimpleDateFormat("MM/dd/yyyy"); 
+    private void resolveData( p ) {
+        p.zonecode = p.zone?.code; 
+        p.seqno = p.indexno.toString().padLeft(4,'0'); 
+        p.blockseqno = p.zonecode.toString() +"-"+ p.seqno.toString(); 
+
+        p.billmonth = (p.toperiod instanceof Date ? MMM_YYYY.format(p.toperiod) : null) ;
+        p.discdate = (p.discdate instanceof Date ? MMDDYYYY.format(p.discdate) : null) ;
+        p.readingdate = (p.readingdate instanceof Date ? MMDDYYYY.format(p.readingdate) : null) ;
+        p.prevreadingdate = (p.prevreadingdate instanceof Date ? MMDDYYYY.format(p.prevreadingdate) : null) ;
+        p.duedate = (p.duedate instanceof Date ? MMDDYYYY.format(p.duedate) : null) ;
+
+        def totals = [ amount: p.amount, arrears: p.arrears, surcharge: p.surcharge, interest: p.interest, discount: 0.0 ];  
+        totals.discount = 0.0; 
+        totals.credits = p.credits; 
+        totals.otherfees = p.otherfees; 
+        totals.totalbill = totals.amount + totals.otherfees + totals.arrears; 
+        totals.amtwithsurcharge = totals.amount + totals.surcharge; 
+
+        if ((totals.arrears + totals.surcharge + totals.interest) > 0) {
+            p.discdate = null; 
+            totals.amtwithdisc = null; 
+        } else {
+            totals.discount = round((totals.amount * 0.05)); 
+            totals.amtwithdisc = totals.amount - totals.discount; 
+        }
+
+        def amt1 = (totals.totalbill + totals.surcharge + totals.interest); 
+        totals.grandtotal = amt1 - totals.credits - totals.discount; 
+
+        p.acctname = format(p.acctname, 46, 0); 
+        p.addresstext = format(p.addresstext, 46, 0);
+        p.acctno = format(p.acctno, 14, 0);
+        p.blockseqno = format(p.blockseqno, 15, 2);
+        p.classificationid = format(p.classificationid, 3, 0);
+        p.readingdate = format(p.readingdate, 14, 2);
+        p.reading = format(p.reading, 14, 2);
+        p.prevreadingdate = format(p.prevreadingdate, 14, 2);
+        p.prevreading = format(p.prevreading, 14, 2);
+        p.volume = formatNumber(p.volume, 14, 2, '#,##0');
+        p.amount = formatNumber(totals.amount, 14, 2, '#,##0.00');
+        p.billmonth = format(p.billmonth, 14, 2);
+        p.discdate = format(p.discdate, 14, 2);
+        p.amtwithdisc = formatNumber(totals.amtwithdisc, 14, 2, '#,##0.00');
+        p.otherfees = formatNumber(totals.otherfees, 14, 2, '#,##0.00');
+        p.arrears = formatNumber(totals.arrears, 14, 2, '#,##0.00');
+        p.totalbill = formatNumber(totals.totalbill, 14, 2, '#,##0.00'); 
+        p.surcharge = formatNumber(totals.surcharge, 14, 2, '#,##0.00'); 
+        p.duedate = format(p.duedate, 14, 2); 
+        p.amtwithsurcharge = formatNumber(totals.amtwithsurcharge, 14, 2, '#,##0.00'); 
+        p.grandtotal = formatNumber(totals.grandtotal, 14, 2, '#,##0.00'); 
+
+        def sb = new StringBuilder(); 
+        sb.append(new String([0x1b, '@'] as char[])); 
+        sb.append(new String([0x1b, 'M', 10] as char[])); 
+        sb.append(new String([0x1b, '!', 8] as char[])); 
+        p.initprinting = sb.toString(); 
+    } 
+
+    private String fill( int length ) { 
+        StringBuilder sb = new StringBuilder(); 
+        for (int i=0; i<length; i++) sb.append(" "); 
+        return sb.toString(); 
+    } 
+    
+    private String format( Object value, int length, int alignment ) {
+        String str = (value == null ? "" : value.toString()); 
+        int strlen = str.length(); 
+        length = (length <= 0 ? strlen : length);
+        if ( strlen >= length ) return str.substring(0, length);  
+
+        int diff = length - strlen;
+        diff = (diff < 0 ? 0 : diff); 
+        StringBuilder sb = new StringBuilder();
+        if (alignment == 2) {             
+            sb.append(fill(diff)).append( str );
+        } else if (alignment == 1) {
+            int lpos = diff / 2; 
+            lpos += ((diff % 2) > 0 ? 1 : 0); 
+            sb.append(fill(lpos)).append( str ); 
+            sb.append(fill(length - sb.length()));
+        } else {
+            sb.append( str ).append(fill(diff));
+        }
+        return sb.toString(); 
+    }
+    
+    private String formatNumber( Number value, int length, int alignment, String pattern ) {
+        if ( value == null ) return format("", length, alignment); 
+        
+        String xpattern = (pattern == null ? "" : pattern); 
+        if ( xpattern.length() == 0 ) xpattern = "0"; 
+        
+        def numformat = new java.text.DecimalFormat( xpattern ); 
+        return format( numformat.format( value ), length, alignment ); 
+    }
+
+    private def DEC_FORMAT = new java.text.DecimalFormat('0.00'); 
+    private Number round( Number value ) {
+        if ( value == null ) return value; 
+        return new BigDecimal( DEC_FORMAT.format(value) ); 
+    }
 }

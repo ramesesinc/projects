@@ -53,6 +53,7 @@ class WaterworksBillingInterceptor {
 
 		def arr = [];
 		def wp = [:];
+
 		if ( p.params.payoption ) { 
 			arr << "((year * 12)+month) <= :yearmonth";
 			wp.yearmonth = (p.params.payoption.year * 12)+p.params.payoption.month;

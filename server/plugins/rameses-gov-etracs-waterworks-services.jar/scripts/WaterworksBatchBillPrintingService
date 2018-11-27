@@ -13,8 +13,11 @@ class WaterworksBatchBillPrintingService {
 	@Service
 	def self;
 
-	@DataContext('vw_waterworks_billing')
+	@DataContext('waterworks_billing')
 	def billEm; 
+
+	@DataContext('vw_waterworks_billing')
+	def vwbillEm; 
 
 	@ProxyMethod
 	public def formatReport( def o ) {
@@ -24,23 +27,23 @@ class WaterworksBatchBillPrintingService {
 	//process records by 10;
 	@ProxyMethod 
 	def process( param ) { 
-		if(!param.batchid) throw new Exception("batchid is reqiuired in WaterworksBatchBillPrintingService.process ");
-		if( param.printed_list ) {
+		if ( !param.batchid ) 
+			throw new Exception("batchid is reqiuired in WaterworksBatchBillPrintingService.process "); 
+
+		if ( param.printed_list ) {
 			def list = param.printed_list; 
-			println list; 
-			def str = "('" + list.join("','") + "')";
-			billEm.where( "objid IN " + str ).update( [printed: 1 ]); 
-			//throw new Exception('stop ' + str); 
-		}
-		def idx = param.refbillno;
-		def blist = billEm.find( [batchid: param.batchid ] ).where( "printed = 0 AND hold=0" ).orderBy("billno").list(0,10);
-		if(!blist) return [];
+			def str = "('" + list.join("','") + "')"; 
+			billEm.where( "objid IN " + str ).update([ printed: 1 ]); 
+		} 
+
+		def idx = param.refbillno; 
+		def blist = vwbillEm.find([ batchid: param.batchid ]).where(" printed=0 and hold=0 and meterstate " ).orderBy("billno").list(0,10);
+		if ( !blist ) return []; 
 
 		blist.each {
 			def u = [refbillno: idx++];
 			billEm.find([objid: it.objid]).update( u );
 			it.refbillno = u.refbillno;
-			println it.refbillno;
 		}
 
 		def plist = self.formatReport( blist );

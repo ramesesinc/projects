@@ -45,7 +45,14 @@ class WaterworksBatchBillProcessorService {
 		u.otherfees = 0;
 		u.credits = 0;
 
-		def b = billingSvc.process([rulename:'waterworksbilling', params:[objid:o.acctid ]]); 
+
+		def pp = [ objid : o.acctid ];
+		if ( o.year && o.month ) {
+			def ym = ((o.year * 12) + o.month)-1;
+			pp.payoption = [year: (int)(ym/12), month: (int)(ym%12)];
+		}
+
+		def b = billingSvc.process([rulename:'waterworksbilling', params: pp]); 
 		if( b?.billitems) {
 			def arrears = b.billitems.findAll{ it.reftype == 'waterworks_consumption' }.sum{ it.amount  };
 			def surcharge = b.billitems.findAll{it.surcharge}?.sum{ it.surcharge };

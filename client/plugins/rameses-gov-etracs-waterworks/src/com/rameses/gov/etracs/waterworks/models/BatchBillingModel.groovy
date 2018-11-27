@@ -21,6 +21,8 @@ public class BatchBillingModel extends WorkflowTaskModel {
    @Service("WaterworksBatchBillPrintingService")
    def printSvc;
    
+   @Service("WaterworksBeginBalanceService")
+   def beginBalanceSvc;
     
    def consumptionUtil = ManagedObjects.instance.create(ConsumptionUtil.class);
     
@@ -126,7 +128,10 @@ public class BatchBillingModel extends WorkflowTaskModel {
     }
     
     def rebill = { item->
-        batchSvc.processBilling( [objid:item.objid,acctid:item.acctid,consumptionid:item.consumptionid] );
+        batchSvc.processBilling( [ 
+            objid:item.objid,acctid:item.acctid,consumptionid:item.consumptionid, 
+            year: entity.schedule.year, month: entity.schedule.month 
+        ] );
         billHandler.reload();
     }
     
@@ -168,13 +173,41 @@ public class BatchBillingModel extends WorkflowTaskModel {
         return null; 
     } 
     
+    def beginBalance = { item->
+        def h = [:];
+        h.handler = { o->
+            def p = [:];
+            p.putAll( o ); 
+            p.billid = item.objid;
+            p.acctid = item.acctid; 
+            p.meterid = item.meterid;
+            p.meterstate = item.meterstate; 
+            p.year = entity.schedule.year;
+            p.month = entity.schedule.month; 
+            p.scheduleid = entity.schedule.scheduleid;
+            p.consumptionid = item.consumptionid;
+            beginBalanceSvc.save( p );
+            readingHandler.reload();
+            billHandler.reload();
+        };
+        h.fields = [];
+        h.fields << [name:'year', caption:'Year', type:'integer'];
+        h.fields << [name:'month', caption:'Month', type:'monthlist'];
+        h.fields << [name:'amount', caption:'Begin Balance', type:'decimal'];
+        h.fields << [name:'credits', caption:'Credits', type:'decimal'];
+        h.fields << [name:'reading', caption:'Last Reading', type:'integer'];
+        Modal.show("dynamic:form", h, [title:"Begin Balance"] );
+    };
+    
     def getBillHandlerList() {
         def mnuList = [];
         mnuList << [value: 'View Account', func: viewAccount];
         if(task?.state.matches('for-review|for-reading') ) {
-            mnuList << [value: 'Recompute Bill', func:rebill]
+            mnuList << [value: 'Recompute Bill', func:rebill];
+            mnuList << [value: 'Begin Balance', func: beginBalance];
         } 
         mnuList << [value: 'View Bill', func: viewBilling];
+        
         return  mnuList; 
     }
    
@@ -185,10 +218,10 @@ public class BatchBillingModel extends WorkflowTaskModel {
             //if(item.hold == 0 ) mnuList << [value: 'Edit Reading/Volume', func:editConsumption];
             if(item.hold == 0 ) mnuList << [value: 'Hold', func:hold];
             if(item.hold == 1 ) mnuList << [value: 'Activate', func:hold];
+            mnuList << [value: 'Recompute', func: recomputeConsumption];
         }
         mnuList << [value: 'View Account', func:viewAccount];
         mnuList << [value: 'View Consumption History', func: viewConsumptionHistory];
-        mnuList << [value: 'Recompute', func: recomputeConsumption];
         return  mnuList; 
     }
    
@@ -255,17 +288,18 @@ public class BatchBillingModel extends WorkflowTaskModel {
            if(cancelPrint) break;
            list.each {
                printerService.printString(printerName, it.toString() );
-               waitProc(500);
            }
+           waitPrintProc(); 
            parm.refbillno = res.refbillno;
            parm.printed_list = res.printed_list; 
        }
        MsgBox.alert("printing finished");
    } 
    
-   private void waitProc( time ) {
-       try {
-           Thread.sleep( time ); 
-       } catch(Throwable t) {;} 
-   }
+    private void waitPrintProc() {
+        try { 
+            new java.util.concurrent.LinkedBlockingQueue().poll(1, java.util.concurrent.TimeUnit.SECONDS);
+        } catch (Throwable t) {
+        }
+    }
 }

@@ -100,14 +100,6 @@ class WaterworksBatchBillingInterceptor {
 
 	}
 
-	/*
-	@Before(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname == 'waterworks_batch_billing' && args[0].taskstate == 'approved' && args[0].action == 'post'  }")
-	public void beforePost( def evt ) {
-		def p = evt.args[0];
-		if(!p.refid) throw new Exception("Error WorkflowTaskService.signal post error. refid is required");
-		batchBillingSvc.post([ batchid: p.refid ]);
-	}
-	*/
 
 	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'waterworks_batch_billing'}")
 	void beforeRemoveEntity( evt ) {
@@ -122,4 +114,10 @@ class WaterworksBatchBillingInterceptor {
 		zoneEm.find( [batchid: p.objid] ).update( [batchid: '{NULL}' ]);
 	}
 
+	@Before(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname == 'waterworks_batch_billing' && args[0].taskstate == 'approved' && args[0].action == 'revert'  }")
+	public void beforeRevertApproved( evt ) {
+		def p = evt.args[0];
+		wbillEm.find([ batchid: p.refid ]).update([ printed: 0 ]);
+	}
 }
+

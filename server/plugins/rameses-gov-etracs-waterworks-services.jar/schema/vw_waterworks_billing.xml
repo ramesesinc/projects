@@ -41,6 +41,7 @@
 		<field name="zone_objid" /> 
 		<field name="zone_code" /> 
 		<field name="indexno" /> 
+		<field name="periodindexno" /> 
 	</element>
 </schema>
 

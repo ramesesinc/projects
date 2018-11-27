@@ -6,7 +6,7 @@ SELECT
    wa.acctno, 
    wa.address_text,
    classificationid AS classification,
-   sn.indexno AS stuboutnode_indexno,
+   sn.indexno,
    ws.code AS stuboutnode_stubout_code,
 
    m.objid AS meterid,

@@ -114,7 +114,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
         Modal.show("waterworks_account:open", [entity: [objid:o.acctid] ]); 
         readingHandler.reload();
         billHandler.reload();
-   }
+    }
 
     def viewBilling = { item->
         Modal.show("waterworks_account_billing", ['query.objid': item.acctid ]);
@@ -182,7 +182,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
         def meterid = item.meterid; 
         def mnuList = [];
         if( task?.state == "for-reading" ) {
-            if(item.hold == 0 ) mnuList << [value: 'Edit Reading/Volume', func:editConsumption];
+            //if(item.hold == 0 ) mnuList << [value: 'Edit Reading/Volume', func:editConsumption];
             if(item.hold == 0 ) mnuList << [value: 'Hold', func:hold];
             if(item.hold == 1 ) mnuList << [value: 'Activate', func:hold];
         }
@@ -210,12 +210,16 @@ public class BatchBillingModel extends WorkflowTaskModel {
            menuitem.func( item );
 	},
         isColumnEditable: {item,colName->
+            if(task?.state != "for-reading") return false;
             if(colName == "reading") {
-                return (item.meterstate=="ACTIVE"); 
+                return true; 
+            }
+            else if(colName == "volume") {
+                return (item.meterstate!="ACTIVE");
             }
         },
         onColumnUpdate: { item,colName->
-            if(colName=="reading") {
+            if(colName.matches("reading|volume")) {
                 def res = calcConsumption(item);
                 item.putAll(res);
             }

@@ -2,7 +2,7 @@ import com.rameses.annotations.*;
 
 class WaterworksAccountListInterceptor{
 	
-	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname == 'waterworks_account'}")
+	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname == 'vw_waterworks_account'}")
 	public void getAcctNodeList(def evt) {
 		def result = evt.result;
 		result << [ title: 'Active (Metered)', id:'active'];
@@ -11,7 +11,7 @@ class WaterworksAccountListInterceptor{
 		result << [ title: 'Disconnected', id:'disconnected'];
 	}
 
-	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'waterworks_account'}")
+	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'vw_waterworks_account'}")
 	public void loadList(def evt) {
 		def o = evt.args[0];
 		if( !o.node?.id ) return;
@@ -22,19 +22,19 @@ class WaterworksAccountListInterceptor{
 
 		switch( status ) {
 			case 'active':
-				str = "meter.state = 'ACTIVE' ";
+				str = "meterstatus = 'METERED' ";
 				break;
 
 			case 'unmetered': 	
-				str = "meterid IS NULL";
+				str = "meterstatus = 'UNMETERED' ";
 				break;
 
 			case 'defective':
-				str = "meter.state = 'DEFECTIVE' ";
+				str = "meterstatus = 'DEFECTIVE' ";
 				break;
 
 			case 'disconnected':
-				str = "meter.state = 'DISCONNECTED' ";
+				str = "meterstatus = 'DISCONNECTED' ";
 				break;
 		}
 

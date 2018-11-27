@@ -74,6 +74,8 @@ public class BatchBillingModel extends WorkflowTaskModel {
             return batchSvc.getForBillingList( o );
         },
         processItem: { o->
+            o.year = entity.schedule.year;
+            o.month = entity.schedule.month;
             batchSvc.processBilling( o );
             binding.refresh('progressLabel');
         },
@@ -130,7 +132,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
     def rebill = { item->
         batchSvc.processBilling( [ 
             objid:item.objid,acctid:item.acctid,consumptionid:item.consumptionid, 
-            year: entity.schedule.year, month: entity.schedule.month 
+            year: entity.schedule.year, month: entity.schedule.month, meterstate:item.meterstate 
         ] );
         billHandler.reload();
     }
@@ -182,8 +184,8 @@ public class BatchBillingModel extends WorkflowTaskModel {
             p.acctid = item.acctid; 
             p.meterid = item.meterid;
             p.meterstate = item.meterstate; 
-            p.year = entity.schedule.year;
-            p.month = entity.schedule.month; 
+            p.year = o.year;
+            p.month = o.month; 
             p.scheduleid = entity.schedule.scheduleid;
             p.consumptionid = item.consumptionid;
             beginBalanceSvc.save( p );
@@ -194,7 +196,6 @@ public class BatchBillingModel extends WorkflowTaskModel {
         h.fields << [name:'year', caption:'Year', type:'integer'];
         h.fields << [name:'month', caption:'Month', type:'monthlist'];
         h.fields << [name:'amount', caption:'Begin Balance', type:'decimal'];
-        h.fields << [name:'credits', caption:'Credits', type:'decimal'];
         h.fields << [name:'reading', caption:'Last Reading', type:'integer'];
         Modal.show("dynamic:form", h, [title:"Begin Balance"] );
     };
@@ -257,7 +258,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
                 item.putAll(res);
             }
         }
-    ];
+    ] ;
     
    def getPrinterList() {
        return printerService.getPrinters(); 

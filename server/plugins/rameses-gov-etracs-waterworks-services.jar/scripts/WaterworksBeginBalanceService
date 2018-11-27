@@ -27,26 +27,26 @@ class WaterworksBeginBalanceService {
 	public void save( param ) {
 		def sched = schedSvc.getSchedule([ scheduleid: param.scheduleid, year: param.year, month: param.month ]); 
 
-		def wc = [:]; 
-		wc.acctid = param.acctid; 
-		wc.scheduleid = sched.objid; 
-		wc.schedule = sched; 
-		wc.prevreading = param.reading; 
-		wc.reading = param.reading; 
-		wc.amount = param.amount; 
-		wc.amtpaid = 0.0;
-		wc.volume = 0;
-		wc.txnmode = 'BEGIN_BALANCE'; 
-		wc.hold = 0;
-		wc.state = 'DRAFT'; 
-		wc.rate = 0.0;
-		cons_db.create( wc );
-
-		//if there are credits, add the credit
-		if( param.credits ) {
+		if( param.amount > 0 ) {
+			def wc = [:]; 
+			wc.acctid = param.acctid; 
+			wc.scheduleid = sched.objid; 
+			wc.schedule = sched; 
+			wc.prevreading = param.reading; 
+			wc.reading = param.reading; 
+			wc.amount = param.amount; 
+			wc.amtpaid = 0.0;
+			wc.volume = 0;
+			wc.txnmode = 'BEGIN_BALANCE'; 
+			wc.hold = 0;
+			wc.state = 'DRAFT'; 
+			wc.rate = 0.0;
+			cons_db.create( wc );
+		}
+		else if( param.amount < 0 ) {
 			def cc = [:];
 			cc.acctid = param.acctid;
-			cc.amount = param.credits;
+			cc.amount = param.amount * -1;
 			cc.amtpaid = 0;
 			cc.remarks = "BEGIN_BALANCE";
 			wc_credit.create( cc );		
@@ -56,9 +56,12 @@ class WaterworksBeginBalanceService {
 		u.prevreading = param.reading; 
 		cons_db.find([ objid: param.consumptionid ]).update( u ); 
 
-		wc = vwcons_db.find([ objid: param.consumptionid ]).first(); 
+		def wc = vwcons_db.find([ objid: param.consumptionid ]).first();
+
 		wc.meterstate = param.meterstate; 
 		def res = compuSvc.compute( wc ); 
+
+		
 
 		u = [volume: res.volume, amount: res.amount ]; 
 		cons_db.find([ objid: param.consumptionid ]).update( u ); 
@@ -68,7 +71,7 @@ class WaterworksBeginBalanceService {
 		batchSvc.processBilling([ 
 			objid: param.billid, acctid: param.acctid, 
 			consumptionid: param.consumptionid, 
-			year: param.year, month: param.month 
+			year: wc.year, month: wc.month 
 		]); 
 	}
 }

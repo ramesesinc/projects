@@ -2,7 +2,6 @@
           contextName="waterworks"
           schemaName="waterworks_credit"
           parentkey="acctid"
-          debug="true"
           title="Credits">
     <invokers>
         <invoker type="waterworks_account:section" caption="Credits" 
@@ -12,5 +11,7 @@
         <!-- List Actions -->
         <invoker type="formActions" caption="Add New Entry" action="addNewEntry"/> 
         <invoker type="formActions" caption="Edit Entry" action="editEntry"/> 
+        <invoker type="formActions" caption="Remove Entry" action="removeEntry"/> 
+        
     </invokers>
 </workunit>

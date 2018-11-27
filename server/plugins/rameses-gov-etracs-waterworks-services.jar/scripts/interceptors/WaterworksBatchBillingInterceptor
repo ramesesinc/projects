@@ -119,5 +119,12 @@ class WaterworksBatchBillingInterceptor {
 		def p = evt.args[0];
 		wbillEm.find([ batchid: p.refid ]).update([ printed: 0 ]);
 	}
+
+	@Before(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname == 'waterworks_batch_billing' && args[0].taskstate == 'for-review' && args[0].action == 'revert'  }")
+	public void beforeRevertForReview( evt ) {
+		def p = evt.args[0];
+		wbillEm.find([ batchid: p.refid ]).update([ surcharge:0, interest:0, otherfees:0, credits:0, arrears:0, unpaidmonths:0, billed: 0 ]);
+	}
+
 }
 

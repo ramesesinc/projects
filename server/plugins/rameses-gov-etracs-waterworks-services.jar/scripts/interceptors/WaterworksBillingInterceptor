@@ -78,7 +78,7 @@ class WaterworksBillingInterceptor {
 		def bill = p.headerinfo; 
 
 		def s =  "amount:{amtpaid-amount},refid:{objid},reftype:{'waterworks_credit'},item.*"
-		def conList = wcCreditEm.find( [parentid: bill.acctid] ).where(" amount - amtpaid > 0 ").select(s).list();
+		def conList = wcCreditEm.find( [acctid: bill.acctid] ).where(" amount - amtpaid > 0 ").select(s).list();
 		evt.result.addAll( conList );
 	}
 

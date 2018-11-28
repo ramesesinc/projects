@@ -26,6 +26,10 @@ class CapturePaymentModel extends PageFlowController  {
     
     void initNew() {
         entity = [amount:0];
+        consumptionList = []; 
+        otherFeeList = [];
+        consumptionListHandler.reload(); 
+        otherFeeHandler.reload();
     }
     
     def consumptionListHandler = [

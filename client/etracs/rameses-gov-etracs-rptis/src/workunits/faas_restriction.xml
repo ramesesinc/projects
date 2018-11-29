@@ -11,7 +11,7 @@
         
         <invoker folderid="/menucategory/rpt/txn"
                  action="create" caption="Post FAAS Restriction" 
-                 domain="LANDTAX" role="LANDTAX" target="popup"
+                 role="RECORD,RECORD_APPROVER" target="popup"
                  index="140" />
         
         <invoker type="quick_launcher" code="FRE01"

@@ -585,9 +585,9 @@ class FAASService
         }
 
         //annotations
-        def annotations = em_faasannotation.find([faasid:faas.objid]).list()
+        def annotations = em_faasannotation.find([faasid:faas.objid, state:'APPROVED']).list()
         if(annotations){
-        	msgs << 'FAAS has active Annotation.'
+        	msgs << 'FAAS has active Annotation # ' + annotations.fileno.join(',')
         }
 		faas.messagelist = msgs;
 	}

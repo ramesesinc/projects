@@ -25,11 +25,6 @@
 		<complex name="af" ref="af" jointype="many-to-one" required="false" includfields="objid,formtype">		
 			<key field="formno" target="objid" />
 		</complex>	
-
-		<complex name="org" ref="sys_org" jointype="many-to-one" required="false" 
-			includefields="objid,code,name,orgclass">
-			<key field="org_objid" target="objid"/>		
-		</complex> 
 	</element>
 
 </schema>

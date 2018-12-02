@@ -1,46 +1,39 @@
 <workunit>
     <invokers>
+        <invoker type="cashreceipt:printout" caption="AF 0016 Printout" name="cashreceipt-form:0016"/>
         <invoker type="cashreceipt-form:0016" />
     </invokers>
     
     <code>
-        <![CDATA[    
+    <![CDATA[    
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.reports.*;
 
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.osiris2.reports.*;
-        
-        class  CashReceiptForm0016 extends ReportModel {
-        
-            def reportData;
-            def parameters = [:];
-            
-            @Service("ReportParameterService")
-            def paramSvc
-            
-            def reportPath = 'com/rameses/gov/etracs/ctc/forms/'
-            
-            public Map getParameters() {
-                return paramSvc.getStandardParameter();
-            }
-            
-            public Object getReportData() { 
-                def payer = reportData?.payer; 
-                if ( payer?.birthdate instanceof String ) {
-                    def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
-                    def birthdate = YMD.parse( payer.birthdate );  
-                    payer.birthdate = birthdate; 
-                } 
-                return reportData; 
-            } 
-            
-            public String getReportName() {
-                return reportPath + "form_0016.jasper";
-            }
-        }
-        ]]>
+class  CashReceiptForm0016 extends ReportModel {
+
+    def reportData;
+    
+    def reportPath = 'com/rameses/gov/etracs/ctc/forms/'
+    
+    public Object getReportData() { 
+        def data = this.reportData; 
+        def payer = data?.payer; 
+        if ( payer?.birthdate instanceof String ) {
+            def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
+            def birthdate = YMD.parse( payer.birthdate );  
+            payer.birthdate = birthdate; 
+        } 
+        return data; 
+    } 
+    
+    public String getReportName() {
+        return reportPath + "form_0016.jasper";
+    }
+}
+    ]]>
     </code>
     
 </workunit>

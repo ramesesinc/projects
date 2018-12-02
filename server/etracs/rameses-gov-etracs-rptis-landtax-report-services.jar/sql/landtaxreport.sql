@@ -173,7 +173,7 @@ from cashreceipt cr
 	inner join vw_rptpayment_item ri on rp.objid = ri.parentid
 	inner join rptledger rl on rp.refid = rl.objid  
 	inner join propertyclassification pc on rl.classification_objid = pc.objid 
-	inner join remittance_cashreceipt rc on cr.objid = rc.objid
+	inner join remittance rc on cr.remittanceid = rc.objid
 	left join cashreceipt_void cv on cr.objid = cv.receiptid
 where cr.receiptdate between $p{fromdate} and $p{todate}
 	 and cv.objid is null  
@@ -202,7 +202,7 @@ from cashreceipt cr
 	inner join vw_rptpayment_item ri on rp.objid = ri.parentid
 	inner join rptledger rl on rp.refid = rl.objid  
 	inner join propertyclassification pc on rl.classification_objid = pc.objid 
-	inner join remittance_cashreceipt rc on cr.objid = rc.objid
+	inner join remittance rc on cr.remittanceid = rc.objid
 	left join cashreceipt_void cv on cr.objid = cv.receiptid
 where cr.receiptdate between $P{fromdate} and $P{todate}
 	 and ri.revperiod = 'advance'
@@ -230,7 +230,7 @@ from (
 	FROM cashreceipt cr 
 		INNER JOIN rptpayment rp on cr.objid = rp.receiptid 
 		INNER JOIN rptpayment_share ri on rp.objid = ri.parentid
-	    INNER JOIN remittance_cashreceipt rc ON cr.objid = rc.objid
+	    INNER JOIN remittance rc ON cr.remittanceid = rc.objid
 	    LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid
 	where cr.receiptdate BETWEEN $P{fromdate} AND $P{todate} 
 		 and ri.revperiod != 'advance' 
@@ -257,7 +257,7 @@ from (
 	FROM cashreceipt cr 
 		INNER JOIN rptpayment rp on cr.objid = rp.receiptid 
 		INNER JOIN rptpayment_share ri on rp.objid = ri.parentid
-	    INNER JOIN remittance_cashreceipt rc ON cr.objid = rc.objid
+	    INNER JOIN remittance rc ON cr.remittanceid = rc.objid
 	    LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid
 	where cr.receiptdate BETWEEN $P{fromdate} AND $P{todate} 
 		 and ri.revperiod = 'advance' 

@@ -1,5 +1,0 @@
-<workunit extends="wtemplates/BasicLookupController.xml" serviceName="NGASAccountService" tag='group'>
-    <invokers>
-        <invoker type="ngasaccountgroup:lookup" caption="Lookup Account Group" target="popup"/>
-    </invokers>
-</workunit>

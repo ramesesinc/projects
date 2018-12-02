@@ -98,7 +98,7 @@ class  CorporateCtcCashReceipt extends AbstractCashReceipt {
         }
         return Inv.lookupOpener("juridicalentity:create", [entity:[:], onselect:h]); 
     }
-    
+
     public def payerChanged( o ) {
         if ( ! o.type.equalsIgnoreCase('JURIDICAL') )
             throw new Exception('Only Juridical entities are allowed.');

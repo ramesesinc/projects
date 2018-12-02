@@ -12,8 +12,8 @@ public class PoliceClearanceCashReceiptModel extends AbstractCashReceipt {
     @Service("PoliceClearanceCashReceiptService")
     def receiptSvc;
     
-    @Service('CollectionTypeService') 
-    def collTypeSvc; 
+    @Service('QueryService') 
+    def querySvc; 
     
     String title = "Police Clearance";
     
@@ -35,7 +35,9 @@ public class PoliceClearanceCashReceiptModel extends AbstractCashReceipt {
     ]; 
      
     void init() { 
-        accounts = collTypeSvc.getAccounts([ objid: entity.collectiontype?.objid ]);  
+        def qparam = [_schemaname: 'collectiontype_account']; 
+        qparam.findBy = [ collectiontypeid: entity.collectiontype?.objid ]; 
+        accounts = querySvc.getList( qparam ); 
         if ( !accounts ) throw new Exception('No available accounts for this collection type'); 
 
         super.init();
@@ -51,10 +53,9 @@ public class PoliceClearanceCashReceiptModel extends AbstractCashReceipt {
         if ( ! entity.payer ) throw new Exception('Payer is required.'); 
     } 
     
-    protected String getLookupEntityName() {
-        return "entityindividual:lookup"; 
+    public String getEntityType() {
+        return "entityindividual";
     }
-
     
     void updateAmounts() { 
         entity.items.clear(); 

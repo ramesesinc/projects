@@ -17,7 +17,7 @@ class MarriageReceiptInterceptor {
 		afterOpenImpl( evt.result ); 
 	} 
 
-	@After(pattern="PersistenceService.read", eval="#{result.collectiontype?.handler == 'marriage'}")
+	@After(pattern="PersistenceService.read", eval="#{result?.collectiontype?.handler == 'marriage'}")
 	public void afterOpen2( evt ) { 
 		afterOpenImpl( evt.result ); 
 	} 	

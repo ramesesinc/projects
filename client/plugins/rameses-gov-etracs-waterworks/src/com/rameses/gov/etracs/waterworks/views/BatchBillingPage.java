@@ -4,6 +4,7 @@
  */
 package com.rameses.gov.etracs.waterworks.views;
 
+import com.rameses.osiris2.client.ManagedObjects;
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.WorkflowTaskFormPage;
 
@@ -76,25 +77,25 @@ public class BatchBillingPage extends javax.swing.JPanel {
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setPadding(new java.awt.Insets(20, 10, 10, 10));
-        xTitledBorder2.setTitle("Start Period");
+        xTitledBorder2.setTitle("Bill Period");
         xFormPanel2.setBorder(xTitledBorder2);
         xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel2.setCaptionWidth(90);
 
+        xLabel5.setCaption("From Period");
+        xLabel5.setExpression("#{ entity.schedule.fromperiod }");
         xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel5.setCaption("Year");
-        xLabel5.setExpression("#{ entity.year }");
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel5);
 
+        xLabel6.setCaption("To Period");
+        xLabel6.setExpression("#{ entity.schedule.toperiod }");
         xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel6.setCaption("Month");
-        xLabel6.setExpression("#{ entity.monthname }");
         xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel6);
 
         xLabel10.setCaption("Block Schedule");
-        xLabel10.setExpression("#{ entity.schedule.objid }");
+        xLabel10.setExpression("#{ entity.schedule.scheduleid }");
         xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel10.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel10);
@@ -113,13 +114,13 @@ public class BatchBillingPage extends javax.swing.JPanel {
         xFormPanel3.add(xLabel4);
 
         xLabel7.setCaption("Reading Date");
-        xLabel7.setExpression("#{ entity.readingdate }");
+        xLabel7.setExpression("#{ entity.schedule.readingdate }");
         xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xLabel7);
 
         xLabel8.setCaption("Reading Due Date");
-        xLabel8.setExpression("#{ entity.readingduedate }");
+        xLabel8.setExpression("#{ entity.schedule.readingduedate }");
         xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xLabel8);
@@ -130,15 +131,15 @@ public class BatchBillingPage extends javax.swing.JPanel {
         xFormPanel4.setBorder(xTitledBorder4);
         xFormPanel4.setCaptionWidth(120);
 
-        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel9.setCaption("Discount Due Date");
-        xLabel9.setExpression("#{ entity.discdate }");
+        xLabel9.setExpression("#{ entity.schedule.discdate }");
+        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel9.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel4.add(xLabel9);
 
-        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel11.setCaption("Penalty Due Date");
-        xLabel11.setExpression("#{ entity.duedate }");
+        xLabel11.setExpression("#{ entity.schedule.duedate }");
+        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel11.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel4.add(xLabel11);
 
@@ -146,13 +147,14 @@ public class BatchBillingPage extends javax.swing.JPanel {
 
         xPanel1.setVisibleWhen("#{ task.properties.show_reading == true }");
 
+        schemaList1.setActionContext("readingMenu");
         schemaList1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", null}
-                , new Object[]{"caption", " "}
-                , new Object[]{"width", 20}
-                , new Object[]{"minWidth", 20}
-                , new Object[]{"maxWidth", 20}
+                new Object[]{"name", "hold"}
+                , new Object[]{"caption", "On Hold"}
+                , new Object[]{"width", 70}
+                , new Object[]{"minWidth", 70}
+                , new Object[]{"maxWidth", 70}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -160,11 +162,25 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"expression", "#{  root.getRedflag(item) == true  ?  'images/redflag.png' : null  }"}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.IconColumnHandler()}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.CheckBoxColumnHandler(java.lang.Integer.class, 1, 0)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.acctno"}
+                new Object[]{"name", "billno"}
+                , new Object[]{"caption", "Bill No"}
+                , new Object[]{"width", 150}
+                , new Object[]{"minWidth", 140}
+                , new Object[]{"maxWidth", 180}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "acctno"}
                 , new Object[]{"caption", "Acct No"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 100}
@@ -179,7 +195,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.stuboutnode.indexno"}
+                new Object[]{"name", "indexno"}
                 , new Object[]{"caption", "Seq No"}
                 , new Object[]{"width", 60}
                 , new Object[]{"minWidth", 60}
@@ -194,7 +210,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.classification"}
+                new Object[]{"name", "classificationid"}
                 , new Object[]{"caption", "Class"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 100}
@@ -209,11 +225,11 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.acctname"}
+                new Object[]{"name", "acctname"}
                 , new Object[]{"caption", "Acct Name"}
                 , new Object[]{"width", 200}
-                , new Object[]{"minWidth", 250}
-                , new Object[]{"maxWidth", 300}
+                , new Object[]{"minWidth", 200}
+                , new Object[]{"maxWidth", 220}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -224,11 +240,11 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.meterstatus"}
+                new Object[]{"name", "meterstate"}
                 , new Object[]{"caption", "Meter Status"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 80}
-                , new Object[]{"maxWidth", 120}
+                , new Object[]{"minWidth", 120}
+                , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -255,7 +271,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "reading"}
-                , new Object[]{"caption", "Curr. Readng"}
+                , new Object[]{"caption", "Curr. Reading"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 100}
                 , new Object[]{"maxWidth", 100}
@@ -278,22 +294,6 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "averageconsumption"}
-                , new Object[]{"caption", "Ave. "}
-                , new Object[]{"width", 80}
-                , new Object[]{"minWidth", 80}
-                , new Object[]{"maxWidth", 100}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
@@ -304,8 +304,8 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 new Object[]{"name", "amount"}
                 , new Object[]{"caption", "Amount"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
-                , new Object[]{"maxWidth", 120}
+                , new Object[]{"minWidth", 120}
+                , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -316,11 +316,11 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.meter.serialno"}
-                , new Object[]{"caption", "Meter Serial No"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
-                , new Object[]{"maxWidth", 150}
+                new Object[]{"name", null}
+                , new Object[]{"caption", " "}
+                , new Object[]{"width", 20}
+                , new Object[]{"minWidth", 20}
+                , new Object[]{"maxWidth", 20}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -328,61 +328,18 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.meter.brand"}
-                , new Object[]{"caption", "Brand"}
-                , new Object[]{"width", 120}
-                , new Object[]{"minWidth", 100}
-                , new Object[]{"maxWidth", 150}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.stuboutnode.code"}
-                , new Object[]{"caption", "Stubout"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
-                , new Object[]{"maxWidth", 150}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "controlno"}
-                , new Object[]{"caption", "Bill No"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
-                , new Object[]{"maxWidth", 200}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+                , new Object[]{"expression", "#{  root.getRedflag(item) == true  ?  'images/redflag.png' : null  }"}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.IconColumnHandler()}
             })
         });
         schemaList1.setCustomFilter("batchid = :batchid");
         schemaList1.setHandler("readingHandler");
         schemaList1.setName("selectedItem"); // NOI18N
-        schemaList1.setOrderBy("account.stuboutnode.indexno");
+        schemaList1.setOrderBy("billno");
         schemaList1.setQueryName("query");
-        schemaList1.setSchemaName("waterworks_consumption");
+        schemaList1.setSchemaName("vw_waterworks_billing");
         schemaList1.setAllowOpen(false);
+        schemaList1.setAllowSearch(true);
         schemaList1.setId("readingModel");
         schemaList1.setStyleRule("com/rameses/gov/etracs/waterworks/views/BatchBillingPage.style");
 
@@ -407,7 +364,22 @@ public class BatchBillingPage extends javax.swing.JPanel {
 
         schemaList2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.acctno"}
+                new Object[]{"name", "billno"}
+                , new Object[]{"caption", "Bill No"}
+                , new Object[]{"width", 150}
+                , new Object[]{"minWidth", 150}
+                , new Object[]{"maxWidth", 200}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "acctno"}
                 , new Object[]{"caption", "Acct No"}
                 , new Object[]{"width", 120}
                 , new Object[]{"minWidth", 120}
@@ -422,11 +394,11 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.stuboutnode.indexno"}
+                new Object[]{"name", "indexno"}
                 , new Object[]{"caption", "Seq No"}
-                , new Object[]{"width", 80}
-                , new Object[]{"minWidth", 80}
-                , new Object[]{"maxWidth", 80}
+                , new Object[]{"width", 60}
+                , new Object[]{"minWidth", 60}
+                , new Object[]{"maxWidth", 60}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -437,7 +409,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.acctname"}
+                new Object[]{"name", "acctname"}
                 , new Object[]{"caption", "Acct Name"}
                 , new Object[]{"width", 150}
                 , new Object[]{"minWidth", 150}
@@ -452,7 +424,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.meterstatus"}
+                new Object[]{"name", "meterstate"}
                 , new Object[]{"caption", "Meter Status"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 80}
@@ -555,45 +527,16 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.meter.serialno"}
-                , new Object[]{"caption", "Meter Serial No"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "controlno"}
-                , new Object[]{"caption", "Bill No"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
-                , new Object[]{"maxWidth", 200}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
         schemaList2.setCustomFilter("batchid = :batchid");
         schemaList2.setHandler("billHandler");
         schemaList2.setName("selectedBillItem"); // NOI18N
-        schemaList2.setOrderBy("account.stuboutnode.indexno");
+        schemaList2.setOrderBy("billno");
         schemaList2.setQueryName("query");
-        schemaList2.setSchemaName("waterworks_consumption");
+        schemaList2.setSchemaName("vw_waterworks_billing");
         schemaList2.setAllowOpen(false);
+        schemaList2.setAllowSearch(true);
 
         javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
         xPanel2.setLayout(xPanel2Layout);

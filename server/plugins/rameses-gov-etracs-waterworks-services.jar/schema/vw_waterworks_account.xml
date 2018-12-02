@@ -1,37 +1,11 @@
-<!--
-DROP VIEW IF EXISTS vw_waterworks_account;
-CREATE VIEW vw_waterworks_account AS 
-SELECT 
-   wa.objid, 
-   wa.acctname, 
-   wa.acctno, 
-   wa.address_text,
-   classificationid AS classification,
-   sn.indexno AS stuboutnode_indexno,
-   ws.code AS stuboutnode_stubout_code,
-   m.objid AS meterid,
-   m.serialno  AS meter_serialno,
-   m.brand  AS meter_branch,
-   m.capacity  AS meter_capacity,
-   ms.title AS meter_size_title,
-   m.state  AS meter_state,
-   m.lastreading  AS meter_lastreading,
-   m.lastreadingdate  AS meter_lastreadingdate,
-   CASE WHEN m.objid IS NULL THEN 'UNMETERED' WHEN m.state = 'ACTIVE' THEN 'METERED' ELSE m.state END AS meterstatus
-FROM waterworks_account wa 
-LEFT JOIN waterworks_meter m ON wa.meterid = m.objid 
-LEFT JOIN waterworks_metersize ms ON m.sizeid = ms.objid 
-LEFT JOIN waterworks_stubout_node sn ON wa.stuboutnodeid = sn.objid 
-LEFT JOIN waterworks_stubout ws ON sn.stuboutid = ws.objid
--->
 <schema adapter="waterworks">
 	<element tablename="vw_waterworks_account">
 		<field name="objid" primary="true"/>
-		<field name="acctname" />
-		<field name="acctno" />
+		<field name="acctname" searchable="true"/>
+		<field name="acctno" searchable="true"/>
 		<field name="address_text" />
-		<field name="classification" />
-		<field name="stuboutnode_indexno" />
+		<field name="classification" indexed="true"/>
+		<field name="indexno" />
 		<field name="stuboutnode_stubout_code" />
 		<field name="meterid" />
 		<field name="meter_serialno" />
@@ -40,7 +14,6 @@ LEFT JOIN waterworks_stubout ws ON sn.stuboutid = ws.objid
 		<field name="meter_size_title" />
 		<field name="meter_state" />
 		<field name="meter_lastreading" />
-		<field name="meter_lastreadingdate" />
 		<field name="meterstatus" />
 	</element>
 </schema>

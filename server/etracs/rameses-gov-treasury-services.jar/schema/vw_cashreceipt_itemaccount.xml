@@ -1,27 +1,30 @@
 <!--
-DROP VIEW IF EXISTS vw_cashreceipt_itemaccount;
+DROP VIEW IF EXISTS vw_cashreceipt_itemaccount
+;
 CREATE VIEW vw_cashreceipt_itemaccount AS 
-
 SELECT 
-objid,state,code,title,description,type,fund_objid,fund_code,fund_title,defaultvalue,valuetype,sortorder,org_objid AS orgid
+  objid, state, code, title, description, type, fund_objid, fund_code, fund_title, 
+  defaultvalue, valuetype, sortorder, org_objid AS orgid 
 FROM itemaccount 
-WHERE (generic = 0 OR generic IS NULL) 
-AND state='ACTIVE' AND type IN ('REVENUE','NONREVENUE','PAYABLE')
+WHERE state='ACTIVE' 
+  AND type IN ('REVENUE','NONREVENUE','PAYABLE') 
+  AND (generic = 0 OR generic IS NULL)
+;
 -->
 <schema>
 	<element tablename="vw_cashreceipt_itemaccount">
 		<field name="objid" primary="true"/>		
-		<field name="state" />	
-		<field name="code" searchable="true" indexed="true"/>	
-		<field name="title" searchable="true" indexed="true"/>	
+		<field name="state" caption="Status"/>	
+		<field name="code" caption="Code" searchable="true" indexed="true"/>	
+		<field name="title" caption="Title" searchable="true" indexed="true"/>	
 		<field name="description" />	
-		<field name="type" />	
+		<field name="type" caption="Type"/>	
 		<field name="fund_objid" />	
 		<field name="fund_code" />	
-		<field name="fund_title" />	
-		<field name="defaultvalue" />	
-		<field name="valuetype" />	
-		<field name="sortorder" />	
+		<field name="fund_title" caption="Fund"/>	
+		<field name="defaultvalue" caption="DefaultValue"/>	
+		<field name="valuetype" caption="ValueType"/>	
+		<field name="sortorder" caption="SortOrder"/>	
 		<field name="orgid" />	
 	</element>
 </schema>

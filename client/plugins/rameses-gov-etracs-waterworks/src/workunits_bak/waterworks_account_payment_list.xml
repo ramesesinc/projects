@@ -1,0 +1,12 @@
+<workunit extends="com/rameses/treasury/common/templates/PaymentList.xml"
+          contextName="waterworks"
+          title="Payments">
+    <invokers>
+        <!--
+        <invoker type="waterworks_account:section" caption="Payments" 
+                 index="50" action="init" 
+                 visibleWhen="#{mode=='read'}"  />
+        -->
+       
+    </invokers>
+</workunit>

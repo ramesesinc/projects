@@ -11,21 +11,11 @@ class AFControlListModel extends CrudListModel {
     @Script("User")
     def user;
     
-    def afTypes;
-    
-    void afterInit() {
-        def m = [_schemaname: 'af', select:'objid', _limit:100 ];
-        afTypes = queryService.getList( m ).collect{ it.objid } 
-    }
-
     @PropertyChangeListener
     def listener = [
-        "query.formno" : { o->
+        "query.*" : { o->
             reload();
-        },
-        "query.respcenter" : { o->
-            reload();
-        },
+        }
     ];
     
     boolean getShowRespcenterFilter() {
@@ -41,9 +31,9 @@ class AFControlListModel extends CrudListModel {
     def getCustomFilter() {
         def str = [];
         def m = [:];
-        if( query.formno ) {
+        if( query.af ) {
             str << " afid=:afid ";
-            m.afid = query.formno;
+            m.afid = query.af.objid;
         }
         if( tag == 'COLLECTION' ) {
             str << " owner.objid = :userid ";
@@ -58,6 +48,12 @@ class AFControlListModel extends CrudListModel {
         else if( tag == "SUBCOLLECTION" ) {
             str << " assignee.objid = :userid ";
             m.userid = user.userid;
+        }
+        else {
+            if( query.issuedto?.objid ) {
+                str << " owner.objid = :userid ";
+                m.userid = query.issuedto.objid;
+            }
         }
         /*
         else {

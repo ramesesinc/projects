@@ -1,6 +1,5 @@
 import com.rameses.annotations.*;
 import com.rameses.functions.*;
-
 import treasury.facts.*;
 import waterworks.facts.*;
 
@@ -12,32 +11,42 @@ class WaterworksScheduleService {
 	@Service("HolidayService")
 	def holidaySvc;
 
+	@DataContext("waterworks_billing_schedule")
+	def skedEm;	
+
 	@ProxyMethod 
 	public def getSchedule( def p ) {
 		if( !p.scheduleid ) throw new Exception("schedule is required");
 		if( !p.year ) throw new Exception("year is required");
 		if( !p.month ) throw new Exception("month is required");
 
-		def facts = [];
-		facts << new WaterBlockSchedule( id: p.scheduleid );
-		facts << new BillingPeriod( year: p.year, month : p.month );
-		
-		//include holidays
-		facts << new HolidayFact(  
-			handler: { dt->
-				def h = holidaySvc.lookup(dt);
-				return (h!=null);
+		def sked = skedEm.find( [scheduleid: p.scheduleid, year:p.year, month: p.month ] ).first();
+		if( !sked ) {
+			def facts = [];
+			facts << new WaterBlockSchedule( id: p.scheduleid );
+			facts << new BillingPeriod( year: p.year, month : p.month );
+			
+			//include holidays
+			facts << new HolidayFact(  
+				handler: { dt->
+					def h = holidaySvc.lookup(dt);
+					return (h!=null);
+				}
+			);
+			def res = ruleSvc.execute( "waterworksbillingschedule", facts, null, null );
+			def m = [:];
+			m.scheduleid = p.scheduleid;
+			m.year = p.year;
+			m.month = p.month;
+			m.objid = m.scheduleid + '-' + m.year + '-' + String.format("%02d", m.month ); 
+			facts.each {
+				if(it instanceof VarDate ) {
+					m[(it.tag)] = it.date;
+				}
 			}
-		);
-
-		def res = ruleSvc.execute( "waterworksbillingschedule", facts, null, null );
-		def m = [:]
-		facts.each {
-			if(it instanceof VarDate ) {
-				m[(it.tag)] = it.date;
-			}
+			sked = skedEm.create( m );
 		}
-		return m;
+		return sked;
 	}
 
 

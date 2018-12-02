@@ -2,51 +2,38 @@
 	<element tablename="waterworks_consumption">
 		<field name="objid" primary="true"  prefix="WAC"/>
 		<field name="state" />
-		<field name="controlno" />
-		<complex name="account" jointype="many-to-one" ref="vw_waterworks_account" required="false">
-			<key field="acctid" target="objid"/>
-		</complex>
+
+		<!-- BEGIN_BALANCE,CAPTURE,ONLINE-->
+		<field name="txnmode" />
+		<field name="acctid" />
 	
 		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="false"
-			includefields="objid,serialno,capacity,reading,readingdate,state">
+			includefields="objid,serialno,capacity,reading,state">
 			<key field="meterid" target="objid"/>
 		</complex>
 
 		<field name="prevreading" required="true" caption="PreviousReading" type="integer" defaultValue="0"/>
-		<field name="prevreadingdate" caption="PreviousReadingDate" type="date"/>
 		<field name="reading" required="true" caption="CurrentReading" type="integer" defaultValue="0"/>
-		<field name="readingmethod" required="true" caption="ReadingMethod" defaultValue="CAPTURE"/>
 
-		<!-- USED FOR ONLINE -->
-		<field name="year" required="true"/>
-		<field name="month" required="true"/>
-		<field name="duedate" required="true" caption="Due Date"/>
-		<field name="discdate" caption="Disc. Due Date"/>
-		<field name="readingdate" required="true"/>
+		<!-- SCHEDULE -->
+		<field name="scheduleid" />
+		<complex name="schedule" ref="waterworks_billing_schedule" jointype="many-to-one" required="true">
+			<key field="scheduleid" target="objid"/>
+		</complex>
 
-		<field name="reader_objid" required="false"/>
-		<field name="reader_name" required="false" caption="ReaderName"/>
 		<field name="volume" required="true" caption="Volume"  type="integer"/>
 
 		<field name="amount" type="decimal" caption="Amount" defaultValue="0"/>
 		<field name="amtpaid" type="decimal" caption="Amount Paid" defaultValue="0"/>
 		<field name="balance" expr="amount-amtpaid" type="decimal" caption="Balance"/>
-		<field name="monthname" expr="MONTH_ARRAY( month )" caption="Month"/>
+
+		<field name="year" expr="schedule.year" caption="Year"/>
+		<!--
+		<field name="month" expr="schedule.month" caption="Month"/>		
+		-->
+		<field name="monthname" expr="MONTH_ARRAY( schedule.month )" caption="Monthname"/>
 
 		<field name="batchid" />
-		<complex name="batch" ref="waterworks_batch_billing" jointype="many-to-one" required="false"> 
-			<key field="batchid" target="objid" />
-		</complex>
-
-		<field name="discrate" type="decimal"/>
-		<field name="surcharge" type="decimal"/>
-		<field name="interest" type="decimal"/>
-		<field name="otherfees" type="decimal"/>
-		<field name="credits" type="decimal"/>
-		<field name="arrears" type="decimal"/>
-		<field name="averageconsumption" type="integer"/>
-		<field name="subtotal" expr="(arrears + otherfees + surcharge + interest) - credits" />
-		<field name="unpaidmonths"/>
-		<field name="billed"/>		
+		<field name="hold" />
 	</element>
 </schema>

@@ -1,7 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="account_receivable">
-    <invokers>
-        <invoker folderid="/explorer/master/accounting" caption="Account Receivable" action="init" 
-                 cols="code,title,org.name"
-                 role="MASTER" permission="account_receivable.view"/> 
-   </invokers>
-</workunit>

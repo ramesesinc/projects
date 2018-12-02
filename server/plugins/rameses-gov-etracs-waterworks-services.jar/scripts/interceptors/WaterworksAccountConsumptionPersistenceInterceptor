@@ -2,40 +2,24 @@ import com.rameses.annotations.*;
 
 class WaterworksAccountConsumptionPersistenceInterceptor{
 	
-	@DataContext("waterworks_consumption")
-	def consumption;
+	@DataContext("waterworks_meter")
+	def meterEm; 
 
-	@DataContext("waterworks_account")
-	def acct; 
+	@After(pattern="PersistenceService.(create|update)", eval="#{args[0]._schemaname == 'waterworks_consumption'}")
+	public void afterCreateUpdate( evt ) {
+		def zz = evt.args[0];
+		if( zz.meterid ) {
+			meterEm.find( [objid:zz.meterid ]).update( [lastreading: zz.reading, lastreadingdate: zz.schedule.readingdate] );
+		} 
+	}
 
-
-	/*
 	@Before(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'waterworks_consumption'}")
 	public void beforeRemove( evt ) {
 		def zz = evt.args[0];
-		zz.acctid = consumption.select('acctid').find([ objid: zz.objid ]).val();
+		if ( zz.batchid ) 
+			throw new Exception('Cannot delete consumption from batch billing'); 
+		if( zz.amtpaid > 0 )
+			throw new Exception("Cannot delete consumption since payment was already made");
 	}
 
-	@After(pattern="PersistenceService.(create|update|removeEntity)", eval="#{args[0]._schemaname == 'waterworks_consumption'}")
-	public void afterPersist( evt ) {
-		def zz = evt.args[0];
-		def acctid = zz.acctid; 
-		//update the maximum in the acct code.
-		def z = consumption.select("c:{MAX(billingcycleid)}").find([ acctid: acctid ]).val();
-		if ( z ) { 
-			def bc = consumption.find([ acctid: acctid, billingcycleid: z ]).first(); 
-			acct.find([ objid: acctid ]).update([ 
-				billingcycleid: z, 
-				currentreading: bc.reading, 
-				billdate: bc.billingcycle.billdate, 
-				lastdateread: (zz.dtreading? zz.dtreading : bc.billingcycle.readingdate)  
-			]);
-		} else {
-			acct.find([ objid: acctid ]).update([ 
-				billingcycleid:'{NULL}', currentreading:0, 
-				lastdateread:zz.dtreading, billdate:'{NULL}' 
-			]); 
-		} 
-	}
-	*/
 }

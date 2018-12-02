@@ -1,20 +1,18 @@
-"itemListHandler:item.*" [ withrequest == true ]{
+"itemListHandler:item.*" [ afrequest != null ]{
     editable:false;
 }
-"itemListHandler:item.*" [ withrequest == false ]{
+"itemListHandler:item.*" [ afrequest == null ]{
     editable:true;
 }
 
-"entity.(issueto|respcenter).*" [ !entity.txntype.matches('ISSUE|FORWARD|TRANSFER|RETURN') ]{
+"itemListHandler:item.cost" [ entity.txntype == 'ISSUE' ]{
+    editable:false;
+}
+
+"entity.(issueto|respcenter).*" [ entity.txntype != 'ISSUE' ]{
     visible: false;
 }
-"entity.(issueto|respcenter).*" [ entity.txntype.matches('ISSUE|FORWARD|TRANSFER|RETURN') ]{
+"entity.(issueto|respcenter).*" [ entity.txntype == 'ISSUE' ]{
     visible: true;
 }
 
-"entity.issuefrom.*" [ 1==1 ]{
-    visible: false; 
-}
-"entity.issuefrom.*" [ entity.txntype == 'TRANSFER' ]{
-    visible: true;
-}

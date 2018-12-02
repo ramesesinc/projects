@@ -15,21 +15,25 @@ public class BatchBillingModel extends WorkflowTaskModel {
    @Service("WaterworksComputationService")
    def compSvc;
     
-   @Service("WaterworksBatchBillingService")
+   @Service("WaterworksBatchBillProcessorService")
    def batchSvc;
     
-   @Service("WaterworksScheduleService")
-   def scheduleSvc;
+   @Service("WaterworksBatchBillPrintingService")
+   def printSvc;
    
-   @Script("ReportService")
-   def reportSvc;
+   @Service("WaterworksBeginBalanceService")
+   def beginBalanceSvc;
     
-   
+   def consumptionUtil = ManagedObjects.instance.create(ConsumptionUtil.class);
+    
    def selectedItem;
    def selectedBillItem;
    
    boolean hasDate = false; 
-    
+   def stat;
+     
+   def printerService = new PrinterService();
+   
    /*
     *   This method is used in style rule condition and DataTable column expression 
     */
@@ -43,61 +47,9 @@ public class BatchBillingModel extends WorkflowTaskModel {
    } 
     
    public String getTitle() {
-       if(mode == "create" ) {
-           return "New Batch Billing";
-       }
-       else {
-           return "Zone " + entity.zone?.code + " " + entity.year + "-" + entity.month.toString().padLeft(2, "0") + " (" + task.title + ")";
-       }
+        return "Zone " + entity.zone?.code + " " + entity.schedule.year + "-" + String.format('%02d', entity.schedule.month) + " (" + task.title + ")";
    } 
     
-   void reloadSchedule() {
-        def m = [scheduleid: entity.zone.schedule.objid, year: entity.year, month: entity.month ];
-        try {
-            def sked = scheduleSvc.getSchedule(m);
-            entity.putAll(sked);
-            entity.schedule = entity.zone.schedule;
-            binding.refresh();
-        }
-        catch( e) {
-            throw e;
-        }    
-   } 
-    
-   @PropertyChangeListener
-   def listener = [
-       "entity.zone" : { o->
-            if( !o.schedule?.objid ) {
-                MsgBox.err("Please specify schedule in zone");
-                return;
-            }
-            if( o.year ) {
-                int xx = ((o.year * 12)+o.month) + 1;
-                entity.year = (int)(xx / 12);
-                entity.month = (xx % 12);
-                if ( entity.month <= 0 ) entity.month = 12;
-                hasDate = true;
-                reloadSchedule();
-            }
-            else {
-                entity.year = 0;
-                entity.month = 0;
-            }
-       },
-       "entity.year" : { o->
-            if( entity.month > 0 ) reloadSchedule();
-            binding.refresh();
-       },
-       "entity.month" : { o->
-            if( entity.year > 0 ) reloadSchedule();
-            binding.refresh();
-       }
-   ];
-  
-   void afterSave() {
-       open(); 
-   }
-   
    public def open() {
         def v = super.open();
         if( task.state == 'processing' ) {
@@ -106,20 +58,24 @@ public class BatchBillingModel extends WorkflowTaskModel {
         return v;
     }
     
-    def stat;
+    public void afterSignal(def transition, def task) {
+       if( task.state == 'processing') {
+           stat = batchSvc.getBilledStatus([ objid: entity.objid ]); 
+       }
+    }
+    
     def progress = [
         getTotalCount : {
             if(stat == null ) throw new Exception("getTotalCount error. stat must not be null");
             return stat.totalcount;
         },
         fetchList: { o->
-            def p = [ _schemaname: 'waterworks_consumption' ];
-            p.putAll( o );
-            p.select = 'objid,acctid,billed,account.meter.*';
-            p.findBy = [ batchid: entity.objid ];
-            return queryService.getList( p );
+            o.batchid = entity.objid; 
+            return batchSvc.getForBillingList( o );
         },
         processItem: { o->
+            o.year = entity.schedule.year;
+            o.month = entity.schedule.month;
             batchSvc.processBilling( o );
             binding.refresh('progressLabel');
         },
@@ -128,192 +84,223 @@ public class BatchBillingModel extends WorkflowTaskModel {
         }
     ] as BatchProcessingModel;
     
+    /*
     public boolean getRedflag( def item ) {
         return ( item.averageconsumption > 0 && (item.volume < (item.averageconsumption * 0.70) || item.volume > (item.averageconsumption * 1.30))); 
     }
+    */
     
     public boolean beforeSignal( def param  ) {
        if( task.state == 'processing' ) {
-           //check stat balance befopre submitting process
+           //check stat balance before submitting process
             stat = batchSvc.getBilledStatus([ objid: entity.objid ]); 
             if( stat.balance > 0 ) throw new Exception("Cannot submit. Please complete process first");
        }
        return true;
    } 
     
-   public void afterSignal(def transition, def task) {
-       if( task.state == 'processing') {
-           stat = batchSvc.getBilledStatus([ objid: entity.objid ]); 
-       }
-   }
+   //functions 
+   def editConsumption =  { o->
+        def z = [prevreading:o.prevreading, reading:o.reading, 
+            volume:o.volume, consumptionid:o.consumptionid, acctid:o.acctid, 
+            meterid:o.meterid, meterstate: o.meterstate];
+        consumptionUtil.compute(z, null);
+        readingHandler.reload();
+    }
+   
+    def viewMeter = { o->
+        Modal.show("waterworks_meter:open", [entity:item.meter] );
+        readingHandler.reload();
+        billHandler.reload();
+    }
     
-   void updateVolumeAmount( def objid, def m ) {
-        def p = [_schemaname: 'waterworks_consumption'];
-        p.findBy = [objid: objid ];
-        p.putAll( m );
-        persistenceService.update( p );
+    def viewAccount = { o->
+        Modal.show("waterworks_account:open", [entity: [objid:o.acctid] ]); 
+        readingHandler.reload();
+        billHandler.reload();
+    }
+
+    def viewBilling = { item->
+        Modal.show("waterworks_account_billing", ['query.objid': item.acctid ]);
+    }
+    
+    def viewConsumptionHistory = { item->
+        def p = [acctid: item.acctid, year: entity.schedule?.year, month: entity.schedule?.month]; 
+        Modal.show("waterworks_consumption_history", p );
+    }
+    
+    def rebill = { item->
+        batchSvc.processBilling( [ 
+            objid:item.objid,acctid:item.acctid,consumptionid:item.consumptionid, 
+            year: entity.schedule.year, month: entity.schedule.month, meterstate:item.meterstate 
+        ] );
+        billHandler.reload();
+    }
+    
+    def hold = { item->
+        def i = item.hold ? 0 : 1;
+        def h = [:];
+        h.data = [hold: i, objid: item.consumptionid ];
+        h.fields = [];
+        h._schemaname = "waterworks_consumption";
+        h._log_schemaname = "waterworks_changelog";
+        h._bypass_check_diff = true;
+        //h.beforeSave = { o-> }
+        h.handler = {item.hold = i;}
+        Modal.show("changeinfo", h, [title: "Change Hold Status"]);
+    }
+    
+    def calcConsumption( item ) {
+        if ( item.meterid ) {
+            def p = [_schemaname: 'waterworks_meter'];
+            p.findBy = [ objid: item.meterid]; 
+            p.select = 'lastreading'; 
+            item.prevreading = queryService.findFirst( p )?.lastreading;  
+            if ( !item.prevreading ) item.prevreading = 0;
+        }
+        
+        def o = [prevreading: item.prevreading, reading:item.reading];
+        o.acctid = item.acctid;
+        o.meterid = item.meterid;
+        o.consumptionid = item.consumptionid;
+        o.meterstate = item.meterstate;
+        o.volume = item.volume;
+        return compSvc.compute( o );
+    }
+   
+    def recomputeConsumption = {item-> 
+        def r = calcConsumption( item ); 
+        if ( r ) item.putAll( r ); 
+        readingHandler.refresh();
+        return null; 
     } 
     
-   def actions = [
-       "view_meter" : {item->  
-            Modal.show("waterworks_meter:open", [entity: item.account.meter ] );
-            readingHandler.reload();
-        },
-       "view_account": {item-> 
-            Modal.show("waterworks_account:open", [entity: item.account ]); 
-            readingHandler.reload();
-        },
-       "view_billing": {item-> 
-            Modal.show("waterworks_account_billing", ['query.objid': item.acctid ]); 
-        },
-       "view_consumption_hist": {item-> 
-             Modal.show("waterworks_consumption_history", [item: item] );
-        },
-        "rebill": { item->
-            batchSvc.processBilling( item );
+    def beginBalance = { item->
+        def h = [:];
+        h.handler = { o->
+            def p = [:];
+            p.putAll( o ); 
+            p.billid = item.objid;
+            p.acctid = item.acctid; 
+            p.meterid = item.meterid;
+            p.meterstate = item.meterstate; 
+            p.year = o.year;
+            p.month = o.month; 
+            p.scheduleid = entity.schedule.scheduleid;
+            p.consumptionid = item.consumptionid;
+            beginBalanceSvc.save( p );
             readingHandler.reload();
             billHandler.reload();
-        },
-        "change_prev_reading" : { item ->
-            def h = [:];
-            h.fields = [
-                [name:'prevreading', caption:'Enter Prev Reading', datatype:'integer'],
-                [name:'prevreadingdate', caption:'Prev Reading Date', datatype:'date' ]
-            ];
-            h.data = [ prevreading: item.prevreading, prevreadingdate: item.prevreadingdate ];
-            h.entity = item;
-            h.reftype = "waterworks_consumption";
-            h.refid = item.objid;
-            Modal.show("waterworks_changeinfo", h, [title:"Enter Prev Reading"]);
-            readingHandler.reload();
-        },
-        "change_volume": { item->
-            def h = [:];
-            h.fields = [
-                [name:'volume', caption:'Enter Volume', datatype:'integer'],
-                [name:'amount', caption:'Amount', datatype:'decimal', enabled:false, depends:"volume" ]
-            ];
-            h.data = [ volume: item.volume, amount: item.amount ];
-            h.entity = item;
-            h.listener = [ "volume" :  { ii, newValue -> ii.amount = newValue * 10; } ]
-            h.reftype = "waterworks_consumption";
-            h.refid = item.objid;
-            Modal.show("waterworks_changeinfo", h, [title:"Enter Volume"]);
-            readingHandler.reload();
-        }
-   ] 
+        };
+        h.fields = [];
+        h.fields << [name:'year', caption:'Year', type:'integer'];
+        h.fields << [name:'month', caption:'Month', type:'monthlist'];
+        h.fields << [name:'amount', caption:'Begin Balance', type:'decimal'];
+        h.fields << [name:'reading', caption:'Last Reading', type:'integer'];
+        Modal.show("dynamic:form", h, [title:"Begin Balance"] );
+    };
     
-   def billHandler = [
+    def getBillHandlerList() {
+        def mnuList = [];
+        mnuList << [value: 'View Account', func: viewAccount];
+        if(task?.state.matches('for-review|for-reading') ) {
+            mnuList << [value: 'Recompute Bill', func:rebill];
+            mnuList << [value: 'Begin Balance', func: beginBalance];
+        } 
+        mnuList << [value: 'View Bill', func: viewBilling];
+        
+        return  mnuList; 
+    }
+   
+    def getReadingHandlerList(def item) {
+        def meterid = item.meterid; 
+        def mnuList = [];
+        if( task?.state == "for-reading" ) {
+            //if(item.hold == 0 ) mnuList << [value: 'Edit Reading/Volume', func:editConsumption];
+            if(item.hold == 0 ) mnuList << [value: 'Hold', func:hold];
+            if(item.hold == 1 ) mnuList << [value: 'Activate', func:hold];
+            mnuList << [value: 'Recompute', func: recomputeConsumption];
+        }
+        mnuList << [value: 'View Account', func:viewAccount];
+        mnuList << [value: 'View Consumption History', func: viewConsumptionHistory];
+        return  mnuList; 
+    }
+   
+   
+    def billHandler = [
         getContextMenu: { item, name-> 
-            def mnuList = [];
-            mnuList << [value: 'View Account', id:'view_account'];
-            if(task?.state == 'for-review' ) {
-                mnuList << [value: 'Recompute Bill', id:'rebill']
-            } 
-            mnuList << [value: 'View Bill', id:'view_billing'];
-            return  mnuList; 
+            return getBillHandlerList();
 	}, 
 	callContextMenu: { item, menuitem-> 
-            def act = actions[(menuitem.id)];
-            act( item );
+            menuitem.func( item );
 	}    
     ];
 
     def readingHandler = [
-        isColumnEditable: {item, colName -> 
-            if( colName != "reading" ) return false;
-            if( task?.state != "for-reading") return false; 
-            
-            def meterid = item.account?.meterid; 
-            if ( meterid == null ) meterid = item.account?.meter?.objid; 
-            if( meterid == null ) return false; 
-            return true;
-        },
-        beforeColumnUpdate: { item, colName, value ->
-            if( colName != "reading") return false;
-            try {
-                if( value >= item.account.meter.capacity ) {
-                    throw new Exception("Reading must be less than meter capacity");
-                }
-                if( value < item.prevreading ) {
-                    value = value + item.account.meter.capacity;
-                }
-                def p = [:];
-                p.volume = value - item.prevreading;
-                p.objid = item.acctid; 
-                
-                def res = compSvc.compute(p);
-                res.reading = value;
-                if(!res.volume) res.volume = p.volume;
-                updateVolumeAmount( item.objid, res );
-                item.putAll( res );
-                return true;
-            }
-            catch(e) {
-                MsgBox.err(e);
-                return false;
-            }
-        },
         getContextMenu: { item, name-> 
-            def mnuList = [];
-            def meterid = item.account?.meterid; 
-            if ( meterid == null ) meterid = item.account?.meter?.objid;
-            
-            if ( meterid != null && task?.state == 'for-reading' ) {
-                mnuList << [value: 'Change Prev Reading', id:'change_prev_reading'];
-                mnuList << [value: 'View Meter', id:'view_meter'];
-            } 
-            if( task?.state == "for-reading" ) {
-                mnuList << [value: 'Change Volume', id:'change_volume'];
-            }
-            if( task?.state == 'for-review') {
-                mnuList << [value: 'Recompute', id:'rebill'];
-            }
-            mnuList << [value: 'View Account', id:'view_account'];
-            mnuList << [value: 'View Consumption History', id:'view_consumption_hist'];
-            return  mnuList; 
+            return getReadingHandlerList(item);
 	}, 
 	callContextMenu: { item, menuitem-> 
-            def act = actions[(menuitem.id)];
-            act( item );
-	}
-    ];
+           menuitem.func( item );
+	},
+        isColumnEditable: {item,colName->
+            if(task?.state != "for-reading") return false;
+            if(colName == "reading") {
+                return true; 
+            }
+            else if(colName == "volume") {
+                return (item.meterstate!="ACTIVE");
+            }
+        },
+        onColumnUpdate: { item,colName->
+            if(colName.matches("reading|volume")) {
+                def res = calcConsumption(item);
+                item.putAll(res);
+            }
+        }
+    ] ;
     
-   def df = new java.text.SimpleDateFormat("yyyy-MM-dd"); 
+   def getPrinterList() {
+       return printerService.getPrinters(); 
+       //return ['EPSON FX-2175'];
+   }
+   
+   def cancelPrint = false;
    public void printBill() {
-       def mz = [_schemaname: 'waterworks_consumption'];
-       mz.findBy = [batchid: entity.objid];
-       mz.orderBy = 'account.stuboutnode.indexno'; 
-       def list = queryService.getList(mz);
-       list.each {
-           def p = [:];
-            p.putAll( entity ); 
-            p.putAll( it );
-            p.penalty = it.surcharge + it.interest;
-            p.grandtotal = it.amount + p.penalty;
-            p.classification = p.account.classification?.toString().padRight(3," ")[0..2];
-            p.blockseqno = (p.zone?.code +'-'+ p.account.stuboutnode?.indexno);
-            reportSvc.print( "waterworks_consumption" , [ o: p ] );
+       def printerName = null;
+       def startno = null;
+       def h = [:];
+       h.handler = { v->
+           startno = v.billno;
+           printerName = v.printername; 
+       };
+       h.fields = [];
+       h.fields << [name:"billno", caption:'Enter Start Bill No', type:'integer', required:true ];
+       h.fields << [name:"printername", caption:'Select Printer', type:'combo', required:true, itemsObject:getPrinterList() ];
+       Modal.show("dynamic:form", h, [title: 'Start Bill Printing'] );
+       if(!startno) return;
+       
+       
+       def parm = [refbillno: startno, batchid : entity.objid ]; 
+       while(true) {
+           def res = printSvc.process( parm );
+           def list = res.list;
+           if(!list) break;
+           if(cancelPrint) break;
+           list.each {
+               printerService.printString(printerName, it.toString() );
+           }
+           waitPrintProc(); 
+           parm.refbillno = res.refbillno;
+           parm.printed_list = res.printed_list; 
        }
+       MsgBox.alert("printing finished");
    } 
-    
-   //BACKUP CODES ----->
-   /*
-   void viewSchedule() {
-        def m = [scheduleid: o.schedule.objid, year: year, month: month ];
-        try {
-            def sked = scheduleSvc.getSchedule(m);
-            entity.putAll(sked);
-            entity.schedule = o.schedule;
-            binding.refresh();
+   
+    private void waitPrintProc() {
+        try { 
+            new java.util.concurrent.LinkedBlockingQueue().poll(1, java.util.concurrent.TimeUnit.SECONDS);
+        } catch (Throwable t) {
         }
-        catch( e) {
-            MsgBox.err( e );
-        }
-   } 
-   */    
-  
-    
-    
-    
+    }
 }

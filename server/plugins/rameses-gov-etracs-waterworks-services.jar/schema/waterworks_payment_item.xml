@@ -5,9 +5,7 @@
 			<key field="parentid" target="objid"/>
 		</complex>
 		
-		<field name="item_objid" required="true" />
-		<field name="item_title" required="true" />
-
+		<field name="parentid"  />
 		<field name="refid"  />
 		<field name="reftype"  />
 
@@ -21,7 +19,7 @@
 		<field name="interest"  type="decimal"/>
 
 		<!-- derived fields -->
-		<field name="total" expr="amount + discount + surcharge + interest" type="decimal"/>	
+		<field name="total" expr="(amount + surcharge + interest) - discount" type="decimal"/>	
 		<field name="remarks"  />
 	</element>
 </schema>

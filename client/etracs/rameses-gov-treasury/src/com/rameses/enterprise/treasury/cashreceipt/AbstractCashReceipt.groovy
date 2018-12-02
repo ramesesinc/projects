@@ -7,7 +7,12 @@ import com.rameses.osiris2.reports.*;
 import com.rameses.osiris2.common.*
 import com.rameses.util.*;
 
-        
+/***************************************************************************
+* DO NOT TOUCH THIS CODE. 
+* For new developments refer instead to 
+* com.rameses.enterprise.treasury.models.AbstractCashReceipt
+***************************************************************************/
+@Deprecated        
 public abstract class AbstractCashReceipt {
         
     @Binding
@@ -212,6 +217,12 @@ public abstract class AbstractCashReceipt {
             throw new Exception("Please select at least an item to pay");
         if( entity.totalcash + entity.totalnoncash == 0 )
             throw new Exception("Please make a payment either cash or check");
+            
+        def numformat = new java.text.DecimalFormat('0.00'); 
+        entity.totalcash = new BigDecimal( numformat.format( entity.totalcash )); 
+        entity.cashchange = new BigDecimal( numformat.format( entity.cashchange )); 
+        entity.totalnoncash = new BigDecimal( numformat.format( entity.totalnoncash )); 
+        entity.amount = new BigDecimal( numformat.format( entity.amount )); 
         if( (entity.totalcash-entity.cashchange) + entity.totalnoncash != entity.amount )
             throw new Exception("Total cash and total non cash must equal the amount");    
             

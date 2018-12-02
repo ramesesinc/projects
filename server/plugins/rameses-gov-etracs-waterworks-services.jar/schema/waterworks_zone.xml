@@ -12,9 +12,16 @@
 			<key field="sectorid" target="objid" />
 		</complex>	
 
-		<field name="year"  type="integer" caption="Last Year"/>
-		<field name="month" type="integer" caption="Last Month"/>
+		<field name="batchid" />
+		<complex name="batch" ref="waterworks_batch_billing" jointype="many-to-one" required="false"  includefields="objid,month,year">
+			<key field="batchid" target="objid" />
+		</complex>	
 
+		<field name="nextscheduleid" />
+		<complex name="nextschedule" ref="waterworks_billing_schedule" jointype="many-to-one" required="true">
+			<key field="nextscheduleid" target="objid"/>
+		</complex>
+		
 	</element>
 
 </schema>

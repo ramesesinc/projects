@@ -17,7 +17,9 @@ public class ConsumptionHistoryModel {
     def qryService;
     
     int months = 3;
-    def item;
+    def acctid;
+    int year;
+    int month;
     
     int average;
     def minimum;
@@ -35,12 +37,11 @@ public class ConsumptionHistoryModel {
     ];
     
     void buildList() {
-        def m = [_schemaname: 'waterworks_consumption'];
-        int yr = item.year.toString().toInteger();
-        int mon = item.month.toString().toInteger();
-        m.findBy = [acctid: item.acctid];
-        m.where = [" ((year*12)+month) < :yearmonth", [yearmonth: ((yr*12)+mon) ]];
-        m.orderBy = "year DESC,month DESC";
+        def m = [_schemaname: 'vw_waterworks_consumption'];
+        m.findBy = [acctid: acctid];
+        m.where = ["((year * 12)+month) < :ym", [ ym: ((year * 12)+month)]];
+        m.orderBy = "year DESC, month DESC";
+        m._start = 0;
         m._limit = months;
         list = qryService.getList( m );
         average = 0;

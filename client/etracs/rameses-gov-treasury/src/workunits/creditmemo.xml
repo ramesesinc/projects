@@ -2,6 +2,8 @@
    <invokers>
         <invoker type="creditmemo:create" caption="New Credit Memo" action="create" role="MASTER" />
         <invoker type="creditmemo:open" caption="Credit Memo" action="open" role="MASTER" />
+        
+        <invoker type="formActions" caption="Post" action="post" visibleWhen="#{mode=='read' &amp;&amp; entity.state == 'OPEN'}" />
    </invokers>
    
    <code class="com.rameses.enterprise.treasury.models.CreditMemoModel" />

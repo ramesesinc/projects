@@ -11,6 +11,9 @@ class CollectionVoucherInitialModel extends CrudListModel {
     @Service("CollectionVoucherService")
     def collSvc;    
     
+    @Service('Var') 
+    def varSvc; 
+    
     def controldate;
     def datesList;
     def selectedRemittance;
@@ -18,6 +21,8 @@ class CollectionVoucherInitialModel extends CrudListModel {
     def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
     def totalAmount = 0.0;
     def remBalance = 0.0; 
+    
+    boolean liquidate_remittance_as_of_date; 
     
     @PropertyChangeListener
     def listener = [
@@ -33,17 +38,22 @@ class CollectionVoucherInitialModel extends CrudListModel {
         remBalance = 0.0;
         remittancelist = null; 
         if ( !controldate ) return;
+        
         def m = [_schemaname: 'remittance' ];
-        m.select = "objid,posted:{CASE WHEN state='POSTED' THEN 1 ELSE 0 END},controlno,controldate,collector.name,amount,totalcash,totalcheck,totalcr,state"
-        m.where = [" NOT(state = 'DRAFT') AND collectionvoucherid IS NULL AND controldate =:cdate", [cdate:controldate] ];
+        m.select = "objid,posted:{CASE WHEN state='POSTED' THEN 1 ELSE 0 END},controlno,controldate,dtposted,collector.name,amount,totalcash,totalcheck,totalcr,state"
+        
+        def qstr = " controldate = :cdate "; 
+        if ( liquidate_remittance_as_of_date ) qstr = " controldate <= :cdate "; 
+        
+        m.where = [""+ qstr +" AND collectionvoucherid IS NULL AND state <> 'DRAFT' ", [ cdate: controldate ]];
+        m.orderBy = "controldate, collector_name, dtposted";
         remittancelist = queryService.getList( m );
-        remittancelist.sort{ it.collector?.name.toString() }
     }
     
     void buildDatesList() {
         def m = [_schemaname:'remittance'];
         m.select = "controldate";
-        m.where = [" NOT(state = 'DRAFT') AND collectionvoucherid IS NULL"];
+        m.where = [" collectionvoucherid IS NULL AND state <> 'DRAFT' "];
         m.groupBy = "controldate";
         m.orderBy = "controldate"; 
         def xlist  = queryService.getList(m);
@@ -51,10 +61,12 @@ class CollectionVoucherInitialModel extends CrudListModel {
     }
     
     void afterInit() {
+        def opt = varSvc.getProperty('liquidate_remittance_as_of_date', '0'); 
+        liquidate_remittance_as_of_date = opt.toString().toLowerCase().matches('1|true');  
+
         buildDatesList();
-        if(!datesList) 
-            throw new Exception("There are no remittances to liquidate"); 
-            
+        if ( !datesList ) throw new Exception("There are no remittances to liquidate"); 
+        
         controldate = datesList.first();
         buildRemittanceList(); 
     }

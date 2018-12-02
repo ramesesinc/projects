@@ -1,0 +1,77 @@
+import com.rameses.annotations.*; 
+
+class WaterworksBeginBalanceService {
+
+	@Service('WaterworksScheduleService') 
+	def schedSvc; 
+
+	@Service('WaterworksComputationService') 
+	def compuSvc; 
+
+	@Service("WaterworksBatchBillProcessorService")
+   	def batchSvc;
+
+	@DataContext('vw_waterworks_consumption')
+	def vwcons_db; 
+
+	@DataContext('waterworks_consumption')
+	def cons_db; 
+
+	@DataContext('waterworks_meter')
+	def meter_db; 
+
+	@DataContext('waterworks_credit')
+	def wc_credit; 
+
+	@ProxyMethod 
+	public void save( param ) {
+		def sched = schedSvc.getSchedule([ scheduleid: param.scheduleid, year: param.year, month: param.month ]); 
+
+		if( param.amount > 0 ) {
+			def wc = [:]; 
+			wc.acctid = param.acctid; 
+			wc.scheduleid = sched.objid; 
+			wc.schedule = sched; 
+			wc.prevreading = param.reading; 
+			wc.reading = param.reading; 
+			wc.amount = param.amount; 
+			wc.amtpaid = 0.0;
+			wc.volume = 0;
+			wc.txnmode = 'BEGIN_BALANCE'; 
+			wc.hold = 0;
+			wc.state = 'DRAFT'; 
+			wc.rate = 0.0;
+			cons_db.create( wc );
+		}
+		else if( param.amount < 0 ) {
+			def cc = [:];
+			cc.acctid = param.acctid;
+			cc.amount = param.amount * -1;
+			cc.amtpaid = 0;
+			cc.remarks = "BEGIN_BALANCE";
+			wc_credit.create( cc );		
+		}
+
+		def u = [:]; 
+		u.prevreading = param.reading; 
+		cons_db.find([ objid: param.consumptionid ]).update( u ); 
+
+		def wc = vwcons_db.find([ objid: param.consumptionid ]).first();
+
+		wc.meterstate = param.meterstate; 
+		def res = compuSvc.compute( wc ); 
+
+		
+
+		u = [volume: res.volume, amount: res.amount ]; 
+		cons_db.find([ objid: param.consumptionid ]).update( u ); 
+
+		meter_db.find([ objid: wc.meterid ]).update([ lastreading: param.reading, lastreadingdate: sched.readingdate ]); 
+	
+		batchSvc.processBilling([ 
+			objid: param.billid, acctid: param.acctid, 
+			consumptionid: param.consumptionid, 
+			year: wc.year, month: wc.month 
+		]); 
+	}
+}

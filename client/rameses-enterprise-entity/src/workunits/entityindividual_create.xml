@@ -5,7 +5,7 @@
         <invoker type="individualentity:create" caption="Individual Entity (Create)" action="create" target="popup" role="MASTER" permission="entityindividual.create"/>
         
         <!-- used to check if we can allow dupplicate -->
-        <invoker type="entityindividual:approveduplicate" role="APPROVER" permission="individualentity.approveduplicate" />
+        <invoker type="entityindividual:approveduplicate" role="APPROVER" permission="entityindividual.approveduplicate" />
     </invokers>
     
     <code class="com.rameses.entity.models.NewIndividualEntityModel" />

@@ -41,8 +41,8 @@ class CashReceiptPrintoutModel extends ReportModel {
             
             dates << sdf.format( it.refdate );
         }
-        reportData.refno = checks.join(', '); 
-        reportData.refdate = dates.join(', ');
+        reportData.refno = checks.unique().join(', '); 
+        reportData.refdate = dates.unique().join(', ');
         reportData.voided = reportData.voided.toString().matches("1|true") ? 1 : 0; 
 
         def receiptdate = reportData.receiptdate; 

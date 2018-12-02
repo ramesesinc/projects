@@ -1,23 +1,12 @@
-/*
- * AccountPage.java
- *
- * Created on February 27, 2011, 12:48 PM
- */
-
 package com.rameses.enterprise.treasury.views;
 
 
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
 
-/**
- *
- * @author  jzamss
- */
 @Template(CrudFormPage.class)
 public class CollectionTypePage extends javax.swing.JPanel {
     
-    /** Creates new form AccountPage */
     public CollectionTypePage() {
         initComponents();
     }
@@ -237,8 +226,8 @@ public class CollectionTypePage extends javax.swing.JPanel {
                 new Object[]{"name", "account.title"}
                 , new Object[]{"caption", "Account Title"}
                 , new Object[]{"width", 200}
-                , new Object[]{"minWidth", 200}
-                , new Object[]{"maxWidth", 250}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -253,7 +242,7 @@ public class CollectionTypePage extends javax.swing.JPanel {
                 , new Object[]{"caption", "Tag"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -268,7 +257,7 @@ public class CollectionTypePage extends javax.swing.JPanel {
                 , new Object[]{"caption", "Value Type"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -283,7 +272,7 @@ public class CollectionTypePage extends javax.swing.JPanel {
                 , new Object[]{"caption", "Default Value"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -298,7 +287,7 @@ public class CollectionTypePage extends javax.swing.JPanel {
                 , new Object[]{"caption", "Sort Order"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}

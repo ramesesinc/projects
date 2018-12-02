@@ -1,6 +1,8 @@
 <workunit>
     <invokers>
+        <!--
         <invoker type="formActions" caption="Apply Payment" action="applyPayment"/> 
+        -->
     </invokers>
      <!-- List Actions -->
     <code class="com.rameses.treasury.common.models.CreditListModel" />

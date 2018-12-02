@@ -7,6 +7,9 @@ class RemittanceReportService  {
 	@PersistenceContext("main")
 	def em; 
 
+	@DataContext("remittance")
+	def remdb;
+
 	@ActiveDB('remittancereport')
 	def db;
 
@@ -28,28 +31,29 @@ class RemittanceReportService  {
 	@Service 
 	def self; 
 
-	@DataContext("remittance")
-	def remdb;
+	def formatSeries( series, serieslength ) { 
+		if ( !series ) return null; 
+		else if ( !serieslength ) return series.toString(); 
 
-	def formatSeries( series, serieslength) {
-		if( ! series ) return null ;
-		if(! serieslength) return series+""
-
-		return  (series +"").padLeft( serieslength, '0')
+		return  series.toString().padLeft( serieslength, '0' ); 
 	}
 
-	def getRemittance( def o ) {
-		def remittance =  remdb.read( o );
-		remittance.remittanceid = remittance.objid; 
+	def getRemittance( o ) { 
+		def rem =  remdb.read( o ); 
+		if ( !rem.txnno ) rem.txnno = rem.controlno; 
+		if ( !rem.remittancedate ) rem.remittancedate = rem.controldate; 
+		if ( rem.totalnoncash == null ) rem.totalnoncash = rem.totalcheck + rem.totalcr; 
 
-		Base64Cipher cipher = new Base64Cipher()
-		if( remittance.collector?.signature !=null ) {
-			remittance.collector.signature = cipher.decode( remittance.collector.signature );
+		def cipher = new Base64Cipher()
+		if ( rem.collector?.signature ) {
+			rem.collector.signature = cipher.decode( rem.collector.signature );
 		}
-		if(remittance.liquidatingofficer?.signature) {
-			remittance.liquidatingofficer.signature =  cipher.decode(remittance.liquidatingofficer.signature)
+		if ( rem.liquidatingofficer?.signature ) { 
+			rem.liquidatingofficer.signature = cipher.decode( rem.liquidatingofficer.signature ); 
 		}
-		return remittance;
+
+		rem.remittanceid = rem.objid; 		
+		return rem;
 	}
 
 	@ProxyMethod 
@@ -174,20 +178,25 @@ class RemittanceReportService  {
 
 	@ProxyMethod 
 	public def generateReportByFund( rem, fund ) { 
+		def funds = [];
+		if ( fund?.objid ) funds << fund.objid; 
+
 		def data = rem.clone();
-		def params = [ remittanceid: data.objid, fundid: (fund ? fund.objid : '%'), fundfilter:null]; 
+		def params = [ remittanceid: data.objid ]; 
 		if ( data._INCLUDE_SUBFUND == true ) { 			
-			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
-			if ( list ) { 
-				list << params.fundid; 
-				params.fundfilter = "'"+ list.join("','") +"'"; 
-			} 
+			def list = fund_em.findAllSubAcct([ objid: fund?.objid ]).collect{ it.objid }   
+			if ( list ) funds.addAll( list );  
+		} 
+
+		params.fundfilter = ""; 
+		if ( funds ) { 
+			params.fundfilter = " AND fund.objid IN ('"+ funds.join("','") +"')"; 
 		} 
 
 		data.receipts = db.getReceiptsByRemittanceFund( params );
-		if( ! data.receipts ) throw new Exception("No record(s) found ");
+		if ( !data.receipts ) throw new Exception("No record(s) found ");
 
-		data.acctsummaries = db.getRevenueItemSummaryByFund( params );
+		data.acctsummaries = db.getRevenueItemSummaryByFund( params ); 
 		resolveCompatibility( data ); 		
 		return data;
 	}
@@ -195,15 +204,20 @@ class RemittanceReportService  {
 
 	@ProxyMethod 
 	def generateDetailedReportByFund(rem, fund) {
-		def data = rem.clone() 
-		def params = [ remittanceid: data.objid,  fundid: (fund ? fund.objid : '%')];
+		def funds = []; 
+		if ( fund?.objid ) funds << fund.objid; 
+
+		def data = rem.clone();
+		def params = [ remittanceid: data.objid ];
  		if ( data._INCLUDE_SUBFUND == true ) { 			
 			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
-			if ( list ) { 
-				list << params.fundid; 
-				params.fundfilter = "'"+ list.join("','") +"'"; 
-			} 
+			if ( list ) funds.addAll( list );  
 		} 
+
+		params.fundfilter = ""; 
+		if ( funds ) {
+			params.fundfilter = " AND fund.objid IN ('"+ funds.join("','") +"') "; 
+		}
 
 		data.serials = db.getSerialReceiptsByRemittanceFund( params ); 
 		data.nonserials = db.getNonSerialReceiptDetailsByFund( params );
@@ -214,7 +228,7 @@ class RemittanceReportService  {
 	@ProxyMethod 
 	def generateDetailedReport(rem) {
 		def data = rem.clone() 
-		def params = [remittanceid: data.objid, fundid: '%' ]
+		def params = [ remittanceid: data.objid, fundfilter: '' ]; 
 		data.receipts = db.getReceiptsGroupByFund( params );
 		data.acctsummaries = db.getRevenueItemSummaryByFund( params ); 
 		resolveCompatibility( data ); 
@@ -223,14 +237,19 @@ class RemittanceReportService  {
 
 	@ProxyMethod 
 	def generateReportByRevenueItem( rem, fund ) {
-		def params = [ remittanceid: rem.objid,  fundid: (fund? fund.objid: '%') ]; 
+		def funds = []; 
+		if ( fund?.objid ) funds << fund.objid; 
+
+		def params = [ remittanceid: rem.objid ]; 
  		if ( rem._INCLUDE_SUBFUND == true ) { 			
 			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
-			if ( list ) { 
-				list << params.fundid; 
-				params.fundfilter = "'"+ list.join("','") +"'"; 
-			} 
+			if ( list ) funds.addAll( list );  
 		} 
+
+		params.fundfilter = ""; 
+		if ( funds ) {
+			params.fundfilter = " AND fund.objid IN ('"+ funds.join("','") +"') "; 
+		}
 
 		rem.acctsummaries = db.getRevenueItemSummaryByFund( params );
 		if ( !rem.acctsummaries ) throw new Exception("No record(s) found ");
@@ -316,11 +335,12 @@ class RemittanceReportService  {
 		return [ header:header, items:items]
 	}
 
-	// edit after the cash ticket will be done
 	@ProxyMethod
 	def generateReportByCashTicket( entity ) {
-		entity.cashticketsummaries = db.getCashTicketCollectionSummaries(entity)
-		entity.amount = 0.0 
+		if ( !entity.remittanceid ) entity.remittanceid = entity.objid; 
+
+		entity.amount = 0.0;
+		entity.cashticketsummaries = db.getCashTicketCollectionSummaries(entity); 
 		if (entity.cashticketsummaries) {
 			entity.amount = entity.cashticketsummaries.amount.sum();
 		}

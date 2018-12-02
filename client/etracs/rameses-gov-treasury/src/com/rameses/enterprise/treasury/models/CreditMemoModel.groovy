@@ -11,6 +11,9 @@ import com.rameses.util.*;
 
 public class CreditMemoModel extends CrudFormModel {
 
+    @Service("CreditMemoService")
+    def cmSvc;
+    
     def depositoryFundid;
     
     void afterCreate() {
@@ -92,6 +95,12 @@ public class CreditMemoModel extends CrudFormModel {
     
     public void afterRemoveItem(String name, def item ) {
         updateBalances();
+    } 
+    
+    public void post() {
+        if(!MsgBox.confirm("You are about to post this document. Proceed?")) return;
+        cmSvc.post([objid: entity.objid]);
+        entity.state = 'POSTED';
     } 
     
 }    

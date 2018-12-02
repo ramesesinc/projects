@@ -29,16 +29,18 @@ public class CreditListModel extends CrudListModel {
     public String getSchemaName() {
         String s = super.getSchemaName();
         if(!s) return getContextName() + "_credit";
+        return s;
     }
     
-    def _parentkey = "parentid";
+    def _parentkey;
     public String getParentkey() {
         if(_parentkey ) return _parentkey;
         _parentkey = invoker.properties.parentkey;
         if(_parentkey) return _parentkey;
         _parentkey = workunit?.info?.workunit_properties?.parentkey;
-        if ( _parentkey ) return _parentkey; 
-        throw new Exception("Please indicate a parentkey")      
+        if ( _parentkey ) return _parentkey;
+        _parentkey = "parentid";
+        return _parentkey;     
     }
     
     public String getPaymentSchemaName() {
@@ -68,10 +70,10 @@ public class CreditListModel extends CrudListModel {
             throw new Exception("caller entity must not be null in CreditListModel.getCustomFilter")
         arr <<  parentkey + "= :parentid";
         if( includePaid  != true ) {
-            arr << " amount - amtpaid > 0 ";
+            arr << " (amount - amtpaid) > 0 ";
         } 
         def p = [ parentid : caller.entity.objid];
-        return [arr.join(" AND "), p ]
+        return [arr.join(" AND "), p ];
     }
     
     public def open() {
@@ -125,6 +127,30 @@ public class CreditListModel extends CrudListModel {
         def str = selectedPaymentItem.parent?.reftype + "info:open";
         def op = Inv.lookupOpener( str, m );
         Modal.show(op);
+    }
+    
+    def addNewEntry() {
+        return Inv.lookupOpener( schemaName + ":create" , [parent: caller.entity ]  );
+    }
+    
+    def editEntry() {
+        return openEntry(); 
+    }
+    
+    def openEntry() {
+        return Inv.lookupOpener( schemaName + ":open" , [entity: selectedItem ]);
+    }
+
+    void removeEntry() {
+        if(!selectedItem) throw new Exception("Please select an item first");
+        if(selectedItem.amtpaid > 0 ) throw new Exception("Cannot delete item if amtpaid is not zero");
+        
+        if ( MsgBox.confirm('You are about to remove the selected item?')) {
+            def m = [_schemaname: schemaName ];
+            m.findBy = [objid:selectedItem.objid];
+            persistenceService.removeEntity( m );
+            reload();
+        }
     }
     
 

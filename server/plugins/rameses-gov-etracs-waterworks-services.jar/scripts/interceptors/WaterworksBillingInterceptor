@@ -8,12 +8,12 @@ import waterworks.facts.*;
 import com.rameses.annotations.*;
 import com.rameses.util.*;
 
-class WaterworksBillingInfoInterceptor {
+class WaterworksBillingInterceptor {
 	
 	@DataContext('waterworks_account')
 	def acctEm; 
 
-	@DataContext("waterworks_consumption")
+	@DataContext("vw_waterworks_consumption")
 	def wcEm;
 
 	@DataContext("waterworks_credit")
@@ -28,11 +28,13 @@ class WaterworksBillingInfoInterceptor {
 		def p = obj.params;
 
 		def acct = null;
-		if ( p.id ) {
-			acct = acctEm.find([ acctno: p.id ]).first(1);
-		} else if( p.objid ) {
-			acct = acctEm.find([ objid: p.objid ]).first(1);
-		} 
+		try {
+			if ( p.id ) {
+				acct = acctEm.find([ acctno: p.id ]).first(1);
+			} else if( p.objid ) {
+				acct = acctEm.find([ objid: p.objid ]).first(1);
+			} 
+		}catch(ex){;}
 
 		if ( !acct ) throw new Exception("Waterworks Account not found");
 
@@ -51,6 +53,7 @@ class WaterworksBillingInfoInterceptor {
 
 		def arr = [];
 		def wp = [:];
+
 		if ( p.params.payoption ) { 
 			arr << "((year * 12)+month) <= :yearmonth";
 			wp.yearmonth = (p.params.payoption.year * 12)+p.params.payoption.month;
@@ -67,7 +70,6 @@ class WaterworksBillingInfoInterceptor {
 		select = "year,month,item.*,amount:{amount-amtpaid},refid:{objid},reftype:{'waterworks_otherfee'}";
 		conList = wotherEm.find([acctid: bill.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
 		list.addAll( conList );
-
 	}
 
  	@After(pattern="BillingInfoHandler.getCreditItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
@@ -76,7 +78,7 @@ class WaterworksBillingInfoInterceptor {
 		def bill = p.headerinfo; 
 
 		def s =  "amount:{amtpaid-amount},refid:{objid},reftype:{'waterworks_credit'},item.*"
-		def conList = wcCreditEm.find( [parentid: bill.acctid] ).where(" amount - amtpaid > 0 ").select(s).list();
+		def conList = wcCreditEm.find( [acctid: bill.acctid] ).where(" amount - amtpaid > 0 ").select(s).list();
 		evt.result.addAll( conList );
 	}
 
@@ -109,11 +111,12 @@ class WaterworksBillingInfoInterceptor {
 			}
 		} 
 		
-		if(data.attributes) {
-			data.attributes.each {
-				factBuilder.facts << new Attribute( it.attribute );
+		if( data.attributes ) {
+			data.attributes*.attribute.each {
+				factBuilder.facts << new WaterworksAttribute(name:it.name);
 			}
 		}
+
 	}
 
 	/*******************************************

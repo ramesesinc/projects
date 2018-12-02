@@ -41,6 +41,7 @@ class CollectionVoucherService  {
 	public def create( def pp ) {
 		if ( !pp.ids ) throw new Exception('Please specify at least one remittance to liquidate'); 
 
+
 		def wheres = []; 
 		wheres << "objid IN ('"+ pp.ids.join("','") +"')"; 
 		wheres << "state = 'POSTED' AND collectionvoucherid IS NULL"; 
@@ -62,7 +63,6 @@ class CollectionVoucherService  {
 		m.liquidatingofficer = [objid:env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
 		m = cvEm.create( m );
 
-		println '\n\n----------'
 
 		def z = [ collectionvoucherid: m.objid ]; 
 		//update the collection voucher id for each remittance
@@ -133,7 +133,11 @@ class CollectionVoucherService  {
 				cvFundEm.find([ objid: it.objid ]).update([ controlno: txnno ]); 
 			} 
 		} 
-		cvEm.find([ objid: p.objid ]).update( m ); 	
+		cvEm.find([ objid: p.objid ]).update( m ); 
+
+		//auto post to ledger
+		postJev( [objid: p.objid] );
+
 		return m; 
 	}	
 
@@ -142,7 +146,7 @@ class CollectionVoucherService  {
 		//post to jev
 		def p = cvEm.find([objid: o.objid]).first();
 		if(!p) throw new Exception("Collection Voucher not found!");
-		def ref = [refid:p.objid,refno:m.controlno,reftype:'collectionvoucher', refdate:p.controldate, txntype:'COLLECTION'];
+		def ref = [refid:p.objid,refno:p.controlno,reftype:'collectionvoucher', refdate:p.controldate, txntype:'COLLECTION'];
 
 		def jevBatch = [:];
 		jevBatch.ref = ref;
@@ -150,7 +154,7 @@ class CollectionVoucherService  {
 		jevBatch.items = [];
 
 		cvFundEm.find([ parentid: p.objid ]).select('objid,fund.*,amount').list().each{ 
-			jevBatch.funds << [ objid: it.objid, refno:m.controlno, fund: it.fund, amount: it.amount  ];	 
+			jevBatch.funds << [ objid: it.objid, refno:p.controlno, fund: it.fund, amount: it.amount  ];	 
 		} 
 
 		def pm = [collectionvoucherid: p.objid ];

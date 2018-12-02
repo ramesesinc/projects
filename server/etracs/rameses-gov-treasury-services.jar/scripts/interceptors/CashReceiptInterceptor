@@ -5,6 +5,9 @@ class CashReceiptInterceptor {
 	@DataContext('collectiontype')
 	def colltype_db;
 
+	@DataContext('checkpayment')
+	def check_db;
+
 	@Service("NumberService")
 	def numSvc;
 
@@ -26,6 +29,12 @@ class CashReceiptInterceptor {
 			def cta = colltype_db.find([ objid: data.collectiontype.objid ]).select('name,title,handler,formno').first(); 
 			if ( cta ) data.collectiontype = cta; 
 		} 
+
+		data.paymentitems.each{ 
+			def fldnames = 'objid,refno,refdate,bank.*';
+			def chk = check_db.find([ objid: it.checkid ]).select( fldnames ).first(); 
+			if ( chk ) it.check = chk;
+		}
 		
 		data.payerdetails = data.paidby + "\n" + data.paidbyaddress; 
 		if ( data?.amount instanceof Number ) { 
@@ -38,8 +47,6 @@ class CashReceiptInterceptor {
 		} 
 
 		// data compliant to previous versions
-		if( !data.totalnoncash ) {
-			data.totalnoncash = data.totalcheck; 
-		}
+		if( data.totalnoncash == null ) data.totalnoncash = data.totalcheck; 
 	}
 }

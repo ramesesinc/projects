@@ -16,7 +16,7 @@ class SlaughterReceiptInterceptor {
 		afterOpenImpl( evt.result ); 
 	}
 
-	@After(pattern="PersistenceService.read", eval="#{result.collectiontype?.handler == 'slaughter'}")
+	@After(pattern="PersistenceService.read", eval="#{result?.collectiontype?.handler == 'slaughter'}")
 	public void afterOpen2( evt ) { 
 		afterOpenImpl( evt.result ); 
 	} 	

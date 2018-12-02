@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="cash_treasury_ledger">
+    <invokers>
+         <invoker folderid="menucategory/financial/ledger" caption="Cash Treasury Ledger"
+            cols="jev.jevdate,jev.refno,dr,cr" 
+            index="1" action="init" role="MASTER" />
+   </invokers>
+</workunit>

@@ -48,13 +48,11 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         schemaList2 = new com.rameses.seti2.components.SchemaList();
 
-        jSplitPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        jSplitPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         jSplitPane1.setDividerLocation(500);
-        jSplitPane1.setDividerSize(5);
 
         jSplitPane2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jSplitPane2.setDividerLocation(200);
-        jSplitPane2.setDividerSize(5);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 1, 1, 1));
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -71,12 +69,12 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addGap(0, 4, Short.MAX_VALUE)
+                .addGap(0, 5, Short.MAX_VALUE)
                 .addComponent(jLabel1))
         );
 
@@ -85,7 +83,7 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
         schemaList1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "code"}
-                , new Object[]{"caption", " "}
+                , new Object[]{"caption", "Code"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -108,7 +106,6 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
         schemaList1.setShowFilter(false);
         schemaList1.setShowInfo(false);
         schemaList1.setShowNavbar(false);
-        schemaList1.setShowRowHeader(false);
         jPanel1.add(schemaList1, java.awt.BorderLayout.CENTER);
 
         jPanel4.setPreferredSize(new java.awt.Dimension(147, 20));
@@ -143,12 +140,12 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(144, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addGap(0, 4, Short.MAX_VALUE)
+                .addGap(0, 5, Short.MAX_VALUE)
                 .addComponent(jLabel2))
         );
 
@@ -156,8 +153,8 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
 
         schemaList3.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", null}
-                , new Object[]{"caption", " "}
+                new Object[]{"name", "code"}
+                , new Object[]{"caption", "Code"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -170,6 +167,21 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"expression", "#{ (item.objid) ?  item.code + ' - ' + item.description : '' }"}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.LabelColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "schedule.objid"}
+                , new Object[]{"caption", "Schedule "}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
         schemaList3.setCustomFilter("sectorid = :sectorid");
@@ -184,7 +196,6 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
         schemaList3.setShowFilter(false);
         schemaList3.setShowInfo(false);
         schemaList3.setShowRefresh(false);
-        schemaList3.setShowRowHeader(false);
         jPanel6.add(schemaList3, java.awt.BorderLayout.CENTER);
 
         jSplitPane2.setRightComponent(jPanel6);
@@ -193,7 +204,6 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
 
         jSplitPane3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jSplitPane3.setDividerLocation(280);
-        jSplitPane3.setDividerSize(5);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 1, 1, 1));
         jPanel3.setPreferredSize(new java.awt.Dimension(353, 100));
@@ -211,12 +221,12 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(129, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addGap(0, 4, Short.MAX_VALUE)
+                .addGap(0, 5, Short.MAX_VALUE)
                 .addComponent(jLabel3))
         );
 
@@ -225,7 +235,7 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
         schemaList4.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", null}
-                , new Object[]{"caption", " "}
+                , new Object[]{"caption", "Description"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -252,7 +262,6 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
         schemaList4.setShowFilter(false);
         schemaList4.setShowInfo(false);
         schemaList4.setShowRefresh(false);
-        schemaList4.setShowRowHeader(false);
         jPanel3.add(schemaList4, java.awt.BorderLayout.CENTER);
 
         jSplitPane3.setLeftComponent(jPanel3);
@@ -272,12 +281,12 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(230, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                .addGap(0, 4, Short.MAX_VALUE)
+                .addGap(0, 5, Short.MAX_VALUE)
                 .addComponent(jLabel4))
         );
 
@@ -300,7 +309,7 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.acctno"}
+                new Object[]{"name", "acctno"}
                 , new Object[]{"caption", "Acct No"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -315,7 +324,7 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.acctname"}
+                new Object[]{"name", "acctname"}
                 , new Object[]{"caption", "Acct Name"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -332,18 +341,18 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
         });
         schemaList2.setCustomFilter("stuboutid = :stuboutid");
         schemaList2.setDepends(new String[] {});
+        schemaList2.setEntityName("waterworks_stubout_node");
         schemaList2.setHandlerName("stuboutNodeListHandler");
         schemaList2.setName("selectedStuboutNode"); // NOI18N
         schemaList2.setOrderBy("indexno");
         schemaList2.setQueryName("query");
-        schemaList2.setSchemaName("waterworks_stubout_node");
+        schemaList2.setSchemaName("vw_waterworks_stubout_node");
         schemaList2.setAllowCreate(true);
         schemaList2.setAllowDelete(true);
         schemaList2.setAllowSearch(true);
         schemaList2.setShowFilter(false);
         schemaList2.setShowInfo(false);
         schemaList2.setShowRefresh(false);
-        schemaList2.setShowRowHeader(false);
         jPanel2.add(schemaList2, java.awt.BorderLayout.CENTER);
 
         jSplitPane3.setRightComponent(jPanel2);
@@ -357,14 +366,14 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(154, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 487, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 

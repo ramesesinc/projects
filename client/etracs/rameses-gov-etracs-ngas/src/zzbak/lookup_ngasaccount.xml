@@ -1,5 +1,0 @@
-<workunit extends="wtemplates/BasicLookupController.xml" serviceName="NGASAccountLookupService" tag="mapping">
-    <invokers>
-        <invoker type="ngasaccount:lookup" caption="Lookup Account" target="popup"/>
-    </invokers>
-</workunit>

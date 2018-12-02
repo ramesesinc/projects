@@ -5,7 +5,7 @@
         
         <invoker type="cashreceipt:policeclearance" action="init" />
         
-        <invoker type="formActions" action="_close" caption="Back" immediate="true" 
+        <invoker type="formActions" action="doClose" caption="Back" immediate="true" 
                  visibleWhen="#{!completed}" icon="images/toolbars/arrow_left.png" mnemonic="c"/>
         <invoker type="formActions" action="post" caption="Save" 
                  visibleWhen="#{!completed}" icon="images/toolbars/save.png" mnemonic="s" />

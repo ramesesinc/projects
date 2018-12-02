@@ -1,7 +1,8 @@
 <workunit extends="wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/treasury/admin" action="init" caption="Report of Collection By Fund" target="window" index="6" 
-            role="REPORT" permission="collectionbyfund.viewreport"/>
+        <invoker folderid="/explorer/report/treasury" action="init" 
+                 caption="Report of Collection By Fund" target="window" 
+                 role="REPORT" permission="collectionbyfund.viewreport"/>
     </invokers>
     <code>
 <![CDATA[

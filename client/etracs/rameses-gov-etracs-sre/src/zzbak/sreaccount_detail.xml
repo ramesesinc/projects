@@ -1,5 +1,0 @@
-<workunit extends="common/accounts/ui/accountdetail.xml" serviceName="SREAccountService">
-    <invokers>
-        <invoker type="sreaccount-detail:open" caption="Open" index="-1" action="init"/>
-    </invokers>
-</workunit>    

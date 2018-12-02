@@ -1,5 +1,0 @@
-<workunit extends="workunits/liquidation.xml">
-    <invokers>
-        <invoker type="daily_collection:open" caption="Daily Collection" action="open" />
-    </invokers>
-</workunit>

@@ -25,7 +25,7 @@ class CollectionGroupLookupModel extends CrudLookupModel {
     def receipt;
 
     void afterInit() {
-        if(receipt == null ) throw new Exception("receipt must be set in collectiongroup lookup");
+        if ( receipt == null ) throw new Exception("receipt must be set in collectiongroup lookup");
     }
     
     public def getCustomFilter() {

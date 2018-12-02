@@ -3,55 +3,101 @@ import treasury.facts.*;
 
 class WaterworksBatchBillingInterceptor {
 	
+	@Service("WorkflowTaskService")
+	def taskSvc;
+
+	@Service("WaterworksScheduleService")
+	def skedSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("waterworks_zone")
+	def zoneEm;
+
 	@DataContext("waterworks_batch_billing")
 	def batchEm;
 
 	@DataContext("waterworks_batch_billing_task")
 	def taskEm;
 
-	@Service("WorkflowTaskService")
-	def taskSvc;
-
-	@Service("DateService")
-	def dateSvc;
-
 	@DataContext("waterworks_consumption")
-	def wbillEm;
+	def wcEm;
 
-	@Service("WaterworksBatchBillingService")
-	def batchBillingSvc;
+	@DataContext("vw_waterworks_consumption")
+	def vw_wcEm;
+
+	@DataContext("waterworks_billing")
+	def wbillEm;
 
 	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'waterworks_batch_billing' }")
 	public void beforeCreate( evt ) { 
 		def o = evt.args[0];
-		o.objid = 'WBILL' + o.zone.code + o.year + o.month.toString().padLeft(2, '0' );
-		o.state = 'DRAFT';
+		def zone = o.zone;
+
+		def sked = skedSvc.getSchedule( [year:o.year, month:o.month, scheduleid: zone.schedule.objid ] );
+
+		o.schedule = sked; 
+		o.scheduleid = sked.objid;
+		o.objid = 'WBILL' + zone.code + o.year + String.format( "%02d", o.month);
+		o.state = 'DRAFT';		
 	}
 
 	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'waterworks_batch_billing' }")
 	public void buildBillItems( evt ) { 
 		def o = evt.args[0];
-		def m = [ batchid: o.objid ];
+		def result = evt.result;
+		def m = [ batchid: result.objid ];
 
-		batchEm.buildBillings( m );
-		if ( !wbillEm.find(m).first()) 
-			throw new Exception('No available accounts for this batch. Please verify.'); 
-		
+		def sked = o.schedule;
+		def zone = o.zone;
+
+		//update the zone specifically the batchid and next billyear and month
+		int ym = ((sked.year*12)+sked.month)+1;
+		int ny = (int)(ym/12);
+		int nm = (ym % 12);
+		if( nm == 0 ) {
+			nm = 12;
+			ny = ny - 1;
+		};
+		sked = skedSvc.getSchedule( [year:ny, month:nm, scheduleid: zone.schedule.objid ] );
+		zoneEm.find( [objid: o.zone.objid] ).update( [nextscheduleid : sked.objid] );
+
+		//build the consumptions first
+		batchEm.buildConsumptions( m );
+
+		//scan thru each item and assign the billing no
+		def items = vw_wcEm.find(m).orderBy("indexno,acctno").list();
+
+		if(!items)
+			throw new Exception("No accounts processed. Please check accounts under this zone");
+		int i = 1;
+		items.each {
+			def wb = [:];
+			wb.state = 'DRAFT';
+			wb.batchid = result.objid;
+			wb.acctid = it.acctid;
+			wb.billno = result.objid + "-" + String.format("%04d", i++);
+			wb.objid = wb.billno;
+			wb.consumptionid = it.objid;
+			wb.discount = 0;
+			wb.surcharge = 0;
+			wb.interest = 0;
+			wb.otherfees = 0;
+			wb.credits = 0;
+			wb.arrears = 0;
+			wb.averageconsumption = 0;
+			wb.unpaidmonths = 0;
+			wb.billed = 0;
+			wb.printed = 0;
+			wbillEm.create( wb );
+		}
 		def p = [:];
 		p.processname = 'waterworks_batch_billing';
 		p.refid = o.objid;
 		p.startdate = dateSvc.serverDate;
 		taskSvc.start(p);
-	}
 
-	@Before(pattern="WorkflowTaskService.signal", 
-		eval="#{ args[0].processname == 'waterworks_batch_billing' && args[0].taskstate == 'approved' && args[0].action == 'post'  }")
-	public void beforePost( def evt ) {
-		def p = evt.args[0];
-
-		if(!p.refid) throw new Exception("Error WorkflowTaskService.signal post error. refid is required");
-		
-		batchBillingSvc.post([ batchid: p.refid ]);
 	}
 
 
@@ -62,8 +108,23 @@ class WaterworksBatchBillingInterceptor {
 			throw new Exception('Transaction must be in draft state');  
 
 		wbillEm.find([ batchid: p.objid ]).delete(); 
+		wcEm.find( [batchid: p.objid ] ).delete();
 		batchEm.find([ objid: p.objid ]).update([ taskid: '{NULL}' ]); 
 		taskEm.find([ refid: p.objid ]).delete();
+		zoneEm.find( [batchid: p.objid] ).update( [batchid: '{NULL}' ]);
+	}
+
+	@Before(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname == 'waterworks_batch_billing' && args[0].taskstate == 'approved' && args[0].action == 'revert'  }")
+	public void beforeRevertApproved( evt ) {
+		def p = evt.args[0];
+		wbillEm.find([ batchid: p.refid ]).update([ printed: 0 ]);
+	}
+
+	@Before(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname == 'waterworks_batch_billing' && args[0].taskstate == 'for-review' && args[0].action == 'revert'  }")
+	public void beforeRevertForReview( evt ) {
+		def p = evt.args[0];
+		wbillEm.find([ batchid: p.refid ]).update([ surcharge:0, interest:0, otherfees:0, credits:0, arrears:0, unpaidmonths:0, billed: 0 ]);
 	}
 
 }
+

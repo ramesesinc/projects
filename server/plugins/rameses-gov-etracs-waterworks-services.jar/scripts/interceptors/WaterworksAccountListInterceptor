@@ -1,0 +1,52 @@
+import com.rameses.annotations.*;
+
+class WaterworksAccountListInterceptor{
+	
+	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname == 'vw_waterworks_account'}")
+	public void getAcctNodeList(def evt) {
+		def result = evt.result;
+		result << [ title: 'Active (Metered)', id:'active'];
+		result << [ title: 'Active (Unmetered)', id:'unmetered'];
+		result << [ title: 'Defective', id:'defective'];
+		result << [ title: 'Disconnected', id:'disconnected'];
+	}
+
+	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'vw_waterworks_account'}")
+	public void loadList(def evt) {
+		def o = evt.args[0];
+		if( !o.node?.id ) return;
+
+		def str = '';
+		def m = [:];
+		def status = o.node.id;
+
+		switch( status ) {
+			case 'active':
+				str = "meterstatus = 'METERED' ";
+				break;
+
+			case 'unmetered': 	
+				str = "meterstatus = 'UNMETERED' ";
+				break;
+
+			case 'defective':
+				str = "meterstatus = 'DEFECTIVE' ";
+				break;
+
+			case 'disconnected':
+				str = "meterstatus = 'DISCONNECTED' ";
+				break;
+		}
+
+		//add to first position of where
+		if( o.where ) {
+			o.where[0] = str + " AND " + o.where[0];	
+			o.where[1].putAll( m );
+		}
+		else {
+			o.where = [str, m];
+		}
+		o.select += ",status:{'" + status + "'}";
+	}
+
+}

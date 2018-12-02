@@ -1,189 +1,266 @@
 import com.rameses.annotations.*;
 import com.rameses.common.*;
-import com.rameses.services.extended.*;
 import com.rameses.util.*;
 
 class RemoteServerDataDeployerService {
 	
-	@ActiveDB('fund')	
-	def fundEm
+	@DataContext('sys_orgclass') 
+	def orgclass_db;
 
-	@ActiveDB('af')	
-	def afEm
+	@DataContext('sys_org') 
+	def org_db;
 
-	@ActiveDB('collectiontype')	
-	def collTypeEm
+	@DataContext('sys_usergroup') 
+	def ug_db;
 
-	@ActiveDB('collectiontype_account')	
-	def collTypeAcctEm
+	@DataContext('sys_usergroup_permission') 
+	def ugp_db;
 
-	@ActiveDB('revenueitem')	
-	def revItemEm
-	
-	@ActiveDB('usergroup')	
-	def ugEm	
+	@DataContext('sys_usergroup_member') 
+	def ugm_db;
 
-	@ActiveDB('user')	
-	def userEm	
+	@DataContext('sys_securitygroup') 
+	def secg_db;
 
-	@ActiveDB('cashbook')
-	def cashbookEm
+	@DataContext('sys_user') 
+	def user_db;
 
-	@ActiveDB('org')
-	def orgEm
-	
-	@ActiveDB('collectiongroup')	
-	def collgroup; 
+	@DataContext('af') 
+	def af_db;
+
+	@DataContext('afunit') 
+	def afu_db;
+
+	@DataContext('fundgroup') 
+	def fundgrp_db;
+
+	@DataContext('fund') 
+	def fund_db;
+
+	@DataContext('itemaccount') 
+	def itemacct_db;
+
+	@DataContext('itemaccount_tag') 
+	def itemacct_tag_db;
+
+	@DataContext('collectiontype') 
+	def ct_db;
+
+	@DataContext('collectiontype_account') 
+	def cta_db;
+
+	@DataContext('collectiontype_org') 
+	def cto_db;
+
+	@DataContext('collectiongroup') 
+	def cg_db;
+
+	@DataContext('collectiongroup_account') 
+	def cga_db;
+
+	@DataContext('collectiongroup_org') 
+	def cgo_db;
+
+	@DataContext('bank') 
+	def bank_db;
 
 	@ProxyMethod
 	public void deployUpdates( entity ) { 
-		if ( !entity.data.orgs ) entity.data.orgs = []; 
-		if ( !entity.data.orgclasses ) entity.data.orgclasses = []; 
+		deployOrgClass( entity.data.orgclasses ); 
+		deployOrg( entity.data.orgs ); 
 
-		if ( entity.data.orgclass?.name ) { 
-			def x = entity.data.orgclasses.find{ it.name==entity.data.orgclass.name } 
-			if ( !x ) entity.data.orgclasses << entity.data.orgclass; 
-		} 
-		if ( entity.data.org?.objid ) { 
-			def x = entity.data.orgs.find{ it.objid==entity.data.org.objid } 
-			if ( !x ) entity.data.orgs << entity.data.org; 
-		} 
-
-		entity.data.orgclasses.each {
-			try { 
-				orgEm.save( EntityUtil.mapToField( it ), "orgclass"); 
-			} catch( Throwable t ){;} 
-		} 
-
-		def rootorg = entity.data.orgs.find{ it.root==1 } 
-		if ( rootorg ) {
-			def x = entity.data.orgs.findAll{ it.objid==rootorg.objid } 
-			if ( x ) entity.data.orgs.removeAll( x ); 
-		} 
-
-		entity.data.orgs.each{
-			deployOrg( entity, it ); 
-		} 
-		try { 
-			if ( rootorg ) orgEm.save( EntityUtil.mapToField( rootorg )); 
-		} catch( Throwable t ){ 
-			println '[WARN] '+ t.message;  
-		} 
-
-		entity.data.funds.each{ 
-			try { 
-				fundEm.save(EntityUtil.mapToField( it )); 
-			} catch( Throwable t ){;} 
-		} 
-		entity.data.afs.each{ 
-			try { 
-				afEm.save(EntityUtil.mapToField( it )); 
-			} catch( Throwable t ){;} 
-		} 
-		entity.data.itemaccounts.each{ 
-			deployItemAccount( entity, it ); 
-		} 
-		entity.data.collectiontypes.each{ 
-			 try { 
-			 	collTypeEm.save(EntityUtil.mapToField( it )); 
-			 } catch( Throwable t ){
-			 	println '[WARN] '+ t.message;  
-			 } 
-		} 
-		entity.data.collectionTypesAccounts.each{ 
-			try { 
-				collTypeAcctEm.save(EntityUtil.mapToField( it )); 
-			} catch( Throwable t ){
-				println '[WARN] '+ t.message;  
-			} 
-		} 
-		entity.data.collectiongroups.each{ 
-			try { 
-				collgroup.save(EntityUtil.mapToField( it )); 
-			} catch( Throwable t ){
-				println '[WARN] '+ t.message;  
-			} 
-		} 
-		entity.data.collectiongroupitems.each{ 
-			 try{ 
-			 	collgroup.save(EntityUtil.mapToField(it), 'collectiongroup_revenueitem') 
-			 } catch( Throwable t ){
-			 	println '[WARN] '+ t.message;  
-			 } 
-		} 
 		entity.data.usergroups.each{
-			try { 
-				ugEm.save(EntityUtil.mapToField( it )); 
-			} catch( Throwable t ){
-				println '[WARN] '+ t.message;  
+			it.permissions = []; 
+			it.securitygroups = []; 
+			if ( ug_db.find([objid: it.objid]).select('objid').first()) {
+				ug_db.update( it ); 
+			} else {
+				ug_db.create( it ); 
+			}
+		}
+
+		entity.data.usergrouppermissions.each{
+			if ( ugp_db.find([objid: it.objid]).select('objid').first()) {
+				ugp_db.update( it ); 
+			} else { 
+				ugp_db.create( it ); 
 			} 
-		}	
+		} 
+
+		entity.data.securitygroups.each{
+			if ( secg_db.find([objid: it.objid]).select('objid').first()) {
+				secg_db.update( it ); 
+			} else { 
+				secg_db.create( it ); 
+			} 
+		} 
+
+		entity.data.userMemberships.each{ 
+			it.group = it.usergroup;
+			if ( ugm_db.find([objid: it.objid]).select('objid').first()) {
+				ugm_db.update( it ); 
+			} else { 
+				ugm_db.create( it ); 
+			} 
+		} 
+
 		entity.data.users.each{
-			try { 
-				userEm.save(EntityUtil.mapToField( it )); 
-			} catch( Throwable t ){
-				println '[WARN] '+ t.message;  
+			def o = user_db.find([objid: it.objid]).select('objid,pwd').first(); 
+			if ( o ) { 
+				it.pwd = o.pwd; 
+				user_db.update( it ); 
+			} else { 
+				user_db.create( it ); 
 			} 
-		}
-		entity.data.userMemberships.each{
-			try { 
-				ugEm.save(EntityUtil.mapToField( it ) , "member");
-			} catch( Throwable t ){
-				println '[WARN] '+ t.message;  
-			} 
-		}
-		entity.data.cashbooks.each{ c -> 
-			def cb = EntityUtil.mapToField(c);
-			try { 
-				cashbookEm.save( cb ); 
-			} catch( Throwable t ) { 
-				println '[WARN] '+ t.message;  
-			} 
+		} 
 
-			cb.details.each { 
-				try { 
-					cashbookEm.save( it, "detail" ) 
-				} catch( Throwable t ){ 
-					println '[WARN] '+ t.message;  
-				} 
+		entity.data.afs.each{
+			if ( af_db.find([objid: it.objid]).select('objid').first()) {
+				af_db.update( it ); 
+			} else { 
+				af_db.create( it ); 
+			} 
+		} 
+
+		entity.data.afunits.each{
+			if ( afu_db.find([objid: it.objid]).select('objid').first()) {
+				afu_db.update( it ); 
+			} else { 
+				afu_db.create( it ); 
+			} 
+		} 
+
+		entity.data.fundgroups.each{
+			if ( fundgrp_db.find([objid: it.objid]).select('objid').first()) {
+				fundgrp_db.update( it ); 
+			} else { 
+				fundgrp_db.create( it ); 
+			} 
+		} 
+
+		fund_db.where('1=1').update([ state: 'INACTIVE' ]); 
+		entity.data.funds.each{ 
+			deployFund( entity.data.funds, it ); 
+		}
+
+		itemacct_db.where('1=1').update([ state: 'INACTIVE' ]); 
+		entity.data.itemaccounts.each{ 
+			deployItemAccount( entity.data.itemaccounts, it ); 
+		} 
+
+		itemacct_tag_db.where('1=1').delete(); 
+		entity.data.itemaccounttags.each{
+			itemacct_tag_db.create( it ); 
+		} 
+
+		ct_db.where('1=1').update([ state: 'INACTIVE' ]); 
+		entity.data.collectiontypes.each{ 
+			if ( ct_db.find([ objid: it.objid ]).select('objid').first()) {
+				ct_db.update( it ); 
+			} else { 
+				ct_db.create( it ); 
+			} 
+		} 
+
+		cta_db.where('1=1').delete(); 
+		entity.data.collectionTypesAccounts.each{
+			cta_db.create( it ); 
+		} 		
+
+		cto_db.where('1=1').delete(); 
+		entity.data.collectiontypeorgs.each{
+			cto_db.create( it ); 
+		} 		
+
+		cg_db.where('1=1').update([ state: 'INACTIVE' ]); 
+		entity.data.collectiongroups.each{ 
+			if ( cg_db.find([ objid: it.objid ]).select('objid').first()) {
+				cg_db.update( it ); 
+			} else { 
+				cg_db.create( it ); 
+			} 
+		} 
+
+		cga_db.where('1=1').delete(); 
+		entity.data.collectiongroupitems.each{ 
+			cga_db.create( it ); 
+		} 
+
+		cgo_db.where('1=1').delete(); 
+		entity.data.collectiongrouporgs.each{ 
+			cgo_db.create( it ); 
+		} 
+
+		bank_db.where('1=1').update([ state: 'INACTIVE' ]); 
+		entity.data.banks.each{ 
+			if ( bank_db.find([ objid: it.objid ]).select('objid').first()) {
+				bank_db.update( it ); 
+			} else { 
+				bank_db.create( it ); 
 			} 
 		} 
 	} 
 
-	void deployOrg( entity, org ) {
-		if ( org.parent?.objid ) {
-			def x = entity.data.orgs.find{ it.objid==org.parent.objid } 
-			if ( x ) {
-				try { 
-					orgEm.save( EntityUtil.mapToField( x ));  
-				} catch( Throwable t ) { 
-					println '[WARN] '+ t.message;  
-				} 
+
+	private void deployOrgClass( list ) {
+		list.each { 
+			def o = it.clone();
+			o.parentclass = null;
+			if ( orgclass_db.find([name: o.name]).select('name').first()) {
+				orgclass_db.update( o ); 
+			} else {
+				orgclass_db.create( o ); 
 			} 
 		} 
-
-		try { 
-			orgEm.save( EntityUtil.mapToField( org ));  
-		} catch( Throwable t ){ 
-			println '[WARN] '+ t.message;  
+		list.findAll{( it.parentclass )}.each{
+			orgclass_db.find([ name: it.name ]).update([ parentclass: it.parentclass ]); 
 		} 
 	} 
-	void deployItemAccount( entity, acct ) { 
+
+	private void deployOrg( list ) {
+		list.each{
+			def o = it.clone();
+			o.remove('parent');
+			if (org_db.find([objid: o.objid]).select('objid').first()) {
+				org_db.update( o ); 
+			} else {
+				org_db.create( o ); 
+			} 
+		} 
+		list.findAll{( it.parent?.objid )}.each{
+			org_db.find([ objid: it.objid ]).update([ parent: it.parent ]);
+		} 
+	} 
+
+	private void deployFund( list, fund ) { 
+		if ( fund.depositoryfundid && fund.depositoryfundid.toString().equalsIgnoreCase(fund.objid)) { 
+			fund.depositoryfundid = null; 
+		} 
+		if ( fund.depositoryfundid )  { 
+			def o = list.find{( it.objid.toString().equalsIgnoreCase( fund.depositoryfundid) )} 
+			if ( o ) deployFund( list, o ); 
+			else fund.depositoryfundid = null; 
+		} 
+
+		if ( fund_db.find([ objid: fund.objid ]).select('objid').first()) {
+			fund_db.update( fund ); 
+		} else {
+			fund_db.create( fund ); 
+		} 
+	} 
+
+	void deployItemAccount( list, acct ) { 
 		if ( acct.parentid ) {
-			def x = entity.data.itemaccounts.find{ it.objid==acct.parentid } 
-			if ( x ) {
-				try { 			
-					revItemEm.save(EntityUtil.mapToField( x )); 
-				} catch( Throwable t ){ 
-					println '[WARN] '+ t.message;  
-				} 
-			} 
+			def o = list.find{( it.objid.toString().equalsIgnoreCase( acct.parentid ))} 
+			if ( o ) deployItemAccount( list, o ); 
 		} 
 
-		try { 			
-			revItemEm.save(EntityUtil.mapToField( acct )); 
-		} catch( Throwable t ){
-			println '[WARN] '+ t.message;  
-		} 
+		if ( !acct.tags ) acct.tags = []; 
+
+		if ( itemacct_db.find([ objid: acct.objid ]).select('objid').first()) {
+			itemacct_db.update( acct ); 
+		} else {
+			itemacct_db.create( acct ); 
+		}
 	}
 } 

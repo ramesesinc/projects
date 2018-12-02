@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xFormPanel2" pref="388" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xFormPanel2" min="-2" pref="309" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel2">
+      <Properties>
+        <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
+        <Property name="captionWidth" type="int" value="100"/>
+      </Properties>
+      <SubComponents>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField2">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Ref No"/>
+            <Property name="name" type="java.lang.String" value="entity.refno" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[120, 20]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XDateField" name="xDateField1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Ref Date"/>
+            <Property name="name" type="java.lang.String" value="entity.refdate" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[120, 20]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField3">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Ref Type"/>
+            <Property name="name" type="java.lang.String" value="entity.reftype" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[120, 20]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Particulars"/>
+            <Property name="name" type="java.lang.String" value="entity.remarks" noResource="true"/>
+            <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[20, 0, 0, 0]"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 20]"/>
+            </Property>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField2">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Amount"/>
+            <Property name="disableWhen" type="java.lang.String" value="#{ mode==&apos;read&apos; || entity.refid != null }"/>
+            <Property name="name" type="java.lang.String" value="entity.amount" noResource="true"/>
+            <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[20, 0, 0, 0]"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[120, 20]"/>
+            </Property>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField3">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Amount Paid"/>
+            <Property name="disableWhen" type="java.lang.String" value="#{ true }"/>
+            <Property name="name" type="java.lang.String" value="entity.amtpaid" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[120, 20]"/>
+            </Property>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+  </SubComponents>
+</Form>

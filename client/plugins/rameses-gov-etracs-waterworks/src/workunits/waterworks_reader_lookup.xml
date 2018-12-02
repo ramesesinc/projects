@@ -2,6 +2,6 @@
           serviceName="SysUserLookupService" 
           tag="WATERWORKS.READER">
     <invokers>
-        <invoker type="waterworksreader:lookup" caption="Lookup Reader"/>
+        <invoker type="waterworks_reader:lookup" caption="Lookup Reader"/>
     </invokers>
 </workunit>

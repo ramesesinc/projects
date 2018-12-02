@@ -1,0 +1,26 @@
+<workunit schemaName="waterworks_payment">
+    <invokers>
+        <invoker folderid="/menucategory/waterworks/billing" 
+            caption="Capture Payment" action="start" index="100" 
+            role="MASTER" formTitle="Capture Payment"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.CapturePaymentModel"/>
+    <pageflow>
+        <start>
+            <transition to="initial" action="initNew"/>
+        </start>
+        <page name="initial" title="Waterworks Capture Payment (Initial)">
+           <transition to="entry" caption="Next" action="loadInfo"/> 
+        </page>
+        <page name="entry" title="Waterworks Capture Payment">
+            <transition to="initial" caption="Back" immediate="true"/>   
+            <transition to="initial" caption="Post and Add Another" action="postAndAdd"/>   
+            <transition to="end" caption="Post and Close" action="post"/>               
+        </page>
+        <end/>
+    </pageflow>
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.waterworks.views.CapturePaymentInitialPage"/>
+        <page name="entry" template="com.rameses.gov.etracs.waterworks.views.CapturePaymentPage"/>
+    </pages>
+</workunit>

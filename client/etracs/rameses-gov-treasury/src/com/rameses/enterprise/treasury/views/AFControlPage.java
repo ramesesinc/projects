@@ -140,28 +140,28 @@ public class AFControlPage extends javax.swing.JPanel {
         xLabel15.setVisibleWhen("#{ entity.af.formtype == 'serial' }");
         formPanel1.add(xLabel15);
 
-        xLabel11.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel11.setCaption("Start Series");
         xLabel11.setExpression("#{ entity.startseries }");
+        xLabel11.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel11.setVisibleWhen("#{ entity.afunit.serieslength > 0 }");
+        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel11.setPreferredSize(new java.awt.Dimension(150, 20));
-        xLabel11.setVisibleWhen("#{ entity.af.formtype == 'serial' }");
         formPanel1.add(xLabel11);
 
-        xLabel12.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel12.setCaption("End Series");
         xLabel12.setExpression("#{ entity.endseries }");
+        xLabel12.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel12.setVisibleWhen("#{ entity.afunit.serieslength > 0 }");
+        xLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel12.setPreferredSize(new java.awt.Dimension(150, 20));
-        xLabel12.setVisibleWhen("#{ entity.af.formtype == 'serial' }");
         formPanel1.add(xLabel12);
 
-        xLabel13.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel13.setCaption("Current Series");
         xLabel13.setExpression("#{ entity.currentseries }");
+        xLabel13.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel13.setVisibleWhen("#{ entity.afunit.serieslength > 0 }");
+        xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel13.setPreferredSize(new java.awt.Dimension(150, 20));
-        xLabel13.setVisibleWhen("#{ entity.af.formtype == 'serial' }");
         formPanel1.add(xLabel13);
 
         xSeparator3.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -179,10 +179,10 @@ public class AFControlPage extends javax.swing.JPanel {
 
         formPanel1.add(xSeparator3);
 
-        xLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel4.setCaption("Qty Balance");
         xLabel4.setExpression("#{ entity.qtybalance }");
+        xLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel4.setPreferredSize(new java.awt.Dimension(150, 20));
         formPanel1.add(xLabel4);
 

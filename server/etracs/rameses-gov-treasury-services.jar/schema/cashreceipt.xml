@@ -6,10 +6,10 @@
 		<field name="receiptno" required="true" searchable="true" indexed="true" caption="Receipt No"/>
 		<field name="receiptdate" required="true" caption="Receipt Date" indexed="true" type="date"/>
 		<field name="txnmode" required="true" indexed="true" caption="Txn Mode"/>
-		<field name="payer_objid"  />
-		<field name="payer_name"  caption="Payer" searchable="true"  indexed="true"/>
-		<field name="paidby" required="true" caption="Paid By"/>
+		<field name="paidby" required="true" caption="Paid By" indexed="true" searchable="true"/>
 		<field name="paidbyaddress" required="true" />
+		<field name="payer_objid"  />
+		<field name="payer_name"  caption="Payer" indexed="true" searchable="true"/>
 		<field name="series" required="true" />
 		<field name="collector_objid" required="true" />
 		<field name="collector_name" required="true" indexed="true"/>

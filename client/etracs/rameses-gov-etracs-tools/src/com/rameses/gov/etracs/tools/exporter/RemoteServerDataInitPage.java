@@ -33,13 +33,14 @@ public class RemoteServerDataInitPage extends javax.swing.JPanel {
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
+        xComboBox3 = new com.rameses.rcp.control.XComboBox();
 
         xFormPanel1.setName("entity.name"); // NOI18N
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
 
         xTextField1.setCaption("Remote Name");
         xTextField1.setName("entity.objid"); // NOI18N
-        xTextField1.setCaptionWidth(100);
+        xTextField1.setCaptionWidth(120);
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField1.setRequired(true);
         xTextField1.addActionListener(new java.awt.event.ActionListener() {
@@ -50,11 +51,11 @@ public class RemoteServerDataInitPage extends javax.swing.JPanel {
         xFormPanel1.add(xTextField1);
 
         xComboBox1.setCaption("Org Type");
-        xComboBox1.setCaptionWidth(100);
         xComboBox1.setExpression("#{item.name} ");
-        xComboBox1.setImmediate(true);
         xComboBox1.setItems("orgclassess");
         xComboBox1.setName("entity.data.orgclass"); // NOI18N
+        xComboBox1.setCaptionWidth(120);
+        xComboBox1.setImmediate(true);
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
@@ -64,12 +65,23 @@ public class RemoteServerDataInitPage extends javax.swing.JPanel {
         xComboBox2.setExpression("#{item.name}");
         xComboBox2.setItems("orgs");
         xComboBox2.setName("entity.data.org"); // NOI18N
-        xComboBox2.setCaptionWidth(100);
+        xComboBox2.setCaptionWidth(120);
         xComboBox2.setDynamic(true);
         xComboBox2.setImmediate(true);
         xComboBox2.setPreferredSize(new java.awt.Dimension(0, 20));
         xComboBox2.setRequired(true);
         xFormPanel1.add(xComboBox2);
+
+        xComboBox3.setCaption("Output Format");
+        xComboBox3.setItems("formats");
+        xComboBox3.setName("entity.data.outputformat"); // NOI18N
+        xComboBox3.setCaptionWidth(120);
+        xComboBox3.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
+        xComboBox3.setDynamic(true);
+        xComboBox3.setImmediate(true);
+        xComboBox3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xComboBox3.setRequired(true);
+        xFormPanel1.add(xComboBox3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -77,15 +89,15 @@ public class RemoteServerDataInitPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(105, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(70, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(113, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(84, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -97,6 +109,7 @@ public class RemoteServerDataInitPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
+    private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables

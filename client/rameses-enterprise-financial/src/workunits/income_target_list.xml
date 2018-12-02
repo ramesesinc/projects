@@ -1,0 +1,26 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="account_incometarget">
+    <invokers>
+         <invoker folderid="menucategory/financial/master" caption="Income Target" index="1" 
+                cols="itemaccount.code,itemaccount.title,target"
+                orderBy="code"    
+                role="MASTER"  action="init"/>
+   </invokers>
+   <code>
+        import com.rameses.seti2.models.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.seti2.models.*;
+       
+        class IncomeTargetList extends CrudListModel {
+             void afterInit() {
+                MsgBox.alert('fire');
+             }
+        }
+       
+   </code>
+   <pages>
+        <page name="queryForm" template="com.rameses.enterprise.financial.views.IncomeTargetPanel" />
+   </pages>
+</workunit>

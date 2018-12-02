@@ -67,13 +67,13 @@ WHERE o.objid IS NULL AND c.state = 'ACTIVE'
 <schema>
 	<element tablename="vw_collectiontype">
 		<field name="objid" primary="true"/> 
-		<field name="state"/> 
-		<field name="name"/> 
-		<field name="title"/> 
-		<field name="formno"/> 
-		<field name="handler"/> 
+		<field name="state" caption="Status"/> 
+		<field name="name" caption="Name"/> 
+		<field name="title" caption="Title"/> 
+		<field name="formno" caption="FormNo"/> 
+		<field name="handler" caption="Handler"/> 
 		
-		<field name="barcodekey"/> 
+		<field name="barcodekey" caption="BarcodeKey"/> 
 		<field name="allowonline"/> 
 		<field name="allowoffline"/> 
 		<field name="allowbatch"/> 
@@ -85,14 +85,14 @@ WHERE o.objid IS NULL AND c.state = 'ACTIVE'
 		<field name="sortorder"/> 
 		<field name="orgid"/> 
 		<field name="fund_objid"/> 
-		<field name="fund_title"/> 
+		<field name="fund_title" caption="Fund"/> 
 		<field name="category"/> 
 		<field name="queuesection"/> 
 		<field name="system"/> 
 		<field name="af_formtype"/> 
 		<field name="af_serieslength"/> 
 		<field name="af_denomination"/> 
-		<field name="af_baseunit"/> 		
+		<field name="af_baseunit"/> 
 	</element>
 </schema>
 

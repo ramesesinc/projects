@@ -17,13 +17,15 @@ class CashReceiptForm56 extends ReportModel {
     public Object getReportData() {
         def checks = [];
         def dates = [];
-        reportData.paymentitems.each{
-            checks << it.bank + ' - ' + it.refno
+        println '\n** payment items';
+        reportData.paymentitems.each{ 
+            checks << it.check?.bank?.code +' - '+ it.refno
             if( it.refdate instanceof String ) it.refdate = sdf.parse(it.refdate) 
             dates << sdf.format( it.refdate );
         }
-        reportData.refno = checks.join(',')
-        reportData.refdate = dates.join(',');
+        reportData.refno = checks.unique().join(',');
+        reportData.refdate = dates.unique().join(',');
+        reportData.voided = reportData.voided.toString().matches("1|true") ? 1 : 0; 
         return reportData;
     }
     public String getReportName() {

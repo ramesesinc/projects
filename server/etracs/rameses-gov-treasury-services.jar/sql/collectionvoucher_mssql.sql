@@ -19,37 +19,13 @@ GROUP BY
   cv.objid, rf.fund_objid, rf.fund_title 
 
 
-[insertCollectionVoucherFundTransfer]
-INSERT INTO collectionvoucher_fund_transfer
-(objid, parentid, fromfundid, tofundid, amount)
-SELECT  
-  ( ccv.objid+'-'+ ba.fund_objid+ '-'+ nc.fund_objid ) AS objid,
-  ccv.objid, 
-  ba.fund_objid AS fromfundid,
-  nc.fund_objid AS tofundid,
-  SUM(nc.amount) AS amount
-FROM  cashreceiptpayment_noncash nc
-  INNER JOIN cashreceipt c ON nc.receiptid=c.objid
-  INNER JOIN eftpayment cm ON cm.objid = nc.refid
-  INNER JOIN bankaccount ba ON cm.bankacctid = ba.objid 
-  INNER JOIN remittance r ON c.remittanceid = r.objid
-  INNER JOIN collectionvoucher ccv ON r.collectionvoucherid = ccv.objid 
-  LEFT JOIN itemaccount ia on ia.objid = ba.acctid 
-  LEFT JOIN cashreceipt_void cv ON cv.receiptid=c.objid 
-WHERE ccv.objid=$P{collectionvoucherid}
-AND cv.objid IS NULL 
-AND NOT( ba.fund_objid = nc.fund_objid )
-GROUP BY ba.fund_objid, nc.fund_objid
-
 [getCashLedgerItems]
 SELECT tmp.*, ia.code as itemacctcode, ia.title as itemacctname  
 FROM ( 
   SELECT 
-    cv.fund_objid AS fundid,
-    (SELECT TOP 1 objid FROM itemaccount WHERE fund_objid = cv.fund_objid AND TYPE = 'CASH_IN_TREASURY' ) AS itemacctid,
-    (cv.totalcash + cv.totalcheck) AS dr,
-    0 AS cr,
-    'cash_treasury_ledger' AS _schemaname
+    cv.fund_objid AS fundid, 'CASH_IN_TREASURY' AS itemacctid,
+    (cv.totalcash + cv.totalcheck) AS dr, 0 AS cr,
+    'cash_treasury_ledger' AS _schemaname 
   FROM collectionvoucher_fund cv 
   WHERE cv.parentid = $P{collectionvoucherid} 
 )tmp 
@@ -58,14 +34,9 @@ FROM (
 
 [getBankAccountLedgerItems]
 SELECT  
-  nc.fund_objid AS fundid,
-  ba.objid AS bankacctid,
-  ba.acctid AS itemacctid,
-  ia.code as itemacctcode, 
-  ia.title as itemacctname, 
-  SUM(nc.amount) AS dr,
-  0 AS cr,
-  'bankaccount_ledger' AS _schemaname 
+  nc.fund_objid AS fundid, ba.objid AS bankacctid,
+  ba.acctid AS itemacctid, ia.code as itemacctcode, ia.title as itemacctname, 
+  SUM(nc.amount) AS dr, 0.0 AS cr, 'bankaccount_ledger' AS _schemaname 
 FROM  cashreceiptpayment_noncash nc
   INNER JOIN cashreceipt c ON nc.receiptid=c.objid
   INNER JOIN eftpayment cm ON cm.objid = nc.refid
@@ -74,9 +45,11 @@ FROM  cashreceiptpayment_noncash nc
   INNER JOIN collectionvoucher ccv ON r.collectionvoucherid = ccv.objid 
   LEFT JOIN itemaccount ia on ia.objid = ba.acctid 
   LEFT JOIN cashreceipt_void cv ON cv.receiptid=c.objid 
-WHERE ccv.objid=$P{collectionvoucherid} AND cv.objid IS NULL 
-GROUP BY nc.fund_objid, ba.objid, ba.acctid, ia.code, ia.title 
-
+WHERE ccv.objid = $P{collectionvoucherid}  
+  AND cv.objid IS NULL 
+GROUP BY 
+  nc.fund_objid, ba.objid, ba.acctid, ia.code, ia.title 
+  
 
 [getIncomeLedgerItems]
 SELECT 
@@ -121,14 +94,10 @@ GROUP BY a.fundid, a.itemacctid, a.itemacctcode, a.itemacctname
 
 [getPayableLedgerItems]
 SELECT 
-  ra.fund_objid AS fundid, 
-  ra.objid AS refitemacctid, 
-  ia.objid AS itemacctid, 
-  ia.code AS itemacctcode, 
-  ia.title AS itemacctname, 
-  0 AS dr, 
-  SUM( cs.amount ) AS cr, 
-  'payable_ledger' AS _schemaname 
+  ra.fund_objid AS fundid, ra.objid AS refitemacctid, 
+  ia.objid AS itemacctid, ia.code AS itemacctcode, 
+  ia.title AS itemacctname, 0.0 AS dr, 
+  SUM( cs.amount ) AS cr, 'payable_ledger' AS _schemaname 
 FROM cashreceipt_share cs 
   INNER JOIN itemaccount ia ON cs.payableitem_objid = ia.objid 
   INNER JOIN itemaccount ra ON cs.refitem_objid = ra.objid 
@@ -137,6 +106,6 @@ FROM cashreceipt_share cs
   INNER JOIN collectionvoucher cv ON r.collectionvoucherid = cv.objid 
   LEFT JOIN cashreceipt_void crv ON crv.receiptid = c.objid 
 WHERE cv.objid = $P{collectionvoucherid} 
-  AND crv.objid IS NULL
+  AND crv.objid IS NULL 
 GROUP BY 
   ra.fund_objid, ra.objid, ia.objid, ia.code, ia.title  

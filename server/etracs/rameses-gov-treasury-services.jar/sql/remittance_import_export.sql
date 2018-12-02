@@ -3,9 +3,9 @@ SELECT * FROM remittance WHERE objid = $P{remittanceid}
 
 [getCashReceipts]
 SELECT cr.* 
-FROM remittance_cashreceipt remcr  
-	INNER JOIN cashreceipt cr ON cr.objid = remcr.objid 
-WHERE remcr.remittanceid = $P{remittanceid}	
+FROM remittance r 
+	INNER JOIN cashreceipt cr ON cr.remittanceid = r.objid 
+WHERE cr.remittanceid = $P{remittanceid}	
 
 [getCashReceiptItems]
 select 
@@ -34,17 +34,16 @@ SELECT c.formno, c.collector_objid, c.controlid, min(c.formtype) as formtype,
   SUM(CASE WHEN v.objid IS NULL THEN c.totalcash-c.cashchange ELSE 0 END) AS totalcash,
   SUM(CASE WHEN v.objid IS NULL THEN c.totalnoncash ELSE 0 END) AS totalnoncash
 FROM cashreceipt c 
-  INNER JOIN remittance_cashreceipt r ON c.objid = r.objid 
+  INNER JOIN remittance r on r.objid = c.remittanceid 
   LEFT JOIN cashreceipt_void v ON c.objid=v.receiptid
-where r.remittanceid=$P{remittanceid}	
+where c.remittanceid = $P{remittanceid}	
 GROUP BY c.collector_objid, c.formno, c.formtype, c.controlid
 
 [getCancelledSeries]
 SELECT cs.*, c.series 
 FROM cashreceipt c 
-   INNER JOIN remittance_cashreceipt r ON c.objid = r.objid 
+   INNER JOIN remittance r on r.objid = c.remittanceid 
    INNER JOIN cashreceipt_cancelseries cs on cs.receiptid = c.objid
-where c.controlid =  $P{controlid}
-	and  c.state = 'CANCELLED' 
-	and r.objid =$P{remittanceid}
-
+where r.objid = $P{remittanceid} 
+  and c.controlid = $P{controlid}
+	and c.state = 'CANCELLED' 

@@ -1,6 +1,6 @@
 <workunit extends="wtemplates/ListController.xml" serviceName="ProfessionService" entityName="profession">
     <invokers>
-        <invoker folderid="/explorer/master/ctc" caption="Professions" index="1"  role="TREASURY_DATAMGMT"/>
-        <invoker type="quick_launcher" code="PROFS" caption="Professions" index="1"  role="TREASURY_DATAMGMT"/>
+        <invoker folderid="/explorer/master/ctc" caption="Professions" index="1"  role="MASTER"/>
+        <invoker type="quick_launcher" code="PROFS" caption="Professions" index="1"  role="MASTER"/>
    </invokers>
 </workunit>

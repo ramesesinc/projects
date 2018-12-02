@@ -249,7 +249,10 @@
                 </Component>
                 <Component class="com.rameses.rcp.control.XLabel" name="xLabel11">
                   <Properties>
+                    <Property name="caption" type="java.lang.String" value="Start Series"/>
+                    <Property name="expression" type="java.lang.String" value="#{ entity.startseries }"/>
                     <Property name="horizontalAlignment" type="int" value="4"/>
+                    <Property name="visibleWhen" type="java.lang.String" value="#{ entity.afunit.serieslength &gt; 0 }"/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                         <LineBorder>
@@ -257,17 +260,17 @@
                         </LineBorder>
                       </Border>
                     </Property>
-                    <Property name="caption" type="java.lang.String" value="Start Series"/>
-                    <Property name="expression" type="java.lang.String" value="#{ entity.startseries }"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[150, 20]"/>
                     </Property>
-                    <Property name="visibleWhen" type="java.lang.String" value="#{ entity.af.formtype == &apos;serial&apos; }"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XLabel" name="xLabel12">
                   <Properties>
+                    <Property name="caption" type="java.lang.String" value="End Series"/>
+                    <Property name="expression" type="java.lang.String" value="#{ entity.endseries }"/>
                     <Property name="horizontalAlignment" type="int" value="4"/>
+                    <Property name="visibleWhen" type="java.lang.String" value="#{ entity.afunit.serieslength &gt; 0 }"/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                         <LineBorder>
@@ -275,17 +278,17 @@
                         </LineBorder>
                       </Border>
                     </Property>
-                    <Property name="caption" type="java.lang.String" value="End Series"/>
-                    <Property name="expression" type="java.lang.String" value="#{ entity.endseries }"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[150, 20]"/>
                     </Property>
-                    <Property name="visibleWhen" type="java.lang.String" value="#{ entity.af.formtype == &apos;serial&apos; }"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XLabel" name="xLabel13">
                   <Properties>
+                    <Property name="caption" type="java.lang.String" value="Current Series"/>
+                    <Property name="expression" type="java.lang.String" value="#{ entity.currentseries }"/>
                     <Property name="horizontalAlignment" type="int" value="4"/>
+                    <Property name="visibleWhen" type="java.lang.String" value="#{ entity.afunit.serieslength &gt; 0 }"/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                         <LineBorder>
@@ -293,12 +296,9 @@
                         </LineBorder>
                       </Border>
                     </Property>
-                    <Property name="caption" type="java.lang.String" value="Current Series"/>
-                    <Property name="expression" type="java.lang.String" value="#{ entity.currentseries }"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[150, 20]"/>
                     </Property>
-                    <Property name="visibleWhen" type="java.lang.String" value="#{ entity.af.formtype == &apos;serial&apos; }"/>
                   </Properties>
                 </Component>
                 <Container class="com.rameses.rcp.control.XSeparator" name="xSeparator3">
@@ -323,6 +323,8 @@
                 </Container>
                 <Component class="com.rameses.rcp.control.XLabel" name="xLabel4">
                   <Properties>
+                    <Property name="caption" type="java.lang.String" value="Qty Balance"/>
+                    <Property name="expression" type="java.lang.String" value="#{ entity.qtybalance }"/>
                     <Property name="horizontalAlignment" type="int" value="4"/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -331,8 +333,6 @@
                         </LineBorder>
                       </Border>
                     </Property>
-                    <Property name="caption" type="java.lang.String" value="Qty Balance"/>
-                    <Property name="expression" type="java.lang.String" value="#{ entity.qtybalance }"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[150, 20]"/>
                     </Property>

@@ -1,0 +1,10 @@
+<workunit>
+    <invokers>
+         <invoker folderid="menucategory/financial/report" caption="Standard" role="REPORT" action="init"/>
+         <invoker type="formActions" caption="Preview" action="preview" visibleWhen="#{mode=='init'}"/>
+   </invokers>
+    <code class="com.rameses.enterprise.financial.models.StandardReportInitialModel" />
+    <pages>
+        <page template="com.rameses.enterprise.financial.views.StandardReportInitialPage" />
+    </pages>
+</workunit>

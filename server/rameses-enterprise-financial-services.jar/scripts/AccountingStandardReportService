@@ -1,0 +1,54 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*
+import com.rameses.util.*;
+
+class AccountingStandardReportService  {
+
+	@Service('DateService')
+	def dtSvc;
+
+	@DataContext('income_ledger') 
+	def reportDb; 
+
+	@ProxyMethod 
+	public def init() {
+		def p = [ fields:[] ];  
+		//p.fields << [name:'acctid', caption:'Account', type:'list', schemaname:'account', lookupkey:'objid', lookupvalue:'title']; 
+		p.fields << [name:'fundid', caption:'Fund', type:'list', schemaname:'fund', lookupkey:'objid', lookupvalue:'title']; 
+		p.fields << [name:'itemacctid', caption:'Item Account', type:'list', schemaname:'itemaccount', lookupkey:'objid', lookupvalue:'title']; 
+		p.fields << [name:'month', caption:'Month', type:'integer']; 
+		p.fields << [name:'year', caption:'Year', type:'integer']; 
+		return p; 
+	}
+
+	@ProxyMethod 
+	public def getReport( params ) { 
+		def arr = [];
+		params.criteriaList?.each {
+			if( it.field.lookupkey ) {
+				arr << it.field.name + " " + it.operator + " ('" + it.value*.key.join("','") + "')";
+			}
+			else {
+				def val = it.value;
+				if( it.value2 ) val += " AND " + it.value2;
+				arr << it.field.name + " " + it.operator + " " + val;
+			}
+		}
+		def filter = "";
+		if( arr ) filter  = " WHERE " + arr.join( " AND ");
+
+		def typefilter = "";
+		if( params.type ) {
+			if( params.type == "standard" ) typefilter = " WHERE tp.type  NOT IN ('itemaccount','detail') ";
+			if( params.type == "details" ) typefilter = " WHERE tp.type NOT IN ( 'itemaccount' )";
+		}
+
+		def qry = [maingroup: params.maingroup.objid];
+		qry.filter = filter;
+		qry.typefilter = typefilter;
+		def list = reportDb.getReport( qry );
+		if(!list) throw new Exception("No records found");
+		return list;
+	} 
+
+}

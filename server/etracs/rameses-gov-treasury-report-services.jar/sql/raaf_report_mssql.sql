@@ -45,7 +45,7 @@ from (
         (
           select top 1 objid from af_control_detail 
           where controlid = t1.controlid and refdate = t1.refdate 
-          order by refdate desc, txndate desc, indexno desc 
+          order by convert(date, refdate) desc, txndate desc, indexno desc 
         ) as detailid 
       from ( 
         select d.controlid, max(d.refdate) as refdate 

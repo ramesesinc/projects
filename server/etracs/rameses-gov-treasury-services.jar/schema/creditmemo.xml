@@ -15,6 +15,11 @@
 		<field name="bankaccount_objid" required="true"/>
 		<field name="bankaccount_code" required="true"/>
 		<field name="bankaccount_title"  required="true"/>
+
+		<complex name="bankaccount" ref="bankaccount" jointype="many-to-one" includefields="code,title,fund.*,acctid">
+			<key field="bankaccount_objid" target="objid"/>
+		</complex>
+			
 		<field name="type_objid" required="true"/>
 		<field name="type_title" required="true"/>
 		<field name="dtissued" required="true" />

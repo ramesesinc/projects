@@ -1,0 +1,18 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_billing_schedule">
+		<field name="objid" primary="true"/>
+		<field name="scheduleid" required="true"/>
+		<field name="year" required="true" caption="From Year"/>
+		<field name="month" required="true" caption="From Month"/>
+		<field name="fromperiod" required="true" caption="From Period"/>
+		<field name="toperiod" required="true" caption="To Period"/>
+		<field name="readingdate" required="true" caption="Reading Date"/>
+		<field name="readingduedate" required="true" caption="Reading Due Date"/>
+		<field name="billingduedate" required="true" caption="Billing Due Date"/>
+		<field name="discdate" required="true" caption="Discount Date"/>
+		<field name="duedate" required="true" caption="Due Date"/>
+		<field name="monthname" expr="MONTH_ARRAY(month)" caption="From Month Name"/>
+
+	</element>
+</schema>
+

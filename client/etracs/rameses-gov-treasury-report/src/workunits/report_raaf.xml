@@ -1,8 +1,8 @@
 <workunit extends="wtemplates/gov/treasury/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/treasury" action="init" caption="RAAF" target="window" index="-9"> 
-            <action name="doInit" tag="all" role="REPORT" permission="raaf.viewreport"/>  
-            <action name="doInit" tag="all" role="AFO" permission="raaf.viewreport"/>  
+        <invoker folderid="/explorer/report/treasury" action="init" caption="RAAF" target="window"> 
+            <action name="doInit" tag="all" role="REPORT" permission="raaf.viewreport"/> 
+            <action name="doInit" tag="all" role="AFO" permission="raaf.viewreport"/> 
             <action name="doInit" tag="collector" role="COLLECTOR" permission="raaf.viewreport"/>  
         </invoker>
     </invokers>

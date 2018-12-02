@@ -11,10 +11,8 @@ from (
         rlp.objid as paymentid,
         sum(ri.amount + ri.interest - ri.discount) as amount
     from remittance rem 
-        inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-        inner join liquidation liq on liqr.liquidationid = liq.objid
-        inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-        inner join cashreceipt cr on remc.objid = cr.objid 
+        inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+        inner join cashreceipt cr on cr.remittanceid = rem.objid 
         inner join rptpayment rlp on cr.objid = rlp.receiptid
         inner join rptpayment_item ri on rlp.objid = ri.parentid
         left join rptledger rl ON rlp.refid = rl.objid  
@@ -40,10 +38,8 @@ left join
         rlp.objid as paymentid,
         sum(ri.amount)  as amount
     from remittance rem 
-        inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-        inner join liquidation liq on liqr.liquidationid = liq.objid
-        inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-        inner join cashreceipt cr on remc.objid = cr.objid 
+        inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+        inner join cashreceipt cr on cr.remittanceid = rem.objid 
         inner join rptpayment rlp on cr.objid = rlp.receiptid
         inner join rptpayment_share ri on rlp.objid = ri.parentid
         left join rptledger rl ON rlp.refid = rl.objid  

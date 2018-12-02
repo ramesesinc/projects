@@ -27,7 +27,7 @@ class EntityIndividualPersistenceInterceptor  {
 	@Service('ListService')
 	def listSvc 
 
-	@Service('LOVService')
+	@Service('LOVService') 
 	def LOV; 
 
 	@Before(pattern="PersistenceService.(create|update)", eval="#{args[0]._schemaname == 'entityindividual'}", index=100)
@@ -43,12 +43,8 @@ class EntityIndividualPersistenceInterceptor  {
 
 		//format name if given
 		if(o.lastname && o.firstname) {
-			o.name = o.lastname+', '+o.firstname; 
-			if (o.middlename) o.name += ' '+o.middlename;	
-			def len = o.name.length()
-			if (len > INDEX_CHAR_COUNT) len = INDEX_CHAR_COUNT;
-			o.entityname = o.name.substring(0, len);		
-			o.entityname = (o.name.length() > 50 ? o.name[0..50] : o.name )
+			o.name = o.lastname+', '+o.firstname + (o.middlename ? ' '+o.middlename : ''); 
+			o.entityname = o.name; 
 		}
 
 		if( o.religion ) {

@@ -34,12 +34,7 @@ class EntityProfileListInterceptor  {
 
 	@After(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'entityprofile' }")
 	public void loadList(def evt) {
-		def o = evt.args[0];
-		if(o.node.name == 'online') {
-			def result = evt.result;
-			//println " root is " + orgSvc.getRoot()
-			result << [ objid:'E2', lastname:'FLORES',firstname:'WORGIE',middlename:'VARGA',birthdate:'1979-01-01',idno:'FIL09210001' ]
-		}
+
 	}
 
 }

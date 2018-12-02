@@ -31,6 +31,10 @@ public class LedgerListModel extends CrudListModel {
         return super.getSchemaName(); 
     }
     
+    public def getMasterEntity() {
+        return caller.entity;
+    }
+    
     public String getPaymentSchemaName() {
         if(_paymentSchemaName ) return _paymentSchemaName;
         _paymentSchemaName = invoker.properties.paymentSchemaName;

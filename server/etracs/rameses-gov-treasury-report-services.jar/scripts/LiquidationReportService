@@ -128,7 +128,7 @@ class LiquidationReportService  {
 			def list = fund_em.find([ parentid: params.fundid ]).collect{ it.objid }   
 			if ( list ) funds.addAll( list ); 
 		} 
-		params.fundfilter = "'"+ funds.join("','") +"'"; 
+		params.fundfilter = " AND fund.objid IN ('"+ funds.join("','") +"') "; 
 
 		data.receipts = liqreport.getReceipts( params ); 
 		if ( !data.receipts ) throw new Exception('No record(s) found                  ');
@@ -144,16 +144,11 @@ class LiquidationReportService  {
 		def data = liqEm.find([ objid: liq.objid ]).first();  
 		if( !data ) throw new Exception("Could not open Collection Voucher with objid " + liq.objid ); 
 
-		def params = [ collectionvoucherid: data.objid,  fundid: fund.fundid ]; 
-		params.fundfilter = ""; 
+		def params = [ collectionvoucherid: data.objid ]; 
 
+		params.fundfilter = ""; 
 		if ( fund?.fundid ) {
-			def funds = [ fund.fundid.toString() ]; 
-			if ( params._INCLUDE_SUBFUND == true ) { 
-				def list = fund_em.find([ parentid: params.fundid ]).collect{ it.objid }   
-				if ( list ) funds.addAll( list ); 
-			} 
-			params.fundfilter = " AND fund.objid IN ('"+ funds.join("','") +"') "; 
+			params.fundfilter = " AND fund.objid IN ('"+ fund.fundid +"') "; 
 		}
 		
 		data.acctsummaries = liqreport.getRevenueItemSummaryByFund( params ); 

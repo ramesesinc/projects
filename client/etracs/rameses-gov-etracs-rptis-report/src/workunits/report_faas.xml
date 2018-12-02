@@ -57,7 +57,7 @@
                 getReportData : { return reportdata; },
                 getParameters : { 
                     def params = paramSvc.getStandardParameter(); 
-                    params.JSON_SEVICE_PATH = appEnv['app.host'] +'/'+ appEnv['app.cluster'] +'/json'
+                    params.JSON_SERVICE_PATH = appEnv['app.host'] +'/'+ appEnv['app.cluster'] +'/json'
                     params.putAll(reportparams);
                     return params 
                 }

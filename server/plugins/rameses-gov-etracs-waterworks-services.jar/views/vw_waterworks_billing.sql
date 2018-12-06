@@ -2,7 +2,7 @@ DROP VIEW IF EXISTS vw_waterworks_billing
 ;
 CREATE VIEW vw_waterworks_billing AS
 SELECT 
-   wb.*, wa.acctno, wa.acctname, wa.address_text as addresstext, wa.classificationid, 
+   wb.*, wa.acctno, wa.acctname, wa.state as acctstate, wa.address_text as addresstext, wa.classificationid, 
    CASE WHEN wc.meterid IS NULL THEN 'UNMETERED' ELSE wm.state END AS meterstate,
    wc.prevreading, wc.reading, wc.volume, wc.amount, wc.amtpaid, wc.rate, wc.hold,
    ((wb.arrears + wb.otherfees + wb.surcharge + wb.interest) - wb.credits) AS subtotal,

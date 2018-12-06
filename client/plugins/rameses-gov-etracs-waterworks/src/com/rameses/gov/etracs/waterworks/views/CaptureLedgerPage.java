@@ -66,6 +66,7 @@ public class CaptureLedgerPage extends javax.swing.JPanel {
 
         xIntegerField1.setCaption("Year");
         xIntegerField1.setName("info.year"); // NOI18N
+        xIntegerField1.setPreferredSize(new java.awt.Dimension(120, 20));
         xIntegerField1.setRequired(true);
         xFormPanel2.add(xIntegerField1);
 
@@ -87,7 +88,7 @@ public class CaptureLedgerPage extends javax.swing.JPanel {
         xLabel1.setCaption("Due Date");
         xLabel1.setDepends(new String[] {"info.billingcycle"});
         xLabel1.setExpression("#{info.billingcycle.duedate}");
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel1.setPreferredSize(new java.awt.Dimension(120, 20));
         xFormPanel2.add(xLabel1);
 
         xTextField1.setCaption("Particulars");

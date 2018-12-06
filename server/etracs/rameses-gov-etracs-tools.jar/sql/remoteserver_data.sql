@@ -218,8 +218,9 @@ select ugm.* from (
     union 
     select objid from sys_usergroup_member where org_objid = $P{orgid} 
   )t1 
-)t2, sys_usergroup_member ugm      
+)t2, sys_usergroup_member ugm, sys_user u       
 where ugm.objid = t2.objid  
+  and ugm.user_objid = u.objid 
 
 
 [getBanks]

@@ -132,7 +132,7 @@ public class StuboutPage extends javax.swing.JPanel {
                 .addContainerGap(174, Short.MAX_VALUE))
         );
 
-        xTabbedPane1.addTab("General information", xPanel1);
+        xTabbedPane1.addTab("  General information    ", xPanel1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

@@ -4,7 +4,7 @@
           cols="year,monthname,schedule.readingdate,meter.serialno,prevreading,reading,volume,amount,amtpaid,balance"
           orderBy="schedule.objid desc">
     <invokers>
-        <invoker type="waterworks_account:section" caption="Monthly Consumption" 
+        <invoker type="waterworks_account:section" caption="  Monthly Consumption   " 
                  index="2" action="init" 
                  parentkey="acctid"
                  visibleWhen="#{mode=='read'}"  />

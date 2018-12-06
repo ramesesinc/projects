@@ -18,6 +18,9 @@ class RemittanceService  {
 	@DataContext("remittance_fund")
 	def rfEm;
 
+	@DataContext("remittance_af")
+	def rafEm;
+
 	@DataContext("cashreceiptpayment_noncash")
 	def ncEm;
 
@@ -309,6 +312,7 @@ class RemittanceService  {
 		if ( !data.cashreceipts ) 
 			throw new Exception('cashreceipts parameter is required in RemittanceService.importData'); 
 
+		data.controlno = data.controlno.toString() +'-R';
 		remEm.create( data ); 
 
 		def uparam = [ remittanceid: data.objid ]; 
@@ -316,14 +320,23 @@ class RemittanceService  {
 			cashReceiptEm.find([ objid: it ]).update( uparam ); 
 		} 
 
-		def mparam = [ remittanceid: data.objid ]; 
-		def remfunds = remEm.getBuildRemittanceFunds( mparam ); 
-		remfunds.each{
-			it.objid = (it.remittanceid + it.fund.objid); 
-			it.controlno = (it.controlno +'-'+ it.fund.code); 
-			it.remittance = [objid: it.remittanceid];
-			it.cashbreakdown = []; 
-			rfEm.create( it ); 
-		} 
+		if ( data.vertype.toString() == 'v255' ) {
+			data.remittancefunds.each{
+				it.controlno = it.controlno.toString() +'-R'; 
+				it.remittance = [objid: it.remittanceid];
+				rfEm.create( it );  
+			}
+
+		} else {
+			def mparam = [ remittanceid: data.objid ]; 
+			def remfunds = remEm.getBuildRemittanceFunds( mparam ); 
+			remfunds.each{
+				it.objid = (it.remittanceid + it.fund.objid); 
+				it.controlno = (it.controlno +'-'+ it.fund.code); 
+				it.remittance = [objid: it.remittanceid];
+				it.cashbreakdown = []; 
+				rfEm.create( it ); 
+			} 
+		}
 	} 
 } 

@@ -45,8 +45,8 @@
         <Container class="com.rameses.rcp.control.XPanel" name="xPanel1">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="General information">
-                <Property name="tabTitle" type="java.lang.String" value="General information"/>
+              <JTabbedPaneConstraints tabName="  General information    ">
+                <Property name="tabTitle" type="java.lang.String" value="  General information    "/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>

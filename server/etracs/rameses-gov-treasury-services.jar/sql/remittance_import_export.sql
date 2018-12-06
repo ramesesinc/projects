@@ -1,27 +1,85 @@
 [findRemittanceByid]
 SELECT * FROM remittance WHERE objid = $P{remittanceid}
 
-[getCashReceipts]
+[getRemittanceFund]
+select rf.* 
+from remittance_fund rf 
+  inner join remittance r on r.objid = rf.remittanceid   
+where rf.remittanceid = $P{remittanceid} 
+
+[getRemittanceAF]
+select raf.* 
+from remittance_af raf 
+  inner join remittance r on r.objid = raf.remittanceid   
+where raf.remittanceid = $P{remittanceid} 
+
+[getCashReceipt]
 SELECT cr.* 
 FROM remittance r 
-	INNER JOIN cashreceipt cr ON cr.remittanceid = r.objid 
-WHERE cr.remittanceid = $P{remittanceid}	
+  INNER JOIN cashreceipt cr ON cr.remittanceid = r.objid 
+WHERE cr.remittanceid = $P{remittanceid}  
 
-[getCashReceiptItems]
-select 
-  i.*, ri.fund_code as item_fund_code, 
-  ri.fund_objid as item_fund_objid, ri.fund_title as item_fund_title  
-from cashreceiptitem i 
-  inner join itemaccount ri on ri.objid =  i.item_objid
-where i.receiptid=$P{objid}
+[getCashReceiptItem]
+SELECT ci.* 
+FROM remittance r 
+  INNER JOIN cashreceipt cr ON cr.remittanceid = r.objid 
+  INNER JOIN cashreceiptitem ci ON ci.receiptid = cr.objid 
+WHERE cr.remittanceid = $P{remittanceid}  
 
+[getCashReceiptVoid]
+SELECT v.* 
+FROM remittance r 
+  INNER JOIN cashreceipt cr ON cr.remittanceid = r.objid 
+  INNER JOIN cashreceipt_void v on v.receiptid = cr.objid 
+WHERE cr.remittanceid = $P{remittanceid} 
 
-[getCashReceiptCheckPayments]
-select * from cashreceiptpayment_noncash where receiptid=$P{objid}
+[getCashReceiptNoncashPayment]
+SELECT nc.* 
+FROM remittance r 
+  INNER JOIN cashreceipt cr ON cr.remittanceid = r.objid 
+  INNER JOIN cashreceiptpayment_noncash nc on nc.receiptid = cr.objid 
+WHERE cr.remittanceid = $P{remittanceid} 
 
+[getCheckPayment]
+SELECT cp.* 
+FROM ( 
+  SELECT DISTINCT nc.checkid 
+  FROM remittance r 
+    INNER JOIN cashreceipt cr ON cr.remittanceid = r.objid 
+    INNER JOIN cashreceiptpayment_noncash nc on nc.receiptid = cr.objid 
+  WHERE cr.remittanceid = $P{remittanceid} 
+    AND nc.reftype = 'CHECK' 
+)t1, checkpayment cp 
+WHERE cp.objid = t1.checkid  
 
-[findVoidedReceipt]
-SELECT * from cashreceipt_void where receiptid = $P{objid}
+[getCashReceiptShare]
+SELECT s.* 
+FROM remittance r 
+  INNER JOIN cashreceipt cr ON cr.remittanceid = r.objid 
+  INNER JOIN cashreceipt_share s on s.receiptid = cr.objid 
+WHERE cr.remittanceid = $P{remittanceid} 
+
+[getCashReceiptCancelSeries]
+SELECT s.* 
+FROM remittance r 
+  INNER JOIN cashreceipt cr ON cr.remittanceid = r.objid 
+  INNER JOIN cashreceipt_cancelseries s on s.receiptid = cr.objid 
+WHERE cr.remittanceid = $P{remittanceid} 
+
+[getCashReceiptReprintLog]
+SELECT s.* 
+FROM remittance r 
+  INNER JOIN cashreceipt cr ON cr.remittanceid = r.objid 
+  INNER JOIN cashreceipt_reprint_log s on s.receiptid = cr.objid 
+WHERE cr.remittanceid = $P{remittanceid} 
+
+[getCashTicket]
+SELECT t.* 
+FROM remittance r 
+  INNER JOIN cashreceipt cr ON cr.remittanceid = r.objid 
+  INNER JOIN cashreceipt_cashticket t on t.objid = cr.objid 
+WHERE cr.remittanceid = $P{remittanceid} 
+
 
 [getRemittanceItems]
 SELECT c.formno, c.collector_objid, c.controlid, min(c.formtype) as formtype,  
@@ -36,14 +94,5 @@ SELECT c.formno, c.collector_objid, c.controlid, min(c.formtype) as formtype,
 FROM cashreceipt c 
   INNER JOIN remittance r on r.objid = c.remittanceid 
   LEFT JOIN cashreceipt_void v ON c.objid=v.receiptid
-where c.remittanceid = $P{remittanceid}	
+where c.remittanceid = $P{remittanceid} 
 GROUP BY c.collector_objid, c.formno, c.formtype, c.controlid
-
-[getCancelledSeries]
-SELECT cs.*, c.series 
-FROM cashreceipt c 
-   INNER JOIN remittance r on r.objid = c.remittanceid 
-   INNER JOIN cashreceipt_cancelseries cs on cs.receiptid = c.objid
-where r.objid = $P{remittanceid} 
-  and c.controlid = $P{controlid}
-	and c.state = 'CANCELLED' 

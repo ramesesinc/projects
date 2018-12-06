@@ -11,12 +11,15 @@ import com.rameses.treasury.common.models.*;
 class MeterEditModel extends ChangeInfoModel {
 
     def meterStates =  ["ACTIVE","DISCONNECTED","DEFECTIVE"];
+    def capacityTypes = [10000, 100000, 1000000, 10000000]; 
     
     def getFormFields() {
         def zfields = [];
         if( tag == "state" ) {
-            zfields << [name:"state", caption:"Status", datatype: "combo", 
-                        items:"meterStates"]            
+            zfields << [name:"state", caption:"Status", datatype: "combo", items:"meterStates"];
+        }
+        else if( tag == "capacity" ) {
+            zfields << [name:"capacity", caption:"Capacity", datatype: "combo", items:"capacityTypes"];
         }
         else {
             return null;

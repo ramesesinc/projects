@@ -28,6 +28,8 @@ class CapturePaymentModel extends PageFlowController  {
         entity = [amount:0];
         consumptionList = []; 
         otherFeeList = [];
+        amount = 0;
+        credit = 0;
         consumptionListHandler.reload(); 
         otherFeeHandler.reload();
     }
@@ -72,11 +74,11 @@ class CapturePaymentModel extends PageFlowController  {
         def m = [_schemaname:"vw_waterworks_consumption"];
         m.findBy = [acctid: entity.payer.objid ];
         m.select = "objid,year,month,amtdue:{amount-amtpaid}";
-        m.where = ["amount - amtpaid > 0"]; 
-        m.orderBy = "year ASC,month ASC";
+        m.where = [" state = 'POSTED' AND (amount - amtpaid) > 0 "]; 
+        m.orderBy = "year, month";
         consumptionList =  querySvc.getList( m );
-        consumptionList.each {
-            it.amount = 0;it.discount=0;it.surcharge=0;it.interest=0;it.total=0;
+        consumptionList.each { 
+            it.amount=0; it.discount=0; it.surcharge=0; it.interest=0; it.total=0;
         }
         
         def m1 = [_schemaname:"waterworks_otherfee"];
@@ -107,6 +109,7 @@ class CapturePaymentModel extends PageFlowController  {
             
         def pmt = [_schemaname:"waterworks_payment"];
         pmt.putAll( entity );
+        pmt.acctid = entity.payer.objid; 
         pmt.txnmode = "CAPTURE";
         pmt.items = [];
         pmt.credits = [];
@@ -119,7 +122,7 @@ class CapturePaymentModel extends PageFlowController  {
             [ refid: it.objid, reftype:'waterworks_otherfee', amount:it.amount, discount:it.discount, surcharge: it.surcharge, interest:it.interest ]
         });
         if(credit>0) {
-            pmt.credits << [ reftype:"waterworks_credit", amount: credit, remarks: "CAPTURE", txntype: "credit", amtpaid:0 ];
+            pmt.credits << [ reftype:"waterworks_credit", amount: credit, remarks: "CAPTURE EXCESS PAYMENT", txntype: "credit", amtpaid:0.0, acctid: pmt.acctid ];
         }
         paymentSvc.post(pmt);
         MsgBox.alert("post success!");
@@ -129,7 +132,4 @@ class CapturePaymentModel extends PageFlowController  {
         post();
         initNew();
     }
-    
-    
-
 }

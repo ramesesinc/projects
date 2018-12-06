@@ -75,9 +75,6 @@ class CashReceiptListSummaryModel  {
         m.select = "formno,voided,amount:{SUM(amount)}";
         m.groupBy = "formno,voided";
         list = queryService.getList( m ).findAll{it.voided == 0}
-        list.each{
-            println it 
-        }
         total = list.sum{ it.amount };
     }
     

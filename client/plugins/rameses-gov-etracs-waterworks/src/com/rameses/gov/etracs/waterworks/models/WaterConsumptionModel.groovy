@@ -27,7 +27,10 @@ public class CaptureConsumptionModel extends CrudFormModel {
     def handler;
     def hasErrs;
     
-    def txnModes = ["BEGIN_BALANCE", "CAPTURE" ];
+    final def onlineTxnModes = ["ONLINE"];  
+    final def captureTxnModes = ["BEGIN_BALANCE", "CAPTURE" ]; 
+    
+    def txnModes = onlineTxnModes;
     def consumptionUtil;
     
     @FormTitle
@@ -38,7 +41,10 @@ public class CaptureConsumptionModel extends CrudFormModel {
     }
     
     void afterCreate() {
+        txnModes = captureTxnModes;
+        
         entity.txnmode = "CAPTURE";
+        entity.state = 'POSTED';
         entity.acctid = masterEntity.objid;
         entity.account = masterEntity;
         entity.meterid = masterEntity.meter?.objid;
@@ -55,6 +61,10 @@ public class CaptureConsumptionModel extends CrudFormModel {
             if ( !entity.prevreading ) entity.prevreading = 0; 
             entity.reading = entity.prevreading; 
         }
+    }
+
+    void afterOpen() {
+        txnModes = ( "ONLINE" == entity?.txnmode ? onlineTxnModes : captureTxnModes); 
     }
     
     public def getMasterEntity() {

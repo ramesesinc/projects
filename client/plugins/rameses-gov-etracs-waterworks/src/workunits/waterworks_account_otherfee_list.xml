@@ -4,7 +4,7 @@
           title="Other Fees"
           cols="year,monthname,item.code,item.title,amount,amtpaid,balance" >
     <invokers>
-        <invoker type="waterworks_account:section" caption="Other Fees" 
+        <invoker type="waterworks_account:section" caption="  Other Fees   " 
                  index="3" action="init" 
                  parentkey="acctid"
                  visibleWhen="#{mode=='read'}"  />

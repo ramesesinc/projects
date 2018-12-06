@@ -15,13 +15,14 @@ class WaterworksScheduleService {
 	def skedEm;	
 
 	@ProxyMethod 
-	public def getSchedule( def p ) {
+	public def getSchedule( p ) {
 		if( !p.scheduleid ) throw new Exception("schedule is required");
 		if( !p.year ) throw new Exception("year is required");
 		if( !p.month ) throw new Exception("month is required");
 
+		boolean recalc = (p.option?.recalc.toString() == 'true');
 		def sked = skedEm.find( [scheduleid: p.scheduleid, year:p.year, month: p.month ] ).first();
-		if( !sked ) {
+		if( !sked || recalc ) {
 			def facts = [];
 			facts << new WaterBlockSchedule( id: p.scheduleid );
 			facts << new BillingPeriod( year: p.year, month : p.month );
@@ -43,8 +44,13 @@ class WaterworksScheduleService {
 				if(it instanceof VarDate ) {
 					m[(it.tag)] = it.date;
 				}
-			}
-			sked = skedEm.create( m );
+			} 
+
+			if ( !sked ) { 
+				sked = skedEm.create( m ); 
+			} else if ( recalc ) { 
+				sked = skedEm.update( m ); 
+			} 
 		}
 		return sked;
 	}

@@ -1,0 +1,15 @@
+import com.rameses.annotations.*; 
+
+class WaterworksBillingQueryInterceptor {
+	
+	@DataContext('waterworks_account_attribute') 
+	def wattr_db;
+
+	@After(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'vw_waterworks_billing'}")
+	public void afterGetList( evt ) {
+		evt.result.each{
+			def attrs = wattr_db.find([ parentid: it.acctid ]).list();
+			it.attributename = attrs.collect{ it.attribute?.name }.findAll{( it )}.join(', '); 
+		}
+	} 
+} 

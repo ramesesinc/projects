@@ -318,7 +318,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
        h.fields = [];
        h.fields << [name:"printername", caption:'Select Printer', type:'combo', required:true, itemsObject:getPrinterList() ];
        h.fields << [name:"billno", caption:'Start Bill No.', type:'integer', required:true ];
-       h.fields << [name:"seqno", caption:'Start Seq No.', type:'integer', required:true ];
+       h.fields << [name:"seqno", caption:'Start Seq No.', type:'integer' ];
        h.fields << [name:"acctno", caption:'Account No.', type:'text' ];
        Modal.show("dynamic:form", h, [title: 'Start Bill Printing'] );
        if ( !pass ) return; 

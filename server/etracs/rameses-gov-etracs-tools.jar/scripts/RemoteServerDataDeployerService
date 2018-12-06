@@ -95,15 +95,6 @@ class RemoteServerDataDeployerService {
 			} 
 		} 
 
-		entity.data.userMemberships.each{ 
-			it.group = it.usergroup;
-			if ( ugm_db.find([objid: it.objid]).select('objid').first()) {
-				ugm_db.update( it ); 
-			} else { 
-				ugm_db.create( it ); 
-			} 
-		} 
-
 		entity.data.users.each{
 			def o = user_db.find([objid: it.objid]).select('objid,pwd').first(); 
 			if ( o ) { 
@@ -111,6 +102,15 @@ class RemoteServerDataDeployerService {
 				user_db.update( it ); 
 			} else { 
 				user_db.create( it ); 
+			} 
+		} 
+
+		entity.data.userMemberships.each{ 
+			it.group = it.usergroup;
+			if ( ugm_db.find([objid: it.objid]).select('objid').first()) {
+				ugm_db.update( it ); 
+			} else { 
+				ugm_db.create( it ); 
 			} 
 		} 
 

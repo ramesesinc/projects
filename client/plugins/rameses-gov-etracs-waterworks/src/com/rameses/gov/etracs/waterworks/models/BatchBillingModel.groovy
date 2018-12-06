@@ -175,6 +175,33 @@ public class BatchBillingModel extends WorkflowTaskModel {
         return null; 
     } 
     
+    def resetConsumption = {item-> 
+        def p = [_schemaname: 'waterworks_account'];
+        p.findBy = [ objid: item.acctid ]; 
+        p.select = 'objid,meterid'; 
+        def acct = queryService.findFirst( p ); 
+        
+        p = [_schemaname: 'waterworks_consumption'];
+        p.findBy = [ objid: item.consumptionid ]; 
+        p.meterid = acct?.meterid; 
+        p.amount = p.amtpaid = 0.0; 
+        p.volume = 0;
+        
+        def mparam = [_schemaname: 'waterworks_meter'];
+        mparam.findBy = [ objid: p.meterid ]; 
+        mparam.select = 'objid,lastreading'; 
+        def meterinfo = queryService.findFirst( mparam ); 
+        p.prevreading = p.reading = meterinfo?.lastreading; 
+        persistenceSvc.update( p ); 
+        
+        item.reading = p.reading;
+        item.prevreading = p.prevreading; 
+        item.amount = item.amtpaid = 0.0;
+        item.volume = p.volume; 
+        readingHandler.reload(); 
+        return null; 
+    } 
+    
     def beginBalance = { item->
         def h = [:];
         h.handler = { o->
@@ -220,6 +247,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
             if(item.hold == 0 ) mnuList << [value: 'Hold', func:hold];
             if(item.hold == 1 ) mnuList << [value: 'Activate', func:hold];
             mnuList << [value: 'Recompute', func: recomputeConsumption];
+            mnuList << [value: 'Reset', func: resetConsumption]
         }
         mnuList << [value: 'View Account', func:viewAccount];
         mnuList << [value: 'View Consumption History', func: viewConsumptionHistory];
@@ -245,11 +273,14 @@ public class BatchBillingModel extends WorkflowTaskModel {
 	},
         isColumnEditable: {item,colName->
             if(task?.state != "for-reading") return false;
-            if(colName == "reading") {
+            if (colName == "reading") {
                 return true; 
             }
-            else if(colName == "volume") {
-                return (item.meterstate!="ACTIVE");
+            else if (colName == "volume" && item.meterstate == 'DEFECTIVE') {
+                return true; 
+            }
+            else {
+                return false; 
             }
         },
         onColumnUpdate: { item,colName->
@@ -268,33 +299,56 @@ public class BatchBillingModel extends WorkflowTaskModel {
    def cancelPrint = false;
    public void printBill() {
        def printerName = null;
-       def startno = null;
-       def h = [:];
+       def startbillno = null;
+       def startseqno = null; 
+       def acctno = null; 
+       boolean pass = false;
+       
+       def h = [data: [seqno: 0]];
        h.handler = { v->
-           startno = v.billno;
+           if ( v.billno == null ) throw new Exception("Start Bill No. is required"); 
+           if ( v.billno <= 0 ) throw new Exception("Start Bill No. must be greater than zero"); 
+           
            printerName = v.printername; 
-       };
+           startbillno = v.billno;
+           startseqno = v.seqno;
+           acctno = v.acctno;
+           pass = true; 
+       } 
        h.fields = [];
-       h.fields << [name:"billno", caption:'Enter Start Bill No', type:'integer', required:true ];
        h.fields << [name:"printername", caption:'Select Printer', type:'combo', required:true, itemsObject:getPrinterList() ];
+       h.fields << [name:"billno", caption:'Start Bill No.', type:'integer', required:true ];
+       h.fields << [name:"seqno", caption:'Start Seq No.', type:'integer', required:true ];
+       h.fields << [name:"acctno", caption:'Account No.', type:'text' ];
        Modal.show("dynamic:form", h, [title: 'Start Bill Printing'] );
-       if(!startno) return;
+       if ( !pass ) return; 
        
-       
-       def parm = [refbillno: startno, batchid : entity.objid ]; 
-       while(true) {
+       def counter = 0; 
+       def parm = [batchid: entity.objid, refbillno: startbillno, startseqno: startseqno, acctno: acctno]; 
+       while ( true ) { 
+           if ( cancelPrint ) break;
+
            def res = printSvc.process( parm );
-           def list = res.list;
-           if(!list) break;
-           if(cancelPrint) break;
+           def list = res.list; 
+           if ( !list ) break; 
+           if ( cancelPrint ) break; 
+           
            list.each {
                printerService.printString(printerName, it.toString() );
-           }
+           }  
+           counter++; 
            waitPrintProc(); 
            parm.refbillno = res.refbillno;
            parm.printed_list = res.printed_list; 
-       }
-       MsgBox.alert("printing finished");
+       } 
+       
+       if ( cancelPrint ) {
+           MsgBox.alert("printing has been cancelled");
+       } else if ( counter == 0 ) {
+           MsgBox.alert("No available records that matches the criteria for printing. Please verify");
+       } else {
+           MsgBox.alert("printing finished");
+       } 
    } 
    
     private void waitPrintProc() {

@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml"  
-          schemaName="entityindividual" allowDelete="false" debug="true">
+          schemaName="entityindividual" allowDelete="false">
     <invokers>
         <invoker folderid="/explorer/master/entity" caption="Individual" action="init" 
                  role="MASTER" permission="entityindividual.view" 

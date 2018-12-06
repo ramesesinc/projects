@@ -14,6 +14,10 @@
             caption="Change Last Reading Date" action="init" index="3"
             fields="lastreadingdate"/>
         
+        <invoker type="waterworks_meter:form:edit" target="popup"
+            caption="Change Capacity" action="init" index="4"
+            fields="capacity" tag="capacity" /> 
+        
     </invokers>
     
     <code class="com.rameses.gov.etracs.waterworks.models.MeterEditModel" />

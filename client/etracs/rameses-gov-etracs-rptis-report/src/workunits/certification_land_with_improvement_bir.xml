@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit extends="rpt_wtemplates/CertificationController.xml">
     <invokers>
-        <invoker folderid="/explorer/txn/rpt/cert/bir" action="init" 
+        <invoker type="rptcertification:bir"  action="init" 
                  caption="Land with Improvements" 
                  opener="landwithimprovbir" index="2" 
                 role="CERTIFICATION_ISSUER,RECORD" 

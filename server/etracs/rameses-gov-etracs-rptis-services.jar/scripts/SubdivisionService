@@ -764,20 +764,27 @@ class SubdivisionService
 
 
     void updateSketch(oldrpid, land) {
-        def header = em_header.find([objid: oldrpid]).first()
-        def chunks = em_chunk.find([parentid: header.objid]).list()
-        header.objid = land.newfaasid
-        header.refid = land.newfaasid
+        if (land.rp.drawing) {
+            def sketch = [objid: land.newfaasid, drawing: land.rp.drawing]
+            faasSvc.saveSketch(sketch)
+        } else {
+            def header = em_header.find([objid: oldrpid]).first()
+            if (header) {
+                def chunks = em_chunk.find([parentid: header.objid]).list()
+                header.objid = land.newfaasid
+                header.refid = land.newfaasid
 
-        em_header.create(header)
-        chunks.each{
-            it.objid = 'C' + new java.rmi.server.UID()
-            it.parentid = header.objid
-            em_chunk.create(it)
+                em_header.create(header)
+                chunks.each{
+                    it.objid = 'C' + new java.rmi.server.UID()
+                    it.parentid = header.objid
+                    em_chunk.create(it)
+                }
+
+                em_chunk.find([parentid: oldrpid]).delete()
+                em_header.find([objid: oldrpid]).delete()
+            }
         }
-
-        em_chunk.find([parentid: oldrpid]).delete()
-        em_header.find([objid: oldrpid]).delete()
     }
 }
 

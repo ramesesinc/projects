@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit extends="rpt_wtemplates/CertificationController.xml">
     <invokers>
-        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="Certified True Copy of Tax Declaration" 
-            opener="tdtruecopy" index="100" role="CERTIFICATION_ISSUER,RECORD" permission="certification.tdtruecopy"/>
-            
-        <invoker folderid="/menu/txn/rpt/cert" action="init" caption="Certified True Copy of Tax Declaration" 
-            opener="tdtruecopy" index="100" role="CERTIFICATION_ISSUER,RECORD" permission="certification.tdtruecopy"/>
-            
-        <invoker type="quick_launcher" action="init" code="TDC01" caption="Certified True Copy of Tax Declaration" 
-            opener="tdtruecopy" index="100" role="CERTIFICATION_ISSUER,RECORD" permission="certification.tdtruecopy"/>
+        <invoker type="rptcertification" 
+            action="init" caption="Certified True Copy of Tax Declaration" 
+            opener="tdtruecopy" index="100" 
+            role="CERTIFICATION_ISSUER,RECORD" permission="certification.tdtruecopy"/>
             
         <invoker type="tdtruecopy:open" action="open" caption="Certified True Copy of Tax Declaration" /> 
     </invokers>

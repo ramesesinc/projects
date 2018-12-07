@@ -9,6 +9,11 @@
         
         <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" visibleWhen="#{mode=='changeinfo'}"/>
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" visibleWhen="#{mode=='changeinfo'}"/>
+
+        <invoker type="formActions" 
+            action="convertToDrawing" caption="Convert To Drawing" 
+            immediate="true"
+            role="APPRAISER,TAXMAPPER"/>
    </invokers>
    
   <code class="com.rameses.gov.etracs.rptis.models.FAASChangeSketchOldModel">

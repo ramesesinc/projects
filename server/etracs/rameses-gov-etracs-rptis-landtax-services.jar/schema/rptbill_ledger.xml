@@ -3,5 +3,9 @@
         <field name="rptledgerid" primary="true" />
         <field name="billid" primary="true" />
         <field name="updateflag" />
+
+        <complex name="rptledger" ref="rptledger" jointype="many-to-one" includefields="tdno" required="false">
+        	<key field="rptledgerid" target="objid" />
+        </complex>
     </element>
 </schema>

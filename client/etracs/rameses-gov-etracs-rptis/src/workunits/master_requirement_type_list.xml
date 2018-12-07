@@ -9,11 +9,11 @@
                  role="MASTER" 
                  permission="master.viewlist"/>
         
-        <invoker folderid="/home/rpt/master" caption="Requirement Types"  index="13" 
+        <!--invoker folderid="/home/rpt/master" caption="Requirement Types"  index="13" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
-                 icon="home/icons/requirements.png"/>
+                 icon="home/icons/requirements.png"/-->
         
         <invoker type="quick_launcher" code="REQ00" caption="Requirement Types"  
                 action="init" 

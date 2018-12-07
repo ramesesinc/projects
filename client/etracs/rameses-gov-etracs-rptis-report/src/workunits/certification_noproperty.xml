@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit extends="rpt_wtemplates/CertificationController.xml">
     <invokers>
-        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="No Property" 
-            opener="noproperty" index="8" role="CERTIFICATION_ISSUER,RECORD" permission="certification.noproperty"/>    
-            
-        <invoker folderid="/menu/txn/rpt/cert" action="init" caption="No Property" 
-            opener="noproperty" index="8" role="CERTIFICATION_ISSUER,RECORD" permission="certification.noproperty"/>    
-            
-        <invoker type="quick_launcher" action="init" code="RC08" caption="No Property" 
-            opener="noproperty" index="8" role="CERTIFICATION_ISSUER,RECORD" permission="certification.noproperty"/>
+        <invoker type="rptcertification"
+            action="init" caption="No Property" 
+            opener="noproperty" index="8" 
+            role="CERTIFICATION_ISSUER,RECORD" permission="certification.noproperty"/>    
             
         <invoker type="noproperty:open" action="open" caption="No Property" /> 
     </invokers>

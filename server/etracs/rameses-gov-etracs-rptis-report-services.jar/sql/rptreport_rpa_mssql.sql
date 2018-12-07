@@ -179,6 +179,7 @@ GROUP BY pc.objid, pc.name, pc.orderno
 ORDER BY pc.orderno  
 
 
+
 [getLiftExempts]
 SELECT 
 	e.objid AS classid,
@@ -356,7 +357,6 @@ WHERE (
 		(f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
   )
   and fr.state = 'ACTIVE'
-  and r.taxable = 1   
   ${filter}
 GROUP BY frt.name, frt.idx, pc.objid, pc.name, pc.orderno 
 ORDER BY frt.idx, pc.orderno 

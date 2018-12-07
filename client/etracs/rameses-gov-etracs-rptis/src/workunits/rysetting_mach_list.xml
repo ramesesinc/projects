@@ -9,13 +9,13 @@
                  serviceName="MachRYSettingService"
                  index="3"/>
         
-        <invoker folderid="/home/rpt/setting"
+        <!--invoker folderid="/home/rpt/setting"
                  caption="Machinery" 
                  target="window" 
                  role="ASSESSOR_DATAMGMT,MASTER" 
                  entityName="machrysetting"
                  serviceName="MachRYSettingService"
                  icon="home/icons/settingmach.png"
-                 index="3"/>
+                 index="3"/-->
     </invokers>
 </workunit>

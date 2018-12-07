@@ -6,6 +6,12 @@
     allowCreate="true"
 >
     <invokers>
+        <invoker folderid="/menucategory/rpt/txn" 
+            action="create" 
+            caption="Issue Notice of Assessment" 
+            index="75"
+            role="RECORD,RECORD_APPROVER" />
+
         <invoker type="assessmentnotice:create" 
             action="create" 
             caption="Notice of Assessment" 

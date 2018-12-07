@@ -28,6 +28,10 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel5 = new javax.swing.JPanel();
+        xPanel2 = new com.rameses.rcp.control.XPanel();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
@@ -46,9 +50,27 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
         xButton1 = new com.rameses.rcp.control.XButton();
         xButton2 = new com.rameses.rcp.control.XButton();
         xButton4 = new com.rameses.rcp.control.XButton();
-        xPanel2 = new com.rameses.rcp.control.XPanel();
-        xLabel3 = new com.rameses.rcp.control.XLabel();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
+
+        jPanel5.setLayout(new java.awt.BorderLayout());
+
+        xPanel2.setName("msgpnl"); // NOI18N
+        xPanel2.setVisibleWhen("#{processing == true || msg!=null}");
+        xPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 10, 0));
+        xPanel2.setLayout(new java.awt.BorderLayout());
+
+        xLabel3.setName("msg"); // NOI18N
+        xLabel3.setFontStyle("font-weight:bold;font-size:12;");
+        xLabel3.setForeground(new java.awt.Color(204, 0, 0));
+        xLabel3.setPadding(new java.awt.Insets(1, 10, 1, 1));
+        xLabel3.setPreferredSize(new java.awt.Dimension(150, 20));
+        xLabel3.setText("Processing request please wait...");
+        xPanel2.add(xLabel3, java.awt.BorderLayout.CENTER);
+
+        xLabel4.setIconResource("com/rameses/rcp/icons/loading16.gif");
+        xLabel4.setVisibleWhen("#{processing==true}");
+        xPanel2.add(xLabel4, java.awt.BorderLayout.WEST);
+
+        jPanel5.add(xPanel2, java.awt.BorderLayout.NORTH);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setPadding(new java.awt.Insets(30, 10, 10, 10));
@@ -72,6 +94,8 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 19));
         xTextField2.setRequired(true);
         xFormPanel1.add(xTextField2);
+
+        jPanel5.add(xFormPanel1, java.awt.BorderLayout.CENTER);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("Properties for Payment");
@@ -97,6 +121,8 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
 
         jPanel1.add(xFormPanel3, java.awt.BorderLayout.PAGE_START);
 
+        xDataTable1.setHandler("listHandler");
+        xDataTable1.setName("selectedItem"); // NOI18N
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "pay"}
@@ -222,10 +248,8 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 0)}
             })
         });
-        xDataTable1.setHandler("listHandler");
         xDataTable1.setImmediate(true);
         xDataTable1.setIndex(-100);
-        xDataTable1.setName("selectedItem"); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -240,7 +264,7 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -293,45 +317,31 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.SOUTH);
 
-        xPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 10, 0));
-        xPanel2.setName("msgpnl"); // NOI18N
-        xPanel2.setVisibleWhen("#{processing == true || msg!=null}");
-        xPanel2.setLayout(new java.awt.BorderLayout());
-
-        xLabel3.setFontStyle("font-weight:bold;font-size:12;");
-        xLabel3.setForeground(new java.awt.Color(204, 0, 0));
-        xLabel3.setName("msg"); // NOI18N
-        xLabel3.setPadding(new java.awt.Insets(1, 10, 1, 1));
-        xLabel3.setPreferredSize(new java.awt.Dimension(150, 20));
-        xLabel3.setText("Processing request please wait...");
-        xPanel2.add(xLabel3, java.awt.BorderLayout.CENTER);
-
-        xLabel4.setIconResource("com/rameses/rcp/icons/loading16.gif");
-        xLabel4.setVisibleWhen("#{processing==true}");
-        xPanel2.add(xLabel4, java.awt.BorderLayout.WEST);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 966, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addComponent(xPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(149, 149, 149)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(229, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -339,6 +349,7 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton4;

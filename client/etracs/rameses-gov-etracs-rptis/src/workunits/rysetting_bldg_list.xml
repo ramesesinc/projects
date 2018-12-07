@@ -9,13 +9,13 @@
                  serviceName="BldgRYSettingService"
                  index="2"/>
         
-        <invoker folderid="/home/rpt/setting" 
+        <!--invoker folderid="/home/rpt/setting" 
                  caption="Building" 
                  target="window" 
                  role="ASSESSOR_DATAMGMT,MASTER" 
                  entityName="bldgrysetting"
                  serviceName="BldgRYSettingService"
                  icon="home/icons/settingbldg.png"
-                 index="2"/>
+                 index="2"/-->
     </invokers>
 </workunit>

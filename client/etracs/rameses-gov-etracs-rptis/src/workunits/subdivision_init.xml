@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/explorer/txn/rpt/online" action="init"  caption="Subdivision" index="15"
-            txntypeid="SD" txntype="Subdivision" newledger="true" newrpu="true"
-            role="APPRAISER,EXAMINER,RECEIVER" permission="subdivision.create"/>
-        
-        <invoker folderid="/home/rpt/txn" action="init"  caption="Subdivision" index="15"
+        <invoker folderid="/menucategory/rpt/txn" 
+            action="init"  
+            caption="New Subdivision" index="15"
             txntypeid="SD" txntype="Subdivision" newledger="true" newrpu="true"
             role="APPRAISER,EXAMINER,RECEIVER" permission="subdivision.create"/>
 

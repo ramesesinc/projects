@@ -87,27 +87,6 @@ class RPTReportAccomplishmentRPAService
 		}
 		summarizeEnding(lguinfos)
 
-		
-		lguinfos.add([
-			barangay	: 'TOTAL',
-			preceedingtaxablecount	: util.sum(lguinfos, 'preceedingtaxablecount'),
-			preceedingtaxableav		: util.sum(lguinfos, 'preceedingtaxableav'),
-			preceedingexemptcount	: util.sum(lguinfos, 'preceedingexemptcount'),
-			preceedingexemptav		: util.sum(lguinfos, 'preceedingexemptav'),
-			currenttaxablecount		: util.sum(lguinfos, 'currenttaxablecount'),
-			currenttaxableav		: util.sum(lguinfos, 'currenttaxableav'),
-			currentexemptcount		: util.sum(lguinfos, 'currentexemptcount'),
-			currentexemptav			: util.sum(lguinfos, 'currentexemptav'),
-			cancelledtaxablecount	: util.sum(lguinfos, 'cancelledtaxablecount'),
-			cancelledtaxableav		: util.sum(lguinfos, 'cancelledtaxableav'),
-			cancelledexemptcount	: util.sum(lguinfos, 'cancelledexemptcount'),
-			cancelledexemptav		: util.sum(lguinfos, 'cancelledexemptav'),
-			endingtaxablecount		: util.sum(lguinfos, 'endingtaxablecount'),
-			endingtaxableav			: util.sum(lguinfos, 'endingtaxableav'),
-			endingexemptcount		: util.sum(lguinfos, 'endingexemptcount'),
-			endingexemptav			: util.sum(lguinfos, 'endingexemptav'),
-		])
-
 		def forlguname = env.ORGCLASS + ' OF ' + env.ORGNAME 
 		if (params.lgu){
 			forlguname = params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name

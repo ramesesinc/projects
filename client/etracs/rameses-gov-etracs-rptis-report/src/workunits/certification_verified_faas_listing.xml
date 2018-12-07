@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="Verification of FAAS" 
-            opener="faasverification" index="5" role="CERTIFICATION_ISSUER,RECORD" permission="certification.faas-verification"/>
-            
-        <invoker folderid="/menu/txn/rpt/cert" action="init" caption="Verification of FAAS" 
-            opener="faasverification" index="5" role="CERTIFICATION_ISSUER,RECORD" permission="certification.faas-verification"/>
-            
-        <invoker type="quick_launcher" action="init" code="RC05" caption="Verification of FAAS" 
-            opener="faasverification" index="5" role="CERTIFICATION_ISSUER,RECORD" permission="certification.faas-verification"/>
+        <invoker type="rptcertification" 
+            action="init" caption="Verification of FAAS" 
+            opener="faasverification" index="5" 
+            role="CERTIFICATION_ISSUER,RECORD" permission="certification.faas-verification"/>
             
         <invoker type="faasverification:open" action="open" caption="Verification of FAAS" /> 
         

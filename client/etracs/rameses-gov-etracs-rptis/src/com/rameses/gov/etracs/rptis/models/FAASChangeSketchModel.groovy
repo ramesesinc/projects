@@ -30,6 +30,7 @@ class FAASChangeSketchModel extends FAASSketchModel
     def svc;  
     
     def changeinfo = [:]
+    def converted = false; 
     
     void init() {
         super.init();
@@ -57,6 +58,11 @@ class FAASChangeSketchModel extends FAASSketchModel
         init();
         mode = 'changeinfo'
     }
+
+    void initConvert() {
+        initChangeInfo();
+        converted = true;
+    }
     
     def getChangeinfo() {
         updateInfo();
@@ -75,8 +81,12 @@ class FAASChangeSketchModel extends FAASSketchModel
         if (MsgBox.confirm('Save and apply changes?')){
             updateInfo();
             svc.updateInfo(changeinfo);
+            if (converted) {
+                return '_exit';
+            } else {
+                return '_close';
+            }
             caller.refreshForm();
-            return '_close';
         }
         return null;
     }

@@ -9,11 +9,11 @@
                  role="MASTER" 
                  permission="master.viewlist" />
         
-        <invoker folderid="/home/rpt/master" caption="Memoranda Templates"  index="12" 
+        <!--invoker folderid="/home/rpt/master" caption="Memoranda Templates"  index="12" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
-                 icon="home/icons/template.png" />
+                 icon="home/icons/template.png" /-->
         
         <invoker type="quick_launcher" code="MEM00" caption="Memoranda Templates"  
                 action="init" 

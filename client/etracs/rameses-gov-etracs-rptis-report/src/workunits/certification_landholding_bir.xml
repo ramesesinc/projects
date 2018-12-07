@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit extends="rpt_wtemplates/CertificationController.xml">
     <invokers>
-        <invoker folderid="/explorer/txn/rpt/cert/bir" action="init" 
+        <invoker type="rptcertification:bir" 
+                 action="init" 
                  caption="Land Holding" 
                  opener="landholdingbir" index="1" 
-                role="CERTIFICATION_ISSUER,RECORD" 
+                 role="CERTIFICATION_ISSUER,RECORD" 
                  permission="certification.landholding"/>
             
         <invoker type="landholdingbir:open" action="open" caption="Land Holding" /> 

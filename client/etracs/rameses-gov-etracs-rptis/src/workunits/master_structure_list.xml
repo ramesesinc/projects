@@ -9,11 +9,11 @@
                  role="MASTER" 
                  permission="master.viewlist" />
         
-        <invoker folderid="/home/rpt/master" caption="Structures"  index="7" 
+        <!--invoker folderid="/home/rpt/master" caption="Structures"  index="7" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
-                 icon="home/icons/structures.png"/>
+                 icon="home/icons/structures.png"/-->
         
         <invoker type="quick_launcher" code="ST00" caption="Structures"  
                 action="init" 

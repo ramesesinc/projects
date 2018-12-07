@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit extends="rpt_wtemplates/RPTTransmittalImport.xml">
     <invokers>
-        <invoker folderid="/home/rpt/transmittal" 
+        <invoker folderid="/menucategory/rpt/transmittal" 
             action="init"  
             caption="Import Subdivision" 
             index="36" 

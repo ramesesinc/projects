@@ -68,12 +68,15 @@ class MiscRPUService
     @ProxyMethod
     public def openMiscRpu( objid ) {
         def rpu = em.read([objid:objid])
-        if (!rpu) {
-            throw new Exception('Miscellaneous RPU does not exists or has been deleted.')
+        if (rpu) {
+            rpu.actualuse = miscSettingSvc.lookupAssessLevelById(rpu.actualuse.objid)
+            rpu.items  = getMiscRpuItems(rpu)
+            rpu.assessments = em.getAssessments(rpu)
+        } else {
+            rpu = [objid: objid, actualuse: [:]]
+            rpu.items = []
+            rpu.assessments = []
         }
-        rpu.actualuse = miscSettingSvc.lookupAssessLevelById(rpu.actualuse.objid)
-        rpu.items  = getMiscRpuItems(rpu)
-        rpu.assessments = em.getAssessments(rpu)
         return rpu 
     }
 

@@ -18,7 +18,7 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d");
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate);
-        params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
+        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
             params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
         }
@@ -42,7 +42,7 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
-        params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
+        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
             params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
         }
@@ -70,7 +70,7 @@ class LandTaxReportStatementOfShareService{
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
 
-        params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
+        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
             params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
         }
@@ -100,7 +100,7 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
-        params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
+        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
             params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
         }
@@ -131,7 +131,7 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
-        params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
+        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
             params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
         }
@@ -157,7 +157,7 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
-        params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
+        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
             params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
         }
@@ -182,7 +182,7 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
-        params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
+        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
             params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
         }

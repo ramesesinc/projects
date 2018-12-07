@@ -36,9 +36,11 @@ class BarangayModel extends CrudFormModel {
     def listener = [
         "entity.indexno|entity.parent" : { o->
             def list = [];
+            /*
             if( rootOrgClass == 'CITY' ) {
                 list << rootOrgCode;
             }
+            */
             if( entity.parent?.code ) {
                 list << entity.parent.code;
             }

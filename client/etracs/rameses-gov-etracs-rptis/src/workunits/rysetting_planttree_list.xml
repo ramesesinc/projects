@@ -9,13 +9,13 @@
                  serviceName="PlantTreeRYSettingService"
                  index="4"/>
         
-        <invoker folderid="/home/rpt/setting"
+        <!--invoker folderid="/home/rpt/setting"
                  caption="Plant/Tree" 
                  target="window" 
                  role="ASSESSOR_DATAMGMT,MASTER" 
                  entityName="planttreerysetting"
                  serviceName="PlantTreeRYSettingService"
                  icon="home/icons/settingplanttree.png"
-                 index="4"/>        
+                 index="4"/-->        
     </invokers>
 </workunit>

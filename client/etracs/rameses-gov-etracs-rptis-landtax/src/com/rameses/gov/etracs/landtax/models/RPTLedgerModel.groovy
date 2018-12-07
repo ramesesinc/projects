@@ -13,6 +13,12 @@ class RPTLedgerModel extends CrudFormModel
     def svc;
     
     boolean showConfirm = false;
+
+    @FormTitle
+    @FormId
+    public String getFormId(){
+        return 'Realty Tax Ledger : ' + entity.tdno 
+    }
     
     void approve(){
         if (MsgBox.confirm('Approve')){

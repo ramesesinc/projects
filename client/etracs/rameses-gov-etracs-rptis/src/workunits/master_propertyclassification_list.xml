@@ -9,11 +9,11 @@
                  role="MASTER" 
                  permission="master.viewlist" />
         
-        <invoker folderid="/home/rpt/master" caption="Property Classifications"  index="1" 
+        <!--invoker folderid="/home/rpt/master" caption="Property Classifications"  index="1" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
-                 icon="home/icons/classifications.png"/>
+                 icon="home/icons/classifications.png"/-->
         
         <invoker type="quick_launcher" code="ET00" caption="Property Classifications"  
                 action="init" 

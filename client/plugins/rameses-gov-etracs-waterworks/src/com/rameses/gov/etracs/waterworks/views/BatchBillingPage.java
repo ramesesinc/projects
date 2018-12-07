@@ -114,7 +114,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
         xFormPanel3.add(xLabel4);
 
         xLabel7.setCaption("Reading Date");
-        xLabel7.setExpression("#{ entity.schedule.readingdate }");
+        xLabel7.setExpression("#{ entity.readingdate }");
         xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xLabel7);

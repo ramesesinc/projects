@@ -22,13 +22,15 @@ public class BatchBillingInitialModel extends CrudFormModel {
    @PropertyChangeListener
    def listener = [
        "entity.zone" : { o->
-            if(o.nextschedule?.objid ) {
+            if ( o.nextschedule?.objid ) {
                 entity.year = o.nextschedule?.year;
                 entity.month = o.nextschedule?.month;
+                entity.readingdate = o.nextschedule?.readingdate;
             }
             else {
                 entity.year = dateSvc.getServerYear();
                 entity.month = dateSvc.getServerMonth();
+                entity.readingdate = null; 
             }
        }
    ];

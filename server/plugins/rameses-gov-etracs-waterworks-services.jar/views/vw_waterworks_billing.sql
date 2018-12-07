@@ -7,9 +7,10 @@ SELECT
    wc.prevreading, wc.reading, wc.volume, wc.amount, wc.amtpaid, wc.rate, wc.hold,
    ((wb.arrears + wb.otherfees + wb.surcharge + wb.interest) - wb.credits) AS subtotal,
    wm.objid AS meterid, wm.objid AS meter_objid, wm.capacity AS meter_capacity, 
-   wm.sizeid AS meter_size, bs.fromperiod, bs.toperiod, bs.readingdate, bs.discdate, bs.duedate, 
+   wm.sizeid AS meter_size, bs.fromperiod, bs.toperiod, wbb.readingdate, bs.discdate, bs.duedate, 
    z.objid as zone_objid, z.code as zone_code, sn.indexno, ((bs.year * 12) + bs.month) as periodindexno      
-FROM waterworks_billing wb
+FROM waterworks_billing wb 
+   INNER JOIN waterworks_batch_billing wbb ON wbb.objid = wb.batchid 
    INNER JOIN waterworks_consumption wc ON wc.objid = wb.consumptionid 
    INNER JOIN waterworks_account wa ON wa.objid = wb.acctid 
    LEFT JOIN waterworks_meter wm ON wm.objid = wc.meterid 

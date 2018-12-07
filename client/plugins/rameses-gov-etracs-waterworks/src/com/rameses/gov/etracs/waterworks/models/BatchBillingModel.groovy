@@ -304,7 +304,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
        def acctno = null; 
        boolean pass = false;
        
-       def h = [data: [seqno: 0]];
+       def h = [:];
        h.handler = { v->
            if ( v.billno == null ) throw new Exception("Start Bill No. is required"); 
            if ( v.billno <= 0 ) throw new Exception("Start Bill No. must be greater than zero"); 

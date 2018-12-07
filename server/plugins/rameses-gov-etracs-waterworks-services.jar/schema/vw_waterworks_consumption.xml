@@ -27,7 +27,9 @@
 		<field name="periodindexno" /> 
 		<field name="acctno" /> 
 		<field name="acctname" /> 
-		
+		<field name="batch_objid" /> 
+		<field name="batch_readingdate" /> 
+
 		<field name="monthname" expr="MONTH_ARRAY(month)"/> 
 	</element>
 </schema>

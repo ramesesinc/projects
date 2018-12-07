@@ -53,10 +53,13 @@ class AccountEditModel extends ChangeInfoModel {
         else if( tag == "meter" ) {
             zfields << [name:"meter", caption:"Meter", datatype: "lookup", 
                         handler:"waterworks_meter_wo_account:lookup", 
-                        expression:"#{data.meter.serialno}"]            
+                        expression:"#{data.meter.serialno}"];
         }
         else if( tag == "meter_state") {
-            zfields << [name:"state", caption:"Status", datatype: "combo", items:"meterStates"]            
+            zfields << [name:"state", caption:"Status", datatype: "combo", items:"meterStates"];      
+        }
+        else if( tag == "remarks") {
+            zfields << [name:"remarks", caption:"Remarks", datatype: "textarea", showCaption: false, preferredSize:"400,150"];             
         }
         else {
             return null;

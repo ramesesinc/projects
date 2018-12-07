@@ -114,6 +114,7 @@ class RPTReceiptService
         entity.putAll(cashReceiptSvc.init(entity))
 		entity.billid = bill.objid
 		bill.billdate = entity.receiptdate
+		bill.ledgers = em_rptbill_ledger.find([billid: bill.objid]).list().each{it.objid = it.rptledgerid}
 		entity.bill = bill 
 		return entity
 	}

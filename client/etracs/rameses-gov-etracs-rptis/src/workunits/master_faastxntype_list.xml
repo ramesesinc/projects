@@ -10,11 +10,11 @@
                  role="MASTER" 
                  permission="master.viewlist" />
         
-        <invoker folderid="/home/rpt/master" caption="Transaction Types"  index="15" 
+        <!--invoker folderid="/home/rpt/master" caption="Transaction Types"  index="15" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
-                 icon="home/icons/txntypes.png"/>
+                 icon="home/icons/txntypes.png"/-->
     </invokers>
     <code class="com.rameses.gov.etracs.rptis.master.models.TxnTypeListModel"/>
 </workunit>

@@ -4,6 +4,13 @@
         <invoker type="faas:change_faas_sketch" action="init" 
                  caption="FAAS Sketch" 
                  actiontype="change_faas_sketch"/>
+
+    <invoker type="faas:changeinfo:convert" 
+            action="initConvert" 
+            actiontype="change_faas_sketch" 
+            caption="Sketch"
+            role="ADMIN" permission="faas.change_faas_sketch" />
+
         
         <invoker type="faas:changeinfo" action="initChangeInfo" 
             caption="Sketch" target="popup"  

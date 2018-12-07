@@ -6,8 +6,8 @@
           cols="state,txndate,restrictiontype.name,parent.tdno,parent.fullpin,parent.owner.name,receipt.receiptno,receipt.receiptdate" 
           allowDelete="#{false}">
     <invokers>
-        <invoker folderid="/home/rpt" action="init" 
-                 caption="Restrictions" target="window"
+        <invoker folderid="/menucategory/rpt/mgmt" action="init" 
+                 caption="View Restrictions" target="window"
                  role="SHARED,ASSESSOR_SHARED" permission="faasrestriction.list" index="102"
                  icon="home/icons/restrictions.png"/>
     </invokers>

@@ -67,14 +67,14 @@ class CashReceiptListSummaryModel  {
         } else if( node.id == 'remitted' ){
             qarr << " remittanceid IS NOT NULL ";
         }
-        
+
         conditions = [ qarr.join(" AND "), params ];
         
         def m = [_schemaname: "cashreceipt"];
         m.where = conditions;
-        m.select = "formno,amount:{SUM(amount)}";
-        m.groupBy = "formno";
-        list = queryService.getList( m );
+        m.select = "formno,voided,amount:{SUM(amount)}";
+        m.groupBy = "formno,voided";
+        list = queryService.getList( m ).findAll{it.voided == 0}
         total = list.sum{ it.amount };
     }
     

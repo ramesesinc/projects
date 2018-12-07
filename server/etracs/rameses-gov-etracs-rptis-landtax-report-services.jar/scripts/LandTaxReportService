@@ -140,7 +140,7 @@ class LandTaxReportService
 			period = 'FOR THE MONTH OF ' + util.getMonthName( params.month.index ) + ', ' + params.year  
 		} 
 
-		params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
+		params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
 		if (params.postingtype && params.postingtype.code == 'byrem'){
 			params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
 		}

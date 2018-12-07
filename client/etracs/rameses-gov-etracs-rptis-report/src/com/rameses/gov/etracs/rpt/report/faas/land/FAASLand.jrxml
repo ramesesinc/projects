@@ -36,7 +36,6 @@
 	<parameter name="Signatories" isForPrompting="false" class="java.lang.Object"/>
 	<parameter name="PRINTPAGE" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="JSON_SERVICE_PATH" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="JSON_SEVICE_PATH" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="show_interim_watermark" class="java.lang.Boolean"/>
 	<field name="txntype.displaycode" class="java.lang.String"/>
@@ -564,7 +563,7 @@
 						key="image-1"/>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA["http://"+ $P{JSON_SEVICE_PATH} +"/etracs25/FAASReportService.getSketch?objid="+ $F{objid}]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA["http://"+ $P{JSON_SERVICE_PATH} +"/etracs25/FAASReportService.getSketch?objid="+ $F{objid}]]></imageExpression>
 				</image>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

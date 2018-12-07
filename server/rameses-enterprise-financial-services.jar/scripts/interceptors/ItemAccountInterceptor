@@ -1,0 +1,14 @@
+import com.rameses.annotations.*;
+
+class ItemAccountInterceptor {
+
+	@DataContext('itemaccount')
+	def em_itemaccount
+
+
+	@Before(pattern="PersistenceService.update", eval="#{ args[0]._schemaname == 'itemaccount' && args[0]._action == 'changeState'}")
+	public def afterUpdate(evt) {
+		def entity = evt.args[0];
+		em_itemaccount.find([parentid: entity.findBy.objid]).update([state: entity.state])
+	}
+}

@@ -41,45 +41,57 @@ public class WaterworksBillingSchedulePage extends javax.swing.JPanel {
         xDateField4 = new com.rameses.rcp.control.XDateField();
         xDateField5 = new com.rameses.rcp.control.XDateField();
 
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel2.setCaptionWidth(150);
 
         xLabel1.setCaption("Schedule Code");
         xLabel1.setExpression("#{ entity.scheduleid }");
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel1);
 
         xLabel2.setCaption("From Period");
         xLabel2.setExpression("#{ entity.fromperiod }");
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel2.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
+        xLabel2.setPreferredSize(new java.awt.Dimension(120, 20));
         xFormPanel2.add(xLabel2);
 
         xLabel3.setCaption("To Period");
         xLabel3.setExpression("#{ entity.toperiod }");
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel3.setPreferredSize(new java.awt.Dimension(120, 20));
         xFormPanel2.add(xLabel3);
 
         xDateField1.setCaption("Reading Date");
         xDateField1.setName("entity.readingdate"); // NOI18N
         xDateField1.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
+        xDateField1.setPreferredSize(new java.awt.Dimension(120, 20));
         xDateField1.setRequired(true);
         xFormPanel2.add(xDateField1);
 
         xDateField2.setCaption("Reading Due Date");
         xDateField2.setName("entity.readingduedate"); // NOI18N
+        xDateField2.setPreferredSize(new java.awt.Dimension(120, 20));
         xDateField2.setRequired(true);
         xFormPanel2.add(xDateField2);
 
         xDateField3.setCaption("Billing Due Date");
         xDateField3.setName("entity.billingduedate"); // NOI18N
+        xDateField3.setPreferredSize(new java.awt.Dimension(120, 20));
         xDateField3.setRequired(true);
         xFormPanel2.add(xDateField3);
 
         xDateField4.setCaption("Payment Due Date");
         xDateField4.setName("entity.duedate"); // NOI18N
         xDateField4.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
+        xDateField4.setPreferredSize(new java.awt.Dimension(120, 20));
         xDateField4.setRequired(true);
         xFormPanel2.add(xDateField4);
 
         xDateField5.setCaption("Discount Due Date");
         xDateField5.setName("entity.discdate"); // NOI18N
+        xDateField5.setPreferredSize(new java.awt.Dimension(120, 20));
         xDateField5.setRequired(true);
         xFormPanel2.add(xDateField5);
 

@@ -99,9 +99,9 @@ ORDER BY rl.tdno
 
 
 [findLatestPayment]
-select max(x.receiptdate) as receiptdate
+select min(x.receiptdate) as receiptdate
 from (
-    select max(c.receiptdate) as receiptdate 
+    select min(c.receiptdate) as receiptdate 
     from cashreceipt c
         inner join cashreceipt_rpt cr on c.objid = cr.objid 
         inner join rptpayment rp on c.objid = rp.receiptid 
@@ -112,7 +112,7 @@ from (
 
     union 
 
-    select max(refdate) as receiptdate 
+    select min(refdate) as receiptdate 
     from rptledger_credit cr 
     where cr.rptledgerid = $P{objid}
      and ((cr.fromyear = $P{cy} and cr.fromqtr = 1) 

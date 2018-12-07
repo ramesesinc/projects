@@ -28,7 +28,8 @@ SELECT
 	rl.classcode,
 	pc.name as classification, 
 	rl.titleno,
-	rp.surveyno
+	rp.surveyno,
+    f.effectivityyear
 FROM rptcertificationitem rci 
 	INNER JOIN rptledger rl ON rci.refid = rl.objid 
 	INNER JOIN barangay b ON rl.barangayid = b.objid 

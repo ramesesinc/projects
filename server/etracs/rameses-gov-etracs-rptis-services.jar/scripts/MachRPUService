@@ -66,12 +66,16 @@ class MachRPUService
     @ProxyMethod
     public def openMachRpu( objid ) {
         def rpu = em.read([objid:objid])
-        if (!rpu) {
-            throw new Exception('Machine RPU does not exists or has been deleted.')
+        if (rpu) {
+            rpu.machuses  = getMachUses(rpu)
+            rpu.assessments = em.getAssessments(rpu)
+            rpu.bldgmaster  = em.findBldgMaster(rpu.bldgmaster)
+        } else {
+            rpu = [objid: objid]
+            rpu.machuses = []
+            rpu.assessments = []
+            rpu.bldgmaster = []
         }
-        rpu.machuses  = getMachUses(rpu)
-        rpu.assessments = em.getAssessments(rpu)
-        rpu.bldgmaster  = em.findBldgMaster(rpu.bldgmaster)
         return rpu 
     }
 

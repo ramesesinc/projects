@@ -18,6 +18,9 @@
         
         <invoker type="formActions" caption="Cash Breakdown" name="updateCashByRemittance" 
                  visibleWhen="#{entity.state == 'DRAFT' }"  />
+        
+        <invoker type="formActions" caption="Export" name="doExport" 
+                 visibleWhen="#{entity.state != 'DRAFT'}" mnemonic="e" index="100" />        
     </invokers>
    
    <code class="com.rameses.enterprise.treasury.models.RemittanceModel" />

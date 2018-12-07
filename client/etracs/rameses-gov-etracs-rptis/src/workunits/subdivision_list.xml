@@ -1,9 +1,24 @@
 <workunit extends="wtemplates/ExplorerViewController.xml" defaultFileType="subdivision" autoSelect="true">
     <invokers>
-        <invoker folderid="/explorer/txn/rpt/list" caption="Subdivisions"  target="window" index="110" role="ASSESSOR_SHARED,SHARED"/>
-        <invoker folderid="/home/rpt" caption="Subdivisions"  target="window" index="110" role="ASSESSOR_SHARED,SHARED" icon="home/icons/subdivisions.png"/>
-        <invoker type="quick_launcher" code="SD00" caption="Subdivisions"  role="ASSESSOR_SHARED,SHARED"/>
-        <invoker type="formActions" action="open" caption="Open" mnemonic="o" shortcut="ctrl O" depends="listHandler.selectedEntity" index="1"/>        
+        <invoker folderid="/menucategory/rpt/mgmt" 
+            caption="View Subdivisions"  
+            target="window" 
+            index="110" 
+            role="ASSESSOR_SHARED,SHARED" 
+            icon="home/icons/subdivisions.png"/>
+
+        <invoker type="quick_launcher" 
+            code="SD00" 
+            caption="Subdivisions"  
+            role="ASSESSOR_SHARED,SHARED"/>
+
+        <invoker type="formActions" 
+            action="open" 
+            caption="Open" 
+            mnemonic="o" 
+            shortcut="ctrl O" 
+            depends="listHandler.selectedEntity" 
+            index="1"/>        
     </invokers>
         <code>
 <![CDATA[

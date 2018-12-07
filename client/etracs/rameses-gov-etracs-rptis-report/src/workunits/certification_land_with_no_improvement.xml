@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit extends="rpt_wtemplates/CertificationController.xml">
     <invokers>
-        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="Land with No Improvement" 
-            opener="landwithnoimprov" index="2" role="CERTIFICATION_ISSUER,RECORD" />
-            
-        <invoker folderid="/menu/txn/rpt/cert" action="init" caption="Land with No Improvement" 
-            opener="landwithnoimprov" index="2" role="CERTIFICATION_ISSUER,RECORD" />
-            
-        <invoker type="quick_launcher" action="init" code="RC22" caption="Land with No Improvement" 
-            opener="landwithnoimprov" index="2" role="CERTIFICATION_ISSUER,RECORD" />
+        <invoker type="rptcertification" 
+                 action="init" caption="Land with No Improvement" 
+                 opener="landwithnoimprov" index="2" role="CERTIFICATION_ISSUER,RECORD" />
             
         <invoker type="landwithnoimprov:open" action="open" caption="Land with No Improvement" /> 
     </invokers>

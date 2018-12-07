@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/home/rpt/monitoring" 
+        <invoker folderid="/menucategory/rpt/monitor" 
                  action="init"  
                  caption="Land Parcels"  
                  target="window" index="1" 

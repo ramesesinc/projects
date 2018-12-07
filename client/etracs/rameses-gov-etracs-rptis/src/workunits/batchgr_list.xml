@@ -4,8 +4,8 @@
           cols="state,ry,lgu.name,barangay.name,section,rputype,classification.name" 
           orderBy="ry,lgu.name,barangay.name,section,rputype,classification.name" >
     <invokers>
-        <invoker folderid="/home/rpt" 
-                 action="init" caption="Batch Revisions"  
+        <invoker folderid="/menucategory/rpt/mgmt" 
+                 action="init" caption="View Batch Revisions"  
                  index="1000" 
                  role="SHARED" 
                  permission="batchgr.viewlist" 

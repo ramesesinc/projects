@@ -18,6 +18,7 @@
 		<field name="printed" /> 
 		<field name="acctno" searchable="true"/> 
 		<field name="acctname" searchable="true"/> 
+		<field name="acctstate" /> 
 		<field name="addresstext" /> 
 		<field name="classificationid" /> 
 		<field name="meterstate" /> 

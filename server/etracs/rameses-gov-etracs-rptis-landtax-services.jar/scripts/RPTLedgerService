@@ -409,6 +409,8 @@ class RPTLedgerService
             em_rptledger_faas.save(latestledgerfaas)
         }
         em_rptledger_faas.save(ledgerfaas)
+        //delete unpaid posted years greater than or equal to fromyear 
+        em_rptledger_item.where('parentid = :rptledgerid and year >= :fromyear and amtpaid = 0 and taxdifference = 0', ledgerfaas).delete()
     }        
 
 

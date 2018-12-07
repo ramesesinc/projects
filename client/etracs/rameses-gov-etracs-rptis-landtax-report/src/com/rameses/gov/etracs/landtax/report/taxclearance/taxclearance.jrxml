@@ -62,6 +62,7 @@
 	<field name="reporttype.name" class="java.lang.String"/>
 	<field name="reporttype.title" class="java.lang.String"/>
 	<field name="year" class="java.lang.Number"/>
+	<field name="effectivityyear" class="java.lang.Number"/>
 
 
 		<group  name="INFO" >
@@ -482,7 +483,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" isStyledText="true" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["           This is to certify that the realty taxes on the property/ies stated below declared in the name of <style isBold=\"true\">" + $F{taxpayer.name} + "</style> is/are <style isBold=\"true\">" + $F{reporttype.title} + ( $F{reporttype.name} == 'newdiscovery' ? ' ' + $F{year} : '') + "</style>."]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["           This is to certify that the realty taxes on the property/ies stated below declared in the name of <style isBold=\"true\">" + $F{taxpayer.name} + "</style> is/are <style isBold=\"true\">" + $F{reporttype.title} + ( $F{reporttype.name} == 'newdiscovery' ? ' ' + $F{effectivityyear} : '') + "</style>."]]></textFieldExpression>
 				</textField>
 			</band>
 		</title>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/explorer/txn/rpt/util" 
+        <invoker folderid="/menucategory/rpt/util" 
             action="init" 
             caption="Modify PIN" target="popup" index="500"
             role="ADMIN,APPRAISER,ENCODER" permission="util.modifypin" />

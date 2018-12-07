@@ -49,8 +49,8 @@ from (
 
     max(case when cv.objid is null then cri.partialled else 0 end) as partialled
   from collectionvoucher liq 
-    inner join remittance rem on rem.collectionvoucherid = liq.objid 
-    inner join cashreceipt cr on cr.remittanceid = rem.objid 
+    inner join remittance rem on liq.objid  = rem.collectionvoucherid 
+    inner join cashreceipt cr on rem.objid = cr.remittanceid
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
     inner join rptpayment rp on cr.objid = rp.receiptid
     inner join vw_rptpayment_item cri on rp.objid = cri.parentid
@@ -106,8 +106,8 @@ from (
     sum(case when cv.objid is null then cri.sef - cri.sefdisc + cri.sefint else 0.0 end ) as total,
     max(case when cv.objid is null then cri.partialled else 0.0 end) as partialled
   from collectionvoucher liq 
-    inner join remittance rem on rem.collectionvoucherid = liq.objid 
-    inner join cashreceipt cr on cr.remittanceid = rem.objid 
+    inner join remittance rem on liq.objid  = rem.collectionvoucherid 
+    inner join cashreceipt cr on rem.objid = cr.remittanceid
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
     inner join rptpayment rp on cr.objid = rp.receiptid
     inner join vw_rptpayment_item cri on rp.objid = cri.parentid
@@ -179,8 +179,8 @@ from (
     ) as total
 
   from collectionvoucher liq 
-    inner join remittance rem on rem.collectionvoucherid = liq.objid 
-    inner join cashreceipt cr on cr.remittanceid = rem.objid
+    inner join remittance rem on liq.objid  = rem.collectionvoucherid 
+    inner join cashreceipt cr on rem.objid = cr.remittanceid
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
     inner join rptpayment rp on cr.objid = rp.receiptid
     inner join vw_rptpayment_item cri on rp.objid = cri.parentid
@@ -237,8 +237,8 @@ from (
     sum(case when cv.objid is null then cri.firecode else 0.0 end) as firecode,
     sum(case when cv.objid is null then cri.sef - cri.sefdisc + cri.sefint else 0.0 end ) as total
   from collectionvoucher liq 
-    inner join remittance rem on rem.collectionvoucherid = liq.objid 
-    inner join cashreceipt cr on cr.remittanceid = rem.objid 
+    inner join remittance rem on liq.objid = rem.collectionvoucherid 
+    inner join cashreceipt cr on rem.objid = cr.remittanceid
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
     inner join rptpayment rp on cr.objid = rp.receiptid
     inner join vw_rptpayment_item cri on rp.objid = cri.parentid
@@ -265,7 +265,7 @@ select
   select
     case when m.name is null then c.name else m.name end as municityname 
   from remittance rem 
-    inner join cashreceipt cr on cr.remittanceid = rem.objid 
+    inner join cashreceipt cr on rem.objid = cr.remittanceid 
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
     inner join rptpayment rp on cr.objid = rp.receiptid
     inner join vw_rptpayment_item cri on rp.objid = cri.parentid

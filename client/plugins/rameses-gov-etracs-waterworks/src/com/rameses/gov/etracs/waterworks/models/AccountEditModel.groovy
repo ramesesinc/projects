@@ -13,6 +13,7 @@ class AccountEditModel extends ChangeInfoModel {
     def qrySvc;
     
     def meterStates =  ["ACTIVE","DISCONNECTED","DEFECTIVE"];
+    def acctStates = ["ACTIVE", "INACTIVE"];
     
     public def getEntity() {
         if( schemaName == "waterworks_meter") {
@@ -32,7 +33,10 @@ class AccountEditModel extends ChangeInfoModel {
     
     def getFormFields() {
         def zfields = [];
-        if( tag == "address") {
+        if( tag == "state" ) {
+            zfields << [name:"state", caption:"Acct Status", datatype: "combo", items:"acctStates"];
+        } 
+        else if( tag == "address") {
             zfields << [name:'address', caption:'Address', datatype: 'address_editor', preferredSize:"0,50"];
         }
         else if( tag == "owner") {

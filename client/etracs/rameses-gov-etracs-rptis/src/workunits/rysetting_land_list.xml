@@ -9,13 +9,13 @@
                  serviceName="LandRYSettingService"
                  index="1"/>
         
-        <invoker folderid="/home/rpt/setting"
+        <!--invoker folderid="/home/rpt/setting"
                  caption="Land" 
                  target="window" 
                  role="ASSESSOR_DATAMGMT,MASTER" 
                  entityName="landrysetting"
                  serviceName="LandRYSettingService"
                  icon="home/icons/settingland.png"
-                 index="1"/>
+                 index="1"/-->
     </invokers>
 </workunit>

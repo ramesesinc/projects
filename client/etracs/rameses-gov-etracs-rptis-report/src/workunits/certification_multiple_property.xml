@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit extends="rpt_wtemplates/CertificationController.xml">
     <invokers>
-        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="Real Property Holdings" 
-            opener="multiple" index="4" role="CERTIFICATION_ISSUER,RECORD" permission="certification.multipleproperty"/>
-            
-        <invoker folderid="/menu/txn/rpt/cert" action="init" caption="Real Property Holdings" 
-            opener="multiple" index="4"  role="CERTIFICATION_ISSUER,RECORD" permission="certification.multipleproperty"/>
-            
-        <invoker type="quick_launcher" action="init" code="RC04" caption="Real Property Holdings" 
-            opener="multiple" index="4" role="CERTIFICATION_ISSUER,RECORD" permission="certification.multipleproperty"/>
+        <invoker type="rptcertification" 
+            action="init" caption="Real Property Holdings" 
+            opener="multiple" index="4" 
+            role="CERTIFICATION_ISSUER,RECORD" permission="certification.multipleproperty"/>
             
         <invoker type="multiple:open" action="open" caption="Real Property Holdings" /> 
     </invokers>

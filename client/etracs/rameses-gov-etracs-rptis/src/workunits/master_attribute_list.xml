@@ -9,11 +9,10 @@
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist" />
-        
-        <invoker folderid="/home/rpt/master" caption="Attributes"  index="20" 
+        <!-- invoker folderid="/home/rpt/master" caption="Attributes"  index="20" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
-                 icon="home/icons/attributes.png"/>
+                 icon="home/icons/attributes.png"/-->
     </invokers>
 </workunit>

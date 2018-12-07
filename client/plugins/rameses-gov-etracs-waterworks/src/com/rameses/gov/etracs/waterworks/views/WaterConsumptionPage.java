@@ -57,6 +57,7 @@ public class WaterConsumptionPage extends javax.swing.JPanel {
 
         xButton1.setDepends(new String[] {"entity.txnmode"});
         xButton1.setDisableWhen("#{ mode == 'read' } ");
+        xButton1.setMnemonic('C');
         xButton1.setName("calculate"); // NOI18N
         xButton1.setVisibleWhen("#{ mode != 'read' && entity.txnmode != 'BEGIN_BALANCE' }");
         xButton1.setImmediate(true);
@@ -64,6 +65,7 @@ public class WaterConsumptionPage extends javax.swing.JPanel {
 
         xButton2.setDepends(new String[] {"entity.txnmode"});
         xButton2.setDisableWhen("");
+        xButton2.setMnemonic('A');
         xButton2.setName("lookupSchedule"); // NOI18N
         xButton2.setVisibleWhen("#{ mode != 'read' }");
         xButton2.setImmediate(true);
@@ -75,6 +77,8 @@ public class WaterConsumptionPage extends javax.swing.JPanel {
         xComboBox1.setItems("txnModes");
         xComboBox1.setName("entity.txnmode"); // NOI18N
         xComboBox1.setVisibleWhen("#{ mode != 'read' }");
+        xComboBox1.setAllowNull(false);
+        xComboBox1.setStretchWidth(100);
         xFormPanel5.add(xComboBox1);
 
         xLabel11.setCaption("Txn Type");
@@ -134,22 +138,30 @@ public class WaterConsumptionPage extends javax.swing.JPanel {
         xDateField1.setCaption("From Period");
         xDateField1.setDisableWhen("#{ true }");
         xDateField1.setName("entity.schedule.fromperiod"); // NOI18N
+        xDateField1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        xDateField1.setStretchWidth(100);
         xFormPanel1.add(xDateField1);
 
         xDateField2.setCaption("To Period");
         xDateField2.setDisableWhen("#{ true }");
         xDateField2.setName("entity.schedule.toperiod"); // NOI18N
+        xDateField2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        xDateField2.setStretchWidth(100);
         xFormPanel1.add(xDateField2);
 
         xDateField3.setCaption("Reading Date");
         xDateField3.setDisableWhen("#{ true }");
         xDateField3.setName("entity.schedule.readingdate"); // NOI18N
         xDateField3.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
+        xDateField3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        xDateField3.setStretchWidth(100);
         xFormPanel1.add(xDateField3);
 
         xDateField4.setCaption("Reading Due Date");
         xDateField4.setDisableWhen("#{ true }");
         xDateField4.setName("entity.schedule.readingduedate"); // NOI18N
+        xDateField4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        xDateField4.setStretchWidth(100);
         xDateField4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 xDateField4ActionPerformed(evt);
@@ -161,11 +173,15 @@ public class WaterConsumptionPage extends javax.swing.JPanel {
         xDateField5.setDisableWhen("#{ true }");
         xDateField5.setName("entity.schedule.discdate"); // NOI18N
         xDateField5.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
+        xDateField5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        xDateField5.setStretchWidth(100);
         xFormPanel1.add(xDateField5);
 
         xDateField6.setCaption("Pay Due Date");
         xDateField6.setDisableWhen("#{ true }");
         xDateField6.setName("entity.schedule.duedate"); // NOI18N
+        xDateField6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        xDateField6.setStretchWidth(100);
         xDateField6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 xDateField6ActionPerformed(evt);
@@ -186,7 +202,7 @@ public class WaterConsumptionPage extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(55, Short.MAX_VALUE))
+                        .addContainerGap(121, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))))
@@ -196,13 +212,13 @@ public class WaterConsumptionPage extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE))
+                    .addComponent(xFormPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addContainerGap(86, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General Info", jPanel1);

@@ -68,11 +68,14 @@ class PlantTreeRPUService
             resolveLandRpu(objid)
             rpu = em.read([objid:objid])
         }
-        if (!rpu) {
-            throw new Exception('Plant/Tree RPU does not exists or has been deleted.')
+        if (rpu) {
+            rpu.planttrees  = getPlantTreeDetails(rpu)
+            rpu.assessments = em.getAssessments(rpu)
+        } else {
+            rpu = [objid: objid]
+            rpu.planttrees = []
+            rpu.assessments = []
         }
-        rpu.planttrees  = getPlantTreeDetails(rpu)
-        rpu.assessments = em.getAssessments(rpu)
         return rpu 
     }
 

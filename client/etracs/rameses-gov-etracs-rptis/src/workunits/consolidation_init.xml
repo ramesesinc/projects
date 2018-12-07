@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/explorer/txn/rpt/online" action="init"  caption="Consolidation" index="70"
-            txntypeid="CS" txntype="Consolidation" newledger="true" newrpu="true" 
-            role="APPRAISER,EXAMINER,RECEIVER" permission="consolidation.create"/>
-
-        <invoker folderid="/home/rpt/txn" action="init"  caption="Consolidation" index="70"
-            txntypeid="CS" txntype="Consolidation" newledger="true" newrpu="true" 
-            role="APPRAISER,EXAMINER,RECEIVER" permission="consolidation.create"/>
-        
-        <invoker folderid="/menu/txn/rpt" action="init"  caption="Consolidation" index="70"
+        <invoker folderid="/menucategory/rpt/txn" 
+            action="init" 
+            caption="New Consolidation" 
+            index="70"
             txntypeid="CS" txntype="Consolidation" newledger="true" newrpu="true" 
             role="APPRAISER,EXAMINER,RECEIVER" permission="consolidation.create"/>
         

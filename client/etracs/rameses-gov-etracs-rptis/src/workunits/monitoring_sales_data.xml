@@ -12,7 +12,7 @@
           customFilter="faas.state in('CURRENT','CANCELLED')"
 >
     <invokers>
-        <invoker folderid="/home/rpt/monitoring" 
+        <invoker folderid="/menucategory/rpt/monitor" 
                  action="init"  
                  caption="Sales Data"  
                  target="window" 

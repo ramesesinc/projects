@@ -9,11 +9,11 @@
                  role="MASTER" 
                  permission="master.viewlist" />
         
-        <invoker folderid="/home/rpt/master" caption="Cancellation Reasons"  index="4" 
+        <!--invoker folderid="/home/rpt/master" caption="Cancellation Reasons"  index="4" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
-                 icon="home/icons/canceldoc.png"/>
+                 icon="home/icons/canceldoc.png"/-->
         
         <invoker type="quick_launcher" code="CFR00" caption="Cancellation Reasons"  
                 action="init" 

@@ -1,8 +1,7 @@
 import com.rameses.annotations.*;
+import com.rameses.common.*;
 import com.rameses.util.*;
 import java.rmi.server.*;
-import com.rameses.common.*
-import com.rameses.services.extended.*
 
 class CashReceiptVoidService  {
 
@@ -63,11 +62,16 @@ class CashReceiptVoidService  {
 		if ( rct?.remittanceid ) 
 			throw new Exception('Void Receipt is not allowed. This transaction has already been remitted'); 
 
-		def v = [objid: "VOID"+new UID()];
-		v.postedby = [ objid:usr.objid, name:usr.name ];
-		v.receiptid = p.receipt.objid;
-		v.reason = p.reason;
-		v.txndate = ( p.txndate ? p.txndate : dateService.getServerDate()); 
+		def v = [ objid: "VOID"+ new UID() ];
+		if ( p._imported_.toString() == 'true' ) {
+			v.putAll( p ); 
+
+		} else {
+			v.postedby = [ objid:usr.objid, name:usr.name ];
+			v.receiptid = p.receipt.objid;
+			v.reason = p.reason;
+			v.txndate = ( p.txndate ? p.txndate : dateService.getServerDate()); 
+		}
 
 		cashreceipt_void.create( v ); 
 		

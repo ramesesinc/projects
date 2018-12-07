@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/menu/templates/MenuCategory.xml" context="rpt">
+    <invokers>
+        <invoker type="home.action" 
+                 caption="Assessor" icon="home/icons/assessor.png"
+                 visibleWhen="#{self.hasChildren('menucategory/rpt')==true}" 
+                 action="init"/>
+    </invokers> 
+</workunit>

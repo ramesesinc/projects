@@ -12,6 +12,9 @@ class RemittanceModel extends CrudFormModel {
     @Service("RemittanceService")
     def remSvc;    
 
+    @Service("RemittanceImportExportService")
+    def exportSvc;    
+    
     @Service("Var")
     def var;
 
@@ -182,7 +185,17 @@ class RemittanceModel extends CrudFormModel {
                 [name: 'OtherPayments', template: path + '/otherpayments.jasper'], 
                 [name: 'Denomination', template: path + '/denomination.jasper'], 
                 [name: 'CancelSeries', template: path + '/cancelseries.jasper']
-            ] 
-        ] 
-    }     
-}    
+            ]
+        ];
+    } 
+    
+    void doExport(){
+        def chooser = new javax.swing.JFileChooser();
+        chooser.setSelectedFile(new java.io.File(entity.controlno + '.rem'));
+        int opt = chooser.showSaveDialog(null);
+        if ( opt == 0 ) {
+            com.rameses.io.FileUtil.writeObject( chooser.selectedFile, exportSvc.exportRemittance( entity.objid ));
+            MsgBox.alert("Remittance has been successfully exported!");
+        } 
+    } 
+} 

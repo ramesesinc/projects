@@ -308,7 +308,6 @@ public class RPTBillingService
 		bill.dtposted = bill.currentdate
 		bill.validuntil = bill.expirydate - 1
 		em_rptbill.save(bill)
-		em_rptbill_ledger.find([billid:bill.objid]).delete()
 		bill.ledgers.collect{[billid:bill.objid, rptledgerid:it.objid]}.each{bl->
 			em_rptbill_ledger.save(bl)
 		}

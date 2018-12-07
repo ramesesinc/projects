@@ -9,14 +9,9 @@
                  action="create" caption="Restriction (New)" 
                  domain="LANDTAX" role="LANDTAX" target="popup"/>
         
-        <invoker folderid="/menu/txn/rpt"
-                 action="create" caption="Restriction" 
-                 domain="LANDTAX" role="LANDTAX" target="popup" 
-                 index="140" />
-        
-        <invoker folderid="/home/rpt/txn"
-                 action="create" caption="Restriction" 
-                 domain="LANDTAX" role="LANDTAX" target="popup"
+        <invoker folderid="/menucategory/rpt/txn"
+                 action="create" caption="Post FAAS Restriction" 
+                 role="RECORD,RECORD_APPROVER" target="popup"
                  index="140" />
         
         <invoker type="quick_launcher" code="FRE01"
@@ -26,12 +21,13 @@
         <invoker type="faas_restriction:open" action="open" caption="Restriction" target="popup"/>
         
         <invoker type="formActions" action="approve" caption="Approve" 
-                 visibleWhen="#{entity.state=='DRAFT' &amp;&amp; mode == 'read'"
+                 visibleWhen="#{entity.state=='DRAFT' &amp;&amp; mode == 'read'}"
                  domain="RPT" role="RECORD_APPROVER" permission="faas_restriction.approve"/>
-                 
+        <!--          
         <invoker type="formActions" action="approve" caption="Approve" 
                  visibleWhen="#{entity.state=='DRAFT' &amp;&amp; mode == 'read' &amp;&amp; entity._type=='ledger'}"
                  domain="LANDTAX" role="RECORD_APPROVER" permission="faas_restriction.approve"/>
+         -->
    </invokers>
    
    <code class="com.rameses.gov.etracs.rptis.models.FAASRestrictionModel">

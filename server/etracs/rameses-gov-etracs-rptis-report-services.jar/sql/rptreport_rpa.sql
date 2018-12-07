@@ -305,7 +305,6 @@ WHERE fr.state='ACTIVE'
 		(f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
   )
   and fr.state = 'ACTIVE'
-  and r.taxable = 1   
   ${filter}
 GROUP BY frt.name, frt.idx, pc.objid, pc.name, pc.orderno 
 ORDER BY frt.idx, pc.orderno 

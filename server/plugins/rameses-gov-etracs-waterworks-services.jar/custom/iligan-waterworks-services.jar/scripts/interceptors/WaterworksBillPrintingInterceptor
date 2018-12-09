@@ -94,6 +94,7 @@ class WaterworksBillPrintingInterceptor{
         p.arrears = formatNumber(totals.arrears, 14, 2, '#,##0.00');
         p.totalbill = formatNumber(totals.totalbill, 14, 2, '#,##0.00'); 
         p.surcharge = formatNumber(totals.surcharge, 14, 2, '#,##0.00'); 
+        p.credits = formatNumber(totals.credits, 14, 2, '#,##0.00'); 
         p.duedate = format(p.duedate, 14, 2); 
         p.amtwithsurcharge = formatNumber(totals.amtwithsurcharge, 14, 2, '#,##0.00'); 
         p.grandtotal = formatNumber(totals.grandtotal, 14, 2, '#,##0.00'); 

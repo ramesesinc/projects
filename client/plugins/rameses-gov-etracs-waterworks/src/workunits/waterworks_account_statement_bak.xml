@@ -1,0 +1,13 @@
+<workunit extends="com/rameses/seti2/templates/FormReport.xml" 
+          reportId="water_statement_account">
+    <invokers>
+        <invoker xtype="waterworks_account:form:formActions" caption="Statement" index="-9" 
+                reportName="com/rameses/gov/etracs/waterworks/reports/water_statement_account.jasper" 
+                visibleWhen="#{mode=='read'}"
+                action="query"/>
+        
+        <invoker xtype="waterworks_account_statement" caption="Statement" 
+                reportName="com/rameses/gov/etracs/waterworks/reports/water_statement_account.jasper" 
+                action="query"/>
+    </invokers>
+</workunit>

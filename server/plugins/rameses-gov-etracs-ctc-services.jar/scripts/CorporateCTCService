@@ -36,7 +36,9 @@ public class CorporateCTCService {
 		req.params = ctc;
 		req.include_items = true;
 		req.include_billitems = false;
-		return basicBillingService.execute( req );
+		def r = basicBillingService.execute( req );
+		throw new Exception("items is " + r.items );
+		return r;
 	}
 
 

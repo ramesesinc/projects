@@ -59,6 +59,7 @@ class EntityJuridicalPersistenceInterceptor  {
             } 
         } 
 		o.type = 'JURIDICAL';
+		o.state = 'ACTIVE';
 
 		//create the address first
 		def addr = addressEm.create( o.address );

@@ -49,7 +49,8 @@ class EntityMultiplePersistenceInterceptor  {
 		o.type = 'MULTIPLE';
 		//create the address first
 		def addr = addressEm.create( o.address );
-		o.address.objid = addr.objid;	
+		o.address.objid = addr.objid;
+		o.state = 'ACTIVE';	
 	}
 
 	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'entitymultiple'}")

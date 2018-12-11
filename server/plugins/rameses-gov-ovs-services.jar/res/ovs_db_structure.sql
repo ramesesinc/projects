@@ -1,66 +1,3 @@
-# ************************************************************
-# Sequel Pro SQL dump
-# Version 4541
-#
-# http://www.sequelpro.com/
-# https://github.com/sequelpro/sequelpro
-#
-# Host: 127.0.0.1 (MySQL 5.6.40)
-# Database: ovsdb
-# Generation Time: 2018-12-11 03:04:04 +0000
-# ************************************************************
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
-
-# Dump of table ovs_payment
-# ------------------------------------------------------------
-
-CREATE TABLE `ovs_payment` (
-  `objid` varchar(50) NOT NULL,
-  `reftype` varchar(50) DEFAULT NULL,
-  `refid` varchar(50) DEFAULT NULL,
-  `refno` varchar(50) DEFAULT NULL,
-  `refdate` date DEFAULT NULL,
-  `amount` decimal(10,2) DEFAULT NULL,
-  `voided` int(11) DEFAULT NULL,
-  `entityid` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`objid`),
-  KEY `ix_refid` (`refid`),
-  KEY `ix_refno` (`refno`),
-  KEY `ix_refdate` (`refdate`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-# Dump of table ovs_payment_item
-# ------------------------------------------------------------
-
-CREATE TABLE `ovs_payment_item` (
-  `objid` varchar(50) NOT NULL,
-  `parentid` varchar(50) NOT NULL,
-  `refid` varchar(50) DEFAULT NULL,
-  `amount` decimal(10,2) DEFAULT NULL,
-  `reftype` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`objid`),
-  KEY `ix_parentid` (`parentid`),
-  KEY `ix_refid` (`refid`),
-  CONSTRAINT `fk_ovs_payment_item_parentid` FOREIGN KEY (`parentid`) REFERENCES `ovs_payment` (`objid`),
-  CONSTRAINT `fk_ovs_payment_item_ticketentry` FOREIGN KEY (`refid`) REFERENCES `ovs_violation_ticket_entry` (`objid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-# Dump of table ovs_vehicle
-# ------------------------------------------------------------
-
 CREATE TABLE `ovs_vehicle` (
   `objid` varchar(50) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
@@ -75,11 +12,6 @@ CREATE TABLE `ovs_vehicle` (
   KEY `ix_owner_objid` (`owner_objid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-
-# Dump of table ovs_violation
-# ------------------------------------------------------------
-
 CREATE TABLE `ovs_violation` (
   `objid` varchar(50) NOT NULL,
   `title` varchar(50) DEFAULT NULL,
@@ -91,10 +23,6 @@ CREATE TABLE `ovs_violation` (
   KEY `ix_section` (`section`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-
-# Dump of table ovs_violation_ticket
-# ------------------------------------------------------------
 
 CREATE TABLE `ovs_violation_ticket` (
   `objid` varchar(50) NOT NULL,
@@ -124,10 +52,6 @@ CREATE TABLE `ovs_violation_ticket` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-
-# Dump of table ovs_violation_ticket_entry
-# ------------------------------------------------------------
-
 CREATE TABLE `ovs_violation_ticket_entry` (
   `objid` varchar(50) NOT NULL,
   `parentid` varchar(50) DEFAULT NULL,
@@ -143,11 +67,41 @@ CREATE TABLE `ovs_violation_ticket_entry` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+CREATE TABLE `ovs_payment` (
+  `objid` varchar(50) NOT NULL,
+  `reftype` varchar(50) DEFAULT NULL,
+  `refid` varchar(50) DEFAULT NULL,
+  `refno` varchar(50) DEFAULT NULL,
+  `refdate` date DEFAULT NULL,
+  `amount` decimal(10,2) DEFAULT NULL,
+  `voided` int(11) DEFAULT NULL,
+  `entityid` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`objid`),
+  KEY `ix_refid` (`refid`),
+  KEY `ix_refno` (`refno`),
+  KEY `ix_refdate` (`refdate`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `ovs_payment_item` (
+  `objid` varchar(50) NOT NULL,
+  `parentid` varchar(50) NOT NULL,
+  `refid` varchar(50) DEFAULT NULL,
+  `amount` decimal(10,2) DEFAULT NULL,
+  `reftype` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`objid`),
+  KEY `ix_parentid` (`parentid`),
+  KEY `ix_refid` (`refid`),
+  CONSTRAINT `fk_ovs_payment_item_parentid` FOREIGN KEY (`parentid`) REFERENCES `ovs_payment` (`objid`),
+  CONSTRAINT `fk_ovs_payment_item_ticketentry` FOREIGN KEY (`refid`) REFERENCES `ovs_violation_ticket_entry` (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+#ADD ROLES
+INSERT INTO sys_usergroup (objid,title,domain,userclass,orgclass,role)
+VALUES ('OVS.INFO', 'OVS INFO', 'OVS', 'usergroup', NULL, 'INFO'),
+('OVS.MASTER', 'OVS MASTER', 'OVS', 'usergroup', NULL, 'MASTER'),
+('OVS.REPORT', 'OVS REPORT', 'OVS', 'usergroup', NULL, 'REPORT');
+
+
+

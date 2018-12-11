@@ -11,6 +11,7 @@ public class CorporateCTC {
     double businessgrosstax = 0;      
     double propertyavtax = 0;     
     double additionaltax = 0;    
+    double interest = 0;
 
     public CorporateCTC( def m ) {
         if(m.orgtype!=null) orgtype = m.orgtype;

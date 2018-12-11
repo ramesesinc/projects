@@ -3,6 +3,15 @@
         <invoker type="entityindividual:open" caption="Individual" action="open"  
                  role="MASTER" index="-1" windowTitle="#{entity.entityno}" 
                  formTitle="#{entity.entityno}" formId="#{entity.objid}"/>
+
+        <invoker type="formActions" caption="Activate" action="changeState"
+                 state="ACTIVE"
+                 visibleWhen="#{entity.state=='INACTIVE'}" />
+        
+        <invoker type="formActions" caption="Deactivate" action="changeState" 
+                 state="INACTIVE"
+                 visibleWhen="#{entity.state=='ACTIVE'}" />
+
     </invokers>
     <code class="com.rameses.entity.models.IndividualEntityModel" />
     <pages>

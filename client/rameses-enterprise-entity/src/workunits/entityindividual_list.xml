@@ -1,4 +1,4 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml"  
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml"  
           schemaName="entityindividual" allowDelete="false">
     <invokers>
         <invoker folderid="/explorer/master/entity" caption="Individual" action="init" 

@@ -1,9 +1,15 @@
-<workunit extends="wtemplates/enterprise/treasury/BasicCashReceiptController.xml">
+<workunit  extends="com/rameses/treasury/common/templates/BillingCashReceipt.xml"
+        rulename="ovsbilling" contextName="ovs">
     <invokers>
-        <invoker type="cashreceipt:ovs" action="init" />
+        <!-- collection type declaration -->
+        <invoker type="collectiontype:handler" caption="OVS Payment" 
+                 name="ovs" formtype="serial" formno="51"  index="120" />        
+        
+        <!-- cash receipt handler -->
+        <invoker type="cashreceipt:ovs" action="start" caption="Ordinance Violation Collection"/>
     </invokers>
-    <code class="com.rameses.gov.etracs.ovs.models.OVSCashReceipt" />
+    <code class="com.rameses.gov.etracs.ovs.models.OVSCashReceiptModel" />
     <pages>
-        <page template="com.rameses.gov.etracs.ovs.views.OVSCashreceiptPage"/>
+        <page name="initial" template="com.rameses.gov.etracs.ovs.views.OVSCashReceiptInitialPage"/>
     </pages>
 </workunit>

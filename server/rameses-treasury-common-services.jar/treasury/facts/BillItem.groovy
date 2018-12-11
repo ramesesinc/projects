@@ -155,6 +155,7 @@ class BillItem extends AbstractBillItem {
 	}
 
 	public int getPaypriority() {
+		if( _paypriority > 0 ) return _paypriority;
 		if( duedate !=null ) {
 			return (payDf.format(duedate) + _paypriority.toString().substring(0,4).padLeft(4, "0")).toInteger();
 		}
@@ -171,6 +172,7 @@ class BillItem extends AbstractBillItem {
 	}
 
 	public int getSortorder() {
+		if( super.getSortorder() > 0 ) return super.getSortorder();
 		return (yearMonth*1000); //+ super.getSortorder();
 	}	
 

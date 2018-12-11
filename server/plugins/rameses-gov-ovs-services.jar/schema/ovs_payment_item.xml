@@ -1,12 +1,13 @@
 <schema adapter="ovs">
-	<element name="ovs_payment_item" tablename="ovs_payment_item">
+	<element  tablename="ovs_payment_item">
 		<field name="objid" primary="true" prefix="OVSPMTI"/>
-		<complex name="parent" ref="ovs_payment" jointype="many-to-one" required="false">
+		<complex name="parent" ref="ovs_payment" jointype="many-to-one" required="false" includefields="parent.refno,parent.reftype">
 			<key field="parentid" target="objid"/>
 		</complex>	
-		<complex name="txnref" ref="ovs_violation_ticket_entry" jointype="many-to-one" required="false">
+		<complex name="txnref" ref="ovs_violation_ticket_entry" jointype="many-to-one" required="false" includefields="violation.title,parent.ticketno">
 			<key field="refid" target="objid"/>
 		</complex>
+		<field name="reftype" />
 		<field name="amount" required="true"/>
 	</element>
 </schema>

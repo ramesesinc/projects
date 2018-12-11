@@ -2,6 +2,6 @@
           schemaName="ovs_violation" 
           cols="title,section,article,description">
     <invokers>
-        <invoker folderid="/explorer/master/ovs" caption="Violations" index="2" action="init" role="MASTER" />
+        <invoker folderid="/explorer/master/ovs" caption="Violation List" index="2" action="init" role="MASTER" />
     </invokers>
 </workunit>

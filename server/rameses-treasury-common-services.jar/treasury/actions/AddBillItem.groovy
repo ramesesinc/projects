@@ -32,6 +32,7 @@ class AddBillItem extends AbstractAddBillItem {
 			billitem.txntype = params.txntype.key;
 		}
 
+
 		def acct = params.account;
 		if(  acct ) {
 			setAccountFact( billitem, acct.key );
@@ -43,6 +44,7 @@ class AddBillItem extends AbstractAddBillItem {
 		if( params.fromdate ) billitem.fromdate = params.fromdate.eval();		
 		if( params.todate ) billitem.todate = params.todate.eval();		
 		if( params.remarks ) billitem.remarks = params.remarks.eval();
+		if( params.refid) billitem.refid = params.refid;
 
 		addToFacts( billitem );
 	}

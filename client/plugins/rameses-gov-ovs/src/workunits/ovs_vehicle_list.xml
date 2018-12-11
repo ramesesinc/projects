@@ -3,6 +3,5 @@
           cols="name,plateno,orcr,owner.name" allowDelete="true">
     <invokers>
         <invoker folderid="/explorer/master/ovs" caption="Vehicles" index="5" action="init" role="MASTER"/>
-        <invoker folderid="/home/ovs" caption="Vehicles" index="5" action="init" role="MASTER"/>
     </invokers>
 </workunit>

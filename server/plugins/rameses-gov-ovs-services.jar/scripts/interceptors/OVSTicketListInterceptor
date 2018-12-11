@@ -1,25 +1,6 @@
 import com.rameses.annotations.*;
 
-class ViolationTicketListInterceptor {
-
-	@Service("DateService")
-    def dateSvc;
-
-	@DataContext("ovs_violation_ticket")
-    def vt;
-
-    @Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'ovs_violation_ticket'}")
-    void beforeCreate(evt){
-        evt.args[0].dtcreated = dateSvc.getServerDate();
-    }
-
-	@Before(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'ovs_violation_ticket'}")
-    void beforeDelete(evt) {
-        def p = evt.args[0];
-        if( vt.find( [objid: p.objid] ).select("state").val()?.toUpperCase() != 'OPEN') {
-        	throw new Exception("Cannot delete a closed state");
-        }
-    }
+class OVSTicketListInterceptor {
 
     @After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname == 'ovs_violation_ticket'}")
     def getNodeList(evt){

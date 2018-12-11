@@ -175,6 +175,11 @@ public class BillingRuleService {
 			m.remove("items");
 		}
 
+		println "BILLITEMS ";
+		m.billitems.each {
+			println "--->" + it.sortorder;
+		}
+
 		//clean also requirements and infos
 		if( !m.requirements ) m.remove("requirements");
 		if( !m.infos ) m.remove("infos");

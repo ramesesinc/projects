@@ -1,5 +1,5 @@
 <schema adapter="ovs">
-	<element name="ovs_violation" tablename="ovs_violation">
+	<element tablename="ovs_violation">
 		<field name="objid" primary="true" prefix="VIO"/>
 		<field name="title" required="true" caption="Title" indexed="true" searchable="true"/>
 		<field name="section" required="true" caption="Section" indexed="true" searchable="true"/>

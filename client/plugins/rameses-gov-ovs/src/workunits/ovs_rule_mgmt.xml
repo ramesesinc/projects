@@ -3,4 +3,8 @@
         <invoker folderid="/explorer/rulemgmt/ovs" caption="Violation Fee Rules" 
                  action="init" index="1" role="RULE_AUTHOR"  tag="ovscomputation"/>
     </invokers>
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/ovs" caption="Violation Billing Rules" 
+                 action="init" index="2" role="RULE_AUTHOR"  tag="ovsbilling"/>
+    </invokers>
 </workunit>

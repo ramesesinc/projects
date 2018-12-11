@@ -17,6 +17,9 @@ public class BasicBillingCashReceiptModel extends com.rameses.enterprise.treasur
     def selectedItem;
     def txnid;
     
+    //store something here in query that is constantly being sent to the server
+    def query = [:];
+    
     def billAmount = 0;
     
     def billItemList = [];
@@ -94,6 +97,10 @@ public class BasicBillingCashReceiptModel extends com.rameses.enterprise.treasur
     def loadInfo(def p) {
         p.collectiontype = entity.collectiontype;
         p.billdate = entity.receiptdate;
+        
+        //must replace the action so it will reflect the action passed;
+        query.action = p.action;
+        p.putAll( query );
         def pp = [ rulename: getRulename(), params: p ]; 
         def info = null;
         try {

@@ -10,7 +10,7 @@ public abstract class AbstractBillItem {
 	double amtpaid;
 	double principal;	//original amount 
 
-	int sortorder = 0;
+	int _sortorder = 0;
 	String txntype;
 	boolean dynamic;	//if true - then this should not be saved in database. Applicable for surcharge and interest
 	String remarks;
@@ -20,6 +20,8 @@ public abstract class AbstractBillItem {
 	//This is used for sharing
 	Account nullParentaccount = new Account();
 
+	//tag is used for additional info 
+	String tag;
 
 	public AbstractBillItem( def o ) {
 
@@ -83,8 +85,18 @@ public abstract class AbstractBillItem {
 		m.txntype = txntype;
 		m.sortorder = sortorder;
 		m.remarks = remarks;
+		m.tag = tag;
 		return m;
 	}
+
+	public void setSortorder( int s ) {
+		_sortorder = s;
+	}
+
+	public int getSortorder() {
+		return _sortorder;
+	}
+
 
 	def createClone() {
 		return this.class.newInstance();

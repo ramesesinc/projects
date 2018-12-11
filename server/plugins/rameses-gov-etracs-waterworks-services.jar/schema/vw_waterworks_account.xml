@@ -1,19 +1,23 @@
 <schema adapter="waterworks">
 	<element tablename="vw_waterworks_account">
 		<field name="objid" primary="true"/>
-		<field name="acctname" searchable="true"/>
-		<field name="acctno" searchable="true"/>
-		<field name="address_text" />
+		<field name="acctno" caption="AcctNo" searchable="true"/>
+		<field name="acctname" caption="AcctName" searchable="true"/>
+		<field name="address_text" caption="Address"/>
+		<field name="classificationid" caption="Classification" indexed="true"/>
 		<field name="classification" indexed="true"/>
-		<field name="indexno" />
-		<field name="stuboutnode_stubout_code" />
+		<field name="sectorid" caption="Sector"/>
+		<field name="zoneid" />
+		<field name="zone_code" caption="Zone" indexed="true"/>
+		<field name="indexno" caption="SeqNo"/>
+		<field name="stuboutnode_stubout_code" caption="Stubout" indexed="true"/>
 		<field name="meterid" />
-		<field name="meter_serialno" />
+		<field name="meter_serialno" caption="MeterSerialNo"/>
 		<field name="meter_branch" />
 		<field name="meter_capacity" />
 		<field name="meter_size_title" />
 		<field name="meter_state" />
 		<field name="meter_lastreading" />
-		<field name="meterstatus" />
+		<field name="meterstatus" caption="MeterStatus"/>
 	</element>
 </schema>

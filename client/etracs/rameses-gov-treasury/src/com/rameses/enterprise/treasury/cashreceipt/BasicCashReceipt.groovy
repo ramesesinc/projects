@@ -97,6 +97,10 @@ public class BasicCashReceipt extends AbstractCashReceipt {
             receipt: entity
         ]; 
         param.onselect = { o-> 
+            //if no items returned run rules instead
+            if( !entity.items ) {
+                fireRules( o );
+            }
             itemListModel.reload();
             super.updateBalances();             
         }  
@@ -107,20 +111,12 @@ public class BasicCashReceipt extends AbstractCashReceipt {
         return NumberUtil.round( entity.items.sum{ it.amount } );  
     }   
         
-    void fireRules() {
+    void fireRules(def collectiongroup) {
         def params = [billdate:entity.receiptdate];
-        boolean pass = false;
-        def h = { o->
-            params.collectiongroup = o;
-            pass = true;
-        }
-        Modal.show("collectiongroup:lookup", [onselect:h, tag:"rules"]);
-        if(!pass) return;
+        params.collectiongroup = collectiongroup;
         def h1 = { result->
             if( !result.items ) MsgBox.err( new Exception("No items defined"));
             entity.items.addAll( result.items );
-            updateBalances();
-            itemListModel.reload();
         }
         def op = Inv.lookupOpener("collection_rule", [rulename:"collection", params: params, handler: h1 ] );
         Modal.show( op );

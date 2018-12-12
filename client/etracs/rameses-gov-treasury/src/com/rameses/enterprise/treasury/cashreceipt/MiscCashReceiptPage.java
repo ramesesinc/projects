@@ -35,7 +35,6 @@ public class MiscCashReceiptPage extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
-        xButton2 = new com.rameses.rcp.control.XButton();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         jPanel2 = new javax.swing.JPanel();
         xButton1 = new com.rameses.rcp.control.XButton();
@@ -65,12 +64,6 @@ public class MiscCashReceiptPage extends javax.swing.JPanel {
         xLookupField1.setName("collectiongroup"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(250, 20));
         jPanel1.add(xLookupField1);
-
-        xButton2.setName("fireRules"); // NOI18N
-        xButton2.setVisibleWhen("#{ true }");
-        xButton2.setImmediate(true);
-        xButton2.setText("Run Rules");
-        jPanel1.add(xButton2);
 
         jPanel3.add(jPanel1, java.awt.BorderLayout.NORTH);
 
@@ -189,7 +182,6 @@ public class MiscCashReceiptPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private com.rameses.rcp.control.XButton xButton1;
-    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XLookupField xLookupField1;

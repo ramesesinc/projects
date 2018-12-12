@@ -37,7 +37,7 @@ public class CorporateCTCService {
 		req.include_items = true;
 		req.include_billitems = false;
 		def r = basicBillingService.execute( req );
-		throw new Exception("items is " + r.items );
+		if( !r.items ) throw new Exception("Please setup items in rules")
 		return r;
 	}
 

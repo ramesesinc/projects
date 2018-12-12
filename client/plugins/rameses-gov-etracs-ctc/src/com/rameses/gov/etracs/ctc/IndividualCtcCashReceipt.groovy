@@ -11,6 +11,9 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt {
     @Service('IndividualCTCService')
     def ctcSvc;
         
+    @Service('IndividualEntityService')
+    def entitySvc;
+
     @Service('PersistenceService') 
     def persistenceSvc; 
     
@@ -61,8 +64,16 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt {
             needsrecalc = true;
         },
                 
-        'entity.payer.birthdate' : {
-            entity.payer.seniorcitizen = ctcSvc.getSeniorCitizenStatus(entity.payer);
+        'entity.payer.birthdate' : { o->
+            if(o) {
+                def a = entitySvc.calculateAge( [birthdate: o] );
+                entity.payer.putAll( a );
+            }
+            else {
+                entity.payer.remove("age");                
+                entity.payer.remove("seniorcitizen");
+            }
+            binding.refresh("entity.payer.seniorcitizen");
         },
         
         'entity.payer.address': { o->

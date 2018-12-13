@@ -111,8 +111,15 @@ class CollectionGroupLookupModel extends CrudLookupModel {
         def params = [billdate: receipt.receiptdate];
         params.collectiongroup = collectiongroup;
         def h1 = { result->
-            if( !result.items ) MsgBox.err( new Exception("No items defined"));
-            receipt.items.addAll( result.items );
+            if( result  == "_close" ) {
+                return null;
+            }
+            else if( !result?.items ) {
+                MsgBox.err( new Exception("No items defined"));
+            }
+            else {
+                receipt.items.addAll( result.items );                
+            }
         }
         def op = Inv.lookupOpener("collection_rule", [rulename:"collection", params: params, handler: h1 ] );
         Modal.show( op );

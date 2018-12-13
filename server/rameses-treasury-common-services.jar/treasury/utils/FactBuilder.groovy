@@ -32,6 +32,8 @@ public class FactBuilder {
 	public void addInfos( def infos ) {
 		if(!infos) return;
 		infos.each { info ->
+			//this is to fix array values bec. normally passed is string.
+			if(info.arrayvalues!=null) info.datatype = "string_array";
 			facts <<  variableInfoProvider.createFact(info) ;
 		}
 	}

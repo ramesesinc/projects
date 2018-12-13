@@ -89,7 +89,7 @@ public class AskVariableInfoModel {
     def doCancel() {
         infoStack.clear();
         if(infos) infos.clear();
-        resultHandler(null);
+        resultHandler("_close");
         return "_close";
     }
     

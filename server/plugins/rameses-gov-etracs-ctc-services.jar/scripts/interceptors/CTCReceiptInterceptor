@@ -62,7 +62,7 @@ class CTCReceiptInterceptor {
 		def res = evt.result; 
 		if ( !res ) return; 
 
-		def info = ctc_db.find([ objid: res.objid ]).first(); 
+		def info = ctci_db.find([ objid: res.objid ]).first(); 
 		if ( info ) res.putAll( info ); 
 	} 
 
@@ -71,7 +71,7 @@ class CTCReceiptInterceptor {
 		def res = evt.result; 
 		if ( !res ) return; 
 
-		def info = ctc_db.find([ objid: res.objid ]).first(); 
+		def info = ctcc_db.find([ objid: res.objid ]).first(); 
 		if ( info ) res.putAll( info ); 
 	} 	
 

@@ -26,5 +26,6 @@ WHERE state='ACTIVE'
 		<field name="valuetype" caption="ValueType"/>	
 		<field name="sortorder" caption="SortOrder"/>	
 		<field name="orgid" />	
+		<field name="hidefromlookup" />
 	</element>
 </schema>

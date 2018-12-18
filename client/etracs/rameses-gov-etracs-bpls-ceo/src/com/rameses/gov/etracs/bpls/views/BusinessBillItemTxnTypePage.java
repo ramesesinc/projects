@@ -31,38 +31,44 @@ public class BusinessBillItemTxnTypePage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xTextField1 = new com.rameses.rcp.control.XTextField();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        xTextField1 = new com.rameses.rcp.control.XTextField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xTextField3 = new com.rameses.rcp.control.XTextField();
 
-        xTextField1.setCaption("Title");
-        xTextField1.setName("entity.title"); // NOI18N
-        xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField1.setRequired(true);
-        xFormPanel1.add(xTextField1);
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
 
         xLookupField1.setCaption("Account ");
         xLookupField1.setExpression("#{ entity.account.code } - #{ entity.account.title }");
         xLookupField1.setHandler("revenueitem:lookup");
         xLookupField1.setName("entity.account"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLookupField1.setRequired(true);
         xFormPanel1.add(xLookupField1);
 
-        xComboBox1.setAllowNull(false);
+        xTextField1.setCaption("Title");
+        xTextField1.setName("entity.title"); // NOI18N
+        xTextField1.setVisibleWhen("#{false}");
+        xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField1.setRequired(true);
+        xFormPanel1.add(xTextField1);
+
         xComboBox1.setCaption("Fee Type");
         xComboBox1.setItems("feeTypes");
         xComboBox1.setName("entity.feetype"); // NOI18N
+        xComboBox1.setAllowNull(false);
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
 
         xTextField2.setCaption("Domain");
         xTextField2.setName("entity.domain"); // NOI18N
+        xTextField2.setStretchWidth(60);
         xFormPanel1.add(xTextField2);
 
         xTextField3.setCaption("Role");
         xTextField3.setName("entity.role"); // NOI18N
+        xTextField3.setStretchWidth(60);
         xFormPanel1.add(xTextField3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

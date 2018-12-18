@@ -4,7 +4,7 @@
                  caption="Collection Journal Entry Vouchers" 
                  action="init" role="MASTER" permission="jev.view" 
                  index="1"
-                 cols="refno,jevdate,fund.title,postedby.name,amount,jevno"
+                 cols="refno,refdate,postedby.name,amount,jevno,jevdate"
                  orderBy="jevdate DESC, refno"
                  customFilter="txntype = 'COLLECTION' "/> 
     </invokers>

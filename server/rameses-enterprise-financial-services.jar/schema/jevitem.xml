@@ -2,7 +2,7 @@
 
 	<element tablename="jevitem">
 		<field name="objid" primary="true"/>
-		<field name="jevid" required="true"/>
+		<field name="jevfundid" required="true"/>
 		<field name="acctid" required="true"/>
 		<field name="acctcode" />
 		<field name="acctname" required="true"/>

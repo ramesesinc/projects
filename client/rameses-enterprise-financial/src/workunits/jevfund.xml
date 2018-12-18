@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="jevfund" allowCreate="false" allowEdit="false">
+    <invokers>
+        <invoker type="jevfund:open" action="open" caption="Journal Fund" 
+                 formId="#{entity.refno}" formTitle="#{entity.refno}"/>
+   </invokers>
+   <code class="com.rameses.enterprise.financial.models.JevFundModel" />
+    <pages>
+        <page template="com.rameses.enterprise.financial.views.JevFundPage" />
+    </pages>
+</workunit>

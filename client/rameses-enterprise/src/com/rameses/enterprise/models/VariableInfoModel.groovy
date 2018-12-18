@@ -7,6 +7,8 @@ import com.rameses.seti2.models.*;
         
 public class VariableInfoModel extends CrudFormModel {
         
+    def arrayvalue;
+    
     @PropertyChangeListener
     def listener = [
         "entity.datatype": {o->

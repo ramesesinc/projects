@@ -19,5 +19,8 @@
         <invoker type="variableinfo_date:lookup" caption="Date Variable Info Lookup" 
                  role="MASTER" action="init"
                  customFilter=" datatype = 'date' "/>
+        <invoker type="variableinfo_string_array:lookup" caption="String Info Lookup" 
+                 role="MASTER" action="init"
+                 customFilter=" datatype = 'string_array' "/>
     </invokers>
 </workunit>

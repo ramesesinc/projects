@@ -29,9 +29,13 @@ public class VariableInfoProvider {
 			if(!createDateFact) createDateFact = { new enterprise.facts.DateInfo() };
 			cf = createDateFact();
 		}
+		else if(dd.datatype == "string_array") {
+			if(!createStringArrayFact) createStringArrayFact = { new enterprise.facts.StringArrayInfo() };
+			cf = createStringArrayFact();
+		}
 		else {
 			if(!createObjectFact) 
-				throw new Exception("createObjectFact not implemented");
+				throw new Exception("createObjectFact not implemented " + dd.datatype );
 			cf = createObjectFact();
 		}
 		
@@ -44,6 +48,7 @@ public class VariableInfoProvider {
 	def createIntegerFact ;
 	def createBooleanFact;
 	def createStringFact;
+	def createStringArrayFact;
 	def createDateFact;
 	def createObjectFact;
 

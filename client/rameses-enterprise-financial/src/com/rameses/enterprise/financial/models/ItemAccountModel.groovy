@@ -19,6 +19,11 @@ class ItemAccountModel extends CrudFormModel {
         return caller.tag;
     }
     
+    boolean isEditAllowed() {
+        if(entity.state=='ACTIVE') return false;
+        return super.isEditAllowed();
+    }
+    
     void addSubItems() { 
         def h = { arr-> 
             def sname = 'itemaccount'; 

@@ -1,6 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package com.rameses.enterprise.financial.views;
@@ -9,15 +8,16 @@ import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
 
 /**
- * @author elmonazareno
+ *
+ * @author Elmo Nazareno
  */
 @Template(CrudFormPage.class)
-public class JevPage extends javax.swing.JPanel {
+public class JevFundPage extends javax.swing.JPanel {
 
     /**
      * Creates new form JevPage
      */
-    public JevPage() {
+    public JevFundPage() {
         initComponents();
     }
 
@@ -33,76 +33,77 @@ public class JevPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
-        xLabel7 = new com.rameses.rcp.control.XLabel();
-        xLabel8 = new com.rameses.rcp.control.XLabel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
-        xLabel5 = new com.rameses.rcp.control.XLabel();
-        xLabel6 = new com.rameses.rcp.control.XLabel();
+        xLabel8 = new com.rameses.rcp.control.XLabel();
+        xLabel9 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
-        xDataTable1 = new com.rameses.rcp.control.XDataTable();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
         xButton1 = new com.rameses.rcp.control.XButton();
+        xButton2 = new com.rameses.rcp.control.XButton();
+        xDataTable1 = new com.rameses.rcp.control.XDataTable();
 
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
 
-        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel1.setCaption("Ref No");
-        xLabel1.setExpression("#{entity.refno}");
+        xLabel1.setExpression("#{entity.jev.refno}");
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel1);
 
         xLabel2.setCaption("Ref Date");
-        xLabel2.setExpression("#{entity.refdate}");
+        xLabel2.setExpression("#{entity.jev.refdate}");
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel2);
 
-        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel7.setCaption("Posted By");
-        xLabel7.setExpression("#{entity.postedby.name}");
-        xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel7);
-
-        xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel8.setCaption("Txn Type");
-        xLabel8.setExpression("#{entity.txntype}");
-        xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel8);
-
         xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
 
-        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel4.setCaption("Jev No");
-        xLabel4.setExpression("#{entity.jevno}");
-        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLabel4);
+        xLabel8.setCaption("Txn Type");
+        xLabel8.setExpression("#{entity.jev.txntype}");
+        xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel8);
 
-        xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel5.setCaption("Jev Date");
-        xLabel5.setExpression("#{entity.jevdate}");
-        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLabel5);
+        xLabel9.setCaption("Fund");
+        xLabel9.setExpression("#{entity.fund.title}");
+        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel9.setFont(new java.awt.Font("Monospaced", 1, 14)); // NOI18N
+        xLabel9.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel9);
 
-        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel6.setCaption("Verified By");
-        xLabel6.setExpression("#{entity.verifiedby.name}");
-        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLabel6);
-
-        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel3.setCaption("Amount");
         xLabel3.setExpression("#{formattedAmount}");
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel3.setFont(new java.awt.Font("Monospaced", 1, 14)); // NOI18N
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel3);
 
-        xDataTable1.setHandler("listModel");
-        xDataTable1.setItems("");
-        xDataTable1.setName("selectedFund"); // NOI18N
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 0, 0));
+        jPanel2.setLayout(new com.rameses.rcp.control.layout.XLayout());
+
+        xButton1.setDepends(new String[] {"accttype"});
+        xButton1.setName("viewItemAccounts"); // NOI18N
+        xButton1.setVisibleWhen("#{accttype != 'itemaccount'}");
+        xButton1.setImmediate(true);
+        xButton1.setText("View In Item Accounts");
+        jPanel2.add(xButton1);
+
+        xButton2.setDepends(new String[] {"accttype"});
+        xButton2.setName("viewNGASAccounts"); // NOI18N
+        xButton2.setVisibleWhen("#{accttype == 'itemaccount'}");
+        xButton2.setImmediate(true);
+        xButton2.setText("View In NGAS Accounts");
+        jPanel2.add(xButton2);
+
+        jPanel1.add(jPanel2, java.awt.BorderLayout.SOUTH);
+
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "fund.code"}
-                , new Object[]{"caption", "Fund Code"}
+                new Object[]{"name", "acctcode"}
+                , new Object[]{"caption", "Acct Code"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 50}
                 , new Object[]{"maxWidth", 200}
@@ -116,8 +117,8 @@ public class JevPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "fund.title"}
-                , new Object[]{"caption", "Fund Title"}
+                new Object[]{"name", "acctname"}
+                , new Object[]{"caption", "Account Name"}
                 , new Object[]{"width", 250}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -131,8 +132,23 @@ public class JevPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "amount"}
-                , new Object[]{"caption", "Amount"}
+                new Object[]{"name", "dr"}
+                , new Object[]{"caption", "Dr"}
+                , new Object[]{"width", 150}
+                , new Object[]{"minWidth", 50}
+                , new Object[]{"maxWidth", 150}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "cr"}
+                , new Object[]{"caption", "Cr"}
                 , new Object[]{"width", 150}
                 , new Object[]{"minWidth", 50}
                 , new Object[]{"maxWidth", 150}
@@ -146,11 +162,8 @@ public class JevPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })
         });
-
-        xButton1.setDepends(new String[] {"accttype"});
-        xButton1.setName("viewFund"); // NOI18N
-        xButton1.setImmediate(true);
-        xButton1.setText("View");
+        xDataTable1.setHandler("itemListModel");
+        jPanel1.add(xDataTable1, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -158,44 +171,38 @@ public class JevPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(148, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 728, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(126, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
-    private com.rameses.rcp.control.XLabel xLabel4;
-    private com.rameses.rcp.control.XLabel xLabel5;
-    private com.rameses.rcp.control.XLabel xLabel6;
-    private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;
+    private com.rameses.rcp.control.XLabel xLabel9;
     // End of variables declaration//GEN-END:variables
 }

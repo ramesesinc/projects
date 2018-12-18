@@ -26,6 +26,7 @@ public class CollectionRuleInterceptor {
 			def cg = params.collectiongroup;
 			facts << new treasury.facts.CollectionGroup( objid:cg.objid, name: cg.name );
 		}
+
 	}
 
 

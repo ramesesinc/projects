@@ -30,5 +30,6 @@
 			required="false" includefields="objid,code,title"> 
 			<key field="parentid" target="objid"/> 
 		</complex> 
+		<field name="hidefromlookup" defaultValue="0" datatype="integer"/>
 	</element>
 </schema>

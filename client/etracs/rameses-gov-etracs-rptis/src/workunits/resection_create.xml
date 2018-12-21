@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="/menucategory/rpt/txn"
+                 action="init"  
+                 caption="Create New Resection" 
+                 index="171"
+                 role="TAXMAPPER" 
+                 permission="resection.create" />
+
+         <invoker type="resection:create"
+                 action="init"  caption="Resection (New)" 
+                 role="TAXMAPPER" 
+                 permission="resection.create" />
+        
+        <invoker type="formActions" 
+                 action="_close" caption="Close" 
+                 mnemonic="c" immediate="true" />
+        
+         <invoker type="formActions" 
+                  action="process" caption="Next" 
+                  mnemonic="n" 
+                  icon="images/toolbars/arrow_right.png" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.models.ResectionInitModel" >
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.views.ResectionInitPage" />
+    </pages>
+</workunit>

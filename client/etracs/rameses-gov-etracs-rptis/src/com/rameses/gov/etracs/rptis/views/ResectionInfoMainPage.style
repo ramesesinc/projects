@@ -1,0 +1,7 @@
+"selectedItem" [mode != 'edit'] {
+    readonly:true;
+}
+
+"selectedItem" [mode == 'edit'] {
+    readonly:false;
+}

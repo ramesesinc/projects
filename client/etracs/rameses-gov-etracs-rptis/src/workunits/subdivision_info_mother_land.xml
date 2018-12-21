@@ -110,7 +110,6 @@ class MotherLandController
     
     
     boolean getShowActions(){
-        println 'OsirisContext.env.ORGID -> ' + OsirisContext.env.ORGID
         if (entity.originlguid != OsirisContext.env.ORGID) return false;
         if (entity.taskstate && entity.taskstate.matches('assign.*')) return false;
         if (entity.taskstate && !entity.taskstate.matches('.*taxmapper.*')) return false;

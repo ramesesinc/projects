@@ -62,6 +62,30 @@ where fund.objid = t1.fundid
 group by t1.remittanceid, r.controlno, fund.objid, fund.code, fund.title  
 order by fund.code, fund.title 
 
+[updateCashReceiptItemRemittanceFundId]
+UPDATE cashreceiptitem cri, cashreceipt cr, remittance_fund rf
+SET cri.remittancefundid = rf.objid, cri.remittanceid = rf.remittanceid
+WHERE cri.receiptid = cr.objid
+AND cr.remittanceid = rf.remittanceid 
+AND  cri.item_fund_objid = rf.fund_objid
+AND rf.remittanceid = $P{remittanceid}
+
+[updateCashReceiptShareRemittanceFundId]
+UPDATE cashreceipt_share crs, cashreceipt cr, itemaccount itm, remittance_fund rf
+SET crs.remittancefundid = rf.objid, crs.remittanceid = rf.remittanceid
+WHERE crs.receiptid = cr.objid
+AND cr.remittanceid = rf.remittanceid 
+AND crs.payableitem_objid = itm.objid 
+AND  itm.fund_objid = rf.fund_objid
+AND rf.remittanceid = $P{remittanceid}
+
+[updateCashReceiptNonCashPaymentRemittanceFundId]
+UPDATE cashreceiptpayment_noncash crpn, cashreceipt cr, remittance_fund rf
+SET crpn.remittancefundid = rf.objid, crpn.remittanceid = rf.remittanceid
+WHERE crpn.receiptid = cr.objid
+AND cr.remittanceid = rf.remittanceid 
+AND  crpn.fund_objid = rf.fund_objid
+AND rf.remittanceid = $P{remittanceid}
 
 [getCashReceiptsForRemittance]
 SELECT 

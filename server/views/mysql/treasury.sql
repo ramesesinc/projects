@@ -622,16 +622,16 @@ select
 `r`.`collectionvoucherid` AS `collectionvoucherid` 
 from `remittance` `r` 
 	inner join `cashreceipt` `c` on `c`.`remittanceid` = `r`.`objid` 
-	inner join `cashreceiptpayment_noncash` `nc` on (`nc`.`receiptid` = `c`.`objid` and (`nc`.`reftype` = 'CHECK') 
+	inner join `cashreceiptpayment_noncash` `nc` on (`nc`.`receiptid` = `c`.`objid` and `nc`.`reftype` = 'CHECK') 
 	inner join `checkpayment` `cp` on `cp`.`objid` = `nc`.`refid` 
 	left join `cashreceipt_void` `v` on `v`.`receiptid` = `c`.`objid` 
 union all 
 select 
 `cm`.`objid` AS `objid`,
-`cm`.`receiptid` AS `receiptid`,
+nc.receiptid AS `receiptid`,
 `cm`.`refno` AS `refno`,
 `cm`.`refdate` AS `refdate`,
-'CREDITMEMO' AS `reftype`,`cm`.`particulars` AS `particulars`,
+'EFT' AS `reftype`,`cm`.`particulars` AS `particulars`,
 `cm`.`objid` AS `refid`,
 `cm`.`amount` AS `amount`,
 (case when `v`.`objid` is null then 0 else 1 end) AS `voided`, 
@@ -642,12 +642,11 @@ select
 `r`.`collectionvoucherid` AS `collectionvoucherid` 
 from `remittance` `r` 
 	inner join `cashreceipt` `c` on `c`.`remittanceid` = `r`.`objid` 
-	inner join `cashreceiptpayment_noncash` `nc` on (`nc`.`receiptid` = `c`.`objid` and `nc`.`reftype` <> 'CHECK') 
-	inner join `creditmemo` `cm` on `cm`.`receiptid` = `c`.`objid` 
-	inner join `bankaccount` `ba` on `ba`.`objid` = `cm`.`bankaccount_objid` 
+	inner join `cashreceiptpayment_noncash` `nc` on (`nc`.`receiptid` = `c`.`objid` and `nc`.`reftype` = 'EFT') 
+	inner join `eftpayment` `cm` on `cm`.`objid` = `nc`.`refid` 
+	inner join `bankaccount` `ba` on `ba`.`objid` = `cm`.`bankacctid` 
 	left join `cashreceipt_void` `v` on `v`.`receiptid` = `c`.`objid` 
-; 
-
+;
 
 drop VIEW if exists `vw_remittance_cashreceiptshare` 
 ; 
@@ -804,4 +803,9 @@ year(`jev`.`jevdate`) AS `year`,
 from `payable_ledger` `pl` 
 	inner join `jev` on `jev`.`objid` = `pl`.`jevid` 
 ; 
+
+ALTER TABLE cashreceiptitem ADD COLUMN remittancefundid VARCHAR(100);
+ALTER TABLE cashreceiptpayment_noncash ADD COLUMN remittancefundid VARCHAR(100);
+ALTER TABLE cashreceipt_share ADD COLUMN remittancefundid VARCHAR(100);
+
 

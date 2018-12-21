@@ -12,6 +12,8 @@
 			<key field="item_fund_objid" target="objid" />
 		</complex>	
 		<field name="remarks"  />
+		<field name="remittancefundid"  />
+		<field name="remittanceid"  />		
 	</element>
 
 </schema>

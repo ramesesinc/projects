@@ -176,6 +176,47 @@ GROUP BY dtgenerated, barangayid, barangay_name, classification, idx
 ORDER BY barangay_name, idx 
 
 
+[getDelinquentLedgersByClassificationDetailed]
+SELECT 
+	x.dtgenerated, 
+	x.classification,
+	x.idx,
+	x.barangayid, 
+	x.barangay_pin,
+	x.barangay_name,
+	sum(x.landav) as landav,
+	sum(x.improvav) as improvav,
+	sum(x.machav) as machav,
+	sum(basic) as basic, 
+	sum(basicint) as basicint, 
+	sum(sef) as sef, 
+	sum(sefint) as sefint
+FROM ( 
+	SELECT 
+		year, dtgenerated,
+		rr.barangayid, 
+		b.pin as barangay_pin, 
+		b.name as barangay_name, 
+		case when pc.objid is null then 'UNMAPPED' else pc.name end as classification,
+		case when pc.objid is null then 10000 else pc.orderno end as idx, 
+		case when rl.rputype = 'land' then rl.totalav else 0 end as landav,
+		case when rl.rputype not in ('land', 'mach') then rl.totalav else 0 end as improvav,
+		case when rl.rputype = 'mach' then rl.totalav else 0 end as machav,
+		rr.basic,
+		rr.basicint, 
+		rr.sef, 
+		rr.sefint
+	FROM vw_landtax_report_rptdelinquency rr 
+		inner join rptledger rl on rr.rptledgerid = rl.objid 
+		inner join barangay b on rl.barangayid = b.objid 
+		left join propertyclassification pc on rl.classification_objid = pc.objid 
+	where 1=1 ${filter}
+	and NOT EXISTS(select * from faas_restriction where ledger_objid = rr.rptledgerid and state='ACTIVE')
+)x 
+GROUP BY x.dtgenerated, x.classification, x.idx, x.barangayid, x.barangay_pin, x.barangay_name
+ORDER BY x.idx, x.barangay_pin
+
+
 [findLatestPayment]
 select x.*
 from (

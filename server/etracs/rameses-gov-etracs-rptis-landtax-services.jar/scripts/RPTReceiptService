@@ -353,7 +353,9 @@ class RPTReceiptService
 		def totalShares = ZERO
 		receipt.ledgers.each{
 			totalItems += numSvc.round(it.postingitems.sum{ it.total ? it.total : ZERO})
-			totalShares += (it.shares.sum{ it.amount ? it.amount : ZERO})
+			if (it.shares) {
+				totalShares += (it.shares.sum{ it.amount ? it.amount : ZERO})
+			}
 			totalShares += (it.billitems.sum{ it.amount - it.share })
 			totalShares = numSvc.round(totalShares) 
 		}

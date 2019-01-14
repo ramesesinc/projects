@@ -31,5 +31,12 @@
 		<field name="batch_readingdate" /> 
 
 		<field name="monthname" expr="MONTH_ARRAY(month)"/> 
+
+		<field name="bill_objid" /> 
+		<field name="bill_otherfees" /> 
+		<field name="bill_arrears" /> 
+		<field name="bill_credits" /> 
+		<field name="bill_surcharge" /> 
+		<field name="bill_interest" /> 
 	</element>
 </schema>

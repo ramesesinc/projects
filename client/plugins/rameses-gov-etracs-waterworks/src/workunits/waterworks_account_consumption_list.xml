@@ -2,7 +2,7 @@
           schemaName="waterworks_consumption"
           contextName="waterworks"
           cols="year,monthname,schedule.readingdate,meter.serialno,prevreading,reading,volume,amount,amtpaid,balance"
-          orderBy="schedule.objid desc">
+          orderBy="schedule.year desc, schedule.month desc">
     <invokers>
         <invoker type="waterworks_account:section" caption="  Monthly Consumption   " 
                  index="2" action="init" 

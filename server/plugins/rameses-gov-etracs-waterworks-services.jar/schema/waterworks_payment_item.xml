@@ -1,7 +1,9 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_payment_item">
 		<field name="objid" primary="true" prefix="WPI" />
-		<complex name="parent" ref="waterworks_payment" jointype="many-to-one" required="false">
+
+		<complex name="parent" ref="waterworks_payment" jointype="many-to-one" required="false"
+			includefields="objid,refno,refdate,reftype,txnmode,voided">
 			<key field="parentid" target="objid"/>
 		</complex>
 		

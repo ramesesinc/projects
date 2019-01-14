@@ -20,11 +20,11 @@
 			<key field="acctid" target="objid"/>
 		</complex>
 
-		<field name="surcharge" type="decimal"/>
-		<field name="interest" type="decimal"/>
-		<field name="otherfees" type="decimal"/>
-		<field name="credits" type="decimal"/>
-		<field name="arrears" type="decimal"/>
+		<field name="surcharge" type="decimal" caption="Surcharge"/>
+		<field name="interest" type="decimal" caption="Interest"/>
+		<field name="otherfees" type="decimal" caption="Other Fees"/>
+		<field name="arrears" type="decimal" caption="Arrears"/>
+		<field name="credits" type="decimal" caption="Credits"/>
 		<field name="averageconsumption" type="integer"/>
 		<field name="unpaidmonths"/>
 		<field name="billed"/>	

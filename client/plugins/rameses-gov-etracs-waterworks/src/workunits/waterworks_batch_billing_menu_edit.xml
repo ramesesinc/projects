@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/ChangeInfo.xml" 
+          schemaName="waterworks_billing" logSchemaName="waterworks_changelog">
+    <invokers>
+        <invoker type="waterworks_batch_billing_menu:edit" caption="Edit Billing" 
+                 action="init" fields="surcharge,interest,otherfees,arrears,credits" target="popup" /> 
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.waterworks.models.BatchBillingEditModel" />
+        
+</workunit>

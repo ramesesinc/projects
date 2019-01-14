@@ -26,7 +26,6 @@ class WaterworksBillingInterceptor {
 	public void loadHeaderInfo( evt ) {
 		def obj = evt.args[0];
 		def p = obj.params;
-
 		def acct = null;
 		try {
 			if ( p.id ) {
@@ -158,5 +157,4 @@ class WaterworksBillingInterceptor {
 		result._schemaname = 'waterworks_payment';
 		result.creditschemaname = 'waterworks_credit';
 	} 
-
 }

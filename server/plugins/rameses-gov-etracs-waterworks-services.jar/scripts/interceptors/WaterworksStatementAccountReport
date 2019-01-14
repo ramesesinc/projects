@@ -5,9 +5,7 @@ class WaterworksStatementAccountReport {
     @After(pattern="FormReportService.getParameters",  eval="#{ args[0].reportid == 'water_statement_account' }" )
 	public void afterGetParameters( evt ) {
 		def obj = evt.args[0];
-		println 'args[0] -> '+ obj; 
 		def p = evt.result; 
-		println 'p -> ' + p; 
 		//if (!p.parameters ) p.parameters = [];
 		//p.parameters << [ name:'startdate', caption:'Start Date', type:'date' ]; 
 	} 

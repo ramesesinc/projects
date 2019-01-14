@@ -1,7 +1,8 @@
 [buildConsumptions]
 INSERT INTO waterworks_consumption ( 
 	objid,state,acctid,batchid,txnmode,prevreading,reading,
-volume,rate,amount,amtpaid,meterid,scheduleid, hold ) 
+	volume,rate,amount,amtpaid,meterid,scheduleid, hold 
+) 
 SELECT 
 	CONCAT(a.objid,'-',br.scheduleid) AS objid, 
 	'DRAFT' as state, 
@@ -49,3 +50,23 @@ WHERE wbb.objid = $P{batchid}
 	and wb.batchid = wbb.objid 
 	and wa.objid = wb.acctid 
 	and wm.objid = wa.meterid 
+
+
+[findLastBillByZone]
+select 
+	bb.objid, bb.scheduleid, bs.year, bs.month, 
+	bb.zoneid, z.schedule_objid as zonescheduleid 
+from waterworks_batch_billing bb 
+	inner join waterworks_billing_schedule bs on bs.objid = bb.scheduleid 
+	inner join waterworks_zone z on z.objid = bb.zoneid 
+where bb.zoneid = $P{zoneid} ${filter} 
+order by bs.year desc, bs.month desc 
+
+
+[findCurrentConsumption]
+select c.*, bs.year, bs.month 
+from waterworks_consumption c 
+	inner join waterworks_billing_schedule bs on bs.objid = c.scheduleid 
+where c.acctid = $P{acctid} 
+	and c.state in ('POSTED', 'COMPLETED')
+order by bs.year desc, bs.month desc 

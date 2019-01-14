@@ -1,0 +1,13 @@
+<workunit>
+
+    <invokers>
+        <invoker type="waterworks_batch_billing_menu_viewbillreceipt" caption="Billing Receipt" action="init"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.waterworks.models.BillingReceiptModel" />    
+
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.BillingReceiptPage"/>
+    </pages>    
+    
+</workunit>

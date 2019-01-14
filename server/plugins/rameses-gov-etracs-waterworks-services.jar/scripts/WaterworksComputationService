@@ -82,8 +82,15 @@ class WaterworksComputationService  {
 			res.reading = o.reading; 
 			res.prevreading = o.prevreading; 
 			consEm.find( [objid: o.consumptionid ] ).update( res );
+
+			def con = consEm.findLastConsumption([ acctid: acct?.objid, filter: " AND c.state IN ('POSTED', 'COMPLETED') " ]); 
+			if ( con?.meterid ) {
+				meterEm.find([ objid: con.meterid ]).update([
+					lastreading: (con?.reading ? con.reading : 0), 
+					lastreadingdate: (con?.readingdate ? con.readingdate : '{NULL}') 
+				]); 
+			}
 		}
-		//throw new Exception("res is " + res);
 		return res;
 	}
 

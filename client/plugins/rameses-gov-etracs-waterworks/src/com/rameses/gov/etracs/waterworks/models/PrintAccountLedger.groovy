@@ -19,7 +19,7 @@ class PrintAccountLedger {
        return printerService.getPrinters(); 
    }    
     
-    void printLedger() { 
+    def getPrinterInfo() {
         def printerName = null; 
         boolean pass = false;
         def h = [:];
@@ -30,10 +30,21 @@ class PrintAccountLedger {
         h.fields = [];
         h.fields << [name:"printername", caption:'Select Printer', type:'combo', required:true, itemsObject:getPrinterList() ];
         Modal.show("dynamic:form", h, [title: 'Print Ledger'] );
-        if ( !pass ) return; 
-        
-        def res = printSvc.getReport([ acctid: entity.objid ]); 
+        if ( !pass ) return null; 
+        return [name: printerName];
+    }
+    
+    def getReportData() {
+        return printSvc.getReport([ acctid: entity.objid ]); 
+    }
+    
+    void printLedger() { 
+        def res = getReportData(); 
         if ( res ) {
+            def printerInfo = getPrinterInfo();
+            def printerName = printerInfo?.name;
+            if ( !printerName ) return;
+            
             printerService.printString(printerName, res.toString());
             MsgBox.alert("Successfully submitted to the printer");
         } else {
@@ -41,4 +52,17 @@ class PrintAccountLedger {
         }
     } 
     
+    def text;
+    
+    public def previewLedger() {
+        text = null; 
+        def res = getReportData(); 
+        if ( res ) {
+            text = res.toString(); 
+            return 'preview';
+        } else {
+            MsgBox.alert("No available template handler for this report"); 
+            return '_close'; 
+        }        
+    }
 }

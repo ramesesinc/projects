@@ -398,6 +398,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
 
         xTabbedPane1.addTab("  Reading Details   ", xPanel1);
 
+        schemaList2.setActionContext("billingMenu");
         schemaList2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "billno"}

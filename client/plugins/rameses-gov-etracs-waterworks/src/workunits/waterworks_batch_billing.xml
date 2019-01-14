@@ -1,10 +1,18 @@
 <workunit schemaName="waterworks_batch_billing">
     <invokers> 
-        <invoker type="waterworks_batch_billing:open" caption="Batch Billing" action="open" formId="#{entity.objid}" formTitle="#{entity.batchno}"/>
+        <invoker type="waterworks_batch_billing:open" caption="Batch Billing" 
+                 action="open" formId="#{entity.objid}" formTitle="#{entity.batchno}"/>
         
-        <invoker type="readingMenu" caption="View Actions" visibleWhen="#{selectedItem != null }"/>
-        
-        <invoker type="formActions" caption="Print Bill" action="printBill" visibleWhen="#{ task.state == 'approved' }"/>
+        <invoker type="readingMenu" caption="View Actions" action="showMenuActions" 
+                 depends="selectedItem" visibleWhen="#{selectedItem != null}" 
+                 target="process" mnemonic="V"/>
+
+        <invoker type="billingMenu" caption="View Actions" action="showMenuActions" 
+                 depends="selectedBillItem" visibleWhen="#{selectedBillItem != null}" 
+                 target="process" mnemonic="V"/>
+                
+        <invoker type="formActions" caption="Print Bill" action="printBill" 
+                 visibleWhen="#{ task.state == 'approved' }"/>
     </invokers>
     
     <code class="com.rameses.gov.etracs.waterworks.models.BatchBillingModel" />

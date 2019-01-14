@@ -1,7 +1,14 @@
 <workunit>
     <invokers>
         <invoker type="waterworks_account:form:formActions" caption="Print Statement" 
-                 action="printLedger" target="process" />
+                 action="printLedger" target="process" index="100"/>
+
+        <invoker type="waterworks_account:form:formActions" caption="Preview Statement" 
+                 action="previewLedger" target="popup" index="101"
+                 width="1024" height="650"/>
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.PrintAccountLedger"/> 
+    <pages>
+        <page name="preview" template="com.rameses.gov.etracs.waterworks.views.AccountLedgerPreviewPage"/>
+    </pages>
 </workunit>

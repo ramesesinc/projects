@@ -1,6 +1,6 @@
 package enterprise.facts;
 
-public class StringInfo extends VariableInfo {
+public class StringArrayInfo extends VariableInfo {
 
 	public String getValue() {
 		return this.stringvalue;

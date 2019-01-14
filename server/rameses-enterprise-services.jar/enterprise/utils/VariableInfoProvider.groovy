@@ -5,7 +5,7 @@ import enterprise.facts.*;
 public class VariableInfoProvider {
 
 
-	String schemaName;
+	String getSchemaName();
 
 	public def createFact(dd) {
 		def cf = null;	

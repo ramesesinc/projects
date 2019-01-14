@@ -29,28 +29,29 @@
 
 	<field name="account.title" class="java.lang.String"/>
 	<field name="lob.name" class="java.lang.String"/>
-	<field name="amount" class="java.math.BigDecimal"/>
-	<field name="surcharge" class="java.math.BigDecimal"/>
-	<field name="interest" class="java.math.BigDecimal"/>
-	<field name="total" class="java.math.BigDecimal"/>
+	<field name="amount" class="java.lang.Number"/>
+	<field name="surcharge" class="java.lang.Number"/>
+	<field name="interest" class="java.lang.Number"/>
+	<field name="total" class="java.lang.Number"/>
 	<field name="qtr" class="java.lang.Integer"/>
 	<field name="duedate" class="java.util.Date"/>
-	<field name="discount" class="java.math.BigDecimal"/>
+	<field name="discount" class="java.lang.Number"/>
 	<field name="lob.assessmenttype" class="java.lang.String"/>
+	<field name="amtdue" class="java.lang.Number"/>
 
-	<variable name="TOTAL_AMT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{amount}]]></variableExpression>
+	<variable name="TOTAL_AMT" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{amtdue}]]></variableExpression>
 	</variable>
-	<variable name="TOTAL_DISC" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TOTAL_DISC" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{discount}]]></variableExpression>
 	</variable>
-	<variable name="TOTAL_SURC" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TOTAL_SURC" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{surcharge}]]></variableExpression>
 	</variable>
-	<variable name="TOTAL_INT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TOTAL_INT" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{interest}]]></variableExpression>
 	</variable>
-	<variable name="TOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TOTAL" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{total}]]></variableExpression>
 	</variable>
 		<background>
@@ -337,7 +338,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{amount}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{amtdue}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -357,7 +358,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{surcharge}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{surcharge}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -377,7 +378,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{interest}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{interest}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -397,7 +398,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{total}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{total}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -457,7 +458,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{discount}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{discount}]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>
@@ -474,7 +475,7 @@
 					<textElement textAlignment="Right">
 						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTAL_AMT}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TOTAL_AMT}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -487,7 +488,7 @@
 					<textElement textAlignment="Right">
 						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTAL_DISC}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TOTAL_DISC}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -500,7 +501,7 @@
 					<textElement textAlignment="Right">
 						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTAL_SURC}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TOTAL_SURC}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -533,7 +534,7 @@
 					<textElement textAlignment="Right">
 						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTAL_INT}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TOTAL_INT}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -546,7 +547,7 @@
 					<textElement textAlignment="Right">
 						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTAL}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TOTAL}]]></textFieldExpression>
 				</textField>
 			</band>
 		</columnFooter>

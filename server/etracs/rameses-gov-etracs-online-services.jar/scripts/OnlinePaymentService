@@ -96,14 +96,16 @@ class OnlinePaymentService   {
 
         def r = null; 
         def retval = [:];
+        boolean pass = false; 
         try { 
             r = eorSvc.post( po ); 
             retval.paymentrefid =  r.paymentrefid;
             retval.receiptno = r.receiptno;
             retval.receiptid = r.objid;
             retval.receiptdate = r.receiptdate; 
-
-        } catch(Throwable t) { 
+            pass = true; 
+        } 
+        catch(Throwable t) { 
             def m = buildErrorInfo( t ); 
             println 'payment posting error '+ o.paymentrefid +' caused by: '+ m.errmsg; 
             m.objid = o.objid; 
@@ -123,7 +125,10 @@ class OnlinePaymentService   {
             retval = null; 
         } 
         
-        poEm.find([ objid: po.objid ]).delete();
+        if ( pass ) { 
+            poEm.find([ objid: po.objid ]).delete(); 
+            unpostedpayment_db.find([ paymentrefid: po.objid ]).delete(); 
+        }
         return retval;
     }
 

@@ -133,6 +133,10 @@ class ResectionService
 
     @ProxyMethod
     public def validateNewParcel(item) {
+        def newsection = item.newfaas.section
+        if (!newsection)
+            throw new Exception('New Section is required.');
+
     	def newparcel = item.newfaas.parcel
         if (!newparcel)
             throw new Exception('New Parcel is required.')
@@ -210,8 +214,8 @@ class ResectionService
     	if (item.faas.rputype == 'land') {
     		faas.rp.objid = 'RP' + new java.rmi.server.UID()
     		faas.rp.pin = item.newfaas.fullpin 
-    		faas.rp.section = item.newfaas.section
-    		faas.rp.parel = item.newfaas.parel
+    		faas.rp.section = item.newfaas.section.toString()
+    		faas.rp.parel = item.newfaas.parel.toString()
     	} else {
     		faas.rp = rpSvc.open([objid:item.newfaas.rpid])
     	}

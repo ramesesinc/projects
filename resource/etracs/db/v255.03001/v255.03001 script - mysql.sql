@@ -16,7 +16,6 @@ CREATE TABLE `resection` (
   `barangay_objid` varchar(50) NOT NULL,
   `pintype` varchar(3) NOT NULL,
   `section` varchar(3) NOT NULL,
-  `newsection` varchar(3) NOT NULL,
   `originlgu_objid` varchar(50) NOT NULL,
   `memoranda` varchar(255) DEFAULT NULL,
   `taskid` varchar(50) DEFAULT NULL,

@@ -8,7 +8,6 @@
 		<field name="barangay_objid" required="true" />
 		<field name="pintype" required="true" />
 		<field name="section" required="true"  caption="Section" searchable="true" indexed="true" />
-		<field name="newsection" required="true"  caption="New Section" searchable="true" indexed="true" />
 		<field name="originlgu_objid" required="true" />
 		<field name="memoranda" required="true" />
 		<field name="taskid"  />

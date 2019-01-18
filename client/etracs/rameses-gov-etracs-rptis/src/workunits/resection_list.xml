@@ -1,7 +1,7 @@
 <workunit schemaName="resection" 
           windowTitle="Resections"
           allowDelete="#{entity.state=='DRAFT'}" 
-          cols="state,lgu.name,barangay.name,pintype,section,newsection" 
+          cols="state,lgu.name,barangay.name,pintype,section" 
           hiddenCols="taskid,taskaction,assignee.objid"
           orderBy="state,lgu.name,barangay.name,section" >
     <invokers>

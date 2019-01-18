@@ -31,7 +31,6 @@ public class ResectionInitPage extends javax.swing.JPanel {
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xTextField1 = new com.rameses.rcp.control.XTextField();
-        xTextField2 = new com.rameses.rcp.control.XTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
 
@@ -66,11 +65,6 @@ public class ResectionInitPage extends javax.swing.JPanel {
         xTextField1.setName("entity.section"); // NOI18N
         xTextField1.setRequired(true);
         xFormPanel1.add(xTextField1);
-
-        xTextField2.setCaption("New Section");
-        xTextField2.setName("entity.newsection"); // NOI18N
-        xTextField2.setRequired(true);
-        xFormPanel1.add(xTextField2);
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 100));
 
@@ -110,6 +104,5 @@ public class ResectionInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
-    private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables
 }

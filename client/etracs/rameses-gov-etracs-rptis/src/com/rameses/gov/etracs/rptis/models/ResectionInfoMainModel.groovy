@@ -96,14 +96,13 @@ class ResectionInfoMainController
     }
     
     void buildPin(item) {
-        item.newfaas.section = entity.newsection 
-        
         def pins = [];
         pins << entity.barangay.pin;
-        pins << entity.newsection;
         if ('new' == entity.pintype) {
+            pins << (item.newfaas.section + '').padLeft(3, '0');
             pins << (item.newfaas.parcel + '').padLeft(2, '0');
         } else {
+            pins << (item.newfaas.section + '').padLeft(2, '0');
             pins << (item.newfaas.parcel + '').padLeft(3, '0');
         }
         if (item.newfaas.suffix && item.newfaas.suffix != 0) {

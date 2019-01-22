@@ -81,11 +81,12 @@ public class BasicBillingCashReceiptModel extends com.rameses.enterprise.treasur
                 binding.refresh();
                 return null;
             }
-            opener = Inv.lookupOpener(lookupName, [onselect: h ]);
+            def opener = Inv.lookupOpener(lookupName, [onselect: h ]);
             Modal.show( opener );
         }
-        catch(ex) {
-            MsgBox.alert(lookpName + " not found");
+        catch(ex) { 
+            ex.printStackTrace(); 
+            MsgBox.alert(lookupName + " not found");
         }
     }
     

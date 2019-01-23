@@ -38,8 +38,9 @@
                 return InvokerUtil.lookupOpeners( "creditmemo:handler" )*.properties.name;
             }
             
-            def getLookupAccount() {
-                return Inv.lookupOpener( "creditmemoaccount:lookup", ["query.typeid":entity.objid] );
+            def getLookupAccount() { 
+                def m = ["query.typeid": entity.objid, "query.fund": entity.fund ]; 
+                return Inv.lookupOpener( "creditmemoaccount:lookup", m );
             }
 
             def removeAccount() {

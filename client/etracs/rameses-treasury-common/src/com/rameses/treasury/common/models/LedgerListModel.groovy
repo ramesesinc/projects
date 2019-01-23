@@ -92,7 +92,7 @@ public class LedgerListModel extends CrudListModel {
     void viewPayment() {
         if(!selectedPaymentItem) throw new Exception("Please select a payment item");
         def m = [entity: [objid: selectedPaymentItem.parent.refid ] ];
-        def str = selectedPaymentItem.parent?.reftype + "info:open";
+        def str = selectedPaymentItem.parent?.reftype + ":open";
         def op = Inv.lookupOpener( str, m );
         Modal.show(op);
     }

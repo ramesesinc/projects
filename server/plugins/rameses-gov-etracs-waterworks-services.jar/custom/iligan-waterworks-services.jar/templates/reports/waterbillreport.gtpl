@@ -11,7 +11,7 @@ ${o.initprinting}
                          ${o.volume}
                          ${o.amount}
                          ${o.billmonth}
-               Credits : ${o.credits}
+
                          ${o.discdate}
                          ${o.amtwithdisc}
              Other Fees: ${o.otherfees}

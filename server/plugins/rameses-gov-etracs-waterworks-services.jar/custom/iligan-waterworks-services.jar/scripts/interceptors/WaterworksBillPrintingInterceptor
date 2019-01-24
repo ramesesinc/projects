@@ -5,9 +5,6 @@ class WaterworksBillPrintingInterceptor{
 	@Service("TemplateService")
 	def template;
 
-    @Service('DateService') 
-    def dateSvc;    
-
     @DataContext('vw_waterworks_billing') 
     def bill_db;
 
@@ -37,9 +34,9 @@ class WaterworksBillPrintingInterceptor{
             
             resolveData( bill ); 
 
-            def res = template.get( "reports/waterbillreport", [ o: bill ]);
-            if ( res ) result << res.toString(); 
-        } 
+            def res = template.get( "reports/waterbillreport", [ o: bill ]).toString();
+            result << res; 
+        }
 	} 
 
 
@@ -54,54 +51,29 @@ class WaterworksBillPrintingInterceptor{
         p.seqno = p.indexno.toString().padLeft(4,'0'); 
         p.blockseqno = p.zonecode.toString() +"-"+ p.seqno.toString(); 
 
-        boolean has_discount = false; 
-        def rundate = dateSvc.getBasicServerDate(); 
-        if ( isDateBetween( p.readingdate, p.discdate, rundate )) {
-            has_discount = true; 
-        }
-
         p.billmonth = (p.toperiod instanceof Date ? MMM_YYYY.format(p.toperiod) : null) ;
         p.discdate = (p.discdate instanceof Date ? MMDDYYYY.format(p.discdate) : null) ;
         p.readingdate = (p.readingdate instanceof Date ? MMDDYYYY.format(p.readingdate) : null) ;
         p.prevreadingdate = (p.prevreadingdate instanceof Date ? MMDDYYYY.format(p.prevreadingdate) : null) ;
         p.duedate = (p.duedate instanceof Date ? MMDDYYYY.format(p.duedate) : null) ;
 
-        if ( p.arrears > 0 && p.credits > 0 ) {
-            def nval = p.arrears - p.credits; 
-            if ( nval > 0 ) {
-                p.arrears = nval; 
-                p.credits = 0.0; 
-            } else if ( nval < 0 ) {
-                p.arrears = 0.0; 
-                p.credits = nval * -1.0; 
-            } else {
-                p.arrears = 0.0; 
-                p.credits = 0.0; 
-            }
-        }
-        
         def totals = [ amount: p.amount, arrears: p.arrears, surcharge: p.surcharge, interest: p.interest, discount: 0.0 ];  
         totals.discount = 0.0; 
         totals.credits = p.credits; 
         totals.otherfees = p.otherfees; 
-        totals.totalbill = (totals.amount + totals.otherfees + totals.arrears) - totals.credits; 
+        totals.totalbill = totals.amount + totals.otherfees + totals.arrears; 
         totals.amtwithsurcharge = totals.amount + totals.surcharge; 
 
         if ((totals.arrears + totals.surcharge + totals.interest) > 0) {
             p.discdate = null; 
             totals.amtwithdisc = null; 
-        } 
-        else if ( has_discount ) {
-            totals.discount = roundNearest10((totals.amount * 0.05)); 
+        } else {
+            totals.discount = round((totals.amount * 0.05)); 
             totals.amtwithdisc = totals.amount - totals.discount; 
         }
-        else {
-            p.discdate = null; 
-            totals.amtwithdisc = null; 
-        } 
 
-        def amt1 = (totals.amount + totals.otherfees + totals.arrears); 
-        totals.grandtotal = (amt1 + totals.surcharge + totals.interest) - totals.credits; 
+        def amt1 = (totals.totalbill + totals.surcharge + totals.interest); 
+        totals.grandtotal = amt1 - totals.credits - totals.discount; 
 
         p.acctname = format(p.acctname, 46, 0); 
         p.addresstext = format(p.addresstext, 46, 0);
@@ -122,7 +94,6 @@ class WaterworksBillPrintingInterceptor{
         p.arrears = formatNumber(totals.arrears, 14, 2, '#,##0.00');
         p.totalbill = formatNumber(totals.totalbill, 14, 2, '#,##0.00'); 
         p.surcharge = formatNumber(totals.surcharge, 14, 2, '#,##0.00'); 
-        p.credits = formatNumber(totals.credits, 14, 2, '#,##0.00'); 
         p.duedate = format(p.duedate, 14, 2); 
         p.amtwithsurcharge = formatNumber(totals.amtwithsurcharge, 14, 2, '#,##0.00'); 
         p.grandtotal = formatNumber(totals.grandtotal, 14, 2, '#,##0.00'); 
@@ -176,20 +147,5 @@ class WaterworksBillPrintingInterceptor{
     private Number round( Number value ) {
         if ( value == null ) return value; 
         return new BigDecimal( DEC_FORMAT.format(value) ); 
-    }
-    private Number roundNearest10( Number value ) {
-        if ( value == null ) return value; 
-
-        def bd = new java.math.BigDecimal(value.toString()); 
-        return bd.setScale(1, java.math.RoundingMode.HALF_UP);
-    }    
-
-    private boolean isDateBetween( startdate, enddate, rundate ) { 
-        if ( startdate == null ) startdate = enddate; 
-        if ( enddate == null ) enddate = startdate; 
-        if (!(startdate && enddate)) return false; 
-        boolean b1 = ( rundate.equals( startdate) || rundate.after( startdate));
-        boolean b2 = ( rundate.equals( enddate) || rundate.before( enddate)); 
-        return (b1 && b2); 
     }
 }

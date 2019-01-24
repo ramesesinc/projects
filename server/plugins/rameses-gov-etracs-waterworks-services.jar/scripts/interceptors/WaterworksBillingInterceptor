@@ -59,9 +59,8 @@ class WaterworksBillingInterceptor {
 		} 
 		arr << "amount - amtpaid > 0"; 
 
-		def select = "year,month,volume,amount:{amount-amtpaid},refid:{objid},reftype:{'waterworks_consumption'},duedate,discdate"; 
+		def select = "year,month,volume,amount:{amount-amtpaid},refid:{objid},reftype:{'waterworks_consumption'},duedate,discdate,fromdate:{fromperiod},todate:{toperiod}"; 
 		def conList = wcEm.find([acctid: bill.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
-		
 		def list = evt.result;
 		list.addAll( conList );
 
@@ -81,6 +80,13 @@ class WaterworksBillingInterceptor {
 		evt.result.addAll( conList );
 	}
 
+ 	@After(pattern="BillingInfoHandler.beforeExecute",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
+	public void beforeExecute(def evt) { 
+		def p = evt.args[0]; 
+		def cre = p.params.billitems.find{( it.reftype == 'waterworks_credit' )} 
+		def con = p.params.billitems.find{( it.reftype == 'waterworks_consumption' )} 
+		if ( cre && con ) throw new Exception('Please have the ledger fix first. Arrears and Credits must not appear at the same time.'); 
+	} 
 
 	@After(pattern="FactBuilderService.getFacts",  eval="#{ args[0].rulename == 'waterworksbilling' }")
 	public void buildFactsForBilling(def evt) {
@@ -100,7 +106,7 @@ class WaterworksBillingInterceptor {
 
 		factBuilder.billItemProvider.createBillItemFact = { o-> 
 			if( o.reftype == 'waterworks_consumption' ) {
-				return  new WaterBillItem(o);
+				return new WaterBillItem(o);
 			}
 			else if( o.reftype == 'waterworks_credit' ) {
 				return new CreditBillItem( o );
@@ -115,7 +121,6 @@ class WaterworksBillingInterceptor {
 				factBuilder.facts << new WaterworksAttribute(name:it.name);
 			}
 		}
-
 	}
 
 	/*******************************************
@@ -135,19 +140,31 @@ class WaterworksBillingInterceptor {
 		res.acctid = info.objid;
 	} 
 
+	@After( pattern="BillingInfoHandler.formatCreditPaymentInfo", eval="#{  args[0].txntype?.contains('waterworks')  }")
+	public void formatCreditPaymentInfo(def evt ) {
+		def res = evt.result;
+		res.refno = '11111';
+		res.refdate = '2019-01-24';
+		res.reftype = 'creditpayment';
+		res.voided = 0;
+	} 
+
+
 	/***********************************************************
     * THIS IS BOTH USED BY CASH RECEIPT AND CAPTURE PAYMENT
 	************************************************************/
 	@After( pattern="PaymentPostingHandler.getPaymentInfo", eval="#{  args[0].txntype.toString().contains('waterworks')  }")
-	public void loadPaymentInfo( evt ) {
-		def bill = evt.args[0];
-		def result = evt.result;
-		result.parentid =  bill.acctid;
-		result.rootid =  bill.acctid;
-		result.items = bill.billitems;
-		result._schemaname = 'waterworks_payment';
-		result.creditschemaname = 'waterworks_credit';
-		result.parentschemaname = "waterworks_account";
+	public void loadPaymentInfo( evt ) { 
+		def bill = evt.args[0]; 
+		def result = evt.result; 
+		result.objid = 'PMT'+ new java.rmi.server.UID().toString(); 
+		result.parentid = bill.acctid; 
+		result.rootid = bill.acctid; 
+		result.items = bill.billitems; 
+		result.items.each{ it.acctid = bill.acctid } 
+		result._schemaname = 'waterworks_payment'; 
+		result.creditschemaname = 'waterworks_credit'; 
+		result.parentschemaname = "waterworks_account"; 
 	} 
 
 	@After( pattern="PaymentPostingHandler.getVoidInfo", eval="#{ args[0].txntype.toString().contains('waterworks') }")

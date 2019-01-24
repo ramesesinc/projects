@@ -30,11 +30,11 @@ class WaterworksBatchBillingInterceptor {
 	@DataContext("waterworks_billing")
 	def wbillEm;
 
-	@DataContext("vw_waterworks_billing_schedule")
-	def wschedEm;
-
 	@DataContext("waterworks_meter")
 	def meterEm;
+
+	@Service("CreditPaymentService")
+	def crPmtSvc;
 
 	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'waterworks_batch_billing' }")
 	public void beforeCreate( evt ) { 
@@ -178,6 +178,19 @@ class WaterworksBatchBillingInterceptor {
 			batchEm.find([ objid: batchid ]).update([ state: 'COMPLETED' ]); 
 			wcEm.find([ batchid: batchid ]).update([ state: 'POSTED' ]);  
 			zoneEm.find([ objid: bb.zoneid ]).update([ batchid: batchid ]); 
+
+			wcEm.getBatchConsumption([ batchid: batchid ]).each{ wc-> 
+				meterEm.find([ objid: wc.meterid.toString() ]).update([ 
+					lastreading: (wc.reading ? wc.reading : 0), 
+					lastreadingdate: (wc.readingdate ? wc.readingdate : '{NULL}') 
+				]); 
+			} 
+
+			wbillEm.find([ batchid: batchid ]).select('acctid').where('credits > 0').list().each{ b-> 
+				def m = [rulename:'waterworksbilling', txntype:'waterworks']; 
+				m.params = [objid: b.acctid];
+				crPmtSvc.post( m ); 
+			}	
 		} 
 	} 
 } 

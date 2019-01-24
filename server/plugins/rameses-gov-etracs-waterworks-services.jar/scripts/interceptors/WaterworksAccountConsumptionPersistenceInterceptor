@@ -8,6 +8,12 @@ class WaterworksAccountConsumptionPersistenceInterceptor{
 	@DataContext("waterworks_consumption")
 	def wcEm; 
 
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_consumption'}")
+	public void beforeCreate( evt ) { 
+		def param = evt.args[0]; 
+		param.hold = (param.hold ? param.hold : 0); 
+	} 
+
 	@After(pattern="PersistenceService.(create|update)", eval="#{args[0]._schemaname == 'waterworks_consumption'}")
 	public void afterCreateUpdate( evt ) {
 		def param = evt.args[0];
@@ -17,10 +23,12 @@ class WaterworksAccountConsumptionPersistenceInterceptor{
 			def filter = ''' AND c.state IN ('POSTED', 'COMPLETED') '''; 
 			def wcp = [ acctid: param.acctid, filter: filter ]; 
 			def con = wcEm.findLastConsumption( wcp ); 
-			meterEm.find([ objid: param.meterid ]).update([
-				lastreading: (con?.reading ? con.reading : 0), 
-				lastreadingdate: (con?.readingdate ? con.readingdate: '{NULL}') 
-			]); 
+			if ( con ) {
+				meterEm.find([ objid: param.meterid ]).update([
+					lastreading: (con?.reading ? con.reading : 0), 
+					lastreadingdate: (con?.readingdate ? con.readingdate: '{NULL}') 
+				]); 
+			} 
 		} 
 	} 
 
@@ -39,12 +47,14 @@ class WaterworksAccountConsumptionPersistenceInterceptor{
 		def filter = ''' AND c.state IN ('POSTED', 'COMPLETED') AND c.objid <> $P{objid} '''; 
 		def wcp = [ acctid: wc.acctid, filter: filter, objid: wc.objid ]; 
 		def con = wcEm.findLastConsumption( wcp ); 
-		def meterid = (con?.meterid ? con.meterid : wc.meterid); 
-		if ( meterid ) {
-			meterEm.find([ objid: meterid ]).update([
-				lastreading: (con?.reading ? con.reading : 0), 
-				lastreadingdate: (con?.readingdate ? con.readingdate : '{NULL}')
-			]); 
+		if ( con ) {
+			def meterid = (con?.meterid ? con.meterid : wc.meterid); 
+			if ( meterid ) {
+				meterEm.find([ objid: meterid ]).update([
+					lastreading: (con?.reading ? con.reading : 0), 
+					lastreadingdate: (con?.readingdate ? con.readingdate : '{NULL}')
+				]); 
+			} 
 		} 
 	} 
 }

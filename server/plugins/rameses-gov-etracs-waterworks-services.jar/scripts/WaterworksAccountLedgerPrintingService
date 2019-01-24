@@ -3,22 +3,22 @@ import com.rameses.annotations.*;
 class WaterworksAccountLedgerPrintingService {
 
     @DataContext('waterworks_account') 
-    def acct_db;
+    def acct_db; 
 
 	@DataContext('waterworks_payment_item') 
-	def wpayi_db;
+	def wpayi_db; 
 
 	@DataContext('vw_waterworks_consumption') 
-	def vw_con_db;
+	def vw_con_db; 
 
-	@Service("TemplateService")
-	def template;
+	@Service("TemplateService") 
+	def template; 
 
 	@Service('ReportParameterService') 
-	def paramSvc;	
+	def paramSvc; 
 
     @Service('DateService') 
-    def dateSvc;
+    def dateSvc; 
 
 	@Env 
 	def env; 
@@ -101,22 +101,29 @@ class WaterworksAccountLedgerPrintingService {
                 a.amount = a.amount - discamt; 
             }
 
-            if ( balance < 0 ) { 
-                prevcredits = balance * -1.0; 
-                balance = 0.0; 
+            a.debit = a.amount + a.bill.surcharge; 
+            a.credit = a.amtpaid; 
+            if ( a.amtpaid > 0 ) {
+                a.credit += a.bill.credits; 
+            }
+
+            def newcredits = prevcredits; 
+            a.balance = a.debit - a.credit; 
+            if ( a.balance < 0 ) {
+                newcredits += (a.balance * -1.0); 
+                a.balance = (newcredits * -1.0); 
+            } 
+            else if ( a.balance == 0 ) {
+                a.balance = (newcredits > 0 ? newcredits * -1.0 : 0.0);
+            }
+            else { 
+                a.balance += balance; 
+                a.balance -= newcredits; 
+                newcredits = (a.balance < 0 ? a.balance * -1.0 : 0.0); 
             } 
 
-            def newcredits = 0.0; 
-            a.debit = a.amount - prevcredits;
-            if ( a.debit <= 0 ) { 
-                newcredits = a.debit * -1.0; 
-                a.debit = 0.0;
-            } 
-            prevcredits = 0.0; 
-
-            a.credit = a.amtpaid + a.bill.credits;    		
-    		a.balance = (balance + a.debit) - a.credit - newcredits; 
-    		balance = a.balance; 
+            prevcredits = newcredits; 
+            balance = (a.balance > 0 ? a.balance : 0.0); 
 
     		d.append(format(readingdate, 9, 0)).append(" "); 
     		d.append(format(billmonth, 6, 0)).append(" "); 

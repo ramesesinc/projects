@@ -14,18 +14,18 @@ import com.rameses.osiris3.common.*;
 *    account 
 *    amount
 ****/
-class AddExcessBillItem extends AddBillItem {
+class AddCreditBillItem extends AddBillItem {
 
 	public void execute(def params, def drools) {
 		def amt = params.amount.decimalValue;
 
 		if( !params.account || params.account.key == "null" ) 
-			throw new Exception("Account is required");
+			throw new Exception("Account is required in AddCreditBillItem");
+
 
 		def billitem = new CreditBillItem(amount: NumberUtil.round( amt), txntype: 'credit');
-		billitem.remarks = "EXCESS PAYMENT";
 		def acct = params.account;
-		if(  acct ) {
+		if ( acct ) {
 			setAccountFact( billitem, acct.key );
 		}
 		addToFacts( billitem );

@@ -20,7 +20,6 @@ class PaymentPostingService {
 
 	@ProxyMethod 
 	public void post( def pmt ) {
-
 		//save first the xxx_payment. 
 		def emMap = [:];
 		def emLookup = { name ->
@@ -33,26 +32,25 @@ class PaymentPostingService {
 		def postitems = [];
 		postitems.addAll( pmt.items ); 
 
-		//this is for overpaymen
-		if( pmt.credits ) postitems.addAll( pmt.credits );
-
+		// this is for overpayment 
+		if ( pmt.credits ) postitems.addAll( pmt.credits ); 
 		if ( pmt.creditpayments ) postitems.addAll( pmt.creditpayments ); 
 
-		//save or update the reference first
+		// save or update the reference first 
 		postitems.each {
 			if( it.txntype== "credit" ) {
 				def reftype = it.reftype;
-				if(!reftype) reftype = pmt.creditschemaname
-				if(!reftype )
-					throw new Exception('please specify a creditschemaname or specify a reftype to referenece credit table'); 
+				if ( !reftype ) reftype = pmt.creditschemaname; 
+				if ( !reftype ) throw new Exception('reftype is required in PaymentPostingService.post for credit item'); 
 
 				//if there is overpayment or credit items, create a new xxx_credit item
 				def p = [:];
 				p.putAll( it );
 				p.parentid = pmt.objid;
+				p.refid = pmt.objid;
 				p.refno = pmt.refno;
 				p.refdate = pmt.refdate;
-				p.reftype = (pmt.reftype == null) ? "cashreceipt" : pmt.reftype;
+				p.reftype = (pmt.reftype == null ? "cashreceipt" : pmt.reftype); 
 
 				def crEm = emLookup( reftype );
 				crEm.create( p );
@@ -120,13 +118,15 @@ class PaymentPostingService {
 		//save or update the reference first
 		postitems.each {
 			if( it.txntype== "credit" ) {
-				if( !it.reftype ) throw new Exception('reftype is required in post items'); 
+				def reftype = it.reftype; 
+				if ( !reftype ) reftype = pmt.creditschemaname; 
+				if ( !reftype ) throw new Exception('reftype is required in PaymentPostingService.reversePayment for credit item'); 
 
-				def crEm = emLookup( it.reftype );
-				if ( crEm.find([ objid: it.refid ]).select('amtpaid').first()?.amtpaid > 0 ) 
+				def crEm = emLookup( reftype );
+				if ( crEm.find([ objid: it.objid ]).select('amtpaid').first()?.amtpaid > 0 ) 
 					throw new Exception('Credit amount has already been used'); 
 
-				crEm.find([ objid: it.refid ]).delete(); 
+				crEm.find([ objid: it.objid ]).delete(); 
 			}
 			else if( it.txntype == "creditpayment") {
 				if( !it.reftype ) throw new Exception('reftype is required in post items'); 

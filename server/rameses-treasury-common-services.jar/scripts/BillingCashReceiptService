@@ -42,7 +42,7 @@ class BillingCashReceiptService {
 		def ruleParam = [ rulename: pp.rulename ]; 
 		ruleParam.putAll( pp.options ); 
 		ruleParam.params = m; 
-
+		handler.beforeExecute( ruleParam ); 
 		def ruleRes = ruleSvc.execute( ruleParam ); 
 		//if ( !ruleRes.items ) throw new Exception('There must be a result items in your BillingRuleService.execute'); 
 

@@ -53,25 +53,6 @@ public class BillingCashReceiptInterceptor {
 		service.post( payinfo );
 	} 
 
-	@After(pattern="CreditPaymentService.post", eval="#{ args[0]._postpayment == true }",  index=50)
-	public void postCreditPayment( evt ) {
-		def e = evt.args[0]; 
-		def result = evt.result;
-		def pp = [ txntype: e.txntype ]; 
-		def payinfo = buildPostPaymentInfo( pp, e );
-		payinfo.txntype = pp.txntype;
-		payinfo.reftype = 'creditpayment';
-		payinfo.refdate = result.controldate;
-		payinfo.refno = result.controlno;
-		payinfo.refid = result.objid;
-		payinfo.amount = e.amount;
-		payinfo.txndate = result.txndate; 
-		payinfo.txnmode = 'ONLINE';	
-		//this field is provided from creditpayment service post parameter
-		payinfo.creditpayments = e.creditpayments;
-		service.post( payinfo );
-	}
-
 	private def buildPostPaymentInfo( pp, bill ) {
 		if ( !pp.txntype ) throw new Exception('txntype parameter is required');
 
@@ -109,6 +90,7 @@ public class BillingCashReceiptInterceptor {
 		pmt.txntype = rct.txntype; 
 		pmt.collectiontype = rct.collectiontype;
 		pmt._schemaname = vi._schemaname;
+		pmt.creditschemaname = vi.creditschemaname; 
 		pmt._workflow = handler.getVoidWorkflow( pmt );  
 		service.reversePayment( pmt );
 	}

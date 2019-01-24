@@ -29,12 +29,21 @@ class BillingInfoHandler {
 	}
 
 	@ProxyMethod 
+	public void beforeExecute( params ) {
+	} 
+
+	@ProxyMethod 
 	public void validateReceiptInfo( params ) {
 		//Override this and throw an error if it does not pass validation 
 	} 
 
 	@ProxyMethod 
 	public def formatReceiptInfo( params ) {
+		return [:]; 
+	}	
+
+	@ProxyMethod 
+	public def formatCreditPaymentInfo( params ) {
 		return [:]; 
 	}	
 

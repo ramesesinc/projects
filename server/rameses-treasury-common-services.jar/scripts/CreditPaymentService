@@ -12,14 +12,11 @@ import treasury.facts.*;
 
 class CreditPaymentService {
 
-	@Service("BillingInfoHandler")
-	def handler;
+	@Service("BillingProcessService")
+	def billSvc;
 
-	@Service("BillingRuleService")
-	def ruleSvc;
-
-	@DataContext("creditpayment")
-	def creditpaymentEm;
+	@Service("PaymentPostingService")
+	def paySvc;
 
 	@Service("SequenceService")
 	def seqSvc;
@@ -27,71 +24,43 @@ class CreditPaymentService {
 	@Service("DateService")
 	def dateSvc;
 
+	@Service("PaymentPostingHandler")
+	def payPostHandler;
+
 	@Env
 	def env;
 
+	@DataContext(dynamic=true)
+	def em;
+
 	@ProxyMethod
-	public def init( def pp ) {
-		if(!pp.rulename) throw new Exception("rulename is required in parameter of CreditPaymentService.init")
-		if(!pp.txntype) throw new Exception("txntype is required in parameter of CreditPaymentService.init")
+	public def post( def pp ) {
+		if(!pp.rulename) throw new Exception("rulename is required in parameter of CreditPaymentService.post")
+		if(!pp.txntype) throw new Exception("txntype is required in parameter of CreditPaymentService.post")
 
-		if ( pp.options == null ) pp.options = [:]; 
-
-		pp.options.request_action = "creditpayment";
-
-		pp.options.include_items = true; 
-		pp.headerinfo = handler.getHeaderInfo( pp ); 
-		pp.billitems = handler.getBillItems( pp ); 
-
-		def citems = handler.getCreditItems( pp ); 
-		if ( !citems ) throw new Exception('There are no credit items found'); 
-
-		citems.each{ it.txntype = 'creditpayment' } 
+		def acctid = 'WA-e314856fb3d51f8f2f0191a928ab8438'; 
+		def wcdb = em.lookup('waterworks_credit'); 
+		def amount = wcdb.find([ acctid: acctid ]).select('amount:{SUM(amount)}').where('amount-amtpaid > 0').val(); 
+		wcdb.find([ acctid: acctid ]).where('amtpaid=0').update([ amtpaid: '{amount}' ]); 
+		
+		pp.options = [include_credit: false, include_items: true];
+		pp.params = [objid: acctid, amtpaid: wc.amount, creditschemaname: 'waterworks_credit' ];
+		def bill = billSvc.process( pp ); 
 
 		def m = [:]; 
-		m.putAll( pp.params ); 
-		m.putAll( pp.headerinfo ); 
-		m.billitems = pp.billitems; 
+		m.putAll( pp );
+		m.putAll( bill ); 
 
-		def ruleParam = [ rulename: pp.rulename ]; 
-		ruleParam.putAll( pp.options ); 
-		ruleParam.params = m; 
+		def payinfo = payPostHandler.getPaymentInfo( m ); 
+		if ( !payinfo._schemaname ) throw new Exception("payinfo._schemaname is required");
+		if ( !payinfo.items ) throw new Exception('payinfo.items is required'); 
 
-		def ruleRes = ruleSvc.execute( ruleParam ); 
-
-		m = [:];
-		m.putAll( pp.headerinfo );  
-		m.putAll( ruleRes );  
-		m.rulename = pp.rulename; 
-		m.txntype = pp.txntype; 
-		
-		def rct = handler.formatReceiptInfo( m ); 
-		rct.creditpayments = citems;
-		rct.billitems = m.billitems;
-		rct.items = m.items; 
-		rct.amount = m.items.sum{( it.amount ? it.amount : 0.0 )} 
-		rct._postpayment = true; //we should mark this to indicate posting will be automatically handled
-
-		rct.objid = 'CP' + new java.rmi.server.UID(); 
-		rct.org = [ objid:env.ORGID, name:env.ORGNAME ];
-		rct.user = [ objid: env.USERID, name:env.USER ];
-		rct.txntype = pp.txntype;
-		rct.txnmode = 'ONLINE';
-		rct.state = 'OPEN';
-		return rct; 
+		payinfo.refno = '11111'; 
+		payinfo.refdate = '2019-01-24'; 
+		payinfo.txnmode = 'ONLINE';
+		payinfo.reftype = 'creditpayment';
+		payinfo.amount = bill.amount; 
+		paySvc.post( payinfo ); 
+		return payinfo; 
 	} 
-
-	@ProxyMethod
-	public def post( def rct ) { 
-		if ( !rct.controlno ) {
-			def year = dateSvc.getServerYear();
-			rct.controlno = 'CRP'+ year.toString() + seqSvc.getNextFormattedSeries('CreditPayment'+ year.toString());
-		}
-
-		if ( !rct.controldate ) {
-			rct.controldate = dateSvc.getBasicServerDate();  
-		}
-		rct.txndate = dateSvc.getServerDate();
-		return creditpaymentEm.create( rct );
-	}
 }

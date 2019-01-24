@@ -10,54 +10,43 @@ import com.rameses.functions.*;
 class MonthBillItem extends BillItem {
 
 	def monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-	int year;
-	int month;
-	
-	
-	//this is set assuming you are not starting using the whole month
+
 	Date fromdate;
 	Date todate;
 
 	public MonthBillItem(def o ) {
 		super(o);
-		if(o.year) year = o.year;
-		if(o.month ) month = o.month;
-		if(o.fromdate) fromdate = o.fromdate;
+		if(o.fromdate ) fromdate = o.fromdate;
 		if(o.todate) todate = o.todate;
 	}
 	
-	public MonthBillItem() {}
+	public MonthBillItem() {} 
 
-	public int getPaypriority() {
-	   return (year*12)+month;
-	}
+	public int getPaypriority() { 
+	   return (year*12)+month; 
+	} 
 
-	public def toMap() {
-		def m = super.toMap();
-		m.year = year;
-		m.month = month;
-		m.monthname = monthname;
-		m.sortorder = getSortorder();
-		m.fromdate = fromdate;
-		m.todate = todate;
+	public def toMap() { 
+		def m = super.toMap(); 
+		m.monthname = monthname; 
+		m.sortorder = getSortorder(); 
+		m.fromdate = fromdate; 
+		m.todate = todate; 
 
-		if(!m.fromdate || !m.todate) {
-			def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
-			m.fromdate = df.parse(year+"-"+month+"-01");
+		def df = new java.text.SimpleDateFormat("yyyy-MM-dd"); 
+		if ( !m.fromdate ) { 
+			m.fromdate = df.parse(year+"-"+month+"-01"); 
+		} 
+		if ( !m.todate ) { 
 			//if fromdate not provided, by default use beginning of month. 
-			//if todate not provided, by default use end of month.
-			def tmpDt = DateFunc.getMonthAdd(m.fromdate, 1);
-			m.todate = DateFunc.getDayAdd(tmpDt, -1);
-		}
+			//if todate not provided, by default use end of month. 
+			def tmpDt = DateFunc.getMonthAdd(m.fromdate, 1); 
+			m.todate = DateFunc.getDayAdd(tmpDt, -1); 
+		} 
 
-		if(fromdate) m.fromday = getFromday();
-		if(todate) m.today = getToday();
-
+		m.fromday = getFromday();
+		m.today = getToday();
 		return m;
-	}
-
-	public int getYearMonth() {
-		return (year*12)+month;
 	}
 
 
@@ -100,6 +89,20 @@ class MonthBillItem extends BillItem {
     	return DateFunc.daysDiff( fromdate, todate ) + 1;
     }
 
-    
-
+	public int getFromyear() {
+		if ( !fromdate ) return 0; 
+		return new com.rameses.util.DateBean( fromdate ).getYear();
+	}    
+	public int getFrommonth() {
+		if ( !fromdate ) return 0; 
+		return new com.rameses.util.DateBean( fromdate ).getMonth();
+	}   	
+	public int getToyear() {
+		if ( !todate ) return 0; 
+		return new com.rameses.util.DateBean( todate ).getYear();
+	}    
+	public int getTomonth() {
+		if ( !todate ) return 0; 
+		return new com.rameses.util.DateBean( todate ).getMonth();
+	}    
 }

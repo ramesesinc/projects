@@ -1,37 +1,105 @@
+[MySQL]
+drop view if exists vw_cashreceipt_itemaccount_collectiontype
+; 
+CREATE VIEW vw_cashreceipt_itemaccount_collectiontype as 
+select  
+  ia.objid AS objid, 
+  ia.state AS state, 
+  ia.code AS code, 
+  ia.title AS title, 
+  ia.description AS description, 
+  ia.type AS type, 
+  ia.fund_objid AS fund_objid, 
+  ia.fund_code AS fund_code, 
+  ia.fund_title AS fund_title, 
+  ca.defaultvalue AS defaultvalue, 
+  (case when ca.valuetype is null then 'ANY' else ca.valuetype end) AS valuetype, 
+  (case when ca.sortorder is null then 0 else ca.sortorder end) AS sortorder, 
+  NULL AS orgid, 
+  ca.collectiontypeid AS collectiontypeid, 
+  0 AS hasorg, ia.hidefromlookup 
+from collectiontype ct 
+  inner join collectiontype_account ca on ca.collectiontypeid = ct.objid 
+  inner join itemaccount ia on ia.objid = ca.account_objid 
+  left join collectiontype_org o on o.collectiontypeid = ca.objid  
+where o.objid is null 
+  and ia.state = 'ACTIVE' 
+  and ia.type in ('REVENUE','NONREVENUE','PAYABLE') 
+union all 
+select 
+  ia.objid AS objid, 
+  ia.state AS state, 
+  ia.code AS code, 
+  ia.title AS title, 
+  ia.description AS description, 
+  ia.type AS type, 
+  ia.fund_objid AS fund_objid, 
+  ia.fund_code AS fund_code, 
+  ia.fund_title AS fund_title, 
+  ca.defaultvalue AS defaultvalue, 
+  (case when ca.valuetype is null then 'ANY' else ca.valuetype end) AS valuetype, 
+  (case when ca.sortorder is null then 0 else ca.sortorder end) AS sortorder, 
+  o.org_objid AS orgid, 
+  ca.collectiontypeid AS collectiontypeid, 
+  1 AS hasorg, ia.hidefromlookup   
+from collectiontype ct 
+  inner join collectiontype_account ca on ca.collectiontypeid = ct.objid 
+  inner join collectiontype_org o on o.collectiontypeid = ct.objid 
+  inner join itemaccount ia on ia.objid = ca.account_objid 
+where ia.state = 'ACTIVE' 
+  and ia.type in ('REVENUE','NONREVENUE','PAYABLE') 
+;
+ 
 
-DROP VIEW IF EXISTS vw_cashreceipt_itemaccount_collectiontype;
-CREATE VIEW vw_cashreceipt_itemaccount_collectiontype AS 
-
-SELECT 
-ia.objid,ia.state,ia.code,ia.title,ia.description,ia.type,ia.fund_objid,ia.fund_code,ia.fund_title,
-CASE WHEN ca.defaultvalue =0 THEN ia.defaultvalue ELSE ca.defaultvalue END AS defaultvalue,
-CASE WHEN ca.valuetype IS NULL THEN ia.valuetype ELSE ca.valuetype END AS valuetype, 
-CASE WHEN ca.sortorder=0 THEN ia.sortorder ELSE ca.sortorder END AS sortorder,
-null AS orgid, ca.collectiontypeid,
-ia.hidefromlookup
-FROM itemaccount ia
-INNER JOIN collectiontype_account ca ON ca.account_objid=ia.objid
-WHERE ia.parentid is NULL AND (ia.generic = 0 OR ia.generic IS NULL) AND ia.state='ACTIVE' AND ia.type IN ('REVENUE','NONREVENUE','PAYABLE')
-
-UNION 
-
-SELECT  
-ia.objid,ia.state,ia.code,ia.title,ia.description,ip.type,ia.fund_objid,ia.fund_code,ia.fund_title,ia.defaultvalue,ia.valuetype, ia.sortorder, ia.org_objid AS orgid, ca.collectiontypeid 
-,ia.hidefromlookup
-FROM itemaccount ia 
-INNER JOIN itemaccount ip ON ia.parentid = ip.objid
-INNER JOIN collectiontype_account ca ON ca.account_objid=ip.objid
-WHERE ip.generic = 1 AND ia.state='ACTIVE' AND ip.type IN ('REVENUE','NONREVENUE','PAYABLE')
-
-UNION 
-
-SELECT  
-ia.objid,ia.state,ia.code,ia.title,ia.description,ia.type,ia.fund_objid,ia.fund_code,ia.fund_title,
-CASE WHEN ca.defaultvalue =0 THEN ia.defaultvalue ELSE ca.defaultvalue END AS defaultvalue,
-CASE WHEN ca.valuetype IS NULL THEN ia.valuetype ELSE ca.valuetype END AS valuetype, 
-CASE WHEN ca.sortorder=0 THEN ia.sortorder ELSE ca.sortorder END AS sortorder,
-ia.org_objid AS orgid, ca.collectiontypeid,
-ia.hidefromlookup
-FROM itemaccount ia 
-INNER JOIN collectiontype_account ca ON ca.account_objid=ia.objid
-WHERE NOT(ia.org_objid IS NULL) AND ia.state='ACTIVE' AND ia.type IN ('REVENUE','NONREVENUE','PAYABLE');
+[SQLServer]
+if object_id('dbo.vw_cashreceipt_itemaccount_collectiontype', 'V') IS NOT NULL 
+  drop view dbo.vw_cashreceipt_itemaccount_collectiontype; 
+go 
+CREATE VIEW vw_cashreceipt_itemaccount_collectiontype as 
+select  
+  ia.objid AS objid, 
+  ia.state AS state, 
+  ia.code AS code, 
+  ia.title AS title, 
+  ia.description AS description, 
+  ia.type AS type, 
+  ia.fund_objid AS fund_objid, 
+  ia.fund_code AS fund_code, 
+  ia.fund_title AS fund_title, 
+  ca.defaultvalue AS defaultvalue, 
+  (case when ca.valuetype is null then 'ANY' else ca.valuetype end) AS valuetype, 
+  (case when ca.sortorder is null then 0 else ca.sortorder end) AS sortorder, 
+  NULL AS orgid, 
+  ca.collectiontypeid AS collectiontypeid, 
+  0 AS hasorg, ia.hidefromlookup 
+from collectiontype ct 
+  inner join collectiontype_account ca on ca.collectiontypeid = ct.objid 
+  inner join itemaccount ia on ia.objid = ca.account_objid 
+  left join collectiontype_org o on o.collectiontypeid = ca.objid  
+where o.objid is null 
+  and ia.state = 'ACTIVE' 
+  and ia.type in ('REVENUE','NONREVENUE','PAYABLE') 
+union all 
+select 
+  ia.objid AS objid, 
+  ia.state AS state, 
+  ia.code AS code, 
+  ia.title AS title, 
+  ia.description AS description, 
+  ia.type AS type, 
+  ia.fund_objid AS fund_objid, 
+  ia.fund_code AS fund_code, 
+  ia.fund_title AS fund_title, 
+  ca.defaultvalue AS defaultvalue, 
+  (case when ca.valuetype is null then 'ANY' else ca.valuetype end) AS valuetype, 
+  (case when ca.sortorder is null then 0 else ca.sortorder end) AS sortorder, 
+  o.org_objid AS orgid, 
+  ca.collectiontypeid AS collectiontypeid, 
+  1 AS hasorg, ia.hidefromlookup   
+from collectiontype ct 
+  inner join collectiontype_account ca on ca.collectiontypeid = ct.objid 
+  inner join collectiontype_org o on o.collectiontypeid = ct.objid 
+  inner join itemaccount ia on ia.objid = ca.account_objid 
+where ia.state = 'ACTIVE' 
+  and ia.type in ('REVENUE','NONREVENUE','PAYABLE') 
+go 

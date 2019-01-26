@@ -113,7 +113,7 @@ public class CreditListModel extends CrudListModel {
                 arr << " parent.voided = 0 ";
             } 
             m.where = [ arr.join(" AND "), p ];
-            m.orderBy = "refdate DESC";
+            m.orderBy = "parent.refdate DESC";
             return queryService.getList(m);
         },
         onOpenItem: { o,col->

@@ -124,6 +124,7 @@
             </Component>
             <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel5">
               <Properties>
+                <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
                 <Property name="captionWidth" type="int" value="180"/>
               </Properties>
               <SubComponents>
@@ -221,10 +222,18 @@
                     <Property name="required" type="boolean" value="true"/>
                   </Properties>
                 </Component>
+                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField4">
+                  <Properties>
+                    <Property name="caption" type="java.lang.String" value="Discount"/>
+                    <Property name="name" type="java.lang.String" value="entity.discount" noResource="true"/>
+                    <Property name="required" type="boolean" value="true"/>
+                  </Properties>
+                </Component>
               </SubComponents>
             </Container>
             <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
               <Properties>
+                <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
                 <Property name="captionWidth" type="int" value="150"/>
               </Properties>
               <SubComponents>

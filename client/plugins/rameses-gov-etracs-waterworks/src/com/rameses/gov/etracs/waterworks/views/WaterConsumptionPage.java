@@ -44,6 +44,7 @@ public class WaterConsumptionPage extends javax.swing.JPanel {
         xIntegerField4 = new com.rameses.rcp.control.XIntegerField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField4 = new com.rameses.rcp.control.XDecimalField();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel10 = new com.rameses.rcp.control.XLabel();
         xDateField1 = new com.rameses.rcp.control.XDateField();
@@ -71,6 +72,7 @@ public class WaterConsumptionPage extends javax.swing.JPanel {
         xButton2.setImmediate(true);
         xButton2.setText("Add Schedule");
 
+        xFormPanel5.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel5.setCaptionWidth(180);
 
         xComboBox1.setCaption("Txn Type");
@@ -127,6 +129,12 @@ public class WaterConsumptionPage extends javax.swing.JPanel {
         xDecimalField3.setRequired(true);
         xFormPanel5.add(xDecimalField3);
 
+        xDecimalField4.setCaption("Discount");
+        xDecimalField4.setName("entity.discount"); // NOI18N
+        xDecimalField4.setRequired(true);
+        xFormPanel5.add(xDecimalField4);
+
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(150);
 
         xLabel10.setCaption("Block Schedule");
@@ -266,6 +274,7 @@ public class WaterConsumptionPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDateField xDateField6;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
+    private com.rameses.rcp.control.XDecimalField xDecimalField4;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XIntegerField xIntegerField2;

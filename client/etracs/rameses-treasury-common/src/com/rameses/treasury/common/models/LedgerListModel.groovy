@@ -62,8 +62,8 @@ public class LedgerListModel extends CrudListModel {
             arr << parentkey + "= :parentid";
             p.parentid = caller.entity.objid;
         }
-        if( showOption == 0 ) arr << "amount -amtpaid > 0";
-        else if( showOption == 1 ) arr << "amount - amtpaid = 0";
+        if( showOption == 0 ) arr << "amount -amtpaid -discount > 0";
+        else if( showOption == 1 ) arr << "amount - amtpaid - discount = 0";
         if( arr ) {
             return [ arr.join(" AND "), p ];
         }

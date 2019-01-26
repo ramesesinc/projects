@@ -1,0 +1,14 @@
+<workunit extends="com/rameses/treasury/common/templates/BillingCashReceipt.xml" 
+          rulename="waterworksbilling" 
+          contextName="waterworks" payOption="year_month_payoption">
+    <invokers>
+        <!-- for selection in collection type -->
+        <invoker type="collectiontype:handler" caption="Water Payment" 
+                 name="waterworks" formtype="serial" formno="51"  index="120" />        
+        
+        <invoker type="cashreceipt:waterworks" action="start" caption="Waterworks Collection"/>
+        <invoker type="cashreceipt:barcode:51030" action="loadBarcode" caption="Cash Receipt Waterworks"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.waterworks.collection.WaterworksCollectionProxyCashReceiptModel" />
+</workunit>

@@ -19,7 +19,12 @@ class PaymentPostingService {
 	def seqSvc;
 
 	@ProxyMethod 
-	public void post( def pmt ) {
+	public void post( def pmt ) { 
+		if ( !pmt.discount ) pmt.discount = 0.0; 
+		pmt.items.each{
+			it.discount = (it.discount ? Math.abs(it.discount) : 0.0); 
+		}
+
 		//save first the xxx_payment. 
 		def emMap = [:];
 		def emLookup = { name ->
@@ -37,7 +42,8 @@ class PaymentPostingService {
 		if ( pmt.creditpayments ) postitems.addAll( pmt.creditpayments ); 
 
 		// save or update the reference first 
-		postitems.each {
+		postitems.each { 
+			it.discount = (it.discount ? Math.abs(it.discount) : 0.0); 
 			if( it.txntype== "credit" ) {
 				def reftype = it.reftype;
 				if ( !reftype ) reftype = pmt.creditschemaname; 
@@ -72,8 +78,9 @@ class PaymentPostingService {
 					gb.create( it );	
 				}
 				else {
-					//find first if it exists then save 
-					gb.find( [objid: it.refid] ).update( [amtpaid: "{amtpaid + :amt}"], [amt: it.amount] );
+					//find first if it exists then save
+					def disc = Math.abs(it.discount);
+					gb.find( [objid: it.refid] ).update( [amtpaid: "{amtpaid + :amt}", discount: "{discount + :disc}" ], [amt: it.amount - disc, disc: Math.abs(it.discount) ] );
 				}			
 			}
 		}
@@ -138,7 +145,9 @@ class PaymentPostingService {
 				if( !it.reftype ) throw new Exception('reftype is required in post items'); 
 
 				def refEm = emLookup( it.reftype  ); 
-				refEm.find([ objid: it.refid ]).update( [amtpaid: "{amtpaid - :amt}"], [amt: it.amount] );
+				if(!it.discount) it.discount = 0;
+				def disc = Math.abs(it.discount);
+				refEm.find([ objid: it.refid ]).update( [amtpaid: "{amtpaid - :amt}", discount: "{discount - :disc}"], [amt: it.amount - disc, disc: disc ] );
 			} 
 		} 
 

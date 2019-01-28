@@ -67,8 +67,7 @@ public class BillingRuleService {
 			}
 		};
 
-		//check if request action is cash receipt
-		if( request.options?.request_action == "cashreceipt" ) { 
+		if( request.request_action == "cashreceipt" ) { 
 			if ( !facts.find{( it instanceof CashReceipt )} ) {
 				facts << new CashReceipt();
 			}

@@ -1,66 +1,14 @@
 import com.rameses.annotations.*;
 
-import java.rmi.server.UID;
-import com.rameses.util.*;
-import vehicle.facts.*;
-import treasury.utils.*;
-import treasury.facts.*;
-
 /*********************************************************************************************************************************
 *  This will create and post bill
 *********************************************************************************************************************************/
 
 class CreditPaymentService {
 
-	@Service("BillingProcessService")
-	def billSvc;
-
-	@Service("PaymentPostingService")
-	def paySvc;
-
-	@Service("SequenceService")
-	def seqSvc;
-
-	@Service("DateService")
-	def dateSvc;
-
-	@Service("PaymentPostingHandler")
-	def payPostHandler;
-
-	@Env
-	def env;
-
-	@DataContext(dynamic=true)
-	def em;
-
 	@ProxyMethod
 	public def post( def pp ) {
-		if(!pp.rulename) throw new Exception("rulename is required in parameter of CreditPaymentService.post")
-		if(!pp.txntype) throw new Exception("txntype is required in parameter of CreditPaymentService.post")
-
-		def acctid = 'WA-e314856fb3d51f8f2f0191a928ab8438'; 
-		def wcdb = em.lookup('waterworks_credit'); 
-		def amount = wcdb.find([ acctid: acctid ]).select('amount:{SUM(amount)}').where('amount-amtpaid > 0').val(); 
-		wcdb.find([ acctid: acctid ]).where('amtpaid=0').update([ amtpaid: '{amount}' ]); 
-		
-		pp.options = [include_credit: false, include_items: true];
-		pp.params = [objid: acctid, amtpaid: wc.amount, creditschemaname: 'waterworks_credit' ];
-		def bill = billSvc.process( pp ); 
-
-		def m = [:]; 
-		m.putAll( pp );
-		m.putAll( bill ); 
-
-		def payinfo = payPostHandler.getPaymentInfo( m ); 
-		if ( !payinfo._schemaname ) throw new Exception("payinfo._schemaname is required");
-		if ( !payinfo.items ) throw new Exception('payinfo.items is required'); 
-
-		payinfo.refno = '11111'; 
-		payinfo.refdate = '2019-01-24'; 
-		payinfo.txnmode = 'ONLINE';
-		payinfo.reftype = 'creditpayment';
-		payinfo.amount = bill.amount; 
-		paySvc.post( payinfo ); 
-		return payinfo; 
+		//refer to WaterworksCreditPaymentService 
+		return null; 
 	} 
 }

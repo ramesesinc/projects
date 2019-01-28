@@ -67,17 +67,25 @@ class MonthBillItem extends BillItem {
 		return (getYearMonth()*1000); //+ super.getSortorder();
 	}	
 
-	public String getMonthname() {
-        return monthNames[ month - 1 ]; 
+	public String getMonthname() { 
+		def idx = month-1; 
+		if ( idx >= 0 && idx < monthNames.size() ) {
+			return monthNames[ idx ]; 
+		}
+		return null; 
     }
 
     public int getToday() {
+    	if ( !todate ) return 0;
+
 		def cal = Calendar.instance;
     	cal.setTime( todate );
     	return cal.get( Calendar.DAY_OF_MONTH );
     }
 
-    public int getFromday() {
+    public int getFromday() { 
+    	if ( !fromdate ) return 0; 
+
     	def cal = Calendar.instance;
     	cal.setTime( fromdate );
     	return cal.get( Calendar.DAY_OF_MONTH );

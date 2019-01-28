@@ -24,8 +24,10 @@
 		<field name="volume" required="true" caption="Volume"  type="integer"/>
 
 		<field name="amount" type="decimal" caption="Amount" defaultValue="0"/>
-		<field name="amtpaid" type="decimal" caption="Amount Paid" defaultValue="0"/>
-		<field name="balance" expr="amount-amtpaid" type="decimal" caption="Balance"/>
+		<field name="amtpaid" type="decimal" caption="AmtPaid" defaultValue="0"/>
+		<!--field name="credits" type="decimal" caption="Credits" defaultValue="0"/-->
+		<field name="discount" type="decimal" caption="Discount" defaultValue="0"/>
+		<field name="balance" expr="amount-amtpaid-discount" type="decimal" caption="Balance"/>
 
 		<field name="year" expr="schedule.year" caption="Year"/>
 		<!--

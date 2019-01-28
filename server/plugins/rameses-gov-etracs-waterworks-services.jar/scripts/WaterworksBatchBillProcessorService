@@ -13,8 +13,6 @@ class WaterworksBatchBillProcessorService {
 	def vw_billEm;
 
 
-	@Service("CreditPaymentService")
-	def crPmtSvc;
 
 	@Service("WaterworksComputationService")
 	def computeSvc;

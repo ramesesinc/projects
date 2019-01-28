@@ -33,7 +33,8 @@ class WaterworksBatchBillingInterceptor {
 	@DataContext("waterworks_meter")
 	def meterEm;
 
-	@Service("CreditPaymentService")
+	
+	@Service("WaterworksCreditPaymentService")
 	def crPmtSvc;
 
 	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'waterworks_batch_billing' }")
@@ -186,11 +187,20 @@ class WaterworksBatchBillingInterceptor {
 				]); 
 			} 
 
-			wbillEm.find([ batchid: batchid ]).select('acctid').where('credits > 0').list().each{ b-> 
-				def m = [rulename:'waterworksbilling', txntype:'waterworks']; 
-				m.params = [objid: b.acctid];
-				crPmtSvc.post( m ); 
-			}	
+			wbillEm.find([ batchid: batchid ]).select('acctid,consumptionid').where('credits > 0').list().each{ b-> 
+				def wcinfo = wcEm.find([ objid: b.consumptionid ]).select('objid,hold,balance').first(); 
+				if ( !wcinfo ) return; 
+				if ( wcinfo.hold.toString() != '0' ) {
+					// consumption is put onhold, do not process creditpayment 
+					return; 
+				}
+				if ( wcinfo.balance <= 0 ) { 
+					// consumption is already paid in full, do not process creditpayment 
+					return;  
+				} 
+				
+				crPmtSvc.post( [acctid: b.acctid ] ); 
+			} 
 		} 
 	} 
 } 

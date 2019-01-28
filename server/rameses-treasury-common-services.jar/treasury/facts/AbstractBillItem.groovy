@@ -40,7 +40,6 @@ public abstract class AbstractBillItem {
 
 	public AbstractBillItem() {}
 
-
 	public Account getParentaccount() {
 		if( account?.parentaccount == null )
 			return nullParentaccount;

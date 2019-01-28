@@ -97,7 +97,7 @@ class BillItem extends AbstractBillItem {
 	//call this to distribute payment and return the remainder
 	double applyPayment( double payamt ) {
 		//store original amount in principal so we can recover it later
-		principal = amount;
+		//principal = amount;
 
 		double linetotal = NumberUtil.round(total);
 		if( payamt >= linetotal ) {

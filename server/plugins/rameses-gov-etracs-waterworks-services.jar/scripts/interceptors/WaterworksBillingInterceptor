@@ -51,22 +51,29 @@ class WaterworksBillingInterceptor {
 		def bill = p.headerinfo; 
 
 		def arr = [];
-		def wp = [:];
+		def wp = [ state: 'POSTED' ];
 
 		if ( p.params.payoption ) { 
 			arr << "((year * 12)+month) <= :yearmonth";
 			wp.yearmonth = (p.params.payoption.year * 12)+p.params.payoption.month;
 		} 
-		arr << "amount - amtpaid > 0"; 
 
-		def select = "year,month,volume,amount:{amount-amtpaid},refid:{objid},reftype:{'waterworks_consumption'},duedate,discdate,fromdate:{fromperiod},todate:{toperiod}"; 
-		def conList = wcEm.find([acctid: bill.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
+		def wheres = []; 
+		wheres.addAll( arr ); 
+		wheres << " state = :state "; 
+		wheres << " (amount - amtpaid - discount) > 0 "; 
+
+		def select = "hold,year,month,volume,amount:{amount-amtpaid-discount},principal:{amount},amtpaid,refid:{objid},reftype:{'waterworks_consumption'},duedate,discdate,fromdate:{fromperiod},todate:{toperiod}"; 
+		def conList = wcEm.find([acctid: bill.acctid]).select(select).where(wheres.join(" AND "), wp).orderBy("year,month").list();
 		def list = evt.result;
 		list.addAll( conList );
 
 		//select for other fees
-		select = "year,month,item.*,amount:{amount-amtpaid},refid:{objid},reftype:{'waterworks_otherfee'}";
-		conList = wotherEm.find([acctid: bill.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
+		wheres = []; 
+		wheres.addAll( arr );  
+		wheres << "(amount - amtpaid - discount) > 0"; 
+		select = "year,month,item.*,amount:{amount-amtpaid-discount},amtpaid,principal:{amount},refid:{objid},reftype:{'waterworks_otherfee'}";
+		conList = wotherEm.find([acctid: bill.acctid]).select(select).where(wheres.join(" AND "), wp).orderBy("year,month").list();
 		list.addAll( conList );
 	}
 
@@ -83,8 +90,40 @@ class WaterworksBillingInterceptor {
  	@After(pattern="BillingInfoHandler.beforeExecute",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
 	public void beforeExecute(def evt) { 
 		def p = evt.args[0]; 
+		if ( !p.params?.billitems ) return; 
+
+		int iflag = 0; 
+		def cons = p.params.billitems.findAll{( it.reftype.toString() == 'waterworks_consumption' )} 
+		cons.each{ 
+			if ( it.hold.toString() != '0' ) iflag = 1; 
+			it._iflag = iflag; 
+		} 
+
+		def holdcons = cons.findAll{( it._iflag != 0 )} 
+		p.params.billitems.removeAll( holdcons ); 
+		cons.clear(); 
+
+		def holdcon = (holdcons ? holdcons.first() : null); 
+		holdcons.clear(); 
+
+		def con = p.params.billitems.find{( it.reftype.toString() == 'waterworks_consumption' )} 
+
+		if ( holdcon ) { 
+			if ( con ) {
+				// it contains valid consumption, just do nothing 
+			} else if ( p.params.billitems.find{( it.reftype.toString() != 'waterworks_credit' )} ) {
+				// it contains other fees, just do nothing 				
+			} else {
+				p.params.billitems.removeAll( p.params.billitems.findAll{( it.reftype.toString() == 'waterworks_credit' )} ); 
+			}
+			
+			def billperiod = java.sql.Date.valueOf(''+ holdcon.year +'-'+ holdcon.month.toString().padLeft(2,'0') +'-01');
+			def billperiodstr = new java.text.SimpleDateFormat('MMM-yyyy').format( billperiod ); 
+			def errmsg = 'Ledger for '+ billperiodstr +' has been put on hold. Please verify.'; 
+			throw new com.rameses.util.Warning( errmsg ); 
+		} 
+
 		def cre = p.params.billitems.find{( it.reftype == 'waterworks_credit' )} 
-		def con = p.params.billitems.find{( it.reftype == 'waterworks_consumption' )} 
 		if ( cre && con ) throw new Exception('Please have the ledger fix first. Arrears and Credits must not appear at the same time.'); 
 	} 
 

@@ -9,6 +9,8 @@
 		<field name="rate" /> 
 		<field name="amount" /> 
 		<field name="amtpaid" /> 
+		<field name="discount" /> 
+		<field name="balance"/>
 		<field name="batchid" /> 
 		<field name="state" /> 
 		<field name="meterid" /> 

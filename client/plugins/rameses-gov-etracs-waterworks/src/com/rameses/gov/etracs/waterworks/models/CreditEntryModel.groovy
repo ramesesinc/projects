@@ -16,8 +16,9 @@ public class CreditEntryModel extends CrudFormModel {
     
     void afterCreate() {
         entity.acctid = parent.objid;
+        entity.amount = 0;   
         entity.amtpaid = 0;
-        entity.amount = 0;        
+        entity.discount = 0;
     }
     
 }

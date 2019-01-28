@@ -108,9 +108,17 @@ public class BasicBillingCashReceiptModel extends com.rameses.enterprise.treasur
             info = billingSvc.getInfo( pp );
         }
         catch(serverErr) {
-            if(p.action == "barcode") super.doClose();
-            throw serverErr;
-        }
+            if ( p.action == "barcode" ) super.doClose(); 
+            //log the errors starting from here 
+            new RuntimeException( serverErr ).printStackTrace(); 
+            //throw the actual error
+            throw serverErr; 
+        } 
+        
+        def warning = info?._warning; 
+        if ( warning instanceof com.rameses.util.Warning ) {
+            MsgBox.warn( warning.message ); 
+        } 
         
         if( !info.billitems ) {
             if( getAllowDeposit() ) {

@@ -72,9 +72,9 @@ class CapturePaymentModel extends PageFlowController  {
     
     void loadInfo() {
         def m = [_schemaname:"vw_waterworks_consumption"];
-        m.findBy = [acctid: entity.payer.objid ];
-        m.select = "objid,year,month,amtdue:{amount-amtpaid}";
-        m.where = [" state = 'POSTED' AND (amount - amtpaid) > 0 "]; 
+        m.findBy = [ acctid: entity.payer.objid ];
+        m.select = "objid,year,month,amtdue:{amount-amtpaid-discount}";
+        m.where = [" state = 'POSTED' AND hold = 0 AND (amount-amtpaid-discount) > 0 "]; 
         m.orderBy = "year, month";
         consumptionList =  querySvc.getList( m );
         consumptionList.each { 
@@ -82,13 +82,13 @@ class CapturePaymentModel extends PageFlowController  {
         }
         
         def m1 = [_schemaname:"waterworks_otherfee"];
-        m1.findBy = [acctid: entity.payer.objid ];
-        m.select = "objid,year,month,item.*,amtdue:{amount-amtpaid}";
-        m1.where = ["amount - amtpaid > 0"]; 
-        m1.orderBy = "year ASC,month ASC";
+        m1.findBy = [ acctid: entity.payer.objid ];
+        m.select = "objid,year,month,amtdue:{amount-amtpaid-discount},item.*";
+        m1.where = [" (amount-amtpaid-discount) > 0 "]; 
+        m1.orderBy = "year, month";
         otherFeeList =  querySvc.getList( m1 );
         otherFeeList.each {
-            it.amount = 0;it.discount=0;it.surcharge=0;it.interest=0;it.total=0;
+            it.amount=0; it.discount=0; it.surcharge=0; it.interest=0; it.total=0;
         }
     }
     

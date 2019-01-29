@@ -25,7 +25,8 @@ public class BatchBillingModel extends WorkflowTaskModel {
    def beginBalanceSvc;
     
    def consumptionUtil = ManagedObjects.instance.create(ConsumptionUtil.class);
-    
+   def billDispatcher = ManagedObjects.instance.create(BillDispatcherReceipt.class);
+   
    def selectedItem;
    def selectedBillItem;
    
@@ -270,12 +271,12 @@ public class BatchBillingModel extends WorkflowTaskModel {
     def getReadingHandlerList( def item ) {
         def mnuList = []; 
         def meterid = item.meterid; 
-        if( task?.state == "for-reading" ) { 
+        if( task?.state.toString().matches("for-reading")) { 
             if( item.hold == 0 ) mnuList << [value: 'Hold', func:hold]; 
             if( item.hold == 1 ) mnuList << [value: 'Activate', func:hold]; 
             mnuList << [value: 'Recompute', func: recomputeConsumption]; 
             mnuList << [value: 'Reset', func: resetConsumption]; 
-        } 
+        }
         mnuList << [value: 'View Account', func:viewAccount]; 
         mnuList << [value: 'View Consumption History', func: viewConsumptionHistory]; 
         
@@ -402,7 +403,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
             }
             
             waitPrintProc(); 
-            parm.refbillno = res.refbillno;
+            parm.refbillno = res.refbillno; 
             parm.printed_list = res.printed_list; 
         } 
 
@@ -414,6 +415,10 @@ public class BatchBillingModel extends WorkflowTaskModel {
             MsgBox.alert("printing finished");
         } 
     } 
+    
+   void printBillDispatcherReceipt() {
+       billDispatcher.buildReport([ batchid: entity.objid ]); 
+   } 
    
     def showMenuActions( inv ) { 
         def selItem = null; 

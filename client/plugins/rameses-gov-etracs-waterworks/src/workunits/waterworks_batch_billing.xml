@@ -13,6 +13,8 @@
                 
         <invoker type="formActions" caption="Print Bill" action="printBill" 
                  visibleWhen="#{ task.state == 'approved' }"/>
+
+        <invoker type="formActions" caption="Bill Dispatcher's Receipt" action="printBillDispatcherReceipt" />
     </invokers>
     
     <code class="com.rameses.gov.etracs.waterworks.models.BatchBillingModel" />

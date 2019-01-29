@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/treasury/common/templates/LedgerList.xml"
           schemaName="waterworks_consumption"
           contextName="waterworks"
-          cols="year,monthname,schedule.readingdate,meter.serialno,prevreading,reading,volume,amount,amtpaid,balance"
+          cols="year,monthname,schedule.readingdate,meter.serialno,prevreading,reading,volume,amount,amtpaid,discount,balance,hold,state"
           orderBy="schedule.year desc, schedule.month desc">
     <invokers>
         <invoker type="waterworks_account:section" caption="  Monthly Consumption   " 
@@ -9,4 +9,5 @@
                  parentkey="acctid"
                  visibleWhen="#{mode=='read'}"  />
     </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterConsumptionListModel"/>
 </workunit>

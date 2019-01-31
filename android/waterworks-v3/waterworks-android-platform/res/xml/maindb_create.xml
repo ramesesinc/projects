@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>    
+    <sql>
+		CREATE TABLE setting ( 
+			name TEXT PRIMARY KEY,   
+			value TEXT 
+		) 
+    </sql>
+    <sql>
+        CREATE TABLE account (
+			objid TEXT PRIMARY KEY,
+			acctno TEXT NOT NULL,
+			acctname TEXT NOT NULL,
+			address TEXT,
+			serialno TEXT NOT NULL,
+			sectorid TEXT NOT NULL,
+			sectorcode TEXT NOT NULL,
+			lastreading TEXT NOT NULL,
+			classificationid TEXT NOT NULL,
+			barcode TEXT NOT NULL,
+			batchid TEXT NOT NULL,
+			month TEXT NOT NULL,
+			year TEXT NOT NULL,
+			period TEXT NOT NULL,
+			duedate TEXT NOT NULL,
+			discodate TEXT NOT NULL,
+			rundate TEXT NOT NULL,
+			items TEXT,
+			info TEXT, 
+			stuboutid TEXT NULL,
+			sortorder NUMERIC NOT NULL,
+			assignee_objid TEXT NOT NULL,
+			assignee_name TEXT NOT NULL
+        )
+    </sql>
+    <sql>
+		CREATE TABLE reading (
+			objid TEXT PRIMARY KEY,
+			acctid TEXT NOT NULL,
+			reading NUMERIC,
+			consumption NUMERIC NOT NULL,
+			amtdue NUMERIC,
+			totaldue NUMERIC,
+			state TEXT NOT NULL,
+			dtreading TEXT NOT NULL,
+			batchid TEXT NOT NULL
+		)
+	</sql>
+	<sql>
+	    CREATE TABLE rule (
+			salience NUMERIC,
+			condition TEXT,
+			var TEXT,
+			action TEXT
+	    )
+	</sql>
+	<sql>
+	    CREATE TABLE sector (
+			objid TEXT PRIMARY KEY,
+			code TEXT NOT NULL,
+			assigneeid TEXT NOT NULL
+	    )
+	</sql>
+	<sql>
+	    CREATE TABLE sector_reader (
+			objid TEXT PRIMARY KEY,
+			sectorid TEXT NOT NULL,
+			title TEXT,
+			assigneeid TEXT NOT NULL,
+			assigneename TEXT NOT NULL
+	    )
+	</sql>
+	<sql>
+	    CREATE TABLE stubout (
+			objid TEXT PRIMARY KEY,
+			code TEXT NOT NULL,
+			description TEXT NOT NULL,
+			zoneid TEXT NOT NULL,
+			barangayid TEXT NOT NULL,
+			barangayname TEXT NOT NULL,
+			assigneeid TEXT NOT NULL
+	    )
+	</sql>
+	<sql>
+	    CREATE TABLE zone (
+			objid TEXT PRIMARY KEY,
+			sectorid TEXT NOT NULL,
+			code TEXT NOT NULL,
+			description TEXT NOT NULL,
+			readerid TEXT NOT NULL,
+			assigneeid TEXT NOT NULL
+	    )
+	</sql>
+	<sql>
+	    CREATE TABLE download_stat (
+			batchid TEXT PRIMARY KEY,
+			assigneeid TEXT NOT NULL,
+			recordcount NUMERIC NOT NULL,
+			indexno NUMERIC NOT NULL
+	    )
+	</sql>
+</db>

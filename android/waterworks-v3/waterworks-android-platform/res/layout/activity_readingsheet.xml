@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:foregroundGravity="center_vertical" >
+
+    <LinearLayout
+        android:id="@+id/LinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <LinearLayout
+            android:id="@+id/LinearLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp" >
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="@dimen/readingsheet_caption_width"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_caption_background"
+                android:text="@string/readingsheet_serialno"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white"
+                android:textSize="@dimen/info_font_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_serialno"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_value_background"
+                android:text="@string/txt_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/info_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp" >
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="@dimen/readingsheet_caption_width"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_caption_background"
+                android:text="@string/readingsheet_name"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white"
+                android:textSize="@dimen/info_font_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_value_background"
+                android:text="@string/txt_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/info_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp" >
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="@dimen/readingsheet_caption_width"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_caption_background"
+                android:text="@string/readingsheet_classification"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white"
+                android:textSize="@dimen/info_font_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_classification"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_value_background"
+                android:text="@string/txt_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/info_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="@dimen/readingsheet_caption_width"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_caption_background"
+                android:text="@string/readingsheet_prevreading"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white"
+                android:textSize="@dimen/info_font_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_prevreading"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_value_background"
+                android:text="@string/txt_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/info_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/meter_reading_background"
+            android:paddingBottom="15dp"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:paddingTop="15dp" >
+
+            <TextView
+                android:id="@+id/tv_reading1"
+                android:layout_width="@dimen/numberpicker_width"
+                android:layout_height="@dimen/numberpicker_height"
+                android:layout_marginRight="7dp"
+                android:background="@drawable/meter_button"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="@string/numberpicker_default_value"
+                android:textColor="@color/white"
+                android:textSize="@dimen/numberpicker_font_size" />
+
+            <TextView
+                android:id="@+id/tv_reading2"
+                android:layout_width="@dimen/numberpicker_width"
+                android:layout_height="@dimen/numberpicker_height"
+                android:layout_marginRight="7dp"
+                android:background="@drawable/meter_button"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="@string/numberpicker_default_value"
+                android:textColor="@color/white"
+                android:textSize="@dimen/numberpicker_font_size" />
+
+            <TextView
+                android:id="@+id/tv_reading3"
+                android:layout_width="@dimen/numberpicker_width"
+                android:layout_height="@dimen/numberpicker_height"
+                android:layout_marginRight="7dp"
+                android:background="@drawable/meter_button"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="@string/numberpicker_default_value"
+                android:textColor="@color/white"
+                android:textSize="@dimen/numberpicker_font_size" />
+
+            <TextView
+                android:id="@+id/tv_reading4"
+                android:layout_width="@dimen/numberpicker_width"
+                android:layout_height="@dimen/numberpicker_height"
+                android:layout_marginRight="7dp"
+                android:background="@drawable/meter_button"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="@string/numberpicker_default_value"
+                android:textColor="@color/white"
+                android:textSize="@dimen/numberpicker_font_size" />
+
+            <TextView
+                android:id="@+id/tv_reading5"
+                android:layout_width="@dimen/numberpicker_width"
+                android:layout_height="@dimen/numberpicker_height"
+                android:layout_marginRight="7dp"
+                android:background="@drawable/meter_button"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="@string/numberpicker_default_value"
+                android:textColor="@color/white"
+                android:textSize="@dimen/numberpicker_font_size" />
+
+            <TextView
+                android:id="@+id/tv_reading6"
+                android:layout_width="@dimen/numberpicker_width"
+                android:layout_height="@dimen/numberpicker_height"
+                android:background="@drawable/meter_button"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="@string/numberpicker_default_value"
+                android:textColor="@color/white"
+                android:textSize="@dimen/numberpicker_font_size" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/RelativeLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp" >
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="15dp"
+            android:paddingRight="10dp" >
+
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/button_background"
+                android:fontFamily="Arial"
+                android:paddingBottom="7dp"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:paddingTop="7dp"
+                android:text="@string/btn_save"
+                android:textColor="@color/white"
+                android:textSize="@dimen/info_font_size" />
+        </RelativeLayout>
+
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:columnCount="3"
+            android:orientation="horizontal"
+            android:rowCount="4" >
+
+            <Button
+                android:id="@+id/btn_7"
+                android:layout_width="@dimen/reading_btn_width"
+                android:layout_height="@dimen/reading_btn_height"
+                android:layout_gravity="left"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="@string/btn_reading_7"
+                android:textSize="@dimen/reading_btn_font_size" />
+
+            <Button
+                android:id="@+id/btn_8"
+                android:layout_width="@dimen/reading_btn_width"
+                android:layout_height="@dimen/reading_btn_height"
+                android:layout_gravity="left"
+                android:text="@string/btn_reading_8"
+                android:textSize="@dimen/reading_btn_font_size" />
+
+            <Button
+                android:id="@+id/btn_9"
+                android:layout_width="@dimen/reading_btn_width"
+                android:layout_height="@dimen/reading_btn_height"
+                android:layout_gravity="left"
+                android:text="@string/btn_reading_9"
+                android:textSize="@dimen/reading_btn_font_size" />
+
+            <Button
+                android:id="@+id/btn_4"
+                android:layout_width="@dimen/reading_btn_width"
+                android:layout_height="@dimen/reading_btn_height"
+                android:layout_gravity="left"
+                android:text="@string/btn_reading_4"
+                android:textSize="@dimen/reading_btn_font_size" />
+
+            <Button
+                android:id="@+id/btn_5"
+                android:layout_width="@dimen/reading_btn_width"
+                android:layout_height="@dimen/reading_btn_height"
+                android:layout_gravity="left"
+                android:text="@string/btn_reading_5"
+                android:textSize="@dimen/reading_btn_font_size" />
+
+            <Button
+                android:id="@+id/btn_6"
+                android:layout_width="@dimen/reading_btn_width"
+                android:layout_height="@dimen/reading_btn_height"
+                android:layout_gravity="left"
+                android:text="@string/btn_reading_6"
+                android:textSize="@dimen/reading_btn_font_size" />
+
+            <Button
+                android:id="@+id/btn_1"
+                android:layout_width="@dimen/reading_btn_width"
+                android:layout_height="@dimen/reading_btn_height"
+                android:layout_gravity="left"
+                android:text="@string/btn_reading_1"
+                android:textSize="@dimen/reading_btn_font_size" />
+
+            <Button
+                android:id="@+id/btn_2"
+                android:layout_width="@dimen/reading_btn_width"
+                android:layout_height="@dimen/reading_btn_height"
+                android:layout_gravity="left"
+                android:text="@string/btn_reading_2"
+                android:textSize="@dimen/reading_btn_font_size" />
+
+            <Button
+                android:id="@+id/btn_3"
+                android:layout_width="@dimen/reading_btn_width"
+                android:layout_height="@dimen/reading_btn_height"
+                android:layout_gravity="left"
+                android:text="@string/btn_reading_3"
+                android:textSize="@dimen/reading_btn_font_size" />
+
+            <Button
+                android:id="@+id/btn_clear"
+                android:layout_width="@dimen/reading_btn_width"
+                android:layout_height="@dimen/reading_btn_height"
+                android:layout_gravity="left"
+                android:text="@string/btn_reading_clear"
+                android:textSize="@dimen/reading_btn_font_size" />
+
+            <Button
+                android:id="@+id/btn_0"
+                android:layout_width="@dimen/reading_btn_width"
+                android:layout_height="@dimen/reading_btn_height"
+                android:layout_gravity="left"
+                android:text="@string/btn_reading_0"
+                android:textSize="@dimen/reading_btn_font_size" />
+
+            <Button
+                android:id="@+id/btn_backspace"
+                android:layout_width="@dimen/reading_btn_width"
+                android:layout_height="@dimen/reading_btn_height"
+                android:layout_gravity="left"
+                android:text="@string/btn_reading_backspace"
+                android:textSize="@dimen/reading_btn_font_size" />
+        </GridLayout>
+    </LinearLayout>
+
+</ScrollView>

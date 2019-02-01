@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp" >
+
+        <ImageView
+            android:id="@+id/iv_icon"
+            android:layout_width="@dimen/userinfo_img_width"
+            android:layout_height="@dimen/userinfo_img_height"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/border_light_gray" />
+
+        <RelativeLayout
+            android:id="@+id/rl_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/iv_icon"
+            android:layout_alignTop="@+id/iv_icon"
+            android:layout_toRightOf="@+id/iv_icon" >
+
+            <TextView
+                android:id="@+id/tv_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Sample Text"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/info_font_size" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/tv_username"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Sample Text"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/info_font_size"
+                android:textStyle="bold" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/btn_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_background"
+            android:fontFamily="Arial"
+            android:gravity="center_vertical|center_horizontal"
+            android:paddingBottom="7dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="7dp"
+            android:text="@string/txt_btn_logout"
+            android:textColor="@color/white" />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,14 @@
+#root {
+    -fx-background-color: #bcbdc0;
+}
+Button {
+    -fx-font-family: "Myriad Pro";
+    -fx-font-size: 24px;
+    -fx-background-radius: 5px;
+}
+.feedback {
+    -fx-font-family: "Myriad Pro";
+    -fx-font-size: 60;
+    -fx-background-radius: 5px;
+    -fx-background-color: wheat;
+}

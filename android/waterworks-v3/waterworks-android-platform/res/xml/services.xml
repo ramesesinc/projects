@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<services>
+    
+    <service provider="com.rameses.client.interfaces.AppLoader">
+    	<impl name="com.rameses.android.system.RegistrationLoader"/>
+    	<impl name="com.rameses.android.system.LoginLoader"/>
+    	<impl name="com.rameses.android.system.ChangePwdOnLogonLoader"/>
+    	<impl name="com.rameses.android.main.DefaultHomeLoader"/>
+    </service>
+    
+</services>

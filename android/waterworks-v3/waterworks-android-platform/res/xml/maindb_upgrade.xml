@@ -1,0 +1,12 @@
+<db>    
+	<sql> DROP TABLE IF EXISTS sys_var </sql>
+    <sql> DROP TABLE IF EXISTS setting </sql>
+    <sql> DROP TABLE IF EXISTS account </sql>
+    <sql> DROP TABLE IF EXISTS reading </sql>
+	<sql> DROP TABLE IF EXISTS rule </sql>
+	<sql> DROP TABLE IF EXISTS sector </sql>
+	<sql> DROP TABLE IF EXISTS sector_reader </sql>
+	<sql> DROP TABLE IF EXISTS stubout </sql>
+	<sql> DROP TABLE IF EXISTS zone </sql>
+	<sql> DROP TABLE IF EXISTS download_stat </sql>
+</db>

@@ -39,7 +39,7 @@ public class ConsumptionHistoryModel {
     void buildList() {
         def m = [_schemaname: 'vw_waterworks_consumption'];
         m.findBy = [acctid: acctid];
-        m.where = ["((year * 12)+month) < :ym", [ ym: ((year * 12)+month)]];
+        m.where = ["((year * 12)+month) < :ym", [ym: ((year * 12)+month)]];
         m.orderBy = "year DESC, month DESC";
         m._start = 0;
         m._limit = months;

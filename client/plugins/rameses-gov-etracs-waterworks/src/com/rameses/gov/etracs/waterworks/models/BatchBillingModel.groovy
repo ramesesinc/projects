@@ -23,6 +23,9 @@ public class BatchBillingModel extends WorkflowTaskModel {
    
    @Service("WaterworksBeginBalanceService")
    def beginBalanceSvc;
+
+   @Service("PersistenceService")
+   def persistenceSvc;
     
    def consumptionUtil = ManagedObjects.instance.create(ConsumptionUtil.class);
    def billDispatcher = ManagedObjects.instance.create(BillDispatcherReceipt.class);
@@ -400,6 +403,9 @@ public class BatchBillingModel extends WorkflowTaskModel {
             counter++; 
             if ( previewOnly ) {
                 break; 
+            }
+            else if ( acctno ) {
+                break;
             }
             
             waitPrintProc(); 

@@ -1,0 +1,34 @@
+<workunit schemaName="policeclearance_application">
+    
+    <invokers>
+        <invoker folderid="home/police" caption="Capture Application" action="create"/>
+        
+        <invoker type="formActions" caption="Open Application" action="open" 
+                 visibleWhen="#{entity.appno != null}"/>
+    </invokers>
+
+    <code class="com.rameses.gov.etracs.police.models.PoliceClearanceCaptureApplicationModel" />
+
+    <pageflow>
+        <start>
+            <transition to="initial" action="init"/>
+        </start>
+        <page name="initial" title="Capture Police Clearance: Initial">
+            <transition to="confirm" caption="Next" action="validateInit"/> 
+        </page>
+        <page name="confirm" title="Capture Police Clearance: Confirmation">
+            <transition to="initial" caption="Back"/>
+            <transition to="finish" caption="Submit" action="saveCreate"/>
+        </page>
+        <page name="finish" title="Capture Police Clearance"> 
+            <transition to="end" caption="Close"/> 
+            <transition to="initial" caption="Add Another" action="createAnother"/> 
+        </page>
+        <end/>
+    </pageflow>
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.police.views.PoliceClearanceCaptureApplicationInitPage" />
+        <page name="confirm" template="com.rameses.gov.etracs.police.views.PoliceClearanceApplicationPage" />
+        <page name="finish" template="com.rameses.gov.etracs.police.views.PoliceClearanceCaptureApplicationSuccessPage" />
+    </pages>
+</workunit>

@@ -21,6 +21,8 @@ public class PoliceClearanceApplicationModel extends CrudFormModel {
     
     final def base64 = new com.rameses.util.Base64Cipher();
     
+    def onOpenHandler;
+    
     def showTrackingno() { 
         return Modal.show( "show_trackingno", [info: [trackingno: entity.barcode]] );
     }
@@ -28,9 +30,11 @@ public class PoliceClearanceApplicationModel extends CrudFormModel {
     def photo; 
     def fingerprintimage; 
     
-    void afterOpen() {
+    void afterOpen() { 
         photo = decodeImage( entity.photo?.image ); 
         fingerprintimage = decodeImage( entity.fingerprint?.image ); 
+        
+        if ( onOpenHandler ) onOpenHandler();         
     }
 
     private def decodeImage( o ) { 

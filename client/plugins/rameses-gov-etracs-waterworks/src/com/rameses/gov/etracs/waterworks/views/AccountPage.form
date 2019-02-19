@@ -670,6 +670,7 @@
                   <SubComponents>
                     <Component class="com.rameses.rcp.control.XButton" name="xButton4">
                       <Properties>
+                        <Property name="disableWhen" type="java.lang.String" value="#{!(mode==&apos;read&apos; &amp;&amp; editAllowed==true)}"/>
                         <Property name="name" type="java.lang.String" value="addAttribute" noResource="true"/>
                         <Property name="text" type="java.lang.String" value="Add"/>
                       </Properties>
@@ -692,6 +693,7 @@
                     </Component>
                     <Component class="com.rameses.rcp.control.XButton" name="xButton5">
                       <Properties>
+                        <Property name="disableWhen" type="java.lang.String" value="#{!(mode==&apos;read&apos; &amp;&amp; editAllowed==true)}"/>
                         <Property name="name" type="java.lang.String" value="removeAttribute" noResource="true"/>
                         <Property name="text" type="java.lang.String" value="Remove"/>
                       </Properties>

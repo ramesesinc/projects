@@ -22,6 +22,9 @@ class WaterworksBillingInterceptor {
 	@DataContext("waterworks_otherfee")
 	def wotherEm;
 
+	@Service('NumberService') 
+	def numSvc;
+
     @After(pattern="BillingInfoHandler.getHeaderInfo",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
 	public void loadHeaderInfo( evt ) {
 		def obj = evt.args[0];
@@ -200,7 +203,10 @@ class WaterworksBillingInterceptor {
 		result.parentid = bill.acctid; 
 		result.rootid = bill.acctid; 
 		result.items = bill.billitems; 
-		result.items.each{ it.acctid = bill.acctid } 
+		result.items.each{ 
+			it.acctid = bill.acctid; 
+			//it.amount = numSvc.format( it.amount ); 
+		} 
 		result._schemaname = 'waterworks_payment'; 
 		result.creditschemaname = 'waterworks_credit'; 
 		result.parentschemaname = "waterworks_account"; 

@@ -1,0 +1,12 @@
+import com.rameses.annotations.*; 
+
+class WaterworksCollectionProxyService { 
+	
+	@Service(value='BillingCashReceiptService', connection='waterworks_proxy') 
+	def billingSvc; 
+
+	@ProxyMethod 
+	public def getInfo( params ) { 	
+		return billingSvc.getInfo( params ); 
+	} 
+}

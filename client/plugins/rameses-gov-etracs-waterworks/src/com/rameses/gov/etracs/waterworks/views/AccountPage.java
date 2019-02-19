@@ -351,11 +351,13 @@ public class AccountPage extends javax.swing.JPanel {
         jPanel7.setOpaque(false);
         jPanel7.setLayout(new javax.swing.BoxLayout(jPanel7, javax.swing.BoxLayout.X_AXIS));
 
+        xButton4.setDisableWhen("#{!(mode=='read' && editAllowed==true)}");
         xButton4.setName("addAttribute"); // NOI18N
         xButton4.setText("Add");
         jPanel7.add(xButton4);
         jPanel7.add(filler1);
 
+        xButton5.setDisableWhen("#{!(mode=='read' && editAllowed==true)}");
         xButton5.setName("removeAttribute"); // NOI18N
         xButton5.setText("Remove");
         jPanel7.add(xButton5);

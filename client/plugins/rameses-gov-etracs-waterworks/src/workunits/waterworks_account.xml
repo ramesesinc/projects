@@ -11,7 +11,10 @@
         <invoker type="waterworks_account:open" 
                  formTitle="Waterworks Account (#{entity.acctno}) #{entity.acctname}" 
                  formId="#{entity.objid}"
-                 action="open" target="window"/>
+                 action="open" target="window">
+            <action role="MASTER" /> 
+            <action role="SHARED" allowEdit="false" allowCreate="false"/> 
+        </invoker>     
         
     </invokers>
     

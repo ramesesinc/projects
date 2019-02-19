@@ -1,17 +1,17 @@
 <workunit  schemaName="waterworks_classification">
     <invokers>
         <invoker type="waterworks_classification:create"
+                 action="create" role="MASTER" target="popup" 
                  formTitle="Waterworks Classification" 
-                 formId="waterworks_new"
-                 target="popup"
-                 action="create" />
+                 formId="waterworks_new" />
 
-        <invoker type="waterworks_classification:open"
+        <invoker type="waterworks_classification:open" 
+                 action="open" target="popup"
                  formTitle="#{entity.objid}" 
-                 formId="#{entity.objid}"
-                 target="popup"
-                 action="open" />
-        
+                 formId="#{entity.objid}" >
+            <action role="MASTER" /> 
+            <action role="SHARED" allowEdit="false" allowCreate="false"/>             
+        </invoker>
     </invokers>
     
     <code>

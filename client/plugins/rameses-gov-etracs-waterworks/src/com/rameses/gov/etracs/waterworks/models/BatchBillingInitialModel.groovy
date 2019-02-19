@@ -17,7 +17,6 @@ public class BatchBillingInitialModel extends CrudFormModel {
 
    @FormTitle
    String title = "Batch Billing";
-    
 
    @PropertyChangeListener
    def listener = [
@@ -41,9 +40,11 @@ public class BatchBillingInitialModel extends CrudFormModel {
        z.objid = null;
        z = persistenceService.create(z);
        if( !z.objid  ) return;
+       
        MsgBox.alert( "Batch " + z.objid +  " is created" );
+       
        def op = Inv.lookupOpener("waterworks_batch_billing:open", [entity: [objid:z.objid]]); 
-       op.target = "window";
+       op.target = "topwindow";
        return op;
    } 
     

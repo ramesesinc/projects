@@ -1,11 +1,17 @@
 <workunit schemaName="waterworks_meter">
     <invokers>
-        <invoker type="waterworks_account:form:edit" caption="View Meter"
-         visibleWhen="#{entity.meter?.objid!=null}"  
-            action="openFormAccount" target="popup" index="17" />
+        <invoker type="waterworks_account:form:edit" caption="View Meter" 
+                 action="openFormAccount" target="popup" index="17" 
+                 visibleWhen="#{entity.meter?.objid!=null}" />
 
-        <invoker type="waterworks_meter:create" caption="Waterworks Meter" action="create" target="popup" role="MASTER"/>
-        <invoker type="waterworks_meter:open" caption="Waterworks Meter" action="open" target="popup" role="MASTER"/>
+        <invoker type="waterworks_meter:create" caption="Waterworks Meter" 
+                 action="create" target="popup" role="MASTER"/>
+        
+        <invoker type="waterworks_meter:open" caption="Waterworks Meter" 
+                 action="open" target="popup">
+            <action role="MASTER" /> 
+            <action role="SHARED" allowEdit="false" allowCreate="false"/>             
+        </invoker>
         
         <!-- maybe for billing -->
         <invoker type="waterworks_meter:view" caption="Waterworks Meter" action="open" target="popup" />

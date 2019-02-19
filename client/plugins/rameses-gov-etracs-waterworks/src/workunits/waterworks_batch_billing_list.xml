@@ -5,6 +5,6 @@
     <invokers>
         <invoker folderid="/menucategory/waterworks/billing" action="init" 
             cols="objid,year,monthname,zone.code,zone.sector.code,readingdate,reader.name,dtcreated,createdby.name"
-            caption="View Batch Billing List" index="1" role="MASTER"/>
+            caption="View Batch Billing List" role="MASTER" index="1"/>
     </invokers>
 </workunit>

@@ -4,10 +4,13 @@
           cols="year,monthname,schedule.readingdate,meter.serialno,prevreading,reading,volume,amount,amtpaid,discount,balance,hold,state"
           orderBy="schedule.year desc, schedule.month desc">
     <invokers>
-        <invoker type="waterworks_account:section" caption="  Monthly Consumption   " 
-                 index="2" action="init" 
-                 parentkey="acctid"
-                 visibleWhen="#{mode=='read'}"  />
+        <invoker type="waterworks_account:section" 
+                 caption="  Monthly Consumption   " 
+                 action="init" parentkey="acctid" index="2" 
+                 visibleWhen="#{mode=='read'}">
+            <action role="MASTER" />
+            <action role="SHARED" allowCreate="false" allowDelete="false" />
+        </invoker>                 
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.WaterConsumptionListModel"/>
 </workunit>

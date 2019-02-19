@@ -4,6 +4,9 @@
           cols="zone.code,indexno,acctno,acctname,address.text,classificationid,meter.serialno,meterstatus"
           orderBy="indexno,acctno"  >
     <invokers>
-        <invoker folderid="/menucategory/waterworks/account" caption="View Customer Accounts" action="init" role="MASTER"/>
+        <invoker folderid="/menucategory/waterworks/account" caption="View Customer Accounts" action="init">
+            <action role="MASTER" /> 
+            <action role="SHARED" allowCreate="false" allowDelete="false" /> 
+        </invoker>
     </invokers>
 </workunit>

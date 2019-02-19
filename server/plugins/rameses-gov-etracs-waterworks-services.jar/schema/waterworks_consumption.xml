@@ -1,7 +1,7 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_consumption">
 		<field name="objid" primary="true"  prefix="WAC"/>
-		<field name="state" />
+		<field name="state" caption="State"/>
 
 		<!-- BEGIN_BALANCE,CAPTURE,ONLINE-->
 		<field name="txnmode" />
@@ -12,7 +12,7 @@
 			<key field="meterid" target="objid"/>
 		</complex>
 
-		<field name="prevreading" required="true" caption="PreviousReading" type="integer" defaultValue="0"/>
+		<field name="prevreading" required="true" caption="PrevReading" type="integer" defaultValue="0"/>
 		<field name="reading" required="true" caption="CurrentReading" type="integer" defaultValue="0"/>
 
 		<!-- SCHEDULE -->
@@ -33,9 +33,9 @@
 		<!--
 		<field name="month" expr="schedule.month" caption="Month"/>		
 		-->
-		<field name="monthname" expr="MONTH_ARRAY( schedule.month )" caption="Monthname"/>
+		<field name="monthname" expr="MONTH_ARRAY( schedule.month )" caption="MonthName"/>
 
 		<field name="batchid" />
-		<field name="hold" />
+		<field name="hold" caption="Hold" type="boolean"/>
 	</element>
 </schema>

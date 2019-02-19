@@ -64,6 +64,7 @@ public class LedgerListPage extends javax.swing.JPanel {
 
         xButton2.setCaption(" ");
         xButton2.setName("addNewEntry"); // NOI18N
+        xButton2.setVisibleWhen("#{createAllowed == true}");
         xButton2.setFocusable(false);
         xButton2.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         xButton2.setIconResource("images/toolbars/create.png");
@@ -84,6 +85,7 @@ public class LedgerListPage extends javax.swing.JPanel {
 
         xButton4.setCaption(" ");
         xButton4.setName("removeEntry"); // NOI18N
+        xButton4.setVisibleWhen("#{deleteAllowed == true}");
         xButton4.setFocusable(false);
         xButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         xButton4.setIconResource("images/toolbars/trash.png");
@@ -103,12 +105,12 @@ public class LedgerListPage extends javax.swing.JPanel {
 
         jPanel2.add(jPanel5, java.awt.BorderLayout.NORTH);
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Ledger Items");
-        listPanel1.setBorder(xTitledBorder1);
         listPanel1.setDepends(new String[] {"showOption"});
         listPanel1.setDynamic(true);
         listPanel1.setName("selectedItem"); // NOI18N
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setTitle("Ledger Items");
+        listPanel1.setBorder(xTitledBorder1);
         jPanel2.add(listPanel1, java.awt.BorderLayout.CENTER);
 
         xSplitView1.add(jPanel2);

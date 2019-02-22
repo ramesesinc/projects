@@ -68,33 +68,34 @@ WHERE rl.state = 'APPROVED'
 
 
 [getPaymentInfo]
-select 
-    rl.objid as rptledgerid, 
-    xr.receiptno as orno,
-    xr.txndate as ordate,
-    sum(ri.basic + ri.basicint - ri.basicdisc + ri.sef + ri.sefint - ri.sefdisc) as oramount,
-    sum(ri.basic) as basic,
-    sum(ri.basicdisc) as basicdisc,
-    sum(ri.basicint) as basicint,
-    sum(ri.sef) as sef,
-    sum(ri.sefdisc) as sefdisc,
-  sum(ri.sefint) as sefint,  
-    case when (min(ri.qtr) = 1 and max(ri.qtr) = 4) or ((min(ri.qtr) = 0 and max(ri.qtr) = 0))
-        then  concat('full ', ri.year)
-        else
-            concat(min(ri.qtr), 'q,', ri.year, ' - ', max(ri.qtr), 'q,', ri.year) 
-    end as period
-from rptcertificationitem rci 
-    inner join rptledger rl on rci.refid = rl.objid 
-    inner join rptpayment rp on rl.objid = rp.refid
-    inner join vw_rptpayment_item ri on rp.objid = ri.parentid
-    inner join cashreceipt xr on rp.receiptid = xr.objid 
-    left join cashreceipt_void cv on xr.objid = cv.receiptid 
-where rci.rptcertificationid = $P{rptcertificationid}
-    and rl.objid = $P{rptledgerid}
+SELECT 
+    rl.objid AS rptledgerid, 
+    xr.receiptno AS orno,
+    xr.txndate AS ordate,
+    SUM(ri.amount + ri.interest - ri.discount) AS oramount,
+    SUM(CASE WHEN ri.revtype = 'basic' THEN ri.amount ELSE 0 END) AS basic,
+    SUM(CASE WHEN ri.revtype = 'basic' THEN ri.discount ELSE 0 END) AS basicdisc,
+    SUM(CASE WHEN ri.revtype = 'basic' THEN ri.interest ELSE 0 END) AS basicint,
+    SUM(CASE WHEN ri.revtype = 'sef' THEN ri.amount ELSE 0 END) AS sef,
+    SUM(CASE WHEN ri.revtype = 'sef' THEN ri.discount ELSE 0 END) AS sefdisc,
+    SUM(CASE WHEN ri.revtype = 'sef' THEN ri.interest ELSE 0 END) AS sefint,
+
+    CASE WHEN (MIN(ri.qtr) = 1 AND MAX(ri.qtr) = 4) OR ((MIN(ri.qtr) = 0 AND MAX(ri.qtr) = 0))
+        THEN  CONCAT('full ', ri.year)
+        ELSE
+            CONCAT(MIN(ri.qtr), 'q,', ri.year, ' - ', MAX(ri.qtr), 'q,', ri.year) 
+    END AS period
+FROM rptcertificationitem rci 
+    INNER JOIN rptledger rl ON rci.refid = rl.objid 
+    INNER JOIN rptpayment rp ON rl.objid = rp.refid
+    INNER JOIN rptpayment_item ri ON rp.objid = ri.parentid
+    INNER JOIN cashreceipt xr ON rp.receiptid = xr.objid 
+    LEFT JOIN cashreceipt_void cv ON xr.objid = cv.receiptid 
+WHERE rci.rptcertificationid = $P{rptcertificationid}
+    AND rl.objid =  $P{rptledgerid}
    and (ri.year = $P{year} and ri.qtr <= $P{qtr})
-  and cv.objid is null 
-group by rl.objid, xr.receiptno, xr.txndate, ri.year
+  AND cv.objid IS NULL 
+GROUP BY rl.objid, xr.receiptno, xr.txndate, ri.year
 
 union all
 

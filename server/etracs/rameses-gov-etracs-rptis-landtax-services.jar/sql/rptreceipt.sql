@@ -30,7 +30,7 @@ and (
 order by rl.tdno 
 
 [getItemsForPrinting]
-SELECT
+select
 	rl.owner_name, 
 	rl.tdno,
 	rl.rputype,
@@ -40,35 +40,41 @@ SELECT
 	rl.cadastrallotno,
 	rl.classcode,
 	b.name AS barangay,
-	md.name as munidistrict,
-	pct.name as provcity, 
+	md.name AS munidistrict,
+	pct.name AS provcity, 
 	rp.fromyear, 
 	rp.fromqtr, 
 	rp.toyear,
 	rp.toqtr,
-	SUM(rpi.basic) AS basic,
-	SUM(rpi.basicint) AS basicint,
-	SUM(rpi.basicdisc) AS basicdisc,
-	SUM(rpi.basicdp) AS basicdp,
-	SUM(rpi.basicnet) AS basicnet,
-	SUM(rpi.basicidle) AS basicidle,
-	SUM(rpi.sef) AS sef,
-	SUM(rpi.sefint) AS sefint,
-	SUM(rpi.sefdisc) AS sefdisc,
-	SUM(rpi.sefdp) AS sefdp,
-	SUM(rpi.sefnet) AS sefnet,
-	SUM(rpi.firecode) AS firecode,
-	SUM(rpi.sh) AS sh,
-	SUM(rpi.amount) AS amount,
-	MAX(rpi.partialled) AS partialled 
+	sum(case when rpi.revtype = 'basic' then rpi.amount else 0 end) as basic,
+	sum(case when rpi.revtype = 'basic' then rpi.interest else 0 end) as basicint,
+	sum(case when rpi.revtype = 'basic' then rpi.discount else 0 end) as basicdisc,
+	sum(case when rpi.revtype = 'basic' then rpi.interest - rpi.discount else 0 end) as basicdp,
+	sum(case when rpi.revtype = 'basic' then rpi.amount + rpi.interest - rpi.discount else 0 end) as basicnet,
+	sum(case when rpi.revtype = 'basicidle' then rpi.amount + rpi.interest - rpi.discount else 0 end) as basicidle,
+	sum(case when rpi.revtype = 'basicidle' then rpi.interest else 0 end) as basicidleint,
+	sum(case when rpi.revtype = 'basicidle' then rpi.discount else 0 end) as basicidledisc,
+	sum(case when rpi.revtype = 'basicidle' then rpi.interest - rpi.discount else 0 end) as basicidledp,
+	sum(case when rpi.revtype = 'sef' then rpi.amount else 0 end) as sef,
+	sum(case when rpi.revtype = 'sef' then rpi.interest else 0 end) as sefint,
+	sum(case when rpi.revtype = 'sef' then rpi.discount else 0 end) as sefdisc,
+	sum(case when rpi.revtype = 'sef' then rpi.interest - rpi.discount else 0 end) as sefdp,
+	sum(case when rpi.revtype = 'sef' then rpi.amount + rpi.interest - rpi.discount else 0 end) as sefnet,
+	sum(case when rpi.revtype = 'firecode' then rpi.amount + rpi.interest - rpi.discount else 0 end) as firecode,
+	sum(case when rpi.revtype = 'sh' then rpi.amount + rpi.interest - rpi.discount else 0 end) as sh,
+	sum(case when rpi.revtype = 'sh' then rpi.interest else 0 end) as shint,
+	sum(case when rpi.revtype = 'sh' then rpi.discount else 0 end) as shdisc,
+	sum(case when rpi.revtype = 'sh' then rpi.interest - rpi.discount else 0 end) as shdp,
+	sum(rpi.amount + rpi.interest - rpi.discount) as amount,
+	sum(rpi.partialled) as partialled 
 FROM rptpayment rp 
-	inner join vw_rptpayment_item rpi on rp.objid = rpi.parentid
+	INNER JOIN rptpayment_item rpi ON rp.objid = rpi.parentid
 	INNER JOIN rptledger rl ON rp.refid = rl.objid 
 	INNER JOIN sys_org b ON rl.barangayid = b.objid
-	inner join sys_org md on md.objid = b.parent_objid 
-	inner join sys_org pct on pct.objid = md.parent_objid
-WHERE rp.receiptid = $P{objid}
-GROUP BY 
+	INNER JOIN sys_org md ON md.objid = b.parent_objid 
+	INNER JOIN sys_org pct ON pct.objid = md.parent_objid
+where rp.receiptid = $P{objid}  
+group by 
 	rl.owner_name, 
 	rl.tdno,
 	rl.rputype,
@@ -83,5 +89,4 @@ GROUP BY
 	rp.fromyear, 
 	rp.fromqtr, 
 	rp.toyear,
-	rp.toqtr
-ORDER BY rp.fromyear 	
+	rp.toqtr	

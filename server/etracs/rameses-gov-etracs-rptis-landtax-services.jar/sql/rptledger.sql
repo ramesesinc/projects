@@ -23,12 +23,13 @@ where not exists(
 
 
 [findLastPayment]
-select 
-	rpi.year, 
-	sum(rpi.basic) as basic,
-	sum(rpi.sef) as sef 
-from vw_rptpayment_item rpi 
-where rpi.rptledgerid  =   $P{objid}
+select
+  rpi.year,
+  sum(case when rpi.revtype = 'basic' then rpi.amount else 0 end) as basic,
+  sum(case when rpi.revtype = 'sef' then rpi.amount else 0 end) as sef
+from rptpayment_item rpi
+inner join rptpayment rp on rpi.parentid = rp.objid
+where rp.refid  =   $P{objid}
 and rpi.year = $P{year}
-and rpi.voided = 0 
+and rp.voided = 0 
 group by year 

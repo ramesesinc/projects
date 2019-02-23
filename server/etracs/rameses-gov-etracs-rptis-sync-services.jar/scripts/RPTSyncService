@@ -7,7 +7,7 @@ class RPTSyncService
 	@Env
 	def env 
 
-	@Service('SyncService')
+	@Service('RPTMainSyncService')
 	def syncSvc 
 
     @Service('RPTUtil')
@@ -105,7 +105,7 @@ class RPTSyncService
 		def remote = [:]
 		def rootOrg = getRootOrg()
 		if ('MUNICIPALITY'.equalsIgnoreCase(rootOrg.orgclass)) {
-			def prov = em_org.select('objid,code').find([objid: rootOrg.objid]).first()
+			def prov = em_org.select('objid,code').find([objid: rootOrg.parent?.objid]).first()
 			remote.orgid = prov?.objid
 			remote.orgcode = prov?.code 
 		}

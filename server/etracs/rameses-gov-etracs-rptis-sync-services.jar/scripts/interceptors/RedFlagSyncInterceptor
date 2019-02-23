@@ -38,13 +38,13 @@ class RedFlagSyncInterceptor
     * SEND/RECEIVE HANDLERS
     *
     ---------------------------------------------------------*/
-    @After(pattern="SyncService.asyncSend", eval="#{result.reftype == 'redflag' && result.action.matches('REDFLAG-.*')}") 
+    @After(pattern="RPTMainSyncService.asyncSend", eval="#{result.reftype == 'redflag' && result.action.matches('REDFLAG-.*')}") 
     public void sendData( evt ) {
         def syncdata = evt.result 
         syncSvc.send(syncdata)
     }   
 
-    @After(pattern="SyncService.receive", eval="#{args[0].reftype == 'redflag' && args[0].action.matches('REDFLAG-.*')}") 
+    @After(pattern="RPTMainSyncService.receive", eval="#{args[0].reftype == 'redflag' && args[0].action.matches('REDFLAG-.*')}") 
     public void receiveData(evt){
         def syncdata = evt.args[0]
         syncSvc.receive(syncdata)

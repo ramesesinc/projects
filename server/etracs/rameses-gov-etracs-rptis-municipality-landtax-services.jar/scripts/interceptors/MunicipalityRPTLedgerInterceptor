@@ -28,7 +28,7 @@ class MunicipalityRPTLedgerInterceptor
     *
     ---------------------------------------------------------*/
 
-    @After(pattern="SyncService.receive", eval="#{args[0].reftype == 'rptledger' && 'CREATEMAPPING'.equalsIgnoreCase(args[0].action)}") 
+    @After(pattern="RPTMainSyncService.receive", eval="#{args[0].reftype == 'rptledger' && 'CREATEMAPPING'.equalsIgnoreCase(args[0].action)}") 
     public void createRemoteMapping( evt ) {
         def params = evt.args[0].data
 
@@ -53,7 +53,7 @@ class MunicipalityRPTLedgerInterceptor
         result.putAll(ledger)
     }
 
-    @After(pattern="SyncService.receive", eval="#{args[0].reftype == 'rptledger' && 'SYNCDATA'.equalsIgnoreCase(args[0].action)}") 
+    @After(pattern="RPTMainSyncService.receive", eval="#{args[0].reftype == 'rptledger' && 'SYNCDATA'.equalsIgnoreCase(args[0].action)}") 
     public void syncLedgerData( evt ) {
         def mapping = evt.args[0].data
         def result = evt.result 

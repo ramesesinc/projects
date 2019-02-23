@@ -7,7 +7,7 @@ class ProvinceRPTLedgerService
 	@Env 
 	def env 
 
-	@Service('SyncService')
+	@Service('RPTMainSyncService')
 	def syncSvc
 
     @Service('RPTLedgerSyncService')

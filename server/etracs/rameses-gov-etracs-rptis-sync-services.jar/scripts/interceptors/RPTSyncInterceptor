@@ -30,7 +30,7 @@ class RPTSyncInterceptor
     *  EXAMINATIONS SUPPORT
     * 
     ------------------------------------------------------------*/
-    @After(pattern="SyncService.asyncSend", eval="#{result.action.matches('RPT-EXAMINATION')}") 
+    @After(pattern="RPTMainSyncService.asyncSend", eval="#{result.action.matches('RPT-EXAMINATION')}") 
     public void sendExamination( evt ) {
         def syncdata = evt.result 
         def examination = examinationSvc.open([objid: syncdata.refid])
@@ -40,7 +40,7 @@ class RPTSyncInterceptor
         println 'Examination sent to remote.'        
     }   
 
-    @After(pattern="SyncService.receive", eval="#{args[0].action.matches('RPT-EXAMINATION')}") 
+    @After(pattern="RPTMainSyncService.receive", eval="#{args[0].action.matches('RPT-EXAMINATION')}") 
     public void receiveExamination(evt){
         def syncdata = evt.args[0]
         def examination = syncdata.data 
@@ -56,7 +56,7 @@ class RPTSyncInterceptor
     *  REQUIREMENTS SUPPORT
     * 
     ------------------------------------------------------------*/
-    @After(pattern="SyncService.asyncSend", eval="#{result.action.matches('RPT-REQUIREMENT')}") 
+    @After(pattern="RPTMainSyncService.asyncSend", eval="#{result.action.matches('RPT-REQUIREMENT')}") 
     public void sendRequirement( evt ) {
         def syncdata = evt.result 
         def requirement = reqSvc.open([objid: syncdata.refid])
@@ -67,7 +67,7 @@ class RPTSyncInterceptor
         println 'Requirement sent to remote.'        
     }   
 
-    @After(pattern="SyncService.receive", eval="#{args[0].action.matches('RPT-REQUIREMENT')}") 
+    @After(pattern="RPTMainSyncService.receive", eval="#{args[0].action.matches('RPT-REQUIREMENT')}") 
     public void receiveRequirement(evt){
         def syncdata = evt.args[0]
         def requirement = syncdata.data 
@@ -82,7 +82,7 @@ class RPTSyncInterceptor
     *  IMAGE HEADER SUPPORT
     * 
     ------------------------------------------------------------*/
-    @After(pattern="SyncService.asyncSend", eval="#{result.action.matches('RPT-IMAGE-HEADER')}") 
+    @After(pattern="RPTMainSyncService.asyncSend", eval="#{result.action.matches('RPT-IMAGE-HEADER')}") 
     public void sendImageHeader( evt ) {
         def syncdata = evt.result 
         def header = em_image_header.find([objid: syncdata.refid]).first()
@@ -93,7 +93,7 @@ class RPTSyncInterceptor
         println 'Image Header sent to remote.'        
     }   
 
-    @After(pattern="SyncService.receive", eval="#{args[0].action.matches('RPT-IMAGE-HEADER')}") 
+    @After(pattern="RPTMainSyncService.receive", eval="#{args[0].action.matches('RPT-IMAGE-HEADER')}") 
     public void receiveImageHeader(evt){
         def syncdata = evt.args[0]
         def header = syncdata.data 
@@ -107,7 +107,7 @@ class RPTSyncInterceptor
     *  IMAGE CHUNK SUPPORT
     * 
     ------------------------------------------------------------*/
-    @After(pattern="SyncService.asyncSend", eval="#{result.action.matches('RPT-IMAGE-CHUNK')}") 
+    @After(pattern="RPTMainSyncService.asyncSend", eval="#{result.action.matches('RPT-IMAGE-CHUNK')}") 
     public void sendImageChunk( evt ) {
         def syncdata = evt.result 
         def chunk = em_image_chunk.find([objid: syncdata.refid]).first()
@@ -118,7 +118,7 @@ class RPTSyncInterceptor
         println 'Image Chunk sent to remote.'        
     }   
 
-    @After(pattern="SyncService.receive", eval="#{args[0].action.matches('RPT-IMAGE-CHUNK')}") 
+    @After(pattern="RPTMainSyncService.receive", eval="#{args[0].action.matches('RPT-IMAGE-CHUNK')}") 
     public void receiveImageChunk(evt){
         def syncdata = evt.args[0]
         def chunk = syncdata.data 

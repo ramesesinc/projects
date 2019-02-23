@@ -60,7 +60,7 @@ class RPTLedgerSyncInterceptor
     }   
 
 
-    @After(pattern="SyncService.asyncSend", eval="#{result.reftype == 'rptreceipt' && 'POSTPAYMENT'.equalsIgnoreCase(result.action)}") 
+    @After(pattern="RPTMainSyncService.asyncSend", eval="#{result.reftype == 'rptreceipt' && 'POSTPAYMENT'.equalsIgnoreCase(result.action)}") 
     public void sendPostPayment( evt ) {
         def syncdata = evt.result 
 
@@ -84,7 +84,7 @@ class RPTLedgerSyncInterceptor
         }
     }   
 
-    @After(pattern="SyncService.receive", eval="#{args[0].reftype == 'rptreceipt' && 'POSTPAYMENT'.equalsIgnoreCase(args[0].action)}") 
+    @After(pattern="RPTMainSyncService.receive", eval="#{args[0].reftype == 'rptreceipt' && 'POSTPAYMENT'.equalsIgnoreCase(args[0].action)}") 
     public void postPayment(evt){
         def payment = evt.args[0].data
         ledgerSyncSvc.postPayment(payment)
@@ -112,7 +112,7 @@ class RPTLedgerSyncInterceptor
     }   
 
 
-    @After(pattern="SyncService.asyncSend", eval="#{result.reftype == 'rptreceipt' && 'VOIDPAYMENT'.equalsIgnoreCase(result.action)}") 
+    @After(pattern="RPTMainSyncService.asyncSend", eval="#{result.reftype == 'rptreceipt' && 'VOIDPAYMENT'.equalsIgnoreCase(result.action)}") 
     public void sendVoidPayment( evt ) {
         def syncdata = evt.result 
 
@@ -135,7 +135,7 @@ class RPTLedgerSyncInterceptor
         }
     }   
 
-    @After(pattern="SyncService.receive", eval="#{args[0].reftype == 'rptreceipt' && 'VOIDPAYMENT'.equalsIgnoreCase(args[0].action)}") 
+    @After(pattern="RPTMainSyncService.receive", eval="#{args[0].reftype == 'rptreceipt' && 'VOIDPAYMENT'.equalsIgnoreCase(args[0].action)}") 
     public void postVoidPayment(evt){
         def payment = evt.args[0].data
         ledgerSyncSvc.postVoidPayment(payment)

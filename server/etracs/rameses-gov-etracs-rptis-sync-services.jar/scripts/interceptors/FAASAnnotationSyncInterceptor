@@ -40,13 +40,13 @@ class FAASAnnotationSyncInterceptor
     * SEND/RECEIVE HANDLERS
     *
     ---------------------------------------------------------*/
-    @After(pattern="SyncService.asyncSend", eval="#{result.reftype == 'faasannotation' && result.action.matches('FAAS-ANNOTATION-.*')}") 
+    @After(pattern="RPTMainSyncService.asyncSend", eval="#{result.reftype == 'faasannotation' && result.action.matches('FAAS-ANNOTATION-.*')}") 
     public void sendData( evt ) {
         def syncdata = evt.result 
         syncSvc.send(syncdata)
     }   
 
-    @After(pattern="SyncService.receive", eval="#{args[0].reftype == 'faasannotation' && args[0].action.matches('FAAS-ANNOTATION-.*')}") 
+    @After(pattern="RPTMainSyncService.receive", eval="#{args[0].reftype == 'faasannotation' && args[0].action.matches('FAAS-ANNOTATION-.*')}") 
     public void receiveData(evt){
         def syncdata = evt.args[0]
         syncSvc.receive(syncdata)

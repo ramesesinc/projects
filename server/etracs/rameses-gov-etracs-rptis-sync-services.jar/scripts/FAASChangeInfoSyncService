@@ -10,7 +10,7 @@ class FAASChangeInfoSyncService
 	@Service('DateService')
     def dtSvc
 
-	@Service('SyncService')
+	@Service('RPTMainSyncService')
 	def syncSvc 
 
     @Service('RPTSyncService')

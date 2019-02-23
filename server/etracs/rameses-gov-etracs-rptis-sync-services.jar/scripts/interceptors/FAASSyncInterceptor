@@ -70,13 +70,13 @@ class FAASSyncInterceptor
     * SEND/RECEIVE HANDLERS
     *
     ---------------------------------------------------------*/
-    @After(pattern="SyncService.asyncSend", eval="#{result.reftype == 'faas' && result.action.matches('FAAS-.*')}") 
+    @After(pattern="RPTMainSyncService.asyncSend", eval="#{result.reftype == 'faas' && result.action.matches('FAAS-.*')}") 
     public void sendData( evt ) {
         def syncdata = evt.result 
         faasSync.send(syncdata)
     }   
 
-    @After(pattern="SyncService.receive", eval="#{args[0].reftype == 'faas' && args[0].action.matches('FAAS-.*')}") 
+    @After(pattern="RPTMainSyncService.receive", eval="#{args[0].reftype == 'faas' && args[0].action.matches('FAAS-.*')}") 
     public void receiveData(evt){
         def syncdata = evt.args[0]
         faasSync.receive(syncdata)

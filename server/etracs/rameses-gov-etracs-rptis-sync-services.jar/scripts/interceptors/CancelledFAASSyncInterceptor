@@ -46,13 +46,13 @@ class CancelledFAASSyncInterceptor
     * SEND/RECEIVE HANDLERS
     *
     ---------------------------------------------------------*/
-    @After(pattern="SyncService.asyncSend", eval="#{result.reftype == 'cancelledfaas' && result.action.matches('CANCELLEDFAAS-.*')}") 
+    @After(pattern="RPTMainSyncService.asyncSend", eval="#{result.reftype == 'cancelledfaas' && result.action.matches('CANCELLEDFAAS-.*')}") 
     public void sendData( evt ) {
         def syncdata = evt.result 
         syncSvc.send(syncdata)
     }   
 
-    @After(pattern="SyncService.receive", eval="#{args[0].reftype == 'cancelledfaas' && args[0].action.matches('CANCELLEDFAAS-.*')}") 
+    @After(pattern="RPTMainSyncService.receive", eval="#{args[0].reftype == 'cancelledfaas' && args[0].action.matches('CANCELLEDFAAS-.*')}") 
     public void receiveData(evt){
         def syncdata = evt.args[0]
         syncSvc.receive(syncdata)

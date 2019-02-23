@@ -21,7 +21,7 @@ class RPTSmsHandler {
 
 	def keywords = ['RPTHELP', 'RPTENROLL', 'RPTINFO', 'RPTBAL', 'RPTSTOP', 'RH', 'RE', 'RI', 'RB', 'RT', 'RTS', 'RS']
 
-	@OnMessage(value="sms_listener", eval="#{data.keyword.toUpperCase().startsWith('xRPT')}")
+//	@OnMessage(value="sms_listener", eval="#{data.keyword.toUpperCase().startsWith('xRPT')}")
 	public void checkKeyword(def params) {
 		def validKeyword = false
 		def info = parseInfo(params)
@@ -45,7 +45,7 @@ class RPTSmsHandler {
 	}
 
 	
-	@OnMessage(value="sms_listener", eval="#{data.keyword.toUpperCase().matches('RH|RPTHELP')}")
+	//@OnMessage(value="sms_listener", eval="#{data.keyword.toUpperCase().matches('RH|RPTHELP')}")
 	public void handleHelp(def params) 
 	{
 		def reply = createReply(params)
@@ -53,7 +53,7 @@ class RPTSmsHandler {
 		sendReply(reply)
 	} 
 
-	@OnMessage(value="sms_listener", eval="#{data.keyword.toUpperCase().matches('RE|RPTENROLL')}")
+	//@OnMessage(value="sms_listener", eval="#{data.keyword.toUpperCase().matches('RE|RPTENROLL')}")
 	public void handleEnroll(def params) 
 	{
 		def reply = createReply(params)
@@ -74,7 +74,7 @@ class RPTSmsHandler {
 	} 
 
 	
-	@OnMessage(value="sms_listener", eval="#{data.keyword.toUpperCase().matches('RI|RPTINFO')}")
+	//@OnMessage(value="sms_listener", eval="#{data.keyword.toUpperCase().matches('RI|RPTINFO')}")
 	public void handleInfo(def params) 
 	{
 		def reply = createReply(params)
@@ -89,7 +89,7 @@ class RPTSmsHandler {
 	} 
 
 
-	@OnMessage(value="sms_listener", eval="#{data.keyword.toUpperCase().matches('RB|RPTBAL')}")
+	//@OnMessage(value="sms_listener", eval="#{data.keyword.toUpperCase().matches('RB|RPTBAL')}")
 	public void handleBalanceInquiry(def params) 
 	{
 		def reply = createReply(params)
@@ -110,7 +110,7 @@ class RPTSmsHandler {
 	} 
 
 
-	@OnMessage(value="sms_listener", eval="#{data.keyword.toUpperCase().matches('RS|RPTSTOP')}")
+	//@OnMessage(value="sms_listener", eval="#{data.keyword.toUpperCase().matches('RS|RPTSTOP')}")
 	public void handleStop(def params) 
 	{
 		def reply = createReply(params)
@@ -129,7 +129,7 @@ class RPTSmsHandler {
 
 
 
-	@OnMessage(value="sms_listener", eval="#{data.keyword.toUpperCase().matches('RT|RPTTRACK')}")
+	//@OnMessage(value="sms_listener", eval="#{data.keyword.toUpperCase().matches('RT|RPTTRACK')}")
 	public void handleRPTTracking(def params) 
 	{
 		def reply = createReply(params)
@@ -149,7 +149,7 @@ class RPTSmsHandler {
 		sendReply(reply)
 	} 
 
-	@OnMessage(value="sms_listener", eval="#{data.keyword.toUpperCase().matches('RTS|RPTSTATUS')}")
+	//@OnMessage(value="sms_listener", eval="#{data.keyword.toUpperCase().matches('RTS|RPTSTATUS')}")
 	public void handleTrackingStatusRequest(def params) 
 	{
 		def reply = createReply(params)

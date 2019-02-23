@@ -6,7 +6,7 @@ import java.text.*;
 
 public class RemoteSyncService {
 
-	@Service(value="SyncService", connection="local-etracs")
+	@Service(value="RPTMainSyncService", connection="local-etracs")
 	def svc;
 
 

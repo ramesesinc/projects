@@ -38,13 +38,13 @@ class SubdivisionSyncInterceptor
     * SEND/RECEIVE HANDLERS
     *
     ---------------------------------------------------------*/
-    @After(pattern="SyncService.asyncSend", eval="#{result.reftype == 'subdivision' && result.action.matches('SUBDIVISION-.*')}") 
+    @After(pattern="RPTMainSyncService.asyncSend", eval="#{result.reftype == 'subdivision' && result.action.matches('SUBDIVISION-.*')}") 
     public void sendData( evt ) {
         def syncdata = evt.result 
         syncSvc.send(syncdata)
     }   
 
-    @After(pattern="SyncService.receive", eval="#{args[0].reftype == 'subdivision' && args[0].action.matches('SUBDIVISION-.*')}") 
+    @After(pattern="RPTMainSyncService.receive", eval="#{args[0].reftype == 'subdivision' && args[0].action.matches('SUBDIVISION-.*')}") 
     public void receiveData(evt){
         def syncdata = evt.args[0]
         syncSvc.receive(syncdata)

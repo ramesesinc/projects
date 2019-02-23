@@ -51,13 +51,13 @@ class FAASRestrictionSyncInterceptor
     * SEND/RECEIVE HANDLERS
     *
     ---------------------------------------------------------*/
-    @After(pattern="SyncService.asyncSend", eval="#{result.reftype == 'faasrestriction' && result.action.matches('FAAS-RESTRICTION-.*')}") 
+    @After(pattern="RPTMainSyncService.asyncSend", eval="#{result.reftype == 'faasrestriction' && result.action.matches('FAAS-RESTRICTION-.*')}") 
     public void sendData( evt ) {
         def syncdata = evt.result 
         syncSvc.send(syncdata)
     }   
 
-    @After(pattern="SyncService.receive", eval="#{args[0].reftype == 'faasrestriction' && args[0].action.matches('FAAS-RESTRICTION-.*')}") 
+    @After(pattern="RPTMainSyncService.receive", eval="#{args[0].reftype == 'faasrestriction' && args[0].action.matches('FAAS-RESTRICTION-.*')}") 
     public void receiveData(evt){
         def syncdata = evt.args[0]
         syncSvc.receive(syncdata)

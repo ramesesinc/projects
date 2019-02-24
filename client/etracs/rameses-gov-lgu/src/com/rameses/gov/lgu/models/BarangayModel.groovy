@@ -41,8 +41,10 @@ class BarangayModel extends CrudFormModel {
                 list << rootOrgCode;
             }
             */
-            if( entity.parent?.code ) {
-                list << entity.parent.code;
+            if( entity.parent?.pin ) {
+                list << entity.parent.pin;
+            } else if( entity.parent?.code){
+                list << entity.parent?.code;
             }
             if( entity.indexno ) {
                 list << entity.indexno;

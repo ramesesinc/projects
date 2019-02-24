@@ -13,6 +13,19 @@ class ProvinceSyncMasterInterceptor
         params._schemaname = params.reftype 
         params.where = ['1=1']
         evt.result.items = qrySvc.getList(params)
+        if (params._schemaname == 'structure') {
+            loadStructureMaterials(evt.result.items)
+        }
         evt.result.status = 'OK'
+    }
+
+    void loadStructureMaterials(structures) {
+        structures.each{
+            def p = [
+                _schemaname: 'structurematerial',
+                where: ['structure_objid = :objid', it]
+            ]
+            it.materials = qrySvc.getList(p);
+        }
     }
 }

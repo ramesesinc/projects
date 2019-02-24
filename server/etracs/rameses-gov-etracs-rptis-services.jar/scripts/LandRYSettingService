@@ -86,6 +86,8 @@ public class LandRYSettingService
 			al.rate = 0.0 
 			saveAssessLevel(al)
         }
+        initStandardAdjustments(entity)
+        initStandardStripping(entity)
         return open(entity)
     }
 
@@ -600,6 +602,49 @@ public class LandRYSettingService
                 saveAdjustmentType(it)
             }
         } 
+    }
+
+    
+    void initStandardAdjustments(entity){
+        def agriclass = em_classification.find([name: 'AGRICULTURAL']).first() 
+        createAdjustment(entity, agriclass, 'APR', 'ALONG PROVINCIAL', '0', 0)
+        createAdjustment(entity, agriclass, 'ANR', 'ALONG NATIONAL ROAD', '0', 0)
+        createAdjustment(entity, agriclass, 'NRO', 'NO ROAD OUTLET', 'SYS_BASE_MARKET_VALUE * (-0.09)', 0)
+        createAdjustment(entity, agriclass, 'ADR', 'ALONG DIRT ROAD', 'SYS_BASE_MARKET_VALUE * (-0.06)', 0)
+        createAdjustment(entity, agriclass, 'AWR', 'ALL WEATHER ROAD', 'SYS_BASE_MARKET_VALUE * (-0.03)', 0)
+
+        createAdjustment(entity, agriclass, 'DWR1', 'DISTANCE TO ALL WEATHER ROAD (0%)', '0', 1)
+        createAdjustment(entity, agriclass, 'DWR2', 'DISTANCE TO ALL WEATHER ROAD (-2%)', 'SYS_BASE_MARKET_VALUE * (-0.02)', 1)
+        createAdjustment(entity, agriclass, 'DWR3', 'DISTANCE TO ALL WEATHER ROAD (-4%)', 'SYS_BASE_MARKET_VALUE * (-0.04)', 1)
+        createAdjustment(entity, agriclass, 'DWR4', 'DISTANCE TO ALL WEATHER ROAD (-6%)', 'SYS_BASE_MARKET_VALUE * (-0.06)', 1)
+        createAdjustment(entity, agriclass, 'DWR5', 'DISTANCE TO ALL WEATHER ROAD (-8%)', 'SYS_BASE_MARKET_VALUE * (-0.08)', 1)
+
+        createAdjustment(entity, agriclass, 'DTC1', 'DISTANCE TO TRADING CENTER (5%)', 'SYS_BASE_MARKET_VALUE * (0.05)', 2)
+        createAdjustment(entity, agriclass, 'DTC2', 'DISTANCE TO TRADING CENTER (0%)', '0', 2)
+        createAdjustment(entity, agriclass, 'DTC3', 'DISTANCE TO TRADING CENTER (-2%)', 'SYS_BASE_MARKET_VALUE * (-0.02)', 2)
+        createAdjustment(entity, agriclass, 'DTC4', 'DISTANCE TO TRADING CENTER (-4%)', 'SYS_BASE_MARKET_VALUE * (-0.04)', 2)
+        createAdjustment(entity, agriclass, 'DTC5', 'DISTANCE TO TRADING CENTER (-6%)', 'SYS_BASE_MARKET_VALUE * (-0.06)', 2)
+    }
+
+    void createAdjustment(entity, appliedto, code, name, expr, idx){
+        def adj = [ 
+            objid: code, 
+            landrysettingid: entity.objid, 
+            code: code, 
+            name: name, 
+            expr: expr, 
+            idx: idx, 
+            appliedto: appliedto?.name, 
+            previd: null,
+            classification: appliedto,
+        ]
+        em_adjustmenttype.create(adj)
+
+        em.insertAdjustmentTypeClassification([
+            landadjustmenttypeid: adj.objid,
+            classification_objid: appliedto.objid,
+            landrysettingid: entity.objid 
+        ])
     }
 
 }

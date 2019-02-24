@@ -23,9 +23,13 @@ public class BatchBillingModel extends WorkflowTaskModel {
    
    @Service("WaterworksBeginBalanceService")
    def beginBalanceSvc;
+
+   @Service("PersistenceService")
+   def persistenceSvc;
     
    def consumptionUtil = ManagedObjects.instance.create(ConsumptionUtil.class);
-    
+   def billDispatcher = ManagedObjects.instance.create(BillDispatcherReceipt.class);
+   
    def selectedItem;
    def selectedBillItem;
    
@@ -129,6 +133,13 @@ public class BatchBillingModel extends WorkflowTaskModel {
         Modal.show("waterworks_consumption_history", p );
     }
     
+    def viewBillReceipt = { item-> 
+        if ( item ) {
+            Modal.show("waterworks_batch_billing_menu_viewbillreceipt", [item: item, caller: this]);
+        }
+        return null; 
+    }
+    
     def rebill = { item->
         batchSvc.processBilling( [ 
             objid:item.objid,acctid:item.acctid,consumptionid:item.consumptionid, 
@@ -136,6 +147,24 @@ public class BatchBillingModel extends WorkflowTaskModel {
         ] );
         billHandler.reload();
     }
+    
+    def editBillFunc = { item-> 
+        if ( item ) { 
+            def p = [item: item, caller: this];
+            p.beforeSave = { u-> p.u = u; } 
+            p.handler = {
+                if ( !p.u ) return; 
+                item.surcharge = p.u.surcharge;
+                item.interest = p.u.interest;
+                item.otherfees = p.u.otherfees;
+                item.arrears = p.u.arrears;
+                item.credits = p.u.credits;
+                billHandler.refreshSelectedItem(); 
+            }
+            Modal.show("waterworks_batch_billing_menu:edit", p); 
+        } 
+        return null; 
+    } 
     
     def hold = { item->
         def i = item.hold ? 0 : 1;
@@ -230,30 +259,42 @@ public class BatchBillingModel extends WorkflowTaskModel {
     def getBillHandlerList() {
         def mnuList = [];
         mnuList << [value: 'View Account', func: viewAccount];
-        if(task?.state.matches('for-review|for-reading') ) {
+        if ( task?.state.toString().matches('for-review|for-reading')) {
             mnuList << [value: 'Recompute Bill', func:rebill];
             mnuList << [value: 'Begin Balance', func: beginBalance];
         } 
         mnuList << [value: 'View Bill', func: viewBilling];
         
-        return  mnuList; 
-    }
-   
-    def getReadingHandlerList(def item) {
-        def meterid = item.meterid; 
-        def mnuList = [];
-        if( task?.state == "for-reading" ) {
-            //if(item.hold == 0 ) mnuList << [value: 'Edit Reading/Volume', func:editConsumption];
-            if(item.hold == 0 ) mnuList << [value: 'Hold', func:hold];
-            if(item.hold == 1 ) mnuList << [value: 'Activate', func:hold];
-            mnuList << [value: 'Recompute', func: recomputeConsumption];
-            mnuList << [value: 'Reset', func: resetConsumption]
+        if ( task?.state.toString().matches('for-reading|for-approval|approved')) {
+            mnuList << [value: 'Edit', func: editBillFunc];
         }
-        mnuList << [value: 'View Account', func:viewAccount];
-        mnuList << [value: 'View Consumption History', func: viewConsumptionHistory];
         return  mnuList; 
     }
    
+    def getReadingHandlerList( def item ) {
+        def mnuList = []; 
+        def meterid = item.meterid; 
+        if( task?.state.toString().matches("for-reading")) { 
+            if( item.hold == 0 ) mnuList << [value: 'Hold', func:hold]; 
+            if( item.hold == 1 ) mnuList << [value: 'Activate', func:hold]; 
+            mnuList << [value: 'Recompute', func: recomputeConsumption]; 
+            mnuList << [value: 'Reset', func: resetConsumption]; 
+        }
+        mnuList << [value: 'View Account', func:viewAccount]; 
+        mnuList << [value: 'View Consumption History', func: viewConsumptionHistory]; 
+        
+        if ( task?.state == "approved" ) { 
+            boolean allowed = ( 
+                item.hold.toString() != '1' &&  
+                item.acctstate.toString() == 'ACTIVE' &&  
+                item.meterstate.toString() != 'DISCONNECTED'
+            ); 
+            if ( allowed ) { 
+                mnuList << [value: 'View Bill Receipt', func: viewBillReceipt]; 
+            }
+        } 
+        return  mnuList; 
+    } 
    
     def billHandler = [
         getContextMenu: { item, name-> 
@@ -288,68 +329,145 @@ public class BatchBillingModel extends WorkflowTaskModel {
                 def res = calcConsumption(item);
                 item.putAll(res);
             }
+        },
+        isForceUpdate: {
+            return true; 
         }
     ] ;
     
    def getPrinterList() {
        return printerService.getPrinters(); 
-       //return ['EPSON FX-2175'];
    }
    
    def cancelPrint = false;
    public void printBill() {
-       def printerName = null;
-       def startbillno = null;
-       def startseqno = null; 
-       def acctno = null; 
-       boolean pass = false;
+       def onprint = { printerName, text -> 
+           if ( text ) {
+               printerService.printString(printerName, text.toString() );
+           } 
+       }
        
-       def h = [data: [seqno: 0]];
-       h.handler = { v->
-           if ( v.billno == null ) throw new Exception("Start Bill No. is required"); 
-           if ( v.billno <= 0 ) throw new Exception("Start Bill No. must be greater than zero"); 
-           
-           printerName = v.printername; 
-           startbillno = v.billno;
-           startseqno = v.seqno;
-           acctno = v.acctno;
-           pass = true; 
-       } 
-       h.fields = [];
-       h.fields << [name:"printername", caption:'Select Printer', type:'combo', required:true, itemsObject:getPrinterList() ];
-       h.fields << [name:"billno", caption:'Start Bill No.', type:'integer', required:true ];
-       h.fields << [name:"seqno", caption:'Start Seq No.', type:'integer' ];
-       h.fields << [name:"acctno", caption:'Account No.', type:'text' ];
-       Modal.show("dynamic:form", h, [title: 'Start Bill Printing'] );
-       if ( !pass ) return; 
-       
-       def counter = 0; 
-       def parm = [batchid: entity.objid, refbillno: startbillno, startseqno: startseqno, acctno: acctno]; 
-       while ( true ) { 
-           if ( cancelPrint ) break;
+       printBillImpl( null, onprint ); 
+   }
+   
+    public void printBillImpl( optionMap, onPrintHandler ) {
+        boolean pass = false;
+        def printerName = null;
+        def startbillno = null;
+        def startseqno = null;
+        def acctno = optionMap?.acctno; 
+        def previewOnly = (optionMap?.previewOnly ? true : false); 
+        if ( previewOnly ) {
+            startbillno = 1; 
+        }
+        else {
+            def h = [data: [acctno: optionMap?.acctno]];
+            h.handler = { v->
+                if ( v.billno == null ) throw new Exception("Start Bill No. is required"); 
+                if ( v.billno <= 0 ) throw new Exception("Start Bill No. must be greater than zero"); 
 
-           def res = printSvc.process( parm );
-           def list = res.list; 
-           if ( !list ) break; 
-           if ( cancelPrint ) break; 
-           
-           list.each {
-               printerService.printString(printerName, it.toString() );
-           }  
-           counter++; 
-           waitPrintProc(); 
-           parm.refbillno = res.refbillno;
-           parm.printed_list = res.printed_list; 
-       } 
+                printerName = v.printername; 
+                startbillno = v.billno;
+                startseqno = v.seqno;
+                acctno = v.acctno;
+                pass = true; 
+            } 
+            h.fields = [];
+            h.fields << [name:"printername", caption:'Select Printer', type:'combo', required:true, itemsObject:getPrinterList() ];
+            h.fields << [name:"billno", caption:'Start Bill No.', type:'integer', required:true ];
+            h.fields << [name:"seqno", caption:'Start Seq No.', type:'integer', enabled:(acctno ? false : true)];
+            h.fields << [name:"acctno", caption:'Account No.', type:'text', enabled:(acctno ? false : true)];
+            Modal.show("dynamic:form", h, [title: 'Start Bill Printing'] );
+            if ( !pass ) return; 
+        }
        
-       if ( cancelPrint ) {
-           MsgBox.alert("printing has been cancelled");
-       } else if ( counter == 0 ) {
-           MsgBox.alert("No available records that matches the criteria for printing. Please verify");
-       } else {
-           MsgBox.alert("printing finished");
-       } 
+        def counter = 0; 
+        def parm = [ 
+            batchid: entity.objid, refbillno: startbillno, 
+            startseqno: startseqno, acctno: acctno, previewOnly: previewOnly
+        ]; 
+        while ( true ) { 
+            if ( cancelPrint ) break;
+
+            def res = printSvc.process( parm );
+            def list = res.list; 
+            if ( !list ) break; 
+            if ( cancelPrint ) break; 
+
+            if ( onPrintHandler ) { 
+                list.each { 
+                    onPrintHandler( printerName, it ); 
+                } 
+            } 
+
+            counter++; 
+            if ( previewOnly ) {
+                break; 
+            }
+            else if ( acctno ) {
+                break;
+            }
+            
+            waitPrintProc(); 
+            parm.refbillno = res.refbillno; 
+            parm.printed_list = res.printed_list; 
+        } 
+
+        if ( cancelPrint ) { 
+            MsgBox.alert("printing has been cancelled");
+        } else if ( counter == 0 ) { 
+            MsgBox.alert("No available records that matches the criteria for printing. Please verify");
+        } else if ( !previewOnly ) { 
+            MsgBox.alert("printing finished");
+        } 
+    } 
+    
+   void printBillDispatcherReceipt() {
+       billDispatcher.buildReport([ batchid: entity.objid ]); 
    } 
+   
+    def showMenuActions( inv ) { 
+        def selItem = null; 
+        def menus = null; 
+        def invtype = inv.properties.type;
+        if ( invtype == 'readingMenu' ) {
+            if ( hasCallerProperty('selectedItem')) {
+                selItem = caller.selectedItem; 
+                if ( hasCallerMethod('getReadingHandlerList')) { 
+                    menus = caller.getReadingHandlerList( selItem ); 
+                }
+            }
+
+        } else if ( invtype == 'billingMenu' ) {
+            if ( hasCallerProperty('selectedBillItem')) { 
+                selItem = caller.selectedBillItem; 
+                if ( hasCallerMethod('getBillHandlerList')) { 
+                    menus = caller.getBillHandlerList(); 
+                }
+           }
+        } 
+       
+        if ( !menus ) return null; 
+       
+        def ops = new PopupMenuOpener(); 
+        menus.each{ ops.add( createActionMenu( it, selItem )); }
+        return ops;
+    }
+   
+    def createActionMenu( final menu, final data ) {
+        return [
+            getCaption: {
+                return menu?.value.toString(); 
+            }, 
+            execute: { 
+                if ( menu?.func ) { 
+                    menu.func( data ); 
+                } 
+                return null; 
+            } 
+        ] as com.rameses.rcp.common.Action; 
+    }
+   
    
     private void waitPrintProc() {
         try { 

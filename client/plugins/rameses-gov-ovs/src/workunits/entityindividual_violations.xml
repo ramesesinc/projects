@@ -10,8 +10,6 @@
         import com.rameses.seti2.models.*;
         
         class IndividualOptionViolationList extends CrudListModel {
-            @Caller
-            def caller;
         
             def getCustomFilter() {
                 return ["violator.objid=:entityid", [entityid:caller.entity.objid]];

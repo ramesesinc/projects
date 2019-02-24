@@ -1,0 +1,90 @@
+import com.rameses.annotations.*;
+import ovs.facts.*;
+
+class OVSBillingInterceptor {
+
+	@DataContext("ovs_violation_ticket")
+	def ticketEm;
+
+	@DataContext("ovs_violation_ticket_entry")
+	def entryEm;
+
+	@After(pattern="BillingInfoHandler.getHeaderInfo",  eval="#{ args[0].rulename == 'ovsbilling' }" )
+	public void loadHeaderInfo( evt ) {
+		def obj = evt.args[0];
+		def p = obj.params;
+
+		def payer = null;
+		def ticketid = null;
+		if(p.searchoption == 'entity') {
+			if(!p.entity) throw new Exception("Please specify entity");
+			payer = [objid: p.entity.objid, name:p.entity.name, address: p.entity.address] ; 
+		}
+		else {
+			if(!p.ticketno) throw new Exception("Please specify ticket no");
+			def t = ticketEm.find( [ticketno: p.ticketno]).first();
+			if(!t) throw new Exception('Ticket ' + p.ticketno + ' not found');
+			ticketid = t.objid;
+			payer = t.violator;
+		}
+		def r = evt.result;
+		r.payer = payer;
+		r.ticketid = ticketid;
+	}
+
+	@After(pattern="FactBuilderService.getFacts",  eval="#{ args[0].rulename == 'ovsbilling' }")
+	public void buildFactsForBilling(def evt) {
+		def p = evt.args[0];
+		def data = p.params;
+		def factBuilder = evt.result;
+		def str = "parent.violator.objid = :entityid AND (amount - amtpaid > 0)";
+		def pp = [ entityid: data.payer.objid ];
+		if( data.ticketid != null  ) {
+			str += " AND parent.objid = :ticketid";
+			pp.ticketid = data.ticketid;
+		}
+		def sel = "objid,violation:{violationid},title:{violation.title},violationcount,dtcreated:{parent.dtcreated},amount:{amount-amtpaid},ticketno:{parent.ticketno}";
+		def items = entryEm.where( str, pp ).select(sel).orderBy("parent.dtcreated ASC").list();
+		int i = 0;
+		items.each {
+			it.sortorder = i++;
+			factBuilder.facts << new ViolationTicketEntry( it );
+		}	
+	}
+
+	/*******************************************
+    * CASH RECEIPT SPECFIC HANDLERS
+	********************************************/
+	@After( pattern="BillingInfoHandler.formatReceiptInfo", eval="#{  args[0].txntype == 'ovs'  }")
+	public void formatCashReceipt(def evt ) {
+		def info = evt.args[0];
+		def res = evt.result;
+		res.payer = info.payer;
+		res.paidby = info.payer.name;
+		res.paidbyaddress = info.payer.address.text;
+	} 
+
+	/*********************************************************************
+    * THIS IS BOTH USED BY CASH RECEIPT AND CAPTURE PAYMENT DURING POST
+	**********************************************************************/
+	@After( pattern="PaymentPostingHandler.getPaymentInfo", eval="#{  args[0].txntype == 'ovs'  }")
+	public void loadPaymentInfo( evt ) {
+		def bill = evt.args[0];
+		def result = evt.result;
+		bill.billitems.each {
+			it.reftype = "ovs_violation_ticket_entry";
+		}
+		result._schemaname = "ovs_payment";
+		result.items = bill.billitems;
+		result.entityid = bill.payer.objid;
+	} 
+
+	@After( pattern="PaymentPostingHandler.getVoidInfo", eval="#{ args[0].txntype == 'ovs' }")
+	public void loadVoidInfo( evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+		result._schemaname = 'ovs_payment';
+	} 
+
+
+}

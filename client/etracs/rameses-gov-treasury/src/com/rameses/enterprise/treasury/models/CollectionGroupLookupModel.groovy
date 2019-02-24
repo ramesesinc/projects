@@ -25,7 +25,7 @@ class CollectionGroupLookupModel extends CrudLookupModel {
     def receipt;
 
     void afterInit() {
-        if ( receipt == null ) throw new Exception("receipt must be set in collectiongroup lookup");
+        //if ( receipt == null ) throw new Exception("receipt must be set in collectiongroup lookup");
     }
     
     public def getCustomFilter() {
@@ -46,7 +46,9 @@ class CollectionGroupLookupModel extends CrudLookupModel {
     
     //if you will use collection group lookup in rules make 
     def lookupSelectedValue( def o ) {
+        if(receipt == null) return o;
         if(tag == "rules") return o;
+        
         //lookup items here
         def orgid = null;
         if( query.customorgid ) {
@@ -62,8 +64,10 @@ class CollectionGroupLookupModel extends CrudLookupModel {
             m.where = ["(orgid IS NULL OR orgid = :orgid)", [orgid: orgid]];
         }
         def items = queryService.getList(m);
-        if(!items)
-            throw new Exception("No items defined for this collection group");
+        if (!items) {
+            fireRules( o ); 
+            return o;
+        }
             
         items.sort{( it.sortorder ? it.sortorder : 0 )} 
 
@@ -103,4 +107,21 @@ class CollectionGroupLookupModel extends CrudLookupModel {
         receipt.amount = receipt.items.sum{( it.amount ? it.amount : 0.0 )} 
     }    
     
+    void fireRules(def collectiongroup) {
+        def params = [billdate: receipt.receiptdate];
+        params.collectiongroup = collectiongroup;
+        def h1 = { result->
+            if( result  == "_close" ) {
+                return null;
+            }
+            else if( !result?.items ) {
+                MsgBox.err( new Exception("No items defined"));
+            }
+            else {
+                receipt.items.addAll( result.items );                
+            }
+        }
+        def op = Inv.lookupOpener("collection_rule", [rulename:"collection", params: params, handler: h1 ] );
+        Modal.show( op );
+    }
 }    

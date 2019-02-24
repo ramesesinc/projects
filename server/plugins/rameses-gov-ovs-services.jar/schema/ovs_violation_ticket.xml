@@ -1,5 +1,5 @@
 <schema adapter="ovs">
-	<element name="ovs_violation_ticket" tablename="ovs_violation_ticket">
+	<element tablename="ovs_violation_ticket">
 		<field name="objid" primary="true" prefix="VIT"/>
 		<field name="state" required="true" defaultValue="OPEN"/>
 		<field name="dtcreated" required="true" caption="Date Created"/>

@@ -8,9 +8,10 @@
 		<!-- link to ledger account -->
 		<field name="acctid" />
 
-		<field name="amount" required="true" type="decimal"/>
-		<field name="amtpaid" required="true" type="decimal" />
-		<field name="balance" expr="amount-amtpaid" />
+		<field name="amount" required="true" type="decimal" caption="Amount"/>
+		<field name="amtpaid" required="true" type="decimal" caption="AmtPaid"/>
+		<field name="discount" required="true" type="decimal" caption="Discount"/>
+		<field name="balance" expr="amount-amtpaid" type="decimal" caption="Balance"/>
 		<field name="remarks" />
 
 		<field name="refno" />

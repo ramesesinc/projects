@@ -4,12 +4,19 @@
           <invoker type="business_billitem_txntype:open" action="open" caption="Business BillItem Txntype"  target="popup"/>
     </invokers>
     <code>
-        import com.rameses.seti2.models.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.seti2.models.*;
+
+class BusinessBillItemTxnType extends CrudFormModel {
+    def feeTypes = ["REGFEE", "OTHERCHARGE"];
         
-        class BusinessBillItemTxnType extends CrudFormModel {
-            def feeTypes = ["REGFEE", "OTHERCHARGE"];
+    @PropertyChangeListener 
+    def changes = [
+        'entity.account': { o-> 
+            entity.title = o?.title; 
         }
-        
+    ]; 
+}
     </code>
     <pages>
         <page template="com.rameses.gov.etracs.bpls.views.BusinessBillItemTxnTypePage"/>

@@ -37,28 +37,45 @@ class WaterworksBatchBillPrintingService {
 		if ( param.refbillno <= 0 ) 
 			throw new Exception("refbillno must be greater than zero"); 
 
-		if ( param.printed_list ) {
-			def list = param.printed_list; 
+		def list = []; 
+		boolean previewOnly = (param.previewOnly ? true : false); 
+		if ( previewOnly ) {
+			// do not updated the field 'printed'   
+		} 
+		else if ( param.printed_list ) { 
+			list = param.printed_list; 
 			def str = "('" + list.join("','") + "')"; 
 			billEm.where( "objid IN " + str ).update([ printed: 1 ]); 
 		} 
 
-		def wherebuff = new StringBuilder(); 
-		wherebuff.append(" printed=0 and hold=0 and meterstate <> 'DEFECTIVE' and acctstate = 'ACTIVE' "); 
+		def wheres = []; 
 		if ( param.acctno ) { 
-			wherebuff.append(" and acctno = '"+ param.acctno +"' ");
-		} else if ( param.startseqno && param.startseqno > 0 ) { 
-			wherebuff.append(" and indexno >= "+ param.startseqno ); 
+			wheres << " acctno = '"+ param.acctno +"' ";
 		} 
+		else if ( param.startseqno && param.startseqno > 0 ) { 
+			wheres << " printed = 0 AND indexno >= "+ param.startseqno; 
+		} 
+		else {
+			wheres << " printed = 0 "; 
+		}
 
-		def blist = vwbillEm.find([ batchid: param.batchid ]).where( wherebuff.toString() ).orderBy("billno").list(0,10);
+		wheres << " hold=0 and meterstate <> 'DISCONNECTED' and acctstate = 'ACTIVE' "; 
+		def wherestr = wheres.join(" AND "); 
+		
+		vwbillEm.debug = true;
+		def blist = vwbillEm.find([ batchid: param.batchid ]).where( wherestr ).orderBy("billno").list(0,10);
 		if ( !blist ) return []; 
 
-		def idx = param.refbillno;
-		blist.each {
-			def u = [ refbillno: idx++ ];
-			billEm.find([ objid: it.objid ]).update( u );
-			it.refbillno = u.refbillno;
+		def idx = param.refbillno; 
+		if ( previewOnly ) {
+			// do not update the field 'refbillno' 
+		} 
+		else {
+			blist.each {
+				def u = [ refbillno: idx++ ];
+				billEm.find([ objid: it.objid ]).update( u );
+				it.refbillno = u.refbillno;
+			} 
 		} 
 
 		def plist = self.formatReport( blist );

@@ -4,7 +4,8 @@
     
     <invokers>
         <invoker folderid="home/police" caption="Issue Clearance" action="init"
-                 cols="receipt.receiptno,receipt.receiptdate,receipt.paidby,receipt.amount,receipt.txntype"/> 
+                 cols="receipt.receiptno,receipt.receiptdate,receipt.paidby,receipt.amount,receipt.txntype"
+                 role="MASTER" /> 
     </invokers>    
 </workunit>
 

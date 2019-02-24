@@ -5,11 +5,13 @@
                 action="init" target="popup" height="630" width="800"
                 cols="entityno,name,address.text"
                 hiddenCols="entityname,gender,type" 
+                customFilter=" state='ACTIVE' "
                 surroundSearch="false" />
        
        <invoker type="individualentity:lookup" caption="Lookup Individual Entity" 
                 action="init" target="popup" height="630"  width="800"
                 cols="entityno,name,address.text"
+                customFilter=" state='ACTIVE' "                
                 hiddenCols="entityname,gender,type" 
                 surroundSearch="false" />
    </invokers>

@@ -3,9 +3,9 @@
 		<field name="objid" primary="true" caption="Control No" visible="true"/>
 		
 		<field name="state" required="true"/>
-		<field name="dtcreated" required="true"/>
+		<field name="dtcreated" required="true" caption="DateCreated"/>
 		<field name="createdby_objid" required="true"/>
-		<field name="createdby_name" required="true"/>
+		<field name="createdby_name" required="true" caption="CreatedBy"/>
 		
 		<complex name="zone" ref="waterworks_zone" jointype="many-to-one" includefields="code,sector.objid,sector.code" required="true">
 			<key field="zoneid" target="objid" />
@@ -15,8 +15,9 @@
 		<field name="postedby_objid" />
 		<field name="postedby_name" />
 
-		<field name="reader_objid" />
-		<field name="reader_name" />
+		<field name="reader_objid" required="true"/>
+		<field name="reader_name" caption="Reader" required="true"/>
+		<field name="readingdate" caption="ReadingDate" required="true"/>
 
 		<field name="scheduleid" />
 		<complex name="schedule" ref="waterworks_billing_schedule" jointype="many-to-one" required="true">

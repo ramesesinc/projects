@@ -4,13 +4,12 @@
           title="Other Fees"
           cols="year,monthname,item.code,item.title,amount,amtpaid,balance" >
     <invokers>
-        <invoker type="waterworks_account:section" caption="  Other Fees   " 
-                 index="3" action="init" 
-                 parentkey="acctid"
-                 visibleWhen="#{mode=='read'}"  />
-        
-        <!-- List Actions -->
-        <invoker type="formActions" caption="Add New Entry" action="addNewEntry"/> 
-        <invoker type="formActions" caption="Edit Entry" action="editEntry"/> 
+        <invoker type="waterworks_account:section" 
+                 caption="  Other Fees   " 
+                 action="init" parentkey="acctid" index="3" 
+                 visibleWhen="#{mode=='read'}">
+            <action role="MASTER" />
+            <action role="SHARED" allowCreate="false" allowDelete="false" />
+        </invoker>                 
     </invokers>
 </workunit>

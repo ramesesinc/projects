@@ -9,8 +9,8 @@ class ViolationTicketService {
 	@DataContext("ovs_violation_ticket_entry")
 	def ove;
 
-    @Service("AssessmentRuleService")
-    def assmtSvc;
+    @Service("RuleExecutorService")
+    def ruleSvc;
 
 	@ProxyMethod
 	public def getViolationInfo(def o) {
@@ -20,31 +20,21 @@ class ViolationTicketService {
         def pp = [violationid:o.violationid,"parent.violator.objid":o.violatorid];
 		def z = ove.find(pp).select( 'violationcount:{COUNT(*)}' ).first(); 
         
-        def violation = new ViolationTicket( violation: o.violationid, violationcount: z.violationcount + 1 );
+        def violation = new ViolationTicketEntry( violation: o.violationid, violationcount: z.violationcount + 1 );
         def fb = new FactBuilder();
         fb.facts << violation;
 
-        def item = null;
-        def rh = [
-            getFactKeyValue : { v->
-              if(v instanceof BillItem) {
-                    item = [:];
-                    item.violationid = o.violationid;
-                    item.violationcount = violation.violationcount;
-                    item.amount = v.amount;
-                    item.amtpaid = 0.0;
-                    item.account = v.account.toMap();
-              };  
-              return null;
-            }
-        ] as ResultHandler;
+        ruleSvc.execute( "ovscomputation", fb.facts, null, null );
 
-        assmtSvc.execute( "ovscomputation", [:], fb, rh );
-
-        if( item?.amount == 0 )
+        if( violation.amount == 0 )
             throw new Exception('There are no computation fee found for this violation');
-        if(item==null)
-            throw new Exception("There are no rules found for this entry");    
+
+        def item = [:];
+        item.violationid = o.violationid;
+        item.violationcount = violation.violationcount;
+        item.amount = violation.amount;
+        item.amtpaid = 0;
+
 		return item;
 	}
 	

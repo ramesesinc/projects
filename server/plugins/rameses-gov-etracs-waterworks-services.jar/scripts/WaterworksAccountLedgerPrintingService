@@ -1,0 +1,206 @@
+import com.rameses.annotations.*;
+
+class WaterworksAccountLedgerPrintingService {
+
+    @DataContext('waterworks_account') 
+    def acct_db; 
+
+	@DataContext('waterworks_payment_item') 
+	def wpayi_db; 
+
+	@DataContext('vw_waterworks_consumption') 
+	def vw_con_db; 
+
+	@Service("TemplateService") 
+	def template; 
+
+	@Service('ReportParameterService') 
+	def paramSvc; 
+
+    @Service('DateService') 
+    def dateSvc; 
+
+	@Env 
+	def env; 
+
+	@ProxyMethod 
+	public def getReport( param ) {
+		if ( !param.acctid ) throw new Exception('acctid parameter is required'); 
+
+		def stdparam = paramSvc.getStandardParameter(); 
+		def acct = acct_db.find([ objid: param.acctid ]).first(); 
+		if ( !acct ) throw new Exception('account does not exist'); 
+
+		def items = vw_con_db.find([ acctid: param.acctid ]).where('hold=0').orderBy('periodindexno').list(); 
+		if ( !items ) throw new Exception('No available monthly consumptions'); 
+
+        items.each{
+            def wpayi = wpayi_db.find([ refid: it.objid ]).select('parent.*').orderBy('parent.refdate').first(); 
+            it.receiptno = wpayi?.parent?.refno; 
+            it.receiptdate = wpayi?.parent?.refdate;
+        }
+
+		return buildReport( stdparam, acct, items ); 
+	}
+
+
+	private final static int MAX = 114;
+
+	private def buildReport( stdparam, acct, items ) { 
+		def p = [:]; 
+		def sb = new StringBuilder(); 
+        sb.append(new String([0x1b, '@'] as char[]));
+        sb.append(new String([0x1b, 'M', 10] as char[]));
+        sb.append(new String([120, 1] as char[]));
+        sb.append(new String([120, 107, 1] as char[]));
+        sb.append(new String([27, 33, 4] as char[])); 
+        p.initprinting = sb.toString();
+
+        p.header1 = format('REPUBLIC OF THE PHILIPPINES', MAX, 1); 
+        p.header2 = format(stdparam.PARENTLGUFORMALNAME, MAX, 1); 
+        p.header3 = format(stdparam.LGUFORMALNAME, MAX, 1); 
+        p.header4 = format('[ LEDGER AUDIT ]', MAX, 1); 
+        p.acctname = format(acct.acctname, 54, 0); 
+    	p.acctno = format(acct.acctno, 20, 0); 
+    	p.classificationid = format(acct.classificationid, 12, 0); 
+    	p.addresstext = format(acct.address?.text, 54, 0); 
+    	p.blockno = format(acct.stuboutnode?.zone?.code, 20, 0); 
+    	p.acctstate = format(acct.state, 12, 0); 
+
+    	p.colheader1 = format("Rdng Date Bil.M. Readings Cu.M.    Present Amt  Surcharge     Debit       Credit      Balance    O.R.No. Date Paid", MAX, 0); 
+    	p.colheader2 = format("========= ====== ======== ======== =========== =========== =========== =========== ============= ======= =========", MAX, 0); 
+
+
+        def rundate = dateSvc.getBasicServerDate(); 
+    	def MY = new java.text.SimpleDateFormat("MM-yy");
+    	def MDY = new java.text.SimpleDateFormat("MM/dd/yy");
+    	def d = new StringBuilder(); 
+    	def balance = 0.0; 
+        def prevcredits = 0.0; 
+    	items.each{ a-> 
+    		def readingdate = (a.batch?.readingdate ? a.batch.readingdate : a.readingdate); 
+    		if ( readingdate instanceof Date ) readingdate = MDY.format(readingdate);
+    		else readingdate = null; 
+
+    		def billmonth = java.sql.Date.valueOf(''+ a.year +'-'+ a.month.toString().padLeft(2,'0') +'-01'); 
+    		if ( billmonth instanceof Date ) billmonth = MY.format(billmonth);
+    		else billmonth = null;
+
+    		def receiptdate = a.receiptdate; 
+    		if ( receiptdate instanceof Date ) receiptdate = MDY.format( receiptdate ); 
+    		else receiptdate = null; 
+
+            if ( a.bill == null ) a.bill = [:]; 
+            if ( !a.bill.credits ) a.bill.credits = 0.0;
+            if ( !a.bill.surcharge ) a.bill.surcharge = 0.0;
+            if ( !a.amount ) a.amount = 0.0;
+            if ( !a.amtpaid ) a.amtpaid = 0.0; 
+
+            if ( isDateBetween( a.readingdate, a.discdate, rundate )) {
+                def discamt = roundNearest10((a.amount * 0.05)); 
+                a.amount = a.amount - discamt; 
+            }
+
+            a.debit = a.amount + a.bill.surcharge; 
+            a.credit = a.amtpaid; 
+            if ( a.amtpaid > 0 ) {
+                a.credit += a.bill.credits; 
+            }
+
+            def newcredits = prevcredits; 
+            a.balance = a.debit - a.credit; 
+            if ( a.balance < 0 ) {
+                newcredits += (a.balance * -1.0); 
+                a.balance = (newcredits * -1.0); 
+            } 
+            else if ( a.balance == 0 ) {
+                a.balance = (newcredits > 0 ? newcredits * -1.0 : 0.0);
+            }
+            else { 
+                a.balance += balance; 
+                a.balance -= newcredits; 
+                newcredits = (a.balance < 0 ? a.balance * -1.0 : 0.0); 
+            } 
+
+            prevcredits = newcredits; 
+            balance = (a.balance > 0 ? a.balance : 0.0); 
+
+    		d.append(format(readingdate, 9, 0)).append(" "); 
+    		d.append(format(billmonth, 6, 0)).append(" "); 
+    		d.append(format(a.reading, 8, 2)).append(" "); 
+    		d.append(format(a.volume, 8, 2)).append(" "); 
+    		d.append(formatNumber(a.amount, 11, 2, '#,##0.00')).append(" "); 
+    		d.append(formatNumber(a.surcharge, 11, 2, '#,##0.00')).append(" "); 
+    		d.append(formatNumber(a.debit, 11, 2, '#,##0.00')).append(" "); 
+    		d.append(formatNumber(a.credit, 11, 2, '#,##0.00')).append(" "); 
+    		d.append(formatNumber(a.balance, 13, 2, '#,##0.00')).append(" "); 
+    		d.append(format(a.receiptno, 7, 0)).append(" "); 
+    		d.append(format(receiptdate, 9, 0));
+    		d.append("\n");  
+    	}
+    	p.detail = d.toString();
+
+		def res = template.get( "reports/wateraccountledger", [ o: p ]).toString();
+		return res;
+	}
+
+    private String fill( int length ) { 
+        StringBuilder sb = new StringBuilder(); 
+        for (int i=0; i<length; i++) sb.append(" "); 
+        return sb.toString(); 
+    } 
+    
+    private String format( Object value, int length, int alignment ) {
+        String str = (value == null ? "" : value.toString()); 
+        int strlen = str.length(); 
+        length = (length <= 0 ? strlen : length);
+        if ( strlen >= length ) return str.substring(0, length);  
+
+        int diff = length - strlen;
+        diff = (diff < 0 ? 0 : diff); 
+        StringBuilder sb = new StringBuilder();
+        if (alignment == 2) {             
+            sb.append(fill(diff)).append( str );
+        } else if (alignment == 1) {
+            int lpos = diff / 2; 
+            lpos += ((diff % 2) > 0 ? 1 : 0); 
+            sb.append(fill(lpos)).append( str ); 
+            sb.append(fill(length - sb.length()));
+        } else {
+            sb.append( str ).append(fill(diff));
+        }
+        return sb.toString(); 
+    }
+    
+    private String formatNumber( Number value, int length, int alignment, String pattern ) {
+        if ( value == null ) return format("", length, alignment); 
+        
+        String xpattern = (pattern == null ? "" : pattern); 
+        if ( xpattern.length() == 0 ) xpattern = "0"; 
+        
+        def numformat = new java.text.DecimalFormat( xpattern ); 
+        return format( numformat.format( value ), length, alignment ); 
+    }
+
+    private def DEC_FORMAT = new java.text.DecimalFormat('0.00'); 
+    private Number round( Number value ) {
+        if ( value == null ) return value; 
+        return new BigDecimal( DEC_FORMAT.format(value) ); 
+    }
+
+    private Number roundNearest10( Number value ) {
+        if ( value == null ) return value; 
+
+        def bd = new java.math.BigDecimal(value.toString()); 
+        return bd.setScale(1, java.math.RoundingMode.HALF_UP);
+    }      
+
+    private boolean isDateBetween( startdate, enddate, rundate ) { 
+        if ( startdate == null ) startdate = enddate; 
+        if ( enddate == null ) enddate = startdate; 
+        if (!(startdate && enddate)) return false; 
+        boolean b1 = ( rundate.equals( startdate) || rundate.after( startdate));
+        boolean b2 = ( rundate.equals( enddate) || rundate.before( enddate)); 
+        return (b1 && b2); 
+    }
+}

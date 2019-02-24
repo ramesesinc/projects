@@ -3,7 +3,8 @@
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
 		 name="form_907"
-		 columnCount="1"
+
+		 language="groovy"		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
 		 pageWidth="612"
@@ -37,23 +38,23 @@
 	<field name="amountinwords" class="java.lang.String"/>
 	<field name="txndate" class="java.util.Date"/>
 	<field name="collector.name" class="java.lang.String"/>
-	<field name="amount" class="java.math.BigDecimal"/>
+	<field name="amount" class="java.lang.Number"/>
 	<field name="paidbyaddress" class="java.lang.String"/>
 	<field name="collector.title" class="java.lang.String"/>
-	<field name="basictax" class="java.math.BigDecimal"/>
-	<field name="interest" class="java.math.BigDecimal"/>
-	<field name="tax.interestrate" class="java.math.BigDecimal"/>
+	<field name="basictax" class="java.lang.Number"/>
+	<field name="interest" class="java.lang.Number"/>
+	<field name="tax.interestrate" class="java.lang.Number"/>
 	<field name="payer.tin" class="java.lang.String"/>
-	<field name="realpropertyav" class="java.math.BigDecimal"/>
-	<field name="propertyavtax" class="java.math.BigDecimal"/>
-	<field name="businessgross" class="java.math.BigDecimal"/>
-	<field name="businessgrosstax" class="java.math.BigDecimal"/>
+	<field name="realpropertyav" class="java.lang.Number"/>
+	<field name="propertyavtax" class="java.lang.Number"/>
+	<field name="businessgross" class="java.lang.Number"/>
+	<field name="businessgrosstax" class="java.lang.Number"/>
 	<field name="payer.dtregistered" class="java.util.Date"/>
 	<field name="payer.nature" class="java.lang.String"/>
 	<field name="payer.placeregistered" class="java.lang.String"/>
 	<field name="payer.type" class="java.lang.String"/>
 	<field name="receiptdate" class="java.util.Date"/>
-	<field name="additionaltax" class="java.math.BigDecimal"/>
+	<field name="additionaltax" class="java.lang.Number"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
@@ -131,7 +132,7 @@
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField">
-							<printWhenExpression><![CDATA[new Boolean($F{realpropertyav}.compareTo(BigDecimal.ZERO) > 0)]]></printWhenExpression>
+							<printWhenExpression><![CDATA[$F{realpropertyav} > 0]]></printWhenExpression>
 						</reportElement>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -141,9 +142,9 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{realpropertyav}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{realpropertyav}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
 						x="323"
@@ -153,7 +154,7 @@
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField">
-							<printWhenExpression><![CDATA[new Boolean($F{propertyavtax}.compareTo(BigDecimal.ZERO) > 0)]]></printWhenExpression>
+							<printWhenExpression><![CDATA[$F{propertyavtax} > 0]]></printWhenExpression>
 						</reportElement>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -163,7 +164,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{propertyavtax}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{propertyavtax}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -175,7 +176,7 @@
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField">
-							<printWhenExpression><![CDATA[new Boolean($F{businessgross}.compareTo(BigDecimal.ZERO) > 0)]]></printWhenExpression>
+							<printWhenExpression><![CDATA[$F{businessgross} > 0]]></printWhenExpression>
 						</reportElement>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -185,7 +186,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{businessgross}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{businessgross}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -197,7 +198,7 @@
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField">
-							<printWhenExpression><![CDATA[new Boolean($F{businessgrosstax}.compareTo(BigDecimal.ZERO) > 0)]]></printWhenExpression>
+							<printWhenExpression><![CDATA[$F{businessgrosstax} > 0]]></printWhenExpression>
 						</reportElement>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -207,7 +208,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{businessgrosstax}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{businessgrosstax}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -259,7 +260,7 @@
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField">
-							<printWhenExpression><![CDATA[new Boolean($F{interest}.compareTo(BigDecimal.ZERO) > 0)]]></printWhenExpression>
+							<printWhenExpression><![CDATA[$F{interest} > 0]]></printWhenExpression>
 						</reportElement>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -269,7 +270,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{interest}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{interest}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -281,7 +282,7 @@
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField">
-							<printWhenExpression><![CDATA[new Boolean($F{amount}.compareTo(BigDecimal.ZERO) > 0)]]></printWhenExpression>
+							<printWhenExpression><![CDATA[$F{amount} > 0]]></printWhenExpression>
 						</reportElement>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -291,7 +292,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{amount}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{amount}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -311,7 +312,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{basictax}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{basictax}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -483,7 +484,7 @@
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField-26">
-							<printWhenExpression><![CDATA[new Boolean($F{additionaltax}.compareTo(BigDecimal.ZERO) > 0)]]></printWhenExpression>
+							<printWhenExpression><![CDATA[$F{additionaltax} > 0]]></printWhenExpression>
 						</reportElement>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -493,7 +494,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{additionaltax}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{additionaltax}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="MM-dd-yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

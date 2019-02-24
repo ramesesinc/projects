@@ -1,0 +1,17 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          allowCreate="false" allowDelete="false" allowOpen="false" 
+          schemaName="vw_waterworks_account_billing_history" 
+          cols="year,monthname,readingdate,prevreading,reading,volume,amount,arrears,surcharge,interest,credits"
+          hiddenCols="acctid,acctno,consumptionid,batchid,billid,scheduleid,zoneid,meterid"
+          orderBy="year,month">
+    <invokers>
+        <invoker type="waterworks_account:section" 
+                 caption="  Billing History   " 
+                 action="init" index="10" 
+                 visibleWhen="#{mode=='read'}" /> 
+        
+        <invoker type="formActions" caption="Edit" action="edit" 
+                 depends="selectedItem" xvisibleWhen="#{selectedItem != null}"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterAccountBillingHistoryListModel"/> 
+</workunit>

@@ -5,21 +5,56 @@ class WaterworksAccountConsumptionPersistenceInterceptor{
 	@DataContext("waterworks_meter")
 	def meterEm; 
 
+	@DataContext("waterworks_consumption")
+	def wcEm; 
+
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_consumption'}")
+	public void beforeCreate( evt ) { 
+		def param = evt.args[0]; 
+		param.hold = (param.hold ? param.hold : 0); 
+	} 
+
 	@After(pattern="PersistenceService.(create|update)", eval="#{args[0]._schemaname == 'waterworks_consumption'}")
 	public void afterCreateUpdate( evt ) {
-		def zz = evt.args[0];
-		if( zz.meterid ) {
-			meterEm.find([ objid:zz.meterid ]).update([ lastreading: zz.reading, lastreadingdate: zz.schedule?.readingdate ]);
+		def param = evt.args[0];
+		if ( param.meterid ) {
+			meterEm.find([ objid: param.meterid ]).update([ lastreading: param.reading, lastreadingdate: param.schedule?.readingdate ]);
+
+			def filter = ''' AND c.state IN ('POSTED', 'COMPLETED') '''; 
+			def wcp = [ acctid: param.acctid, filter: filter ]; 
+			def con = wcEm.findLastConsumption( wcp ); 
+			if ( con ) {
+				meterEm.find([ objid: param.meterid ]).update([
+					lastreading: (con?.reading ? con.reading : 0), 
+					lastreadingdate: (con?.readingdate ? con.readingdate: '{NULL}') 
+				]); 
+			} 
 		} 
-	}
+	} 
 
 	@Before(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'waterworks_consumption'}")
 	public void beforeRemove( evt ) {
-		def zz = evt.args[0];
-		if ( zz.batchid ) 
-			throw new Exception('Cannot delete consumption from batch billing'); 
-		if( zz.amtpaid > 0 )
-			throw new Exception("Cannot delete consumption since payment was already made");
-	}
+		def param = evt.args[0];
+		def findBy = (param?.findBy ? param.findBy : [objid: param.objid]); 
+		def wc = wcEm.find( findBy ).first(); 
+		if ( !wc ) return; 
 
+		if ( wc.batchid ) 
+			throw new Exception('Cannot delete consumption from batch billing'); 
+		if ( wc.amtpaid > 0 )
+			throw new Exception("Cannot delete consumption since payment was already made");
+
+		def filter = ''' AND c.state IN ('POSTED', 'COMPLETED') AND c.objid <> $P{objid} '''; 
+		def wcp = [ acctid: wc.acctid, filter: filter, objid: wc.objid ]; 
+		def con = wcEm.findLastConsumption( wcp ); 
+		if ( con ) {
+			def meterid = (con?.meterid ? con.meterid : wc.meterid); 
+			if ( meterid ) {
+				meterEm.find([ objid: meterid ]).update([
+					lastreading: (con?.reading ? con.reading : 0), 
+					lastreadingdate: (con?.readingdate ? con.readingdate : '{NULL}')
+				]); 
+			} 
+		} 
+	} 
 }

@@ -4,6 +4,7 @@
                   target="popup" height="650" width="800" 
                   cols="entityno,name,address.text,address.objid,type"
                   hiddenCols="entityname"
+                  customFilter=" state='ACTIVE' "
                   orderBy="entityname" 
                   surroundSearch="false" />
    </invokers>

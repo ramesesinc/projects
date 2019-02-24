@@ -11,6 +11,9 @@ class WaterworksBillPrintingInterceptor{
     @DataContext('vw_waterworks_consumption') 
     def cons_db;
 
+    @DataContext('waterworks_account_attribute') 
+    def wattr_db;
+
 	@After(pattern="WaterworksBatchBillPrintingService.formatReport")
 	public void afterFormatReport( evt ) {
         def list = evt.args[0];
@@ -21,9 +24,13 @@ class WaterworksBillPrintingInterceptor{
             def bill = bill_db.find([ objid: it.objid ]).first(); 
             if ( !bill ) throw new Exception('No available bill info for acct# '+ it.acctno); 
 
+            def wattr = wattr_db.find([ parentid: it.acctid ]).where('attribute.name = :attrname', [attrname: 'SENIOR']).first();
+            bill.attrname = wattr?.attribute?.name; 
+
             def param = [periodindexno : bill.periodindexno];
-            def prevcon = cons_db.find([ acctid: it.acctid ]).select('objid,readingdate').where('periodindexno < :periodindexno', param).orderBy('periodindexno desc').first(); 
-            if ( prevcon?.readingdate ) bill.prevreadingdate = prevcon.readingdate; 
+            def prevcon = cons_db.find([ acctid: it.acctid ]).select('objid,readingdate,batch.readingdate').where('periodindexno < :periodindexno', param).orderBy('periodindexno desc').first(); 
+            def prevreadingdate = (prevcon?.batch?.readingdate ? prevcon?.batch?.readingdate : prevcon?.readingdate); 
+            if ( prevreadingdate ) bill.prevreadingdate = prevreadingdate; 
             
             resolveData( bill ); 
 
@@ -73,6 +80,7 @@ class WaterworksBillPrintingInterceptor{
         p.acctno = format(p.acctno, 14, 0);
         p.blockseqno = format(p.blockseqno, 15, 2);
         p.classificationid = format(p.classificationid, 3, 0);
+        p.attrname = format(p.attrname, 10, 2);
         p.readingdate = format(p.readingdate, 14, 2);
         p.reading = format(p.reading, 14, 2);
         p.prevreadingdate = format(p.prevreadingdate, 14, 2);

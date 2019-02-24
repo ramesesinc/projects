@@ -45,6 +45,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
+        xCheckBox2 = new com.rameses.rcp.control.XCheckBox();
         xPanel2 = new com.rameses.rcp.control.XPanel();
         schemaList1 = new com.rameses.seti2.components.SchemaList();
         jPanel7 = new javax.swing.JPanel();
@@ -78,6 +79,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xTextField1.setEnabled(false);
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField1.setRequired(true);
+        xTextField1.setSpaceChar('_');
         xTextField1.setStretchWidth(100);
         xFormPanel1.add(xTextField1);
 
@@ -144,12 +146,20 @@ public class ItemAccountPage extends javax.swing.JPanel {
 
         xCheckBox1.setCaption("");
         xCheckBox1.setCheckValue(1);
-        xCheckBox1.setName("entity.generic"); // NOI18N
+        xCheckBox1.setName("entity.hidefromlookup"); // NOI18N
         xCheckBox1.setUncheckValue(0);
         xCheckBox1.setVisibleWhen("#{ entity.parentid == null }");
         xCheckBox1.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
-        xCheckBox1.setText("  Use as Generic Account");
+        xCheckBox1.setText("  Hide From Lookup");
         xFormPanel1.add(xCheckBox1);
+
+        xCheckBox2.setCaption("");
+        xCheckBox2.setCheckValue(1);
+        xCheckBox2.setName("entity.generic"); // NOI18N
+        xCheckBox2.setUncheckValue(0);
+        xCheckBox2.setVisibleWhen("#{ entity.parentid == null }");
+        xCheckBox2.setText("  Use as Generic Account");
+        xFormPanel1.add(xCheckBox2);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -164,8 +174,8 @@ public class ItemAccountPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         xTabbedPane1.addTab("General", jPanel1);
@@ -368,7 +378,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 401, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -383,6 +393,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton13;
     private com.rameses.rcp.control.XButton xButton5;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
+    private com.rameses.rcp.control.XCheckBox xCheckBox2;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDataTable xDataTable1;

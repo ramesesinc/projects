@@ -2,9 +2,15 @@
           schemaName="waterworks_meter" allowCreate="true" allowOpen="true" allowDelete="false"
           cols="serialno,brand,sizeid,capacity,account.name,account.acctname,status">
     <invokers>
-        <invoker folderid="/explorer/master/waterworks" caption="Meter" 
-                 action="init" role="MASTER" index="-8"/>
-        <invoker folderid="/menucategory/waterworks/master" caption="Manage Meters" 
-                 action="init" role="MASTER" index="20"/>
+        <invoker folderid="/explorer/master/waterworks" 
+                 caption="Meter" action="init" index="-8">
+            <action role="MASTER" /> 
+            <action role="SHARED" allowCreate="false" allowDelete="false" /> 
+        </invoker>        
+        <invoker folderid="/menucategory/waterworks/master" 
+                 caption="Manage Meters" action="init" index="20">
+            <action role="MASTER" /> 
+            <action role="SHARED" allowCreate="false" allowDelete="false" /> 
+        </invoker>             
     </invokers>
 </workunit>

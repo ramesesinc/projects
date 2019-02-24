@@ -1,10 +1,14 @@
 <workunit schemaName="waterworks_consumption" allowDelete="false">
     <invokers>
-         <invoker type="waterworks_consumption:create" action="create"  
-                 caption="New Consumption Entry" target="popup"/>
+        <invoker type="waterworks_consumption:create" 
+                 caption="New Consumption Entry" action="create" 
+                 role="MASTER" target="popup"/>
          
-        <invoker type="waterworks_consumption:open" action="open" 
-                 caption="Consumption Entry" target="popup" /> 
+        <invoker type="waterworks_consumption:open" 
+                 caption="Consumption Entry" action="open" target="popup">
+            <action role="MASTER" />
+            <action role="SHARED" allowCreate="false" allowEdit="false" allowDelete="false" />
+        </invoker>
     </invokers>
 
     <code class="com.rameses.gov.etracs.waterworks.models.WaterConsumptionModel"/>

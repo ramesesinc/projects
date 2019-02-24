@@ -1,5 +1,5 @@
 <schema adapter="ovs">
-	<element name="ovs_payment" tablename="ovs_payment">
+	<element tablename="ovs_payment">
 		<field name="objid" primary="true" prefix="OVSPMT"/>
 		<field name="reftype" required="true"/>
 		<field name="refid" required="true"/>
@@ -7,6 +7,7 @@
 		<field name="refdate" required="true"/>
 		<field name="amount" required="true"/>
 		<field name="voided" required="false"/>
+		<field name="entityid" required="true"/>
 		<complex name="items" ref="ovs_payment_item" jointype="one-to-many">
 			<key field="objid" target="parentid"/>
 		</complex>

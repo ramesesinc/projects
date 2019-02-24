@@ -14,9 +14,18 @@ public class IndividualCTCService {
 	@Service("BillingRuleService")
 	def basicBillingService;
 
+	@Service("IndividualEntityService")
+	def entitySvc;
+
 	@ProxyMethod
 	public def getCtcRelatedPayerData(entity){
-		return [newbusiness:false];
+		def g = [newbusiness:false];
+		if(entity.birthdate) {
+			def a = entitySvc.calculateAge( [birthdate: entity.birthdate] );
+			g.putAll( a );
+		}		
+		return g;
+
 		// info fields required:
 		// newbusiness, businessgross
 		// def business = em.findBusinessInfo(entity)

@@ -34,7 +34,6 @@
                  action="init" role="MASTER" permission="itemaccount.view"  tag="PAYABLE"
                  customFilter="parentid IS NULL  AND type='PAYABLE'" 
                  index="5"
-                 cols="code,title,type"
                  formId="itemaccount_list_payable"/>   
         
         <!-- actions -->

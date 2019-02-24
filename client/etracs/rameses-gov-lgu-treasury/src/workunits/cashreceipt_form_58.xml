@@ -19,7 +19,11 @@ class  CashReceiptForm58 extends ReportModel {
     def reportPath = 'com/rameses/gov/lgu/treasury/cashreceipt/forms/';
 
     public Object getReportData() {
-        return this.reportData;
+        def o = this.reportData; 
+        if ( o.age instanceof String ) {
+            o.age = Integer.parseInt( o.age.toString()); 
+        } 
+        return o; 
     }
     public String getReportName() {
         return reportPath + "form_58.jasper";

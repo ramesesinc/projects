@@ -67,6 +67,12 @@ public class BillingRuleService {
 			}
 		};
 
+		if( request.request_action == "cashreceipt" ) { 
+			if ( !facts.find{( it instanceof CashReceipt )} ) {
+				facts << new CashReceipt();
+			}
+		}
+
 		//include holidays
 		facts << new HolidayFact(  
 			handler: { dt->
@@ -174,6 +180,11 @@ public class BillingRuleService {
 		if(!include_items) {
 			m.remove("items");
 		}
+
+		// println "BILLITEMS ";
+		// m.billitems.each {
+		// 	println "--->" + it.sortorder;
+		// }
 
 		//clean also requirements and infos
 		if( !m.requirements ) m.remove("requirements");

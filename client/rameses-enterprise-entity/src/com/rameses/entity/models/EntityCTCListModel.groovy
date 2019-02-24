@@ -12,4 +12,7 @@ class EntityCTCListModel extends CrudListModel {
         return caller?.entity;
     }
     
+    def getCustomFilter() {
+        return ["entityid = :entityid", [entityid: masterEntity?.objid.toString()]];
+    }    
 }

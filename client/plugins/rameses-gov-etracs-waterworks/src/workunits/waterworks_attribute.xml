@@ -1,6 +1,12 @@
 <workunit extends="com/rameses/treasury/common/templates/Attribute.xml" schemaName="waterworks_attribute">
     <invokers>
-        <invoker type="waterworks_attribute:create" caption="New Water Attribute" action="create" target="popup"/>
-        <invoker type="waterworks_attribute:open" caption="New Water Attribute" action="open"  target="popup"/>
+        <invoker type="waterworks_attribute:create" caption="New Water Attribute" 
+                 action="create" role="MASTER" target="popup"/>
+        
+        <invoker type="waterworks_attribute:open" caption="New Water Attribute" 
+                 action="open" target="popup">
+            <action role="MASTER" /> 
+            <action role="SHARED" allowEdit="false" allowCreate="false"/>             
+        </invoker>
     </invokers>
 </workunit>

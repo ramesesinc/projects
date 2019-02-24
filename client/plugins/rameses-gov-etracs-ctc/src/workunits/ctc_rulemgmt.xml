@@ -1,5 +1,6 @@
 <workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" >
     <invokers>
+       <!--
         <invoker folderid="/explorer/rulemgmt/ctc" caption="Individual CTC Rules" 
             tag="ctcindividual"
             action="init" index="60" role="RULE_AUTHOR"/>
@@ -7,7 +8,7 @@
         <invoker folderid="/explorer/rulemgmt/ctc" caption="Corporate CTC Rules"
             tag="ctccorporate"
             action="init" index="70" role="RULE_AUTHOR"/>
-        
+        -->
         <invoker folderid="/explorer/rulemgmt/ctc" caption="CTC Billing Rules"
             tag="ctcbilling"
             action="init" index="80" role="RULE_AUTHOR"/>

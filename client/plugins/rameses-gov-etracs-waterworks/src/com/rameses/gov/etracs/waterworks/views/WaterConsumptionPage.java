@@ -44,6 +44,8 @@ public class WaterConsumptionPage extends javax.swing.JPanel {
         xIntegerField4 = new com.rameses.rcp.control.XIntegerField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField4 = new com.rameses.rcp.control.XDecimalField();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel10 = new com.rameses.rcp.control.XLabel();
         xDateField1 = new com.rameses.rcp.control.XDateField();
@@ -71,7 +73,9 @@ public class WaterConsumptionPage extends javax.swing.JPanel {
         xButton2.setImmediate(true);
         xButton2.setText("Add Schedule");
 
+        xFormPanel5.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel5.setCaptionWidth(180);
+        xFormPanel5.setPadding(new java.awt.Insets(0, 5, 20, 5));
 
         xComboBox1.setCaption("Txn Type");
         xComboBox1.setItems("txnModes");
@@ -127,6 +131,22 @@ public class WaterConsumptionPage extends javax.swing.JPanel {
         xDecimalField3.setRequired(true);
         xFormPanel5.add(xDecimalField3);
 
+        xDecimalField4.setCaption("Discount");
+        xDecimalField4.setName("entity.discount"); // NOI18N
+        xDecimalField4.setRequired(true);
+        xFormPanel5.add(xDecimalField4);
+
+        xCheckBox1.setCaption("Hold");
+        xCheckBox1.setName("entity.hold"); // NOI18N
+        xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xCheckBox1ActionPerformed(evt);
+            }
+        });
+        xFormPanel5.add(xCheckBox1);
+
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(150);
 
         xLabel10.setCaption("Block Schedule");
@@ -212,13 +232,13 @@ public class WaterConsumptionPage extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(xFormPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                    .addComponent(xFormPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General Info", jPanel1);
@@ -253,10 +273,15 @@ public class WaterConsumptionPage extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_xDateField6ActionPerformed
 
+    private void xCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xCheckBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_xCheckBox1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField2;
@@ -266,6 +291,7 @@ public class WaterConsumptionPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDateField xDateField6;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
+    private com.rameses.rcp.control.XDecimalField xDecimalField4;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XIntegerField xIntegerField2;

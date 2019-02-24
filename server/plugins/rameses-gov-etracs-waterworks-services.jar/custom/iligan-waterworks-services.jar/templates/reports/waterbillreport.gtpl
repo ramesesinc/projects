@@ -2,7 +2,7 @@ ${o.initprinting}
     ${o.acctname}
     ${o.addresstext}
      ${o.acctno}${o.blockseqno}          ${o.classificationid}
-
+                                     ${o.attrname}
 
                          ${o.readingdate}
                          ${o.reading}

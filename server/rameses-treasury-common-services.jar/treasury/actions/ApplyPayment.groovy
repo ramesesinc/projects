@@ -9,6 +9,9 @@ import com.rameses.osiris3.common.*;
 /***
 * Parameters:
 *    billitem
+* If there are credit bill items, do the ff:
+*   add the credit bill amount to payment (make sure to make this positive first because this is a negative value)
+*   
 ****/
 class ApplyPayment implements RuleActionHandler {
 
@@ -59,15 +62,15 @@ class ApplyPayment implements RuleActionHandler {
 				}		
 			}
 
-			//if there are credit items
+			//if there are credit bill items
 			if( creditList ) {
 				facts.addAll( creditList );
 			}
-
 		}
 
-		//add excess payment if any...
+		//add excess payment if any... remove total credit so you can target the correct value.
 		if(  amt > 0 ) {
+			amt = amt - totalCredit;	
 			def ep = new ExcessPayment( amount: amt );
 			facts << ep;
 			drools.insert( ep );

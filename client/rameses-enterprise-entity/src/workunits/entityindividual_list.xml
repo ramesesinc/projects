@@ -1,16 +1,16 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml"  
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml"  
           schemaName="entityindividual" allowDelete="false">
     <invokers>
         <invoker folderid="/explorer/master/entity" caption="Individual" action="init" 
                  role="MASTER" permission="entityindividual.view" 
                  cols="entityno,entityname,lastname,firstname,middlename,address.text,birthdate"
-                 orderBy="lastname,firstname"/>
+                 />
         
         <invoker folderid="/home/entity" caption="Individual" action="init" 
                  role="MASTER" permission="entityindividual.view" 
                  cols="entityno,entityname,lastname,firstname,middlename,address.text,birthdate"
                  icon="home/icons/entity.png"
-                 orderBy="lastname,firstname"/>        
+                 />        
     </invokers>
    
     <code>

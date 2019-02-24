@@ -26,24 +26,66 @@ INSERT INTO remittance_fund (
 	objid, controlno, remittanceid, fund_objid, fund_title, 
 	amount, totalcash, totalcheck, totalcr, cashbreakdown 
 )
-SELECT 
-    CONCAT( IFNULL( cr.remittanceid, '-' ), f.objid ), 
-    CONCAT( IFNULL( r.controlno, '-'), f.code ),
-    cr.remittanceid, f.objid, f.title,
-    SUM( cri.amount ), 0, 0, 0, '[]' 
-FROM cashreceipt cr 
-	inner join remittance r ON r.objid = cr.remittanceid 
-	inner join cashreceiptitem cri on cri.receiptid = cr.objid 
-	inner join fund f ON f.objid = cri.item_fund_objid 
-	left join cashreceipt_void cv ON cv.receiptid = cr.objid 
-WHERE cr.remittanceid = $P{remittanceid}  
-	and cv.objid IS NULL 
-	and cr.state <> 'CANCELLED'
-GROUP BY 
-	CONCAT( IFNULL( cr.remittanceid, '-' ), f.objid ), 
-	CONCAT( IFNULL( r.controlno, '-'), f.code ), 
-	cr.remittanceid, f.objid, f.code, f.title 
+select 
+	concat( t1.remittanceid, '-', fund.objid ) as objid, 
+	concat( r.controlno, '-', fund.code ) as controlno,
+	t1.remittanceid, fund.objid as fund_objid, fund.title as fund_title,
+	sum(t1.amount)-sum(t1.share) as amount, 0.0 as totalcash, 
+	0.0 as totalcheck, 0.0 as totalcr, '[]' as cashbreakdown  
+from ( 
+	select remittanceid, fundid, sum(amount) as amount, 0.0 as share 
+	from vw_remittance_cashreceiptitem 
+	where remittanceid = $P{remittanceid} 
+	group by remittanceid, fundid 
 
+	union all 
+
+	select t1.remittanceid, t1.fundid, 0.0 as amount, sum(cs.amount) as share 
+	from ( 
+		select remittanceid, receiptid, fundid, acctid 
+		from vw_remittance_cashreceiptitem 
+		where remittanceid = $P{remittanceid} 
+		group by remittanceid, receiptid, fundid, acctid
+	)t1, vw_remittance_cashreceiptshare cs 
+	where cs.receiptid = t1.receiptid and cs.refacctid = t1.acctid 
+	group by t1.remittanceid, t1.fundid 
+
+	union all 
+
+	select remittanceid, fundid, sum(amount) as amount, 0.0 as share  
+	from vw_remittance_cashreceiptshare  
+	where remittanceid = $P{remittanceid} 
+	group by remittanceid, fundid 
+)t1, fund, remittance r  
+where fund.objid = t1.fundid 
+	and r.objid = t1.remittanceid 
+group by t1.remittanceid, r.controlno, fund.objid, fund.code, fund.title  
+order by fund.code, fund.title 
+
+[updateCashReceiptItemRemittanceFundId]
+UPDATE cashreceiptitem cri, cashreceipt cr, remittance_fund rf
+SET cri.remittancefundid = rf.objid, cri.remittanceid = rf.remittanceid
+WHERE cri.receiptid = cr.objid
+AND cr.remittanceid = rf.remittanceid 
+AND  cri.item_fund_objid = rf.fund_objid
+AND rf.remittanceid = $P{remittanceid}
+
+[updateCashReceiptShareRemittanceFundId]
+UPDATE cashreceipt_share crs, cashreceipt cr, itemaccount itm, remittance_fund rf
+SET crs.remittancefundid = rf.objid, crs.remittanceid = rf.remittanceid
+WHERE crs.receiptid = cr.objid
+AND cr.remittanceid = rf.remittanceid 
+AND crs.payableitem_objid = itm.objid 
+AND  itm.fund_objid = rf.fund_objid
+AND rf.remittanceid = $P{remittanceid}
+
+[updateCashReceiptNonCashPaymentRemittanceFundId]
+UPDATE cashreceiptpayment_noncash crpn, cashreceipt cr, remittance_fund rf
+SET crpn.remittancefundid = rf.objid, crpn.remittanceid = rf.remittanceid
+WHERE crpn.receiptid = cr.objid
+AND cr.remittanceid = rf.remittanceid 
+AND  crpn.fund_objid = rf.fund_objid
+AND rf.remittanceid = $P{remittanceid}
 
 [getCashReceiptsForRemittance]
 SELECT 

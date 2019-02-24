@@ -105,7 +105,7 @@ public abstract class AbstractRuleProcessorModel  {
     def doCancel() {
         infoStack.clear();
         if(infos) infos.clear();
-        handler(null);
+        handler("_close");
         return "_close";
     }
     

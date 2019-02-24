@@ -16,20 +16,23 @@ def refitem = params.refitem;
 		def amt = params.amount.decimalValue;
 		def org = params.org;
 
-		if( refitem ==null || payableaccount ==null || org == null )
-			throw new Exception("Error in AddRevenueShare action. Please indicate a ref item, payableaccount and org. Check the rules");
+		if( refitem == null )
+			throw new Exception("refitem is required in AddRevenueShare action. Please indicate a ref item. Check the rule " + drools.rule.name );
 
-			
+		if( payableaccount?.key == null || payableaccount?.key == 'null' )
+			throw new Exception("Payable account or generic payable account is required in AddRevenueShare action. Check the rule " + drools.rule.name);
+
 		def ct = RuleExecutionContext.getCurrentContext();
 		def rs = new RevenueShare();
 		
-		if(refitem.account.objid!=null && refitem.account?.objid!='null') {
-			rs.refitem = ct.env.acctUtil.createAccountFact( [objid: refitem.account.objid] );
-		};
-		
-		if ( payableaccount?.key != null && payableaccount?.key!='null' ) {
+		rs.refitem = ct.env.acctUtil.createAccountFact( [objid: refitem.account.objid] );
+
+		if( org == null ) {
+			rs.payableitem = ct.env.acctUtil.createAccountFact( [objid: payableaccount.key] );	
+		}
+		else {
 			rs.payableitem = ct.env.acctUtil.createAccountFactByOrg( payableaccount.key, org.orgid ); 
-			if ( !rs.payableitem ) throw new Exception('There is no payable account with parent '+ payableaccount.value + ' org '+ org.orgid);
+			if ( !rs.payableitem ) throw new Exception('There is no payable account with parent '+ payableaccount.value + ' org '+ org?.orgid);
 		}
 
 		rs.amount  = amt;
@@ -38,9 +41,6 @@ def refitem = params.refitem;
 			ct.result.sharing = []
 		}
 		ct.facts << rs;
-
-
-		
 	}
 
 }

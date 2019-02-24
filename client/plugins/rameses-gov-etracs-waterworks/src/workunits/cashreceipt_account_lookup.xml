@@ -1,9 +1,6 @@
-<workunit>
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml"
+          schemaName="waterworks_account">
     <invokers>
-        <invoker type="cashreceipt:waterworks:lookup" caption="Water Payment" />
+        <invoker type="waterworks:cashreceipt_lookup" caption="Account Lookup" action="init" />
     </invokers>
-    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksAccountLookup" />
-    <pages>
-        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksAccountLookupPage"/>
-    </pages>
 </workunit>

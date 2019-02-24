@@ -16,6 +16,8 @@
 		<field name="mobileno" />
 		<field name="phoneno" />
 		<field name="email" />
+		<field name="state" required="true" defaultValue="ACTIVE" />
+
 	</element>
 
 </schema>

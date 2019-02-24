@@ -1,0 +1,11 @@
+<workunit extends="com/rameses/treasury/common/templates/LedgerList.xml"
+          schemaName="vw_waterworks_account_payment"
+          cols="DISTINCT refno,reftype,refdate,amount,txnmode,voided"
+          hiddenCols=""
+          orderBy="refdate desc, refno desc">
+    <invokers>
+        <invoker xtype="waterworks_account:section" caption="  Payments   " 
+                 action="init" parentkey="acctid" index="2" 
+                 visibleWhen="#{mode=='read'}"  /> 
+    </invokers>
+</workunit>

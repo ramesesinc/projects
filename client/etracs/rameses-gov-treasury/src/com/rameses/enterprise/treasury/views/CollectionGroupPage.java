@@ -58,9 +58,10 @@ public class CollectionGroupPage extends javax.swing.JPanel {
 
         xCheckBox1.setCaption("");
         xCheckBox1.setCheckValue(1);
+        xCheckBox1.setDisableWhen("#{true}");
         xCheckBox1.setName("entity.sharing"); // NOI18N
-        xCheckBox1.setText("Sharing");
         xCheckBox1.setUncheckValue(0);
+        xCheckBox1.setText("Sharing");
         xFormPanel1.add(xCheckBox1);
 
         jPanel1.add(xFormPanel1);

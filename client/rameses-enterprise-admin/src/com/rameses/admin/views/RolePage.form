@@ -94,6 +94,7 @@
                   <Dimension value="[0, 20]"/>
                 </Property>
                 <Property name="required" type="boolean" value="true"/>
+                <Property name="spaceChar" type="char" value="_"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XTextField" name="xTextField2">

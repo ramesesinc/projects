@@ -8,6 +8,13 @@ class BusinessCaptureInterceptor {
 	@ActiveDB(value="tracsdb", em="tracsdb")
 	def em;
 
+	@DataContext('tracs_lob') 
+	def lob_db; 
+
+	@DataContext('tracs_account') 
+	def acct_db; 
+	
+
 	@Service("DateService")
 	def dateSvc;
 
@@ -60,14 +67,17 @@ class BusinessCaptureInterceptor {
 	public def onCreateApplication(def evt) {
 		def r = evt.args[0];
 		def result = evt.result;
-		em.create( [oldbusinessid: r.oldbusinessid, businessid:result.business.objid ], "business" );
+		em.create([ oldbusinessid: r.oldbusinessid, businessid:result.business.objid ], "business" );
 
 		r.lobs.each { 
 			def o = [ 
-				oldlob_objid: it.oldlobid, oldlob: [objid: it.oldlobid, name:it.oldname], 
+				oldlob_objid: it.oldlobid, 
+				oldlob: [objid: it.oldlobid, name:it.oldname], 
 				lob:[objid: it.lobid, name: it.name] 
 			]; 
-			em.save( o, 'lob' ); 
+			if ( !lob_db.where('oldlob.objid = :lobid', [lobid: o.oldlob_objid]).first()) {
+				lob_db.save( o ); 
+			}
 		} 
 
 		r.taxfees.each { 
@@ -75,7 +85,9 @@ class BusinessCaptureInterceptor {
 				oldaccount_objid: it.oldaccount.objid, oldaccount: it.oldaccount, 
 				account: [ objid: it.account.objid,  title: it.account.title ] 
 			]; 
-			em.save( tf, 'account'); 
+			if ( !acct_db.where('oldaccount.objid = :acctid', [acctid: tf.oldaccount_objid]).first()) {
+				acct_db.save( tf ); 
+			}
 		} 
 	} 
 } 

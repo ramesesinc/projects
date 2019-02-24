@@ -4,24 +4,30 @@
           title="Change Info">
     <invokers>
         <invoker type="waterworks_account:section" caption="  Change Info   " 
-                 index="100" action="init" 
-                 parentid="refid"
+                 action="init" parentid="refid" index="100" 
+                 visibleWhen="#{mode=='read'}"  
                  cols="controlno,dtfiled,filedby.name,action,keyfield,oldvalue,newvalue,remarks"
-                 orderBy="dtfiled DESC"
-                 visibleWhen="#{mode=='read'}"  />
+                 orderBy="dtfiled DESC">
+            <action role="MASTER"/>
+            <action role="SHARED" allowCreate="false" allowDelete="false" allowOpen="false"/>
+        </invoker>
         
         <invoker type="waterworks_meter:section" caption="  Change Info   " 
-                 index="100" action="init" 
-                 parentid="refid"
+                 action="init" parentid="refid" index="100" 
+                 visibleWhen="#{mode=='read'}"  
                  cols="controlno,dtfiled,filedby.name,action,keyfield,oldvalue,newvalue,remarks"
-                 orderBy="dtfiled DESC"
-                 visibleWhen="#{mode=='read'}"  />
+                 orderBy="dtfiled DESC"> 
+            <action role="MASTER"/> 
+            <action role="SHARED" allowCreate="false" allowDelete="false" allowOpen="false"/>
+        </invoker>
         
         <invoker type="waterworks_consumption:section" caption="  Change Info   " 
-                 index="100" action="init" 
-                 parentid="refid"
+                 action="init" parentid="refid" index="100" 
+                 visibleWhen="#{mode=='read'}" 
                  cols="controlno,dtfiled,filedby.name,action,keyfield,oldvalue,newvalue,remarks"
-                 orderBy="dtfiled DESC"
-                 visibleWhen="#{mode=='read'}"  />
+                 orderBy="dtfiled DESC"> 
+            <action role="MASTER"/> 
+            <action role="SHARED" allowCreate="false" allowDelete="false" allowOpen="false"/>
+        </invoker>        
     </invokers>
 </workunit>

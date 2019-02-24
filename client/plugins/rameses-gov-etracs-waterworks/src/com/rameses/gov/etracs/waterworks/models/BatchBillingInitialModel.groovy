@@ -17,18 +17,19 @@ public class BatchBillingInitialModel extends CrudFormModel {
 
    @FormTitle
    String title = "Batch Billing";
-    
 
    @PropertyChangeListener
    def listener = [
        "entity.zone" : { o->
-            if(o.nextschedule?.objid ) {
+            if ( o.nextschedule?.objid ) {
                 entity.year = o.nextschedule?.year;
                 entity.month = o.nextschedule?.month;
+                entity.readingdate = o.nextschedule?.readingdate;
             }
             else {
                 entity.year = dateSvc.getServerYear();
                 entity.month = dateSvc.getServerMonth();
+                entity.readingdate = null; 
             }
        }
    ];
@@ -39,9 +40,11 @@ public class BatchBillingInitialModel extends CrudFormModel {
        z.objid = null;
        z = persistenceService.create(z);
        if( !z.objid  ) return;
+       
        MsgBox.alert( "Batch " + z.objid +  " is created" );
+       
        def op = Inv.lookupOpener("waterworks_batch_billing:open", [entity: [objid:z.objid]]); 
-       op.target = "window";
+       op.target = "topwindow";
        return op;
    } 
     

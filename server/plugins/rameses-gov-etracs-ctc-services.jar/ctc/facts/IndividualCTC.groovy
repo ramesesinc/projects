@@ -21,14 +21,15 @@ class IndividualCTC {
     double propertyincometax = 0;    
     double additionaltax = 0;         
     double interest = 0;     
-
+    int age;
 
     public IndividualCTC(def m) {
         if(m.profession!=null) profession = m.profession;
         if(m.citizenship!=null) citizenship = m.citizenship;
         if(m.gender  !=null) gender   = m.gender  ;
         if(m.civilstatus!=null)  civilstatus = m.civilstatus;
-        if(m.seniorcitizen!=null) seniorcitizen = m.seniorcitizen;
+        if(m.payer?.seniorcitizen!=null) seniorcitizen = m.payer?.seniorcitizen;
+        if(m.payer?.age!=null) age = m.payer?.age;
         if(m.newbusiness!=null) newbusiness = m.newbusiness;
         if(m.annualsalary!=null) annualsalary = m.annualsalary;
         if(m.businessgross!=null) businessgross = m.businessgross;

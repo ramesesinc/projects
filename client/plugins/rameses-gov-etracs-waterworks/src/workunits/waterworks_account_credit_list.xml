@@ -4,14 +4,14 @@
           parentkey="acctid"
           title="Credits">
     <invokers>
-        <invoker type="waterworks_account:section" caption="  Credits   " 
-                 index="3" action="init" 
-                 visibleWhen="#{mode=='read'}"  />
+        <invoker type="waterworks_account:section" 
+                 caption="  Credits   " 
+                 action="init" index="3" 
+                 visibleWhen="#{mode=='read'}" />
         
         <!-- List Actions -->
-        <invoker type="formActions" caption="Add New Entry" action="addNewEntry"/> 
-        <invoker type="formActions" caption="Edit Entry" action="editEntry"/> 
-        <invoker type="formActions" caption="Remove Entry" action="removeEntry"/> 
-        
+        <invoker type="formActions" caption="Add New Entry" action="addNewEntry" role="MASTER"/> 
+        <invoker type="formActions" caption="Edit Entry" action="editEntry" role="MASTER"/> 
+        <invoker type="formActions" caption="Remove Entry" action="removeEntry" role="MASTER"/> 
     </invokers>
 </workunit>

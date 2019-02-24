@@ -20,6 +20,7 @@ class RevenueSharingService  {
 
 	@ProxyMethod
 	public def execute( def rct ) {
+
 		def resultList = [];
 		try {
 			def factBuilder = factSvc.getFacts([ rulename: "revenuesharing", params: rct ]);
@@ -37,6 +38,7 @@ class RevenueSharingService  {
 				resultList << it.toMap();
 			}
 		} catch(Throwable t) {
+			throw t;
 			//do nothing 
 			throw t;
 		} 

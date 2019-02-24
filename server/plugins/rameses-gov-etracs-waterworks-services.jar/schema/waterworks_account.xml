@@ -23,6 +23,8 @@
 		<field name="address_bldgno" caption="Building No"/>
 		<field name="address_bldgname"  caption="Building Name"/>
 		<field name="address_pin" caption="PIN"/>
+		
+		<field name="remarks" />
 
 		<field name="stuboutnodeid" />
 		<complex name="stuboutnode" ref="vw_waterworks_stubout_node" jointype="many-to-one" required="true">

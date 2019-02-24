@@ -43,6 +43,13 @@ class BillingCashReceiptService {
 		ruleParam.putAll( pp.options ); 
 		ruleParam.params = m; 
 
+		def warning = null; 
+		try { 
+			handler.beforeExecute( ruleParam ); 
+		} catch (com.rameses.util.Warning w) { 
+			warning = w; 
+		} 
+
 		def ruleRes = ruleSvc.execute( ruleParam ); 
 		//if ( !ruleRes.items ) throw new Exception('There must be a result items in your BillingRuleService.execute'); 
 
@@ -52,7 +59,7 @@ class BillingCashReceiptService {
 		m.rulename = pp.rulename; 
 		m.txntype = pp.txntype; 
 		if( !m.txntype ) m.txntype = pp.params?.collectiontype?.handler;
-		
+
 		handler.validateReceiptInfo( m );
 
 		def bill = handler.formatReceiptInfo( m ); 
@@ -63,6 +70,7 @@ class BillingCashReceiptService {
 		bill.amount = m.items.sum{( it.amount ? it.amount : 0.0 )} 
 		bill.remove('objid');	//we should remove objid bec. there might be conflicts 
 		bill._postpayment = true; //we should mark this to indicate posting will be automatically handled
+		bill._warning = warning; 
 		return bill; 
 	} 
 }

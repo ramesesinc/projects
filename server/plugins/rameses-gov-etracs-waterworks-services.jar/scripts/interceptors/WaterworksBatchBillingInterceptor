@@ -30,13 +30,21 @@ class WaterworksBatchBillingInterceptor {
 	@DataContext("waterworks_billing")
 	def wbillEm;
 
+	@DataContext("waterworks_meter")
+	def meterEm;
+
+	
+	@Service("WaterworksCreditPaymentService")
+	def crPmtSvc;
+
 	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'waterworks_batch_billing' }")
 	public void beforeCreate( evt ) { 
 		def o = evt.args[0];
 		def zone = o.zone;
+		def pen = batchEm.findLastBillByZone([ zoneid: zone.objid, filter:" AND bb.state NOT IN ('POSTED','COMPLETED') " ]); 
+		if ( pen ) throw new Exception('There is a pending transaction for this particular block/zone. Please verify.'); 
 
-		def sked = skedSvc.getSchedule( [year:o.year, month:o.month, scheduleid: zone.schedule.objid ] );
-
+		def sked = skedSvc.getSchedule([ year: o.year, month: o.month, scheduleid: zone.schedule.objid ]);
 		o.schedule = sked; 
 		o.scheduleid = sked.objid;
 		o.objid = 'WBILL' + zone.code + o.year + String.format( "%02d", o.month);
@@ -91,27 +99,61 @@ class WaterworksBatchBillingInterceptor {
 			wb.billed = 0;
 			wb.printed = 0;
 			wbillEm.create( wb );
-		}
+
+			def prevcon = batchEm.findCurrentConsumption([ acctid: wb.acctid ]); 
+			def hold = (prevcon?.hold ? prevcon?.hold : 0);
+			wcEm.find([ objid: wb.consumptionid ]).update([ hold: hold ]); 
+		} 
+
 		def p = [:];
 		p.processname = 'waterworks_batch_billing';
 		p.refid = o.objid;
 		p.startdate = dateSvc.serverDate;
 		taskSvc.start(p);
-
 	}
 
 
 	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'waterworks_batch_billing'}")
 	void beforeRemoveEntity( evt ) {
 		def p = evt.args[0]; 
-		if ( batchEm.find([ objid: p.objid ]).select('task.state').val()?.state != 'draft' )
-			throw new Exception('Transaction must be in draft state');  
+		def bb = batchEm.find([ objid: p.objid ]).select('objid,zoneid,task.state').first(); 
+		if ( !bb?.task?.state.toString().matches('draft|for-reading'))
+			throw new Exception('Transaction must be in draft or for-reading state');  
 
 		wbillEm.find([ batchid: p.objid ]).delete(); 
-		wcEm.find( [batchid: p.objid ] ).delete();
+		wcEm.find([ batchid: p.objid ]).list().each{ wc-> 
+			def wcp = [ acctid: wc.acctid, filter: " AND c.state IN ('POSTED', 'COMPLETED') " ]; 
+			def con = wcEm.findLastConsumption( wcp );
+			def meterid = (con?.meterid ? con.meterid : wc.meterid); 
+			if ( meterid ) {
+				meterEm.find([ objid: meterid ]).update([ 
+					lastreading: (con?.reading ? con.reading : 0), 
+					lastreadingdate: (con?.readingdate ? con.readingdate : '{NULL}') 
+				]); 
+			} 
+		} 
+		wcEm.find([ batchid: p.objid ]).delete();
 		batchEm.find([ objid: p.objid ]).update([ taskid: '{NULL}' ]); 
 		taskEm.find([ refid: p.objid ]).delete();
-		zoneEm.find( [batchid: p.objid] ).update( [batchid: '{NULL}' ]);
+
+		def currentbillid = null; 
+		def nextscheduleid = null; 
+		def cbz = batchEm.findLastBillByZone([ zoneid: bb.zoneid, filter:" AND bb.state IN ('POSTED','COMPLETED') " ]); 
+		if ( cbz ) {
+			def datestr = ''+ cbz.year +'-'+ cbz.month.toString().padLeft(2,'0') +'-01'; 
+			def dateobj = new com.rameses.util.DateBean( datestr ); 
+			dateobj.add('1M');
+			def ny = dateobj.year; 
+			def nm = dateobj.month;
+			def sked = skedSvc.getSchedule([ year: ny, month: nm, scheduleid: cbz.zonescheduleid ]); 
+			nextscheduleid = sked?.objid; 
+			currentbillid = cbz.objid; 
+		}
+
+		zoneEm.find([ objid: bb.zoneid ]).update([ 
+			batchid: ( currentbillid ? currentbillid : '{NULL}'), 
+			nextscheduleid: ( nextscheduleid ? nextscheduleid : '{NULL}') 
+		]); 
 	}
 
 	@Before(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname == 'waterworks_batch_billing' && args[0].taskstate == 'approved' && args[0].action == 'revert'  }")
@@ -133,8 +175,32 @@ class WaterworksBatchBillingInterceptor {
 	public void afterSignal( evt ) {
 		if ( evt.result?.state.toString() == 'end' ) { 
 			def batchid = evt.result.refid; 
+			def bb = batchEm.find([ objid: batchid ]).select('objid,zoneid').first();
 			batchEm.find([ objid: batchid ]).update([ state: 'COMPLETED' ]); 
 			wcEm.find([ batchid: batchid ]).update([ state: 'POSTED' ]);  
+			zoneEm.find([ objid: bb.zoneid ]).update([ batchid: batchid ]); 
+
+			wcEm.getBatchConsumption([ batchid: batchid ]).each{ wc-> 
+				meterEm.find([ objid: wc.meterid.toString() ]).update([ 
+					lastreading: (wc.reading ? wc.reading : 0), 
+					lastreadingdate: (wc.readingdate ? wc.readingdate : '{NULL}') 
+				]); 
+			} 
+
+			wbillEm.find([ batchid: batchid ]).select('acctid,consumptionid').where('credits > 0').list().each{ b-> 
+				def wcinfo = wcEm.find([ objid: b.consumptionid ]).select('objid,hold,balance').first(); 
+				if ( !wcinfo ) return; 
+				if ( wcinfo.hold.toString() != '0' ) {
+					// consumption is put onhold, do not process creditpayment 
+					return; 
+				}
+				if ( wcinfo.balance <= 0 ) { 
+					// consumption is already paid in full, do not process creditpayment 
+					return;  
+				} 
+				
+				crPmtSvc.post( [acctid: b.acctid ] ); 
+			} 
 		} 
 	} 
 } 

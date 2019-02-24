@@ -1,97 +1,14 @@
 import com.rameses.annotations.*;
 
-import java.rmi.server.UID;
-import com.rameses.util.*;
-import vehicle.facts.*;
-import treasury.utils.*;
-import treasury.facts.*;
-
 /*********************************************************************************************************************************
 *  This will create and post bill
 *********************************************************************************************************************************/
 
 class CreditPaymentService {
 
-	@Service("BillingInfoHandler")
-	def handler;
-
-	@Service("BillingRuleService")
-	def ruleSvc;
-
-	@DataContext("creditpayment")
-	def creditpaymentEm;
-
-	@Service("SequenceService")
-	def seqSvc;
-
-	@Service("DateService")
-	def dateSvc;
-
-	@Env
-	def env;
-
 	@ProxyMethod
-	public def init( def pp ) {
-		if(!pp.rulename) throw new Exception("rulename is required in parameter of CreditPaymentService.init")
-		if(!pp.txntype) throw new Exception("txntype is required in parameter of CreditPaymentService.init")
-
-		if ( pp.options == null ) pp.options = [:]; 
-
-		pp.options.request_action = "creditpayment";
-
-		pp.options.include_items = true; 
-		pp.headerinfo = handler.getHeaderInfo( pp ); 
-		pp.billitems = handler.getBillItems( pp ); 
-
-		def citems = handler.getCreditItems( pp ); 
-		if ( !citems ) throw new Exception('There are no credit items found'); 
-
-		citems.each{ it.txntype = 'creditpayment' } 
-
-		def m = [:]; 
-		m.putAll( pp.params ); 
-		m.putAll( pp.headerinfo ); 
-		m.billitems = pp.billitems; 
-
-		def ruleParam = [ rulename: pp.rulename ]; 
-		ruleParam.putAll( pp.options ); 
-		ruleParam.params = m; 
-
-		def ruleRes = ruleSvc.execute( ruleParam ); 
-
-		m = [:];
-		m.putAll( pp.headerinfo );  
-		m.putAll( ruleRes );  
-		m.rulename = pp.rulename; 
-		m.txntype = pp.txntype; 
-		
-		def rct = handler.formatReceiptInfo( m ); 
-		rct.creditpayments = citems;
-		rct.billitems = m.billitems;
-		rct.items = m.items; 
-		rct.amount = m.items.sum{( it.amount ? it.amount : 0.0 )} 
-		rct._postpayment = true; //we should mark this to indicate posting will be automatically handled
-
-		rct.objid = 'CP' + new java.rmi.server.UID(); 
-		rct.org = [ objid:env.ORGID, name:env.ORGNAME ];
-		rct.user = [ objid: env.USERID, name:env.USER ];
-		rct.txntype = pp.txntype;
-		rct.txnmode = 'ONLINE';
-		rct.state = 'OPEN';
-		return rct; 
+	public def post( def pp ) {
+		//refer to WaterworksCreditPaymentService 
+		return null; 
 	} 
-
-	@ProxyMethod
-	public def post( def rct ) { 
-		if ( !rct.controlno ) {
-			def year = dateSvc.getServerYear();
-			rct.controlno = 'CRP'+ year.toString() + seqSvc.getNextFormattedSeries('CreditPayment'+ year.toString());
-		}
-
-		if ( !rct.controldate ) {
-			rct.controldate = dateSvc.getBasicServerDate();  
-		}
-		rct.txndate = dateSvc.getServerDate();
-		return creditpaymentEm.create( rct );
-	}
 }

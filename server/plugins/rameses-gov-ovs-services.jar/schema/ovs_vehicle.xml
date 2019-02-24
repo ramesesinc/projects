@@ -1,5 +1,5 @@
 <schema adapter="ovs">
-	<element name="ovs_vehicle" tablename="ovs_vehicle">
+	<element tablename="ovs_vehicle">
 		<field name="objid" primary="true" prefix="VEH"/>
 		<field name="name" required="true" caption="Name"/>
 		<field name="plateno" required="true" caption="Plate No." indexed="true" searchable="true"/>

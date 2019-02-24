@@ -1,9 +1,14 @@
 <workunit schemaName="waterworks_credit">
     <invokers>
         <invoker type="waterworks_credit:create"  
-                 caption="Add Credit" target="popup" action="create"/>
+                 caption="Add Credit" action="create" 
+                 role="MASTER" target="popup"/>
+        
         <invoker type="waterworks_credit:open"  
-                 caption="Credit" target="popup" action="open"/>
+                 caption="Credit" action="open" target="popup" >
+            <action role="MASTER" />
+            <action role="SHARED" allowCreate="false" allowDelete="false" allowEdit="false" />
+        </invoker>             
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.CreditEntryModel"/>
     <pages>

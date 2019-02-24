@@ -78,6 +78,7 @@ class CashReceiptItemLookupModel extends CrudLookupModel {
         } else {
             s << "orgid IS NULL";
         }
+        s << "NOT(hidefromlookup = 1)";
         return [s.join(" AND "), parm ];
     }
     

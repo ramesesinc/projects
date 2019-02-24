@@ -1,0 +1,16 @@
+<schema adapter="waterworks">
+	<element tablename="vw_waterworks_billing_schedule">
+		<field name="objid" primary="true"/>
+		<field name="scheduleid"/>
+		<field name="year" caption="From Year"/>
+		<field name="month" caption="From Month"/>
+		<field name="fromperiod" caption="From Period"/>
+		<field name="toperiod" caption="To Period"/>
+		<field name="readingdate" caption="Reading Date"/>
+		<field name="readingduedate" caption="Reading Due Date"/>
+		<field name="billingduedate" caption="Billing Due Date"/>
+		<field name="discdate" caption="Discount Date"/>
+		<field name="duedate" caption="Due Date"/>
+		<field name="periodindexno" />
+	</element>
+</schema>

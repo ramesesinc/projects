@@ -78,7 +78,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="xFormPanel5" pref="225" max="32767" attributes="0"/>
+                          <Component id="xFormPanel5" max="32767" attributes="0"/>
                           <Component id="xFormPanel1" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -86,7 +86,7 @@
                           <Component id="xButton2" min="-2" max="-2" attributes="0"/>
                           <Component id="xButton1" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="86" max="32767" attributes="0"/>
+                      <EmptySpace pref="58" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -124,7 +124,11 @@
             </Component>
             <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel5">
               <Properties>
+                <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
                 <Property name="captionWidth" type="int" value="180"/>
+                <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[0, 5, 20, 5]"/>
+                </Property>
               </Properties>
               <SubComponents>
                 <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox1">
@@ -221,10 +225,30 @@
                     <Property name="required" type="boolean" value="true"/>
                   </Properties>
                 </Component>
+                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField4">
+                  <Properties>
+                    <Property name="caption" type="java.lang.String" value="Discount"/>
+                    <Property name="name" type="java.lang.String" value="entity.discount" noResource="true"/>
+                    <Property name="required" type="boolean" value="true"/>
+                  </Properties>
+                </Component>
+                <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox1">
+                  <Properties>
+                    <Property name="caption" type="java.lang.String" value="Hold"/>
+                    <Property name="name" type="java.lang.String" value="entity.hold" noResource="true"/>
+                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                      <Insets value="[0, 0, 0, 0]"/>
+                    </Property>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="xCheckBox1ActionPerformed"/>
+                  </Events>
+                </Component>
               </SubComponents>
             </Container>
             <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
               <Properties>
+                <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
                 <Property name="captionWidth" type="int" value="150"/>
               </Properties>
               <SubComponents>

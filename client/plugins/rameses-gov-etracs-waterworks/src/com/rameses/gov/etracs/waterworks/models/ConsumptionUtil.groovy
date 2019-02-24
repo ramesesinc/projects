@@ -39,10 +39,10 @@ public class ConsumptionUtil  {
             }
             f.data = [ prevreading:param.prevreading, reading:param.reading,  volume: 0]
             f.fields = [];
-            f.fields << [caption:'Previous Reading', name:'prevreading', type:'integer', enabled:false, editable:false];
+            f.fields << [caption:'Previous Reading', name:'prevreading', type:'integer', required:true];
             f.fields << [caption:'Current Reading', name:'reading', type:'integer', required:true];
-            if( meterstate !='ACTIVE') {
-                f.fields << [caption:'Volume', name:'volume', type:'integer', required:true];                
+            if ( meterstate != 'ACTIVE' ) {
+                f.fields << [caption:'Volume', name:'volume', type:'integer', required:true]; 
             }
             Modal.show("dynamic:form", f, [title:'Calculate Amount']);
         }

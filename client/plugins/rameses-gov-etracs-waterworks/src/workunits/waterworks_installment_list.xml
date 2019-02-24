@@ -3,9 +3,13 @@
           cols="objid,controlno,dtfiled,item.code,item.title,amount,downpayment,term,amtpaid" 
           orderBy="dtfiled">
     <invokers>
-        <invoker type="waterworks_account:section" caption="  Installments   " index="3" 
-                visibleWhen="#{mode=='read'}"
-                action="init"/>
+        <invoker type="waterworks_account:section" 
+                 caption="  Installments   " 
+                 action="init" index="3" 
+                 visibleWhen="#{mode=='read'}">
+            <action role="MASTER" />
+            <action role="SHARED" allowCreate="false" allowDelete="false" />
+        </invoker>             
     </invokers>
     <code>
         <![CDATA[

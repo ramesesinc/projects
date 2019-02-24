@@ -5,7 +5,7 @@
     <invokers>
         <invoker folderid="home/police" caption="Application List" action="init"
                  cols="appno,applicant.name,apptype.title,appdate,createdby.name" 
-                 target="window"/> 
+                 role="MASTER" target="window"/> 
     </invokers> 
 </workunit>
 

@@ -1,0 +1,16 @@
+import com.rameses.annotations.*;
+
+class OVSTicketPersistenceInterceptor {
+
+	@DataContext("ovs_violation_ticket")
+    def vt;
+
+	@Before(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'ovs_violation_ticket'}")
+    void beforeDelete(evt) {
+        def p = evt.args[0];
+        if( vt.find( [objid: p.objid] ).select("state").val()?.toUpperCase() != 'OPEN') {
+        	throw new Exception("Cannot delete a closed state");
+        }
+    }
+
+}

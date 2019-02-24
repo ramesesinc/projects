@@ -17,6 +17,9 @@ public class BasicBillingCashReceiptModel extends com.rameses.enterprise.treasur
     def selectedItem;
     def txnid;
     
+    //store something here in query that is constantly being sent to the server
+    def query = [:];
+    
     def billAmount = 0;
     
     def billItemList = [];
@@ -78,11 +81,12 @@ public class BasicBillingCashReceiptModel extends com.rameses.enterprise.treasur
                 binding.refresh();
                 return null;
             }
-            opener = Inv.lookupOpener(lookupName, [onselect: h ]);
+            def opener = Inv.lookupOpener(lookupName, [onselect: h ]);
             Modal.show( opener );
         }
-        catch(ex) {
-            MsgBox.alert(lookpName + " not found");
+        catch(ex) { 
+            ex.printStackTrace(); 
+            MsgBox.alert(lookupName + " not found");
         }
     }
     
@@ -94,15 +98,27 @@ public class BasicBillingCashReceiptModel extends com.rameses.enterprise.treasur
     def loadInfo(def p) {
         p.collectiontype = entity.collectiontype;
         p.billdate = entity.receiptdate;
+        
+        //must replace the action so it will reflect the action passed;
+        query.action = p.action;
+        p.putAll( query );
         def pp = [ rulename: getRulename(), params: p ]; 
         def info = null;
         try {
             info = billingSvc.getInfo( pp );
         }
         catch(serverErr) {
-            if(p.action == "barcode") super.doClose();
-            throw serverErr;
-        }
+            if ( p.action == "barcode" ) super.doClose(); 
+            //log the errors starting from here 
+            new RuntimeException( serverErr ).printStackTrace(); 
+            //throw the actual error
+            throw serverErr; 
+        } 
+        
+        def warning = info?._warning; 
+        if ( warning instanceof com.rameses.util.Warning ) {
+            MsgBox.warn( warning.message ); 
+        } 
         
         if( !info.billitems ) {
             if( getAllowDeposit() ) {

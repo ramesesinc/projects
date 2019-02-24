@@ -18,19 +18,19 @@
                  caption="Change To Subaccount" 
                  action="changeToSubAccount" 
                  role="ADMIN"  
-                 visibleWhen="#{ mode=='read' &amp;&amp; entity.parentid == null}"/> 
+                 visibleWhen="#{ mode=='read' &amp;&amp; entity.parentid == null &amp;&amp; entity.state != 'ACTIVE' }"/> 
                  
         <invoker type="formActions" 
                  caption="Change Acct Type" 
                  action="changeType" 
                  role="ADMIN"  
-                 visibleWhen="#{ mode=='read' &amp;&amp; entity.parentid == null}"/>           
+                 visibleWhen="#{ mode=='read' &amp;&amp; entity.parentid == null &amp;&amp; entity.state != 'ACTIVE'}"/>           
 
         <invoker type="formActions" 
                  caption="Remove Parent" 
                  action="removeParent" 
                  role="ADMIN"  
-                 visibleWhen="#{ mode=='read' &amp;&amp; entity.parentid != null}"/>           
+                 visibleWhen="#{ mode=='read' &amp;&amp; entity.parentid != null &amp;&amp; entity.state != 'ACTIVE' }"/>           
 
     </invokers> 
    

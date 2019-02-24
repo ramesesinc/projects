@@ -5,9 +5,10 @@
                  action="create" target="popup" />
         
         <invoker type="waterworks_installment:open" 
-                 caption="Installment" 
-                 action="open" target="popup" />
-        
+                 caption="Installment" action="open" target="popup" >
+            <action role="MASTER" />
+            <action role="SHARED" allowCreate="false" allowDelete="false" allowEdit="false" />
+        </invoker>             
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.InstallmentModel" />
     <pages>

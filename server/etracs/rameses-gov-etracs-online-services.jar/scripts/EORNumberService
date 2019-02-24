@@ -30,13 +30,21 @@ class EORNumberService {
 
         String prefix = 'EOR'+ indexno + orgid + dateService.getServerYear();
         def rec = num_db.find([ objid: prefix ]).first();
-        if ( rec) {
-            num_db.find([ objid: prefix ]).update([ currentno: rec.currentno+1 ]);
-        } else {
-            rec = [ objid: prefix, currentno: 1 ];
-            num_db.create( rec );
-        }
-        return prefix + String.format("%06d", rec.currentno );
+        if ( !rec ) num_db.create([ objid: prefix, currentno: 0 ]);
+
+        // update to initiate record locked
+        int lockno = 10;  
+        num_db.find([ objid: prefix ]).update([ currentno: "{currentno + "+ (lockno + 1) +"}"]);
+
+        // get the current number minus lockno 
+        rec = num_db.find([ objid: prefix ]).first();
+        rec.currentno -= lockno; 
+
+        // re-update to sync sequence 
+        num_db.find([ objid: prefix ]).update([ currentno: rec.currentno ]); 
+
+        // return the formatted sequence 
+        return prefix + String.format("%06d", rec.currentno ); 
     }   
 
     @ProxyMethod(local=true)

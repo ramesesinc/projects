@@ -1,0 +1,24 @@
+import com.rameses.annotations.*; 
+
+class WaterworksCollectionCashReceiptInterceptor {
+	
+	@Service(value="WaterworksPaymentProxyService", connection="waterworks_proxy")
+	def service;
+
+	@Before(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler == 'waterworks'}" ,index=50)
+	public void beforePostCashReceipt( evt ) { 
+		evt.args[0]._postpayment = false;
+	} 
+
+	@After(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler == 'waterworks'}" ,index=50)
+	public void afterPostCashReceipt( evt ) { 
+		def e = evt.args[0];
+		e.txndate = evt.result.txndate; 
+		service.post( e ); 
+	} 
+
+	@After(pattern="CashReceiptVoidService.post", eval="#{args[0].receipt?.collectiontype?.handler == 'waterworks'}")
+	public void afterPostVoidReceipt( evt ) {
+		service.reversePayment( evt.args[0] ); 
+	} 
+}

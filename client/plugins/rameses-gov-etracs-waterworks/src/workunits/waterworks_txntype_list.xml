@@ -4,9 +4,13 @@
           cols="objid,title,priority,item.code,item.title,item.fund.code,item.fund.title"
           orderBy="objid">
     <invokers>
-        <invoker folderid="/explorer/master/waterworks" caption="Txn Types" action="init" role="MASTER"/>
+        <invoker folderid="/explorer/master/waterworks" 
+                 caption="Txn Types" action="init">
+            <action role="MASTER" /> 
+            <action role="SHARED" allowCreate="false" allowDelete="false" /> 
+        </invoker>               
         
-        <invoker type="listActions" caption="Set Account" action="setAccount"/>
+        <invoker type="listActions" caption="Set Account" action="setAccount" role="MASTER"/>
     </invokers>    
     <code>
         <![CDATA[

@@ -15,7 +15,7 @@ class RPTLedgerSyncInterceptor
     @Service('DateService')
     def dtSvc
 
-    @Service('SyncService')
+    @Service('RPTMainSyncService')
     def syncSvc 
 
     @Service('RPTLedgerService')

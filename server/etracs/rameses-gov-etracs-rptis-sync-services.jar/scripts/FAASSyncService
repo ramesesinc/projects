@@ -144,6 +144,7 @@ class FAASSyncService
     void scheduleSharedData(faas, dtfiled, remoteOrg, idx) {
     	rptSync.scheduleExaminations(faas.objid, 'faas', dtfiled, remoteOrg, idx)
     	rptSync.scheduleRequirements(faas.objid, 'faas', dtfiled, remoteOrg, idx)
+    	rptSync.scheduleImages(faas.objid, 'faas', dtfiled, remoteOrg, idx)
 
     	faas.affectedrpus.each{
     		if (it.newfaasid) {

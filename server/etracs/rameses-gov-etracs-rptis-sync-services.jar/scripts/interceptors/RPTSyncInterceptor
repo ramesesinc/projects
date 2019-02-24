@@ -9,7 +9,7 @@ import com.rameses.services.extended.*
 -----------------------------------------------------------------*/
 class RPTSyncInterceptor
 {
-    @Service('SyncService')
+    @Service('RPTMainSyncService')
     def syncSvc 
 
     @Service('ExaminationService')

@@ -87,8 +87,8 @@ class RedFlagSyncService
 
 	def postResolvedData = {syncdata ->
 		def redflag = syncdata.data 
+		notifyFiledBy(syncdata, redflag)
 		return svc.postResolvedData(redflag)
-		notifyFiledBy(redflag)
 	}
 
 
@@ -108,7 +108,7 @@ class RedFlagSyncService
         support.notifyGroup(param)
 	}
 
-	void notifyFiledBy(redflag){
+	void notifyFiledBy(syncdata, redflag){
 		def currtask = svc.getCurrentTask(redflag)
 		def msg = util.capitalize(currtask.filetype) + ' ' + redflag.refno + ' Red Flag #' + redflag.caseno + ' resolved.'
 		def param = [:]

@@ -47,8 +47,10 @@ class FAASSyncInterceptor
 
     @After(pattern="FAASService.deleteFaas") 
     public void scheduleDeleteFaas( evt ) {
-        def faas = evt.args[0].data 
-        faasSync.scheduleDeleteFaas(faas)
+        def faas = evt.args[0]
+        if (faas) {
+            faasSync.scheduleDeleteFaas(faas)
+        }
     }
 
     @After(pattern="FAASService.revertToInterim") 

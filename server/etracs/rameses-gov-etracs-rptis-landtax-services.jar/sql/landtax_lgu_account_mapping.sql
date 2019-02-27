@@ -259,7 +259,7 @@ select
 	concat(l.name , ' ' , ia.title) as title, 
 	concat(l.name , ' ' , ia.title) as description, ia.type, 
 	ia.fund_objid, ia.fund_code, ia.fund_title, ia.defaultvalue, ia.valuetype, 
-	ia.org_objid, ia.org_name, ia.objid as parentid 
+	l.objid as org_objid, l.name as org_name, ia.objid as parentid 
 from itemaccount ia, municipality l 
 where concat(ia.objid,':',l.objid) not in (select objid from itemaccount) 
 and ia.type = 'REVENUE'
@@ -279,7 +279,7 @@ select
 	concat(l.name , ' ' , ia.title) as title, 
 	concat(l.name , ' ' , ia.title) as description, ia.type, 
 	ia.fund_objid, ia.fund_code, ia.fund_title, ia.defaultvalue, ia.valuetype, 
-	ia.org_objid, ia.org_name, ia.objid as parentid 
+	l.objid as org_objid, l.name as org_name, ia.objid as parentid 
 from itemaccount ia, province l 
 where concat(ia.objid,':',l.objid) not in (select objid from itemaccount) 
 and ia.type = 'REVENUE'

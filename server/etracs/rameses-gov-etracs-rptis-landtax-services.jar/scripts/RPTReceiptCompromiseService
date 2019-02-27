@@ -105,7 +105,18 @@ class RPTReceiptCompromiseService
 			receipt.remarks = (receipt.remarks ? receipt.remarks : 'Current year payment')
 			postRequiredPayment(receipt)
 			postRptPayment(receipt)
+			updateLedgerPaidYearQtr(receipt)
 		}
+	}
+
+	void updateLedgerPaidYearQtr(receipt) {
+		def lastitem = receipt.bill.rptledger.postingitems.last()
+
+		def params = [:]
+		params.objid = receipt.bill.rptledger.objid 
+		params.lastyearpaid = lastitem.year 
+		params.lastqtrpaid = (lastitem.qtr ? lastitem.qtr : 4)
+		em_rptledger.find([objid:params.objid]).update(params)
 	}
 
 	@ProxyMethod
@@ -397,8 +408,8 @@ class RPTReceiptCompromiseService
 	def postRptPayment(receipt){
 		def pmt = [:]
 		pmt.type = 'compromise'
-		pmt.refid = receipt.compromise.objid 
-		pmt.reftype = 'rptcompromise'
+		pmt.refid = receipt.bill.rptledger.objid
+		pmt.reftype = 'rptledger'
 		pmt.receiptid = receipt.objid 
 		pmt.receiptno = receipt.receiptno 
 		pmt.receiptdate = receipt.receiptdate 

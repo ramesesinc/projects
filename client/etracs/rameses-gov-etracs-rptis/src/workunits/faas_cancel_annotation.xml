@@ -43,7 +43,7 @@ public class CancelAnnotationController extends PageFlowController
     
     
     def init(){
-        entity = svc.init(annotation.objid)
+        entity = svc.init(annotation)
         mode = MODE_CREATE
         return super.signal('init')
     }

@@ -11,6 +11,13 @@
 		<field name="ordate" required="true" />
 		<field name="oramount" type="decimal"  />
 		<field name="memoranda" required="true" />
+		<complex name="faas" ref="faas" jointype="many-to-one" required="false"
+			includefields="tdno,fullpin">
+			<key field="faasid" target="objid" />
+		</complex>
+		<complex name="annotationtype" ref="faasannotationtype" jointype="many-to-one" required="false">
+			<key field="annotationtype_objid" target="objid" />
+		</complex>
 	</element>
 </schema>
 

@@ -68,7 +68,7 @@ public class RPTLedgerRuleService
 		def ledgerfact = new RPTLedgerFact(ledger)
 		facts << ledgerfact 
 
-		def faases = em_ledger_faas.select('fromyear,toyear,idleland,assessedvalue')
+		def faases = em_ledger_faas.select('fromyear,toyear,idleland,assessedvalue,actualuse.objid')
 						.find([rptledgerid: ledger.objid, state:'APPROVED'])
 						.list()
 
@@ -85,7 +85,7 @@ public class RPTLedgerRuleService
 		    item.sefav = item.av 
 		    item.taxdifference = faas.taxdifference 
 
-		    def params = [faases: faases, ledgerfaas: faas, yr: yr, av: item.av]
+		    def params = [ledger: ledger, faases: faases, ledgerfaas: faas, yr: yr, av: item.av]
 		    ledgerSvc.calcLedgerItemAssessedValue(params)
 		    item.av = params.av 
 		    item.idleland = faas.idleland

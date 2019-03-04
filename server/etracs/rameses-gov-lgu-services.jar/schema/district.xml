@@ -7,7 +7,9 @@
 		<field name="pin" />
 		<field name="name" />
 		<field name="previd" />
-		<field name="parentid" />
+		<complex name="parent" ref="sys_org" jointype="many-to-one" includefields="code,name,orgclass" required="true">
+			<key field="parentid" target="objid"/>
+		</complex> 
 	</element>
 	
 </schema>

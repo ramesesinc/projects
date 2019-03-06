@@ -1,0 +1,19 @@
+<workunit schemaName="vw_assessment_notice" 
+          entitySchemaName="assessmentnotice"
+          windowTitle="Notice of Assessments"
+          allowDelete="false" 
+          cols="state,txndate,tdno,fullpin,titleno,taxpayername,dtdelivered,receivedby" 
+          orderBy="state,txndate desc" >
+    <invokers>
+        <invoker folderid="/menucategory/rpt/mgmt" 
+                 action="init" caption="View Notice of Assessments"  
+                 index="102" 
+                 role="SHARED" 
+                 permission="faasnoa.viewlist" 
+                icon="home/icons/batchgrs.png" />
+    </invokers>
+    <code class="com.rameses.seti2.models.CrudListModel"/>
+    <pages>
+        <page template="com.rameses.seti2.views.CrudListPage"/>
+    </pages>
+</workunit>

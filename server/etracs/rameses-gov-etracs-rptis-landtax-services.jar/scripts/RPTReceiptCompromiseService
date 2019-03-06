@@ -171,16 +171,10 @@ class RPTReceiptCompromiseService
 		receipt.items = []
 		def item = null 
 
-		bill.rptledger.shares.each{
-			item = createReceiptItem(receipt, it.payableitem)
-			item.amount = numSvc.roundA(it.amount, 4)
-			item.discount = numSvc.roundA(it.discount, 4)
-			receipt.items << item
-		}
 		bill.billitems.each{
 			item = createReceiptItem(receipt, it.item)
-			item.amount = numSvc.roundA(it.amount - it.share, 4)
-			item.discount = numSvc.roundA(it.discount - it.sharedisc, 4)
+			item.amount = numSvc.roundA(it.amount, 4)
+			item.discount = numSvc.roundA(it.discount, 4)
 			receipt.items << item
 		}
 	}

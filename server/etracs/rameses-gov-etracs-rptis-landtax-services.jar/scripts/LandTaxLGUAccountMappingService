@@ -1,39 +1,41 @@
 import com.rameses.annotations.*
-import com.rameses.common.*;
-import com.rameses.services.extended.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
 
-class LandTaxLGUAccountMappingInterceptor
+class LandTaxLGUAccountMappingService
 {
-	@ActiveDB('landtax_lgu_account_mapping')
-	def em 
+	@Env 
+	def env 
 
+	@DataContext('landtax_lgu_account_mapping')
+	def em_mapping
 
-	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname=='vw_landtax_lgu_account_mapping'}") 
-	public void getNodeList( evt ) {
-		def arg = evt.args[0]
-		def result = evt.result
+	@ProxyMethod 
+	public def buildAccounts( params ) {
+		em_mapping.deleteLandTaxAccountTags()
+		em_mapping.deleteLandTaxAccounts()
 
-		em.getLgus().each{
-			result << [title: it.name, id:it.objid, orgclass:it.orgclass]
+		em_mapping.insertRevenueAccounts()
+		em_mapping.insertRevenueAccountTags()
+
+		if ('MUNICIPALITY'.equalsIgnoreCase(env.ORGCLASS)) {
+			em_mapping.insertProvinceSharePayableAccounts()
+			em_mapping.insertProvinceSharePayableAccountTags()
+			em_mapping.buildMunicipalityRevenueAccounts()
+			em_mapping.buildProvinceShareAccounts()
+		} 
+		else if ('PROVINCE'.equalsIgnoreCase(env.ORGCLASS)) {
+			em_mapping.buildProvinceAccounts()
+			em_mapping.insertMunicipalitySharePayableAccounts()
+			em_mapping.insertMunicipalitySharePayableAccountTags()
+			em_mapping.buildProvinceRevenueAccounts()
+			em_mapping.buildMunicipalityShareAccounts()
+		} else {
+			em_mapping.buildCityRevenueAccounts()
 		}
+
+		em_mapping.insertBrgySharePayableAccounts()
+		em_mapping.insertBrgySharePayableAccountTags()
+		em_mapping.buildBrgyShareAccounts()
 	}
-
-	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'vw_landtax_lgu_account_mapping' }")
-	public void getList(def evt) {
-		def o = evt.args[0];
-		if( !o.node?.id ) return;
-
-		def m   = [lguid:o.node.id];
-		def str = " org.objid = :lguid ";
-
-		//add to first position of where
-		if( o.where ) {
-			o.where[0] = str + " AND " + o.where[0];	
-			o.where[1].putAll( m );
-		}
-		else {
-			o.where = [str, m];
-		}
-	}			
 }
-

@@ -248,6 +248,27 @@ select  'RPT_BASICINT_PRIOR_BRGY_SHARE' as objid, 'RPT_BASICINT_PRIOR_BRGY_SHARE
 
 
 
+
+[buildCityRevenueAccounts]
+insert into itemaccount (
+	objid, state, code, title, description, 
+	type, fund_objid, fund_code, fund_title, 
+	defaultvalue, valuetype, org_objid, org_name, parentid 
+)
+select 
+	concat(ia.objid,':',l.objid) as objid, 'ACTIVE' as state, '-' as code, 
+	concat(l.name , ' ' , ia.title) as title, 
+	concat(l.name , ' ' , ia.title) as description, ia.type, 
+	ia.fund_objid, ia.fund_code, ia.fund_title, ia.defaultvalue, ia.valuetype, 
+	l.objid as org_objid, l.name as org_name, ia.objid as parentid 
+from itemaccount ia, city l 
+where concat(ia.objid,':',l.objid) not in (select objid from itemaccount) 
+and ia.type = 'REVENUE'
+and ia.objid like 'rpt_%' 
+and ia.objid not like 'RPT%SHARE%'
+
+
+
 [buildMunicipalityRevenueAccounts]
 insert into itemaccount (
 	objid, state, code, title, description, 

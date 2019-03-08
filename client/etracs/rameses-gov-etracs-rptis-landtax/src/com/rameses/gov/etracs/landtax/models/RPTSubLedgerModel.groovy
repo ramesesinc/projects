@@ -127,8 +127,9 @@ class RPTSubLedgerModel
     
     
     void updateSubLedgerInfo(){
-        entity.tdno = ledger.tdno + '-' + entity.subacctno;
-        entity.fullpin = ledger.fullpin + '-' + entity.subacctno;
+        entity.tdno = ledger.tdno + ' (' + entity.subacctno + ')';
+        entity.fullpin = ledger.fullpin
+        entity.owner = [name: entity.taxpayer?.name]
         entity.faases = [];
         entity.faases << createLedgerFaas();
     }

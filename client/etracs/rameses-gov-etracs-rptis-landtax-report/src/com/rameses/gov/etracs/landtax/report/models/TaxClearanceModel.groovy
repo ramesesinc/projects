@@ -1,4 +1,4 @@
-package com.rameses.gov.etracs.landtax.report.taxclearance;
+package com.rameses.gov.etracs.landtax.report.models;
 
 import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
@@ -7,7 +7,7 @@ import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.reports.*;
 import com.rameses.etracs.shared.*;
 
-class TaxClearanceController
+class TaxClearanceModel
 {
     @Binding
     def binding;
@@ -25,16 +25,23 @@ class TaxClearanceController
     def var 
     
     
+    def MODE_INIT = 'init';
     def MODE_CREATE = 'create';
     def MODE_PREVIEW = 'preview';
+    def MODE_PRINT = 'print';
     
     def entity;
     def mode;
     def addoption = 'bytd';
+    def printoption = 'single';
     def lookup;
     def taxpayer;
     def address;
     def selectedItem;
+    def includeditems;
+    def msg;
+    def processing;
+    def showprinterdialog = false;
     
     def reportTypes;
     
@@ -58,14 +65,27 @@ class TaxClearanceController
         entity.ordate = dtSvc.getServerDate();
         entity.oramount = toDecimal(var.get('LANDTAX_TAXCLEARANCE_RATE'));
         listHandler.reload();
+        addoption = 'bytd';
+        printoption = 'single';
+        mode = MODE_INIT;
+        return 'init'
+    }
+    
+    def next() {
+        svc.checkDuplicateReceipt(entity);
         mode = MODE_CREATE;
-        return 'default'
+        return 'default';
+    }
+    
+    def back() {
+        mode = MODE_INIT;
+        return 'init';
     }
     
     def doNew(){
         init();
         initTaxpayer(taxpayer);
-        return 'default'
+        return 'init';
     }
     
     def open(){
@@ -73,16 +93,75 @@ class TaxClearanceController
         return preview();
     }
     
+    def preview(){
+        report.viewReport();
+        mode = MODE_PREVIEW;
+        return 'preview'
+    }
+    
+    def printTask = [
+        cancelled: false,
+        
+        run : {
+            processing = true;
+            includeditems.each{
+                showMessage('Printing clearance for TD No. ' + it.tdno);
+                createClearance([it]);
+                report.viewReport();
+                ReportUtil.print( report.report, showprinterdialog) ;
+                sleep(1000);
+            }
+            completed();
+        }
+    ] as Runnable;
+    
+    void showMessage(status) {
+        msg = status;
+        binding.refresh('msg');
+    }
+    
+    void completed() {
+        showMessage('Printing completed...');
+        processing = false;
+        binding.refresh('loadingicon');
+        MsgBox.alert('Clearances has been successfully printed.');
+        binding.fireNavigation(init());
+    }
+    
+    void sleep(ms) {
+        try {
+            Thread.sleep(ms);
+        }catch(e) {
+            //interrupted
+        }
+    }
+    
     def save(){
+        includeditems = entity.items.findAll{ it.included == true};
+        if (!includeditems) throw new Exception('At least one property must be included.');
+        
         if (MsgBox.confirm('Save clearance?')){
-            def includeditems = entity.items.findAll{ it.included == true};
-            if (!includeditems) throw new Exception('At least one property must be included.');
-            entity.items = includeditems;
-            entity = svc.createClearance(entity);
-            mode = MODE_PREVIEW;
-            return preview();
+            if (printoption == 'single') {
+                createClearance(includeditems)
+                return preview();
+            } else {
+                msg = 'Preparing clearances for printing...';
+                mode = MODE_PRINT;
+                Thread t = new Thread(printTask);
+                t.start();
+                return 'print';
+            }
         }
         return null;
+    }
+    
+    def createClearance(items) {
+        entity.objid = 'RPTC' + new java.rmi.server.UID();
+        items.each{
+            it.rptcertificationid = entity.objid;
+        }
+        entity.items = items;
+        entity.putAll(svc.createClearance(entity));
     }
     
     def getLookupTaxpayer(){
@@ -115,10 +194,11 @@ class TaxClearanceController
     }
     
     def getLookupLedger(){
+        def query = [:]
+        query.taxpayer = entity.taxpayer;
+        query.state = 'APPROVED';
         return InvokerUtil.lookupOpener('rptledger:lookup', [
-            taxpayerid : entity.taxpayer?.objid,
-            state      : 'APPROVED',
-                
+            query: query,
             onselect : { ledger ->
                 if (! entity.items.find{it.faasid == ledger.faasid}) {
                     validateLedger(ledger);
@@ -188,6 +268,7 @@ class TaxClearanceController
     }
     
     def listHandler = [
+        getRows : { return entity.items.size() },
         fetchList : { return entity.items },
     ] as EditorListModel
     
@@ -225,6 +306,7 @@ class TaxClearanceController
             it.included = true;
         }
         listHandler.load();
+        binding?.refresh('selectedCount');
     }
     
     void deselectAll(){
@@ -232,14 +314,9 @@ class TaxClearanceController
             it.included = false;
         }
         listHandler.load();
+        binding?.refresh('selectedCount');
     }
     
-    
-    def preview(){
-        report.viewReport();
-        mode = MODE_PREVIEW;
-        return 'preview'
-    }
     
     def reportpath = 'com/rameses/gov/etracs/landtax/report/taxclearance/'
     def report = [
@@ -281,5 +358,19 @@ class TaxClearanceController
     
     def replaceTaxpayer(ledger) {
         
+    }
+    
+    def getSelectedCount() {
+        return entity.items.findAll{it.included == true}.size();
+    }
+    
+    
+    
+    
+    
+    def cancelPrint() {
+        msg = null;
+        mode = MODE_CREATE;
+        return 'default';
     }
 }

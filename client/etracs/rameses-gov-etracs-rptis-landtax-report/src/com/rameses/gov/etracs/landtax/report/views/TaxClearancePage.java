@@ -4,8 +4,9 @@
  * Created on January 5, 2012, 10:38 AM
  */
 
-package com.rameses.gov.etracs.landtax.report.taxclearance;
+package com.rameses.gov.etracs.landtax.report.views;
 
+import com.rameses.gov.etracs.landtax.report.taxclearance.*;
 import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
@@ -29,21 +30,10 @@ public class TaxClearancePage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        formPanel1 = new com.rameses.rcp.util.FormPanel();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
-        xLookupField2 = new com.rameses.rcp.control.XLookupField();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
-        xTextField1 = new com.rameses.rcp.control.XTextField();
-        xTextField4 = new com.rameses.rcp.control.XTextField();
-        xTextField2 = new com.rameses.rcp.control.XTextField();
-        xTextField5 = new com.rameses.rcp.control.XTextField();
-        xTextField6 = new com.rameses.rcp.control.XTextField();
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xTextField3 = new com.rameses.rcp.control.XTextField();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
-        xNumberField2 = new com.rameses.rcp.control.XNumberField();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        xTextArea2 = new com.rameses.rcp.control.XTextArea();
+        formPanel3 = new com.rameses.rcp.util.FormPanel();
+        xLabel6 = new com.rameses.rcp.control.XLabel();
+        xLabel7 = new com.rameses.rcp.control.XLabel();
+        xLabel8 = new com.rameses.rcp.control.XLabel();
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         formPanel2 = new com.rameses.rcp.util.FormPanel();
@@ -59,118 +49,46 @@ public class TaxClearancePage extends javax.swing.JPanel {
         xRadio4 = new com.rameses.rcp.control.XRadio();
         xButton1 = new com.rameses.rcp.control.XButton();
         xButton2 = new com.rameses.rcp.control.XButton();
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xRadio1 = new com.rameses.rcp.control.XRadio();
+        xRadio2 = new com.rameses.rcp.control.XRadio();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        formPanel7 = new com.rameses.rcp.util.FormPanel();
+        xLabel9 = new com.rameses.rcp.control.XLabel();
+        xLabel10 = new com.rameses.rcp.control.XLabel();
+        xLabel11 = new com.rameses.rcp.control.XLabel();
+        xLabel12 = new com.rameses.rcp.control.XLabel();
 
-        formPanel1.setPadding(new java.awt.Insets(5, 10, 5, 5));
+        formPanel3.setPadding(new java.awt.Insets(5, 10, 5, 5));
 
-        xComboBox1.setCaption("Report Type");
-        xComboBox1.setExpression(" #{item.title}");
-        xComboBox1.setItems("reportTypes");
-        xComboBox1.setName("entity.reporttype"); // NOI18N
-        xComboBox1.setAllowNull(false);
-        xComboBox1.setCaptionWidth(110);
-        xComboBox1.setImmediate(true);
-        xComboBox1.setPreferredSize(new java.awt.Dimension(429, 19));
-        xComboBox1.setRequired(true);
-        formPanel1.add(xComboBox1);
-
-        xLookupField2.setCaption("Taxpayer");
-        xLookupField2.setExpression("#{entity.taxpayer.name}");
-        xLookupField2.setHandler("lookupTaxpayer");
-        xLookupField2.setName("taxpayer"); // NOI18N
-        xLookupField2.setCaptionWidth(110);
-        xLookupField2.setPreferredSize(new java.awt.Dimension(429, 19));
-        xLookupField2.setRequired(true);
-        formPanel1.add(xLookupField2);
-
-        xLabel1.setCaption("Address");
-        xLabel1.setExpression("#{entity.taxpayer.address}");
+        xLabel6.setCaption("O.R. No.");
+        xLabel6.setExpression("#{entity.orno}");
         com.rameses.rcp.control.border.XLineBorder xLineBorder1 = new com.rameses.rcp.control.border.XLineBorder();
         xLineBorder1.setLineColor(new java.awt.Color(153, 153, 153));
-        xLabel1.setBorder(xLineBorder1);
-        xLabel1.setCaptionWidth(110);
-        xLabel1.setPreferredSize(new java.awt.Dimension(429, 19));
-        formPanel1.add(xLabel1);
+        xLabel6.setBorder(xLineBorder1);
+        xLabel6.setCaptionWidth(110);
+        xLabel6.setPreferredSize(new java.awt.Dimension(429, 19));
+        formPanel3.add(xLabel6);
 
-        xTextField1.setCaption("Requested By");
-        xTextField1.setName("entity.requestedby"); // NOI18N
-        xTextField1.setCaptionWidth(110);
-        xTextField1.setPreferredSize(new java.awt.Dimension(429, 19));
-        xTextField1.setRequired(true);
-        formPanel1.add(xTextField1);
+        xLabel7.setCaption("O.R. Date");
+        xLabel7.setExpression("#{entity.ordate}");
+        com.rameses.rcp.control.border.XLineBorder xLineBorder2 = new com.rameses.rcp.control.border.XLineBorder();
+        xLineBorder2.setLineColor(new java.awt.Color(153, 153, 153));
+        xLabel7.setBorder(xLineBorder2);
+        xLabel7.setCaptionWidth(110);
+        xLabel7.setPreferredSize(new java.awt.Dimension(429, 19));
+        formPanel3.add(xLabel7);
 
-        xTextField4.setCaption("Address");
-        xTextField4.setCaptionWidth(110);
-        xTextField4.setName("entity.requestedbyaddress"); // NOI18N
-        xTextField4.setPreferredSize(new java.awt.Dimension(429, 19));
-        xTextField4.setRequired(true);
-        formPanel1.add(xTextField4);
-
-        xTextField2.setCaption("Purpose");
-        xTextField2.setCaptionWidth(110);
-        xTextField2.setName("entity.purpose"); // NOI18N
-        xTextField2.setPreferredSize(new java.awt.Dimension(429, 19));
-        xTextField2.setRequired(true);
-        xTextField2.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
-        formPanel1.add(xTextField2);
-
-        xTextField5.setCaption("<html><u>C</u>ertified By:<font color=\"red\">*</font></html>");
-        xTextField5.setCaptionWidth(110);
-        xTextField5.setName("entity.certifiedby"); // NOI18N
-        xTextField5.setPreferredSize(new java.awt.Dimension(429, 19));
-        xTextField5.setRequired(true);
-        formPanel1.add(xTextField5);
-
-        xTextField6.setCaption("Position/Job Title");
-        xTextField6.setCaptionWidth(110);
-        xTextField6.setName("entity.certifiedbytitle"); // NOI18N
-        xTextField6.setPreferredSize(new java.awt.Dimension(429, 19));
-        xTextField6.setRequired(true);
-        formPanel1.add(xTextField6);
-
-        xFormPanel1.setCaptionPadding(new java.awt.Insets(0, 0, 0, 5));
-        xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.setShowCaption(false);
-
-        xTextField3.setCaption("O.R. No.");
-        xTextField3.setCaptionWidth(108);
-        xTextField3.setCellPadding(new java.awt.Insets(0, 3, 0, 0));
-        xTextField3.setName("entity.orno"); // NOI18N
-        xTextField3.setPreferredSize(new java.awt.Dimension(120, 19));
-        xTextField3.setRequired(true);
-        xFormPanel1.add(xTextField3);
-
-        xDateField1.setCaption("Date");
-        xDateField1.setCaptionWidth(50);
-        xDateField1.setCellPadding(new java.awt.Insets(0, 3, 0, 3));
-        xDateField1.setName("entity.ordate"); // NOI18N
-        xDateField1.setPreferredSize(new java.awt.Dimension(98, 20));
-        xDateField1.setRequired(true);
-        xFormPanel1.add(xDateField1);
-
-        xNumberField2.setCaption("Amount");
-        xNumberField2.setCaptionWidth(70);
-        xNumberField2.setFieldType(BigDecimal.class);
-        xNumberField2.setName("entity.oramount"); // NOI18N
-        xNumberField2.setPattern("#,##0.00");
-        xNumberField2.setPreferredSize(new java.awt.Dimension(80, 19));
-        xNumberField2.setRequired(true);
-        xFormPanel1.add(xNumberField2);
-
-        formPanel1.add(xFormPanel1);
-
-        jScrollPane2.setPreferredSize(new java.awt.Dimension(429, 60));
-
-        xTextArea2.setLineWrap(true);
-        xTextArea2.setWrapStyleWord(true);
-        xTextArea2.setCaption("Additional Info");
-        xTextArea2.setCaptionWidth(110);
-        xTextArea2.setName("entity.addlinfo"); // NOI18N
-        xTextArea2.setPreferredSize(new java.awt.Dimension(120, 60));
-        jScrollPane2.setViewportView(xTextArea2);
-
-        formPanel1.add(jScrollPane2);
+        xLabel8.setCaption("O.R. Amount");
+        xLabel8.setExpression("#{entity.oramount}");
+        com.rameses.rcp.control.border.XLineBorder xLineBorder3 = new com.rameses.rcp.control.border.XLineBorder();
+        xLineBorder3.setLineColor(new java.awt.Color(153, 153, 153));
+        xLabel8.setBorder(xLineBorder3);
+        xLabel8.setCaptionWidth(110);
+        xLabel8.setPreferredSize(new java.awt.Dimension(429, 19));
+        formPanel3.add(xLabel8);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("List of Cleared Items");
@@ -190,7 +108,7 @@ public class TaxClearancePage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
+                , new Object[]{"editableWhen", "#{item.tdno != null}"}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
@@ -319,6 +237,8 @@ public class TaxClearancePage extends javax.swing.JPanel {
         });
         xDataTable1.setImmediate(true);
 
+        formPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+
         xNumberField5.setCaption("Effectivity Year");
         xNumberField5.setDepends(new String[] {"entity.reporttype"});
         xNumberField5.setName("entity.effectivityyear"); // NOI18N
@@ -363,7 +283,7 @@ public class TaxClearancePage extends javax.swing.JPanel {
         xSeparator2.setLayout(xSeparator2Layout);
         xSeparator2Layout.setHorizontalGroup(
             xSeparator2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 709, Short.MAX_VALUE)
+            .add(0, 414, Short.MAX_VALUE)
         );
         xSeparator2Layout.setVerticalGroup(
             xSeparator2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -427,35 +347,121 @@ public class TaxClearancePage extends javax.swing.JPanel {
         xButton2.setImmediate(true);
         xButton2.setText("Deselect All");
 
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder2.setPadding(new java.awt.Insets(30, 10, 10, 10));
+        xTitledBorder2.setTitle("Print Options");
+        xFormPanel1.setBorder(xTitledBorder2);
+
+        xRadio1.setName("printoption"); // NOI18N
+        xRadio1.setOptionValue("single");
+        xRadio1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        xRadio1.setOpaque(false);
+        xRadio1.setPreferredSize(new java.awt.Dimension(0, 23));
+        xRadio1.setShowCaption(false);
+        xRadio1.setText("Issue a single certification");
+        xFormPanel1.add(xRadio1);
+
+        xRadio2.setName("printoption"); // NOI18N
+        xRadio2.setOptionValue("multiple");
+        xRadio2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        xRadio2.setOpaque(false);
+        xRadio2.setPreferredSize(new java.awt.Dimension(0, 23));
+        xRadio2.setShowCaption(false);
+        xRadio2.setText("Issue separate certification for each property");
+        xFormPanel1.add(xRadio2);
+
+        xCheckBox1.setName("showprinterdialog"); // NOI18N
+        xCheckBox1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
+        xCheckBox1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        xCheckBox1.setShowCaption(false);
+        xCheckBox1.setText(" Show printer dialog?");
+        xFormPanel1.add(xCheckBox1);
+
+        xFormPanel2.setCaptionWidth(100);
+        xFormPanel2.setPadding(new java.awt.Insets(0, 0, 0, 0));
+
+        xIntegerField1.setCaption("Record Count");
+        xIntegerField1.setDepends(new String[] {"selectedItem"});
+        xIntegerField1.setName("selectedCount"); // NOI18N
+        xIntegerField1.setDisabledTextColor(new java.awt.Color(51, 51, 51));
+        xIntegerField1.setEnabled(false);
+        xIntegerField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xIntegerField1);
+
         org.jdesktop.layout.GroupLayout xPanel1Layout = new org.jdesktop.layout.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
         xPanel1Layout.setHorizontalGroup(
             xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, xPanel1Layout.createSequentialGroup()
-                .add(xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, formPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, xPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, xPanel1Layout.createSequentialGroup()
-                                .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
+            .add(xPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(xPanel1Layout.createSequentialGroup()
+                        .add(formPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 426, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE))
+                    .add(xPanel1Layout.createSequentialGroup()
+                        .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 206, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         xPanel1Layout.setVerticalGroup(
             xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(xPanel1Layout.createSequentialGroup()
-                .add(formPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(formPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                        .add(xButton1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(xButton2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(xFormPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
+
+        formPanel7.setPadding(new java.awt.Insets(5, 10, 5, 5));
+
+        xLabel9.setCaption("Clearance Type");
+        xLabel9.setExpression("#{entity.reporttype.title}");
+        com.rameses.rcp.control.border.XLineBorder xLineBorder4 = new com.rameses.rcp.control.border.XLineBorder();
+        xLineBorder4.setLineColor(new java.awt.Color(153, 153, 153));
+        xLabel9.setBorder(xLineBorder4);
+        xLabel9.setCaptionWidth(110);
+        xLabel9.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel7.add(xLabel9);
+
+        xLabel10.setCaption("Taxpayer");
+        xLabel10.setExpression("#{entity.taxpayer.name}");
+        com.rameses.rcp.control.border.XLineBorder xLineBorder5 = new com.rameses.rcp.control.border.XLineBorder();
+        xLineBorder5.setLineColor(new java.awt.Color(153, 153, 153));
+        xLabel10.setBorder(xLineBorder5);
+        xLabel10.setCaptionWidth(110);
+        xLabel10.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel7.add(xLabel10);
+
+        xLabel11.setCaption("Requested By");
+        xLabel11.setExpression("#{entity.requestedby}");
+        com.rameses.rcp.control.border.XLineBorder xLineBorder6 = new com.rameses.rcp.control.border.XLineBorder();
+        xLineBorder6.setLineColor(new java.awt.Color(153, 153, 153));
+        xLabel11.setBorder(xLineBorder6);
+        xLabel11.setCaptionWidth(110);
+        xLabel11.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel7.add(xLabel11);
+
+        xLabel12.setCaption("Purpose");
+        xLabel12.setExpression("#{entity.purpose}");
+        com.rameses.rcp.control.border.XLineBorder xLineBorder7 = new com.rameses.rcp.control.border.XLineBorder();
+        xLineBorder7.setLineColor(new java.awt.Color(153, 153, 153));
+        xLabel12.setBorder(xLineBorder7);
+        xLabel12.setCaptionWidth(110);
+        xLabel12.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel7.add(xLabel12);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -464,18 +470,21 @@ public class TaxClearancePage extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(xPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
-                        .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 717, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(0, 16, Short.MAX_VALUE))
-                    .add(xPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .add(formPanel7, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(formPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 360, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 258, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(formPanel7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(formPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 87, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(xPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -483,36 +492,36 @@ public class TaxClearancePage extends javax.swing.JPanel {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.util.FormPanel formPanel1;
     private com.rameses.rcp.util.FormPanel formPanel2;
+    private com.rameses.rcp.util.FormPanel formPanel3;
     private com.rameses.rcp.util.FormPanel formPanel4;
     private com.rameses.rcp.util.FormPanel formPanel5;
     private com.rameses.rcp.util.FormPanel formPanel6;
-    private javax.swing.JScrollPane jScrollPane2;
+    private com.rameses.rcp.util.FormPanel formPanel7;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
-    private com.rameses.rcp.control.XComboBox xComboBox1;
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XDataTable xDataTable1;
-    private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLookupField xLookupField2;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XLabel xLabel10;
+    private com.rameses.rcp.control.XLabel xLabel11;
+    private com.rameses.rcp.control.XLabel xLabel12;
+    private com.rameses.rcp.control.XLabel xLabel6;
+    private com.rameses.rcp.control.XLabel xLabel7;
+    private com.rameses.rcp.control.XLabel xLabel8;
+    private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XLookupField xLookupField4;
-    private com.rameses.rcp.control.XNumberField xNumberField2;
     private com.rameses.rcp.control.XNumberField xNumberField4;
     private com.rameses.rcp.control.XNumberField xNumberField5;
     private com.rameses.rcp.control.XPanel xPanel1;
+    private com.rameses.rcp.control.XRadio xRadio1;
+    private com.rameses.rcp.control.XRadio xRadio2;
     private com.rameses.rcp.control.XRadio xRadio3;
     private com.rameses.rcp.control.XRadio xRadio4;
     private com.rameses.rcp.control.XSeparator xSeparator2;
-    private com.rameses.rcp.control.XTextArea xTextArea2;
-    private com.rameses.rcp.control.XTextField xTextField1;
-    private com.rameses.rcp.control.XTextField xTextField2;
-    private com.rameses.rcp.control.XTextField xTextField3;
-    private com.rameses.rcp.control.XTextField xTextField4;
-    private com.rameses.rcp.control.XTextField xTextField5;
-    private com.rameses.rcp.control.XTextField xTextField6;
     // End of variables declaration//GEN-END:variables
     
 }

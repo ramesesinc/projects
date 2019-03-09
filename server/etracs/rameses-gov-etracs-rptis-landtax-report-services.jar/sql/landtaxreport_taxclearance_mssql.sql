@@ -124,3 +124,9 @@ where rci.rptcertificationid = $P{rptcertificationid}
   and rl.objid = $P{rptledgerid}
   and ( ( $P{year} > rc.fromyear and $P{year} < rc.toyear)  or (($P{year} = rc.fromyear or $P{year} = rc.toyear) and  rc.toqtr <= $P{qtr}))
 group by rl.objid, rc.refno, rc.refdate, rc.fromyear, rc.toyear 
+
+
+[findPaidClearance]
+select objid, txnno
+from rptcertification 
+where orno = $P{orno}

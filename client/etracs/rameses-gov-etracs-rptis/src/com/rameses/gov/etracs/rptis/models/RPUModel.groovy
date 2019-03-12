@@ -41,10 +41,12 @@ public class RPUModel extends SubPageModel
     }
     
     void calculateAssessment(){
-        entity.rpu.txntype = entity.txntype;
-        entity.rpu.effectivityyear = entity.effectivityyear;
-        entity.rpu.putAll( rpuSvc.calculateAssessment(entity.rpu) )
-        modeChanged(entity.state);
+        if (!entity.state.matches('CURRENT|CANCELLED')) {
+            entity.rpu.txntype = entity.txntype;
+            entity.rpu.effectivityyear = entity.effectivityyear;
+            entity.rpu.putAll( rpuSvc.calculateAssessment(entity.rpu) )
+            modeChanged(entity.state);
+        }
     }
     
     

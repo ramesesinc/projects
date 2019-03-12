@@ -14,7 +14,6 @@ FROM cancelannotation ca
 	INNER JOIN faas f ON fa.faasid = f.objid 
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 where 1=1 ${filters}
-ORDER BY ca.txnno DESC 
 
 
 [open]

@@ -45,3 +45,10 @@ order by startdate desc
 
 [getTasks]
 select * from cancelledfaas_task where refid = $P{objid} order by startdate
+
+[getTargetAssignees]
+select u.objid, u.name, u.jobtitle as title 
+from sys_user u 
+inner join sys_usergroup_member  m on u.objid = m.user_objid 
+where m.usergroup_objid = $P{role}
+order by u.name 

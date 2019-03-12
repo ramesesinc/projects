@@ -15,10 +15,6 @@ class FAASWorkflowService extends ActiveWorkflowService
 	@Service('FAASService')
 	def faasSvc 
 
-
-	@Service('RPTTrackingService')
-	def trackingSvc;
-
 	@ActiveDB('faas_list')
 	def faaslistEm
 
@@ -32,6 +28,15 @@ class FAASWorkflowService extends ActiveWorkflowService
 
 	public void beforeCreateTask(task) {
 		def assignee = [objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE]
+		if (task.assignee) {
+			assignee = task.assignee
+			env.target = [
+				assignee: assignee,
+				refid: task.refid,
+				sender: task.assignee
+			] 
+		}
+
 		if ( env.action?.matches('return.*')){
 			def returnto = findReturnToInfo(task)
 			if (!returnto) 
@@ -52,15 +57,30 @@ class FAASWorkflowService extends ActiveWorkflowService
 		else
 			msg = 'FAAS is currently for ' + task.title + ' by ' + task.assignee.name + '.'
 		faaslistEm.updateFaasList(env.data)
+
+		if (env.target) {
+			env.target.taskid = task.objid 
+			env.target.tdno = (env.data.tdno ? env.data.tdno  : env.data.utdno)
+		}
 	}
 	
 
 	public void afterOpenTask(task) {
-		if (task.state.matches('assign.*'))
+		if (task.state.matches('assign.*')){
 			task.owner = true 
+		}
 
 		task.data = faasSvc.openFaas([objid:task.refid])
 		removeUserNotification(task)
+	}
+
+	public void afterLoadTask(Object newTask) {
+		newTask.transitions.findAll{ it.action.toString().matches('submit.*')}.each{t ->
+			if (t.properties?.targetrole) {
+				def params = [role: t.properties.targetrole]
+				t.assignees = taskDB.getTargetAssignees(params)
+			}
+		}
 	}
 
 	public void afterSignal(Object result) {
@@ -118,6 +138,9 @@ class FAASWorkflowService extends ActiveWorkflowService
 		else if (env.prevtask?.state.matches('assign.*')){
 			removeNotification(task)
 		}
+		else if (env.target) {
+			return notifyTargetAssignee()	
+		}
 	}
 
 
@@ -164,5 +187,18 @@ class FAASWorkflowService extends ActiveWorkflowService
         ]
 	}
 
+	def notifyTargetAssignee() {
+		def target = env.target 
+        return [
+            objid     : target.refid,
+            recipientid : target.assignee?.objid,
+            recipienttype : 'user',
+            senderid  : env.prevtask?.actor?.objid,
+            sender    : env.prevtask?.actor?.name,
+            message   : 'FAAS No. ' + target.tdno + '   was submitted by ' + env.prevtask?.actor?.name,
+            filetype  : 'faas',
+            data 	  : [taskid: target.taskid],
+        ]
+	}
 }
 

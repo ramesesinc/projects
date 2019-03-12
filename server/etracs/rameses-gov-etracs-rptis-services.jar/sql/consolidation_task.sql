@@ -28,3 +28,10 @@ select * from consolidation_task where refid = $P{objid}
 
 [removeOpenTask]
 delete from consolidation_task where refid = $P{objid} and enddate is null
+
+[getTargetAssignees]
+select u.objid, u.name, u.jobtitle as title 
+from sys_user u 
+inner join sys_usergroup_member  m on u.objid = m.user_objid 
+where m.usergroup_objid = $P{role}
+order by u.name 	

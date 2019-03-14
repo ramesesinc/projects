@@ -65,6 +65,7 @@
     <Component class="com.rameses.rcp.control.XImageCanvas" name="xImageCanvas2">
       <Properties>
         <Property name="name" type="java.lang.String" value="signature.image" noResource="true"/>
+        <Property name="visibleWhen" type="java.lang.String" value="#{mode==&apos;sign&apos;}"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <PropertyBean type="com.rameses.rcp.control.border.XTitledBorder">
             <Property name="title" type="java.lang.String" value="Signature"/>

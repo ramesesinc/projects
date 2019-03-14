@@ -6,11 +6,9 @@
 
 package com.rameses.gov.etracs.landtax.report.views;
 
-import com.rameses.gov.etracs.landtax.report.taxclearance.*;
 import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
-import java.math.BigDecimal;
 
 
 @StyleSheet

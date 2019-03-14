@@ -43,6 +43,7 @@ public class RPTMessagePage extends javax.swing.JPanel {
         jLabel1.setText("Please enter a message ");
 
         xImageCanvas2.setName("signature.image"); // NOI18N
+        xImageCanvas2.setVisibleWhen("#{mode=='sign'}");
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Signature");
         xImageCanvas2.setBorder(xTitledBorder1);

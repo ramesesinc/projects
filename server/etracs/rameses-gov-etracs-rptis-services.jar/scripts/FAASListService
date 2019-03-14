@@ -63,8 +63,8 @@ public class FAASListService extends ActiveCrudListService {
     public def getNodes(o) {
         def nodes = []
         nodes << [name:'all', caption:'All Records']
-        nodes += faasListEm.getNodes();
         nodes << [name:'mytask', caption:'My Tasks']
+        nodes += faasListEm.getNodes();
         nodes << [name:'unassigned', caption:'Unassigned Tasks']
         nodes << [name:'publiclands', caption:'Public Lands']
 

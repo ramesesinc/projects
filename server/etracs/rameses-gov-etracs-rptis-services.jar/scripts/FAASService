@@ -198,6 +198,7 @@ class FAASService
 		savePreviousFaases(faas)
 		saveBackTaxes(faas)
 		insertTxnReference(faas)
+		assignTrackingNo(faas)
 		return faas
 	}	
 
@@ -806,7 +807,9 @@ class FAASService
 			if (landowner && faas.taxpayer.objid != landowner.objid){
 				def fullpin = faas.rpu.fullpin.replace('(', '').replace(')','')
 				def tokens = fullpin.tokenize('-')
-				tokens[4] = '(' + tokens[4] + ')'
+				if (tokens.size() >= 4) {
+					tokens[4] = '(' + tokens[4] + ')'
+				}
 				faas.fullpin = tokens.join('-')
 			}
 		}
@@ -1295,6 +1298,10 @@ class FAASService
     }
 
 
-
+    void assignTrackingNo(faas) {
+    	if (!util.isTrue(faas.datacapture)) {
+    		trackingSvc.assignTrackingNo(faas, 'faas', '')
+    	}
+    }
 }
 

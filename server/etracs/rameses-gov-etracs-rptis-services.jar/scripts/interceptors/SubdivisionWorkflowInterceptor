@@ -90,7 +90,7 @@ class SubdivisionWorkflowInterceptor
 	@After(pattern="SubdivisionWorkflowService.signal", eval="#{args[0].action =='delete'}", index=10) 
 	public void deleteSubdivision( evt ) {
 		def subdivision = evt.args[0].data
-		subdivisionSvc.deleteSubdivision(subdivision)
+		subdivisionSvc.delete(subdivision)
 	}
 
 	@Before(pattern="SubdivisionWorkflowService.signal", eval="#{args[0].state.equalsIgnoreCase('examiner') && !args[0].action?.matches('return.*')}", index=10) 

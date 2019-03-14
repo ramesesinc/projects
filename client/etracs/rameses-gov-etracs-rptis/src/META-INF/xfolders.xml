@@ -25,7 +25,7 @@
         <folder id="rpt" caption="Assessor" icon="home/icons/assessor.png">
             <folder id="mgmt" caption="Management" index="1" icon="home/icons/management.png" />
             <folder id="txn" caption="Transactions" index="5" icon="home/icons/transaction.png"/>
-            <folder id="cert" caption="Certiications" index="10" icon="home/icons/certifications.png"/>
+            <folder id="cert" caption="Certifications" index="10" icon="home/icons/certifications.png"/>
             <folder id="transmittal" caption="Transmittal" index="15" icon="home/icons/transmittal.png"/>
             <folder id="monitor" caption="Monitoring" index="20" icon="home/icons/af.png"/>
             <folder id="manual" caption="Manual Support" index="25" icon="home/icons/payer.png"/>

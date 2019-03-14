@@ -23,6 +23,7 @@ class FAASInitTxnModel
     def entity = [:]
     def txntitle;
     def showCapture = false;
+    def attributes;
     
     String getTitle(){
         return invoker.caption + ': Initial';
@@ -34,8 +35,8 @@ class FAASInitTxnModel
     void init(){
         txntitle = invoker.caption;
         entity.txntype = svc.getTxnType(invoker.properties.txntype.toUpperCase());
-        entity.attributes = svc.getTxnTypeAttributes(entity.txntype)
         entity.datacapture = false;
+        attributes = svc.getTxnTypeAttributes(entity.txntype)
         showCapture = var.get('faas_transaction_process_as_capture');
         if (showCapture) 
             showCapture = showCapture.toLowerCase().matches('1|y|yes|t|true');
@@ -64,6 +65,7 @@ class FAASInitTxnModel
     
     
     def process(){
+        entity.attributes = listHandler.selectedValue;
         def faas = svc.initOnlineTransaction(entity);
         if (entity.datacapture == true)
             return InvokerUtil.lookupOpener('faas:capture:open', [entity:faas]);
@@ -72,7 +74,8 @@ class FAASInitTxnModel
     
     
     def listHandler = [
-        fetchList : { return entity.attributes }
-    ] as EditorListModel;
+        fetchList : { return attributes },
+        isMultiSelect: { true },
+    ] as BasicListModel;
         
 }

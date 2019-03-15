@@ -31,6 +31,7 @@
 		<field name="createdby" required="true" />
 		<field name="createdbytitle" required="true" />
 		<field name="office" required="true" />
+		<complex name="properties" serializer="default" required="false" />
 	</element>
 
 	<element name="item" tablename="rptcertificationitem">

@@ -4,116 +4,17 @@
         <invoker type="faas:info" action="init" caption="Attachments" index="1010" />
         <invoker type="subdivision:info" action="init" caption="Attachments" index="1010" />
         <invoker type="consolidation:info" action="init" caption="Attachments" index="1010" />
-   </invokers>
-   <code>
-
-<![CDATA[
-
-                
-import com.rameses.rcp.annotations.* 
-import com.rameses.rcp.common.* 
-import com.rameses.osiris2.client.*
-import com.rameses.osiris2.common.*
-
-class AttachmentsInfoController
-{
-    @Binding
-    def binding;
-
-    @Service('Var')
-    def var;
-
-    final String FILE_SERVER_PATH;
-
-    def listeners = [];    
-    def entity;
-    def files;
-    def sourceEntity;
-    
-    void init() {
-        FILE_SERVER_PATH = var.get('file_server_path');
-        sourceEntity = entity;
-
-        entity = [:]; 
-        files = [];
-
-        def folderpath = FILE_SERVER_PATH + sourceEntity?.tdno;
-        println 'folderpath => ' + folderpath;
- 
-        loadFiles(new java.io.File(folderpath))
-    }
-
-    void loadFiles(file){
-        if (file.isDirectory()) {
-            files << createFileInfo(file);
-            file.listFiles().each{f->
-                if (f.isDirectory()) {
-                    loadFiles(f);
-                }
-            }
-        }
-    }
-    
-    def createFileInfo(file) {
-        def info = [
-            objid    : file.name, 
-            title    : file.name, 
-            createdby : [name: 'system'],  
-            dtcreated : new java.sql.Date( file.lastModified()), 
-            filetype : 'jpg',
-            filepath : file.canonicalPath,
-        ]; 
-        return info;
-    }
-    
-    def scaler = new ImageScaler(); 
-    
-    void loadItems( info ) { 
-        info.items = []; 
         
-        def dir = new java.io.File( info.filepath );
-        dir.listFiles().each{ f-> 
-            if ( f.isDirectory()) return; 
+        <invoker type="attachment:view" action="init" caption="Attachments" />
 
-            // primary info 
-            def m = [
-                objid    : f.name, 
-                caption  : f.name,  
-                filepath : f.canonicalPath 
-            ]; 
-            
-            try {
-                m.thumbnail = scaler.createThumbnail( f ); 
-            } catch(Throwable t){;} 
-            
-            info.items << m; 
-        } 
-    }
-    
-    def attachmentHandler = [
-        isAllowAdd: { false },
-        isAllowDelete: { false },
-        fetchList: {
-            return files; 
-        }, 
-        getItem: { o->
-            loadItems( o ); 
-            return o; 
-        },
-        openItem: { o-> 
-            if ( listeners ) {
-                listeners.each{ ls-> 
-                    ls(o);
-                } 
-                throw new com.rameses.util.BreakException(); 
-            } 
-            
-            return Inv.lookupOpener('attachment:preview', [entity: o, listeners: listeners]); 
-        }
-    ] as FileViewModel;
-}
-       
-]]>       
+        <invoker type="faaslist:formActions"
+                 action="init" 
+                 caption="View Attachments" 
+                 target="popup" 
+                 index="100000" 
+                 folderFieldName="tdno" />
+   </invokers>
+   <code class="com.rameses.gov.etracs.rptis.models.AttachmentModel">
    </code>
     
     <pages> 

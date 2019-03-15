@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptcertification" 
+            action="init" caption="Certified Digital Copy" 
+            opener="digitalcopy" index="151" 
+            role="CERTIFICATION_ISSUER,RECORD" permission="certification.digitalcopy"/>
+            
+        <invoker type="digitalcopy:open" action="open" caption="Certified Digital Copy" /> 
+        
+        
+        <invoker type="formActions" action="_close" caption="Close"    
+        	shourtcut="c" mnemonic="c"  index="0"  
+        	visibleWhen="#{mode == 'read'}" immediate="true"  />
+
+        <invoker type="formActions" action="_close" caption="Cancel"    
+        	shourtcut="c" mnemonic="c"  index="0"  
+        	visibleWhen="#{mode.matches('create|select')}" immediate="true"  />
+
+        <invoker type="formActions" action="next" caption="Next"  
+        	mnemonic="n"  index="2"  visibleWhen="#{mode == 'create'}"/>   
+
+        <invoker type="formActions" action="doSave" caption="Save"      
+        	shourtcut="s" mnemonic="s"  index="2"  
+        	visibleWhen="#{mode == 'select'}" icon="images/toolbars/save.png" />     
+
+        <invoker type="formActions" action="init" caption="New"      
+        	shourtcut="n" mnemonic="n"  index="3"  
+        	visibleWhen="#{mode == 'read'}" icon="images/toolbars/create.png" />        
+        
+        <invoker type="listActions" action="selectAll"   caption="Select All"     mnemonic="a"  />        
+        <invoker type="listActions" action="deselectAll"   caption="Deselect All"     mnemonic="d"  />        
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.rptis.report.models.DigitalCopyCertificationModel">
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.report.certification.RPTCertificationPage" />
+        <page name="selectpage" template="com.rameses.gov.etracs.rptis.report.views.AttachmentSelectPage" />
+        <page name="preview" template="com.rameses.gov.etracs.rpt.report.PreviewPage" />
+    </pages>
+    
+</workunit>

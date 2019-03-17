@@ -70,8 +70,8 @@ WHERE rl.state = 'APPROVED'
 [getPaymentInfo]
 SELECT 
     rl.objid AS rptledgerid, 
-    xr.receiptno AS orno,
-    xr.txndate AS ordate,
+    rp.receiptno AS orno,
+    rp.receiptdate AS ordate,
     SUM(ri.amount + ri.interest - ri.discount) AS oramount,
     SUM(CASE WHEN ri.revtype = 'basic' THEN ri.amount ELSE 0 END) AS basic,
     SUM(CASE WHEN ri.revtype = 'basic' THEN ri.discount ELSE 0 END) AS basicdisc,
@@ -80,48 +80,23 @@ SELECT
     SUM(CASE WHEN ri.revtype = 'sef' THEN ri.discount ELSE 0 END) AS sefdisc,
     SUM(CASE WHEN ri.revtype = 'sef' THEN ri.interest ELSE 0 END) AS sefint,
 
-    CASE WHEN (MIN(ri.qtr) = 1 AND MAX(ri.qtr) = 4) OR ((MIN(ri.qtr) = 0 AND MAX(ri.qtr) = 0))
-        THEN  CONCAT('full ', ri.year)
+    CASE 
+		WHEN MIN(ri.qtr) = MAX(ri.qtr) AND MIN(ri.qtr) <> 0 THEN CONCAT(MIN(ri.qtr), 'Q, ', ri.year)
+		WHEN (MIN(ri.qtr) = 1 AND MAX(ri.qtr) = 4) OR ((MIN(ri.qtr) = 0 AND MAX(ri.qtr) = 0))
+        THEN  CONCAT('', ri.year)
         ELSE
-            CONCAT(MIN(ri.qtr), 'q,', ri.year, ' - ', MAX(ri.qtr), 'q,', ri.year) 
+            CONCAT(MIN(ri.qtr), 'Q,', ri.year, ' - ', MAX(ri.qtr), 'Q,', ri.year) 
     END AS period
 FROM rptcertificationitem rci 
     INNER JOIN rptledger rl ON rci.refid = rl.objid 
     INNER JOIN rptpayment rp ON rl.objid = rp.refid
     INNER JOIN rptpayment_item ri ON rp.objid = ri.parentid
-    INNER JOIN cashreceipt xr ON rp.receiptid = xr.objid 
-    LEFT JOIN cashreceipt_void cv ON xr.objid = cv.receiptid 
+    LEFT JOIN cashreceipt_void cv ON rp.receiptid = cv.receiptid 
 WHERE rci.rptcertificationid = $P{rptcertificationid}
     AND rl.objid =  $P{rptledgerid}
    and (ri.year = $P{year} and ri.qtr <= $P{qtr})
   AND cv.objid IS NULL 
-GROUP BY rl.objid, xr.receiptno, xr.txndate, ri.year
-
-union all
-
-select 
-    rl.objid as rptledgerid,
-    rc.refno as orno,
-    rc.refdate as ordate,
-    sum(rc.basic + rc.basicint - rc.basicdisc + rc.sef + rc.sefint - rc.sefdisc ) as oramount,
-    sum(rc.basic) as basic,
-    sum(rc.basicdisc) as basicdisc,
-    sum(rc.basicint) as basicint,
-    sum(rc.sef) as sef,
-    sum(rc.sefdisc) as sefdisc,
-    sum(rc.sefint) as sefint,  
-    case when min(rc.fromqtr) = 1 and max(rc.toqtr) = 4
-        then  concat('full ', rc.toyear)
-        else
-            concat(min(rc.fromqtr), 'q,', rc.fromyear,  ' - ', max(rc.toqtr), 'q,', rc.toyear) 
-    end as period
-from rptcertificationitem rci 
-    inner join rptledger rl on rci.refid = rl.objid 
-    inner join rptledger_credit rc on rl.objid = rc.rptledgerid
-where rci.rptcertificationid = $P{rptcertificationid}
-    and rl.objid = $P{rptledgerid}
-  and ( ( $P{year} > rc.fromyear and $P{year} < rc.toyear)  or (($P{year} = rc.fromyear or $P{year} = rc.toyear) and  rc.toqtr <= $P{qtr}))
-group by rl.objid, rc.refno, rc.refdate, rc.fromyear, rc.toyear 
+GROUP BY rl.objid, rp.receiptno, rp.receiptdate, ri.year
 
 
 [findPaidClearance]

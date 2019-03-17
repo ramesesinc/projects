@@ -39,6 +39,7 @@
 		<field name="realpropertyid" />
 		<field name="lguid" />
 		<field name="originlguid" />
+		<field name="trackingno" />
 	</element>
 </schema>
 

@@ -198,7 +198,7 @@ class FAASService
 		savePreviousFaases(faas)
 		saveBackTaxes(faas)
 		insertTxnReference(faas)
-		assignTrackingNo(faas)
+		//assignTrackingNo(faas)
 		return faas
 	}	
 
@@ -1298,10 +1298,10 @@ class FAASService
     }
 
 
-    void assignTrackingNo(faas) {
-    	if (!util.isTrue(faas.datacapture)) {
-    		trackingSvc.assignTrackingNo(faas, 'faas', '')
-    	}
-    }
+    // void assignTrackingNo(faas) {
+    // 	if (!util.isTrue(faas.datacapture)) {
+    // 		trackingSvc.assignTrackingNo(faas, 'faas', '')
+    // 	}
+    // }
 }
 

@@ -1,0 +1,35 @@
+<workunit schemaName="rpttracking">
+    <invokers>
+        <invoker type="faas:formActions" 
+            action="init" filetype="faas" 
+            caption="Acknowledgement" 
+            index="1000" 
+            role="RECEIVER"
+            target="process"/>
+        <invoker type="subdivision:formActions" 
+            action="init" filetype="subdivision" 
+            caption="Acknowledgement" 
+            index="1000" 
+            role="RECEIVER"
+            target="process"/>
+        <invoker type="consolidation:formActions" 
+            action="init" filetype="consolidation" 
+            caption="Acknowledgement" 
+            index="1000" 
+            role="RECEIVER"
+            target="process"/>
+        <invoker type="resection:formActions" 
+            action="init" filetype="resection" 
+            caption="Acknowledgement" 
+            index="1000" 
+            role="RECEIVER"
+            target="process"/>
+        <invoker type="cancelledfaas:formActions" 
+            action="init" filetype="cancelledfaas" 
+            caption="Acknowledgement" 
+            index="1000" 
+            role="RECEIVER"
+            target="process"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.models.RPTTrackingTxnModel"/>
+</workunit>

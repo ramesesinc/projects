@@ -1,0 +1,19 @@
+<workunit schemaName="rpttracking" 
+          windowTitle="Tracking"
+          allowDelete="false" 
+          allowEdit="false" 
+          allowCreate="true" 
+          cols="trackingno,dtfiled,txntype.objid,receivedby,releasedate,releasemode,remarks" 
+          orderBy="trackingno desc">
+    <invokers>
+        <invoker folderid="/menucategory/rpt/mgmt" 
+                 action="init" caption="View Acknowledgement Receipts"  
+                 index="1002" 
+                 role="SHARED" 
+                 permission="rpttracking.viewlist" />
+    </invokers>
+    <code class="com.rameses.seti2.models.CrudListModel"/>
+    <pages>
+        <page template="com.rameses.seti2.views.CrudListPage"/>
+    </pages>
+</workunit>

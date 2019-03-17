@@ -7,49 +7,32 @@ class RPTTrackingInterceptor
 	@Service('RPTTrackingService')
     def svc
 
-
-	// @After(pattern='FAASService.createFaas')
-	// public void afterCreateFaas(evt){
-	// 	def faas = evt.result 
-	// 	if (!faas.trackingno)
-	// 		svc.assignTrackingNo(faas, 'faas', 'Document is currently reviewed.')
-	// }
-
-	// @After(pattern='FAASService.open|TDReportService.buildTaxDec')
-	// public void afterOpenFaas(evt){
-	// 	def faas = evt.result 
-	// 	def tracking = svc.findById(faas.objid)
-	// 	faas.trackingno = tracking?.trackingno
-	// }
+	@DataContext('faas_list')
+	def em_faaslist
 
 
-	// @After(pattern='SubdivisionService.createSubdivision')
-	// public void afterCreateSubdivision(evt){
-	// 	def subdivision = evt.result 
-	// 	svc.assignTrackingNo(subdivision, 'subdivision', 'Document is currently reviewed.')
-	// }
 
-	// @After(pattern='SubdivisionService.openSubdivision')
-	// public void afterOpenSubdivision(evt){
-	// 	def subdivision = evt.result 
-	// 	def tracking = svc.findById(subdivision.objid)
-	// 	subdivision.trackingno = tracking?.trackingno
-	// }
+	@Before(pattern='PersistenceService.create', eval="#{args[0]._schemaname=='rpttracking'}")
+	public void beforeCreate(evt){
+		def entity = evt.args[0]
+		svc.beforeSave(entity)
+	}
 
+	@After(pattern='PersistenceService.create', eval="#{args[0]._schemaname=='rpttracking' && args[0].filetype=='faas'}")
+	public void afterCreate(evt){
+		def entity = evt.args[0]
+		em_faaslist.find([objid: entity.objid]).update([trackingno: entity.trackingno])
 
-	// @After(pattern='ConsolidationService.createConsolidation')
-	// public void afterCreateConsolidation(evt){
-	// 	def consolidation = evt.result 
-	// 	svc.assignTrackingNo(consolidation, 'consolidation', 'Document is currently reviewed.')
-	// }
+	}
 
-	// @After(pattern='ConsolidationService.openConsolidation')
-	// public void afterOpenConsolidation(evt){
-	// 	def consolidation = evt.result 
-	// 	def tracking = svc.findById(consolidation.objid)
-	// 	consolidation.trackingno = tracking?.trackingno
-	// }
-	
+	@After(pattern='PersistenceService.read', eval="#{args[0]._schemaname=='rpttracking'}")
+	public void afterRead(evt){
+		def entity = evt.result
+		if (entity) {
+			entity.logs = svc.getLogs(entity)
+		}
+	}
+
 
 }
 

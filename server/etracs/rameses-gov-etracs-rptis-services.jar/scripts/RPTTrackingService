@@ -5,7 +5,7 @@ import com.rameses.services.extended.*;
 
 class RPTTrackingService
 {
-	@ActiveDB('rpttracking')
+	@DataContext('rpttracking')
 	def em 
 
 	@Service('DateService')
@@ -17,45 +17,36 @@ class RPTTrackingService
 	@Service('SequenceService')
 	def seqSvc
 
-
 	@Service('OrgService')
 	def orgSvc 
 
 
 	@ProxyMethod
-	public def assignTrackingNo( entity, filetype, msg ) {
+	public def beforeSave(entity) {
+		def serverDate = dtSvc.serverDate 
+		if ( dtSvc.parse('yyyy-MM-dd', entity.releasedate) < serverDate ){
+			throw new Exception('Release Date should not be greater than current date');
+		}
 		def org = orgSvc.getRoot();
-		def key = 'RT' + org.code.replaceAll('-','') 
-		entity.trackingno = key + seqSvc.getNextFormattedSeries(key)
-		create([
-			objid 		: entity.objid,
-			filetype	: filetype,
-			trackingno 	: entity.trackingno,
-			msg 		: msg,
-		])
+		def orgcode = org.code.replaceAll('-','') 
+		def key = 'RPTTRACKING-' + orgcode 
+		entity.trackingno = 'RT' + orgcode + seqSvc.getNextFormattedSeries(key)
+		entity.dtfiled = dtSvc.serverDate 
 	}
 
+	@ProxyMethod
+	public def getLogs(entity) {
+		return em.getLogs(entity)
+	}
 
 	@ProxyMethod
 	public def findById(objid) {
-		return em.findById([objid:objid])		
+		return em.read([objid:objid])
 	}
-
-	@ProxyMethod
-	public void create( tracking	) {
-		em.insertTracking(tracking)
-	}
-
 
 	@ProxyMethod
 	public void delete( tracking ) {
-		em.deleteTracking(tracking)
-	}
-
-
-	@ProxyMethod
-	public void updateMessage( tracking ) {
-		em.updateMsg(tracking)
+		em.delete(tracking)
 	}
 }
 

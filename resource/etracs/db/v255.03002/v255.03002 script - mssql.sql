@@ -47,3 +47,15 @@ go
 
 alter table rpttracking drop column msg
 go 
+
+
+alter table faas_signatory add reviewer_objid varchar(50)
+go 
+alter table faas_signatory add reviewer_name varchar(100)
+go 
+alter table faas_signatory add reviewer_title varchar(75)
+go 
+alter table faas_signatory add reviewer_dtsigned datetime
+go 
+alter table faas_signatory add reviewer_taskid varchar(50)
+go 

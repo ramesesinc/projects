@@ -35,6 +35,7 @@ class FAASLookupService
 			params.searchtext 	= (params.searchtext ? params.searchtext : '') + '%';
 			def filters = [
 				' and tdno LIKE $P{searchtext} ',
+				' and utdno LIKE $P{searchtext} ',
 				' and prevtdno LIKE $P{searchtext} ',
 				' and pin LIKE $P{searchtext} ',
 				' and owner_name LIKE $P{searchtext} ',

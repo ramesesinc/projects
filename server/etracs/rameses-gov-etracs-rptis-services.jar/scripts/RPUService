@@ -327,6 +327,9 @@ class RPUService
     public void checkDuplicateFullPin( rpu ){
         if (! rpu.previd ) {
             def data = em.findDuplicateFullPin([objid:rpu.objid, ry:rpu.ry, fullpin:rpu.fullpin])
+            if (!data) {
+                data = em.findDuplicateFullPin([objid:rpu.objid, ry:rpu.ry, fullpin:rpu.fullpin.replaceAll('-','')])
+            }
             if (data){
                 throw new Exception('PIN ' + rpu.fullpin + ' already exist.' )
             }

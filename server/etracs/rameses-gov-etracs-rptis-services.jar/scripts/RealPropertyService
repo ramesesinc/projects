@@ -155,7 +155,10 @@ class RealPropertyService
 
     	def rp = em_realproperty.find([pin:params.pin, ry:params.ry]).first()
     	if (!rp) {
-    		return
+    		rp = em_realproperty.find([pin:params.pin.replaceAll('-',''), ry:params.ry]).first()
+    		if (!rp) {
+    			return
+    		}
     	}
     	if (params.claimno && rp.claimno != params.claimno){
     		return

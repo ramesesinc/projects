@@ -35,3 +35,11 @@ alter table rpttracking drop column msg
 ;	
 
 	
+alter table faas_signatory 
+    add reviewer_objid varchar(50),
+    add reviewer_name varchar(100),
+    add reviewer_title varchar(75),
+    add reviewer_dtsigned datetime,
+    add reviewer_taskid varchar(50);
+
+    

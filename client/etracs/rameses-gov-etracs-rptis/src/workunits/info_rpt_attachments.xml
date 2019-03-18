@@ -12,7 +12,8 @@
                  caption="View Attachments" 
                  target="popup" 
                  index="100000" 
-                 folderFieldName="tdno" />
+                 folderFieldName="tdno" 
+                 visibleWhen="#{selectedEntity != null}" />
    </invokers>
    <code class="com.rameses.gov.etracs.rptis.models.AttachmentModel">
    </code>

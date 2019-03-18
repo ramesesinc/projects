@@ -90,9 +90,6 @@ class FAASService
 	@Service('SequenceService')
 	def seqSvc
 
-	@Service('RPTTrackingService')
-    def trackingSvc 
-
 	@Service('TxnRefService')
 	def txnRef
 
@@ -198,7 +195,6 @@ class FAASService
 		savePreviousFaases(faas)
 		saveBackTaxes(faas)
 		insertTxnReference(faas)
-		//assignTrackingNo(faas)
 		return faas
 	}	
 
@@ -286,7 +282,6 @@ class FAASService
 				throw new Exception('FAAS has already been cancelled.')
 		}
 
-		trackingSvc.delete(faas) 
 		txnRef.delete(faas.objid)
 		em_faas_signatory.delete(faas)
 		em_faas_task.find([refid:faas.objid]).delete()
@@ -1296,12 +1291,5 @@ class FAASService
     	info.assignee = null
     	em_faas_list.find([objid: entity.objid]).update(info)
     }
-
-
-    // void assignTrackingNo(faas) {
-    // 	if (!util.isTrue(faas.datacapture)) {
-    // 		trackingSvc.assignTrackingNo(faas, 'faas', '')
-    // 	}
-    // }
 }
 

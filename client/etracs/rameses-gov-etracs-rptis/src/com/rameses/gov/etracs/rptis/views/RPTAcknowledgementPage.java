@@ -10,12 +10,12 @@ import com.rameses.seti2.views.CrudFormPage;
 
 @Template(CrudFormPage.class)
 @StyleSheet
-public class RPTTrackingPage extends javax.swing.JPanel {
+public class RPTAcknowledgementPage extends javax.swing.JPanel {
 
     /**
      * Creates new form RPTTrackingPage
      */
-    public RPTTrackingPage() {
+    public RPTAcknowledgementPage() {
         initComponents();
     }
 
@@ -29,6 +29,7 @@ public class RPTTrackingPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xDateField2 = new com.rameses.rcp.control.XDateField();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
@@ -39,12 +40,6 @@ public class RPTTrackingPage extends javax.swing.JPanel {
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xTextField1 = new com.rameses.rcp.control.XTextField();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
-        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
-        xIntegerField3 = new com.rameses.rcp.control.XIntegerField();
-        xIntegerField4 = new com.rameses.rcp.control.XIntegerField();
-        xIntegerField5 = new com.rameses.rcp.control.XIntegerField();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -53,8 +48,15 @@ public class RPTTrackingPage extends javax.swing.JPanel {
         xFormPanel1.setBorder(xTitledBorder1);
         xFormPanel1.setCaptionWidth(120);
 
-        xLabel1.setCaption("Tracking No");
-        xLabel1.setExpression("#{entity.trackingno}");
+        xLabel2.setCaption("State");
+        xLabel2.setExpression("#{entity.state}");
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 21));
+        xFormPanel1.add(xLabel2);
+
+        xLabel1.setCaption("Receipt No.");
+        xLabel1.setExpression("#{entity.txnno}");
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 21));
@@ -62,7 +64,7 @@ public class RPTTrackingPage extends javax.swing.JPanel {
 
         xDateField2.setCaption("Date Filed");
         xDateField2.setDisableWhen("#{true}");
-        xDateField2.setName("entity.dtfiled"); // NOI18N
+        xDateField2.setName("entity.txndate"); // NOI18N
         xDateField2.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDateField2.setEnabled(false);
         xDateField2.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -118,72 +120,34 @@ public class RPTTrackingPage extends javax.swing.JPanel {
         xTextField1.setRequired(true);
         xFormPanel1.add(xTextField1);
 
-        xFormPanel2.setCaption("Document Count");
+        xDataTable1.setHandler("itemHandlers.items");
+        xDataTable1.setName("selectedItem"); // NOI18N
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setPadding(new java.awt.Insets(30, 10, 10, 10));
-        xTitledBorder2.setTitle("Kind of Property");
-        xFormPanel2.setBorder(xTitledBorder2);
-        xFormPanel2.setCaptionWidth(100);
-        xFormPanel2.setPreferredSize(new java.awt.Dimension(0, 150));
-        xFormPanel2.setShowCaption(false);
-
-        xIntegerField1.setCaption("Land");
-        xIntegerField1.setName("entity.landcount"); // NOI18N
-        xIntegerField1.setPreferredSize(new java.awt.Dimension(50, 20));
-        xIntegerField1.setRequired(true);
-        xFormPanel2.add(xIntegerField1);
-
-        xIntegerField2.setCaption("Building");
-        xIntegerField2.setName("entity.bldgcount"); // NOI18N
-        xIntegerField2.setPreferredSize(new java.awt.Dimension(50, 20));
-        xIntegerField2.setRequired(true);
-        xFormPanel2.add(xIntegerField2);
-
-        xIntegerField3.setCaption("Machinery");
-        xIntegerField3.setName("entity.machcount"); // NOI18N
-        xIntegerField3.setPreferredSize(new java.awt.Dimension(50, 20));
-        xIntegerField3.setRequired(true);
-        xFormPanel2.add(xIntegerField3);
-
-        xIntegerField4.setCaption("Plant/Tree");
-        xIntegerField4.setName("entity.planttreecount"); // NOI18N
-        xIntegerField4.setPreferredSize(new java.awt.Dimension(50, 20));
-        xIntegerField4.setRequired(true);
-        xFormPanel2.add(xIntegerField4);
-
-        xIntegerField5.setCaption("Miscellaneous");
-        xIntegerField5.setName("entity.misccount"); // NOI18N
-        xIntegerField5.setPreferredSize(new java.awt.Dimension(50, 20));
-        xIntegerField5.setRequired(true);
-        xFormPanel2.add(xIntegerField5);
-
-        xDataTable1.setHandler("listHandler");
-        xDataTable1.setVisibleWhen("#{mode=='read'}");
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder3.setTitle("Tracking Information");
-        xDataTable1.setBorder(xTitledBorder3);
+        xTitledBorder2.setTitle("List of Documents");
+        xDataTable1.setBorder(xTitledBorder2);
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "dtfiled"}
-                , new Object[]{"caption", "Date"}
-                , new Object[]{"width", 150}
+                new Object[]{"name", "faas"}
+                , new Object[]{"caption", "TD No."}
+                , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 150}
+                , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", "#{item.trackingno == null}"}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, null, null)}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler("#{item.faas.tdno}", "faas:lookup")}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "action"}
-                , new Object[]{"caption", "Action"}
-                , new Object[]{"width", 200}
+                new Object[]{"name", "trackingno"}
+                , new Object[]{"caption", "Tracking #"}
+                , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 200}
+                , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -194,8 +158,8 @@ public class RPTTrackingPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "assignee.name"}
-                , new Object[]{"caption", "Assigned To"}
+                new Object[]{"name", "newfaas.tdno"}
+                , new Object[]{"caption", "New TD No."}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -216,23 +180,18 @@ public class RPTTrackingPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
+                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(168, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
+                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -244,13 +203,8 @@ public class RPTTrackingPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel2;
-    private com.rameses.rcp.control.XIntegerField xIntegerField1;
-    private com.rameses.rcp.control.XIntegerField xIntegerField2;
-    private com.rameses.rcp.control.XIntegerField xIntegerField3;
-    private com.rameses.rcp.control.XIntegerField xIntegerField4;
-    private com.rameses.rcp.control.XIntegerField xIntegerField5;
     private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;

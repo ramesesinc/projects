@@ -1,16 +1,15 @@
-<workunit schemaName="rpttracking" 
-          windowTitle="Tracking"
-          allowDelete="false" 
-          allowEdit="false" 
-          allowCreate="true" 
-          cols="trackingno,dtfiled,txntype.objid,receivedby,releasedate,releasemode,remarks" 
-          orderBy="trackingno desc">
+<workunit schemaName="rptacknowledgement" 
+          windowTitle="Acknowledgement Receipt"
+          allowDelete="#{entity.state != 'APPROVED'}" 
+          allowEdit="#{entity.state != 'APPROVED'}" 
+          cols="state,txnno,txndate,taxpayer.name,txntype.objid" 
+          orderBy="txnno desc">
     <invokers>
         <invoker folderid="/menucategory/rpt/mgmt" 
                  action="init" caption="View Acknowledgement Receipts"  
                  index="1002" 
                  role="SHARED" 
-                 permission="rpttracking.viewlist" />
+                 permission="rptacknowledgement.viewlist" />
     </invokers>
     <code class="com.rameses.seti2.models.CrudListModel"/>
     <pages>

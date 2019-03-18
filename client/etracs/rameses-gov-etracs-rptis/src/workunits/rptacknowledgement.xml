@@ -1,0 +1,34 @@
+<workunit extends="com/rameses/seti2/templates/CrudModel.xml"
+  schemaName="rptacknowledgement"
+  allowEdit="#{entity.state != 'APPROVED'}"
+  allowDelete="#{entity.state != 'APPROVED'}"
+>
+    <invokers>
+        <invoker type="rptacknowledgement:create" 
+                 action="create" caption="Acknowledgement Receipt (New)"  
+                 role="RECEIVER" 
+                 permission="rptacknowledgement.create" 
+                target="popup" />
+
+        <invoker type="quick_launcher"  code="AR01"
+                 action="create" caption="Acknowledgement Receipt (New)"  
+                 role="RECEIVER" 
+                 permission="rptacknowledgement.create" 
+                target="popup" />
+        
+         <invoker type="rptacknowledgement:open" 
+                  action="open" caption="Acknowledgement Receipt"  
+                  role="RECEIVER" 
+                  permission="rptacknowledgement.open" 
+                  target="popup" />
+
+          <invoker type="formActions" 
+                action="approve" caption="Approve" 
+                visibleWhen="#{mode=='read' &amp;&amp; entity.state == 'DRAFT'}" />
+
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.models.RPTAcknowledgementModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.views.RPTAcknowledgementPage"/>
+    </pages>
+</workunit>

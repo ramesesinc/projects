@@ -1,0 +1,18 @@
+<schema>
+	<element tablename="rptacknowledgement_item">
+		<field name="objid" primary="true" />
+		<field name="parent_objid" required="true" />
+		<field name="trackingno" />
+		<field name="faas_objid" />
+		<field name="newfaas_objid" />
+		<field name="remarks"  />
+		<complex name="faas" ref="faas_list" jointype="many-to-one" required="false"
+			includefields="tdno,rputype,displaypin">
+			<key field="faas_objid" target="objid" />
+		</complex>
+		<complex name="newfaas" ref="faas" jointype="many-to-one" required="false"
+			includefields="tdno,fullpin">
+			<key field="newfaas_objid" target="objid" />
+		</complex>
+	</element>
+</schema>

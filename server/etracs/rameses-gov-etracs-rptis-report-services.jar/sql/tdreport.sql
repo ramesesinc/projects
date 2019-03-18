@@ -63,7 +63,7 @@ FROM faas f
 	inner join rpu rr on f.rpuid = rr.objid 
 	inner join propertyclassification dpc on rr.classification_objid = dpc.objid 
 	INNER JOIN rpu_assessment r ON f.rpuid = r.rpuid
-	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
+	LEFT JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	LEFT JOIN landassesslevel lal ON r.actualuse_objid = lal.objid 
 	LEFT JOIN planttreeassesslevel ptl ON r.actualuse_objid = ptl.objid 
 WHERE f.objid = $P{faasid}
@@ -103,10 +103,10 @@ FROM faas f
 	INNER JOIN landassesslevel lal ON ld.actualuse_objid = lal.objid 
 	INNER JOIN lcuvsubclass sub ON ld.subclass_objid = sub.objid 
 	INNER JOIN lcuvspecificclass spc ON ld.specificclass_objid = spc.objid 
-	INNER JOIN propertyclassification pc ON spc.classification_objid = pc.objid 
-	INNER JOIN propertyclassification dc ON r.classification_objid = dc.objid 
+	LEFT JOIN propertyclassification pc ON spc.classification_objid = pc.objid 
+	LEFT JOIN propertyclassification dc ON r.classification_objid = dc.objid 
 WHERE f.objid = $P{faasid}
-GROUP BY dc.code, dc.name, pc.code, pc.name, lal.code, lal.name, ld.areatype, ld.assesslevel,
+GROUP BY dc.code, dc.name, pc.code, pc.name, lal.code, lal.name, ld.areatype, ld.assesslevel, ld.taxable,
 	lspc.code, lspc.name, sub.code, sub.name, r.rputype
 
 UNION ALL 
@@ -133,12 +133,12 @@ SELECT
 	SUM(0) AS areaha 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
-	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
+	LEFT JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN planttreedetail ptd ON r.objid = ptd.landrpuid 
 	INNER JOIN planttreeassesslevel ptal ON ptd.actualuse_objid = ptal.objid 
 	INNER JOIN planttree pt ON ptd.planttree_objid = pt.objid 
 WHERE f.objid = $P{faasid}
-GROUP BY pc.name, ptd.assesslevel, r.rputype 
+GROUP BY pc.name, ptd.assesslevel, r.rputype, ptal.name 
 
 
 [getLandPlantTreeAssessment]

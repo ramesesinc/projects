@@ -7,7 +7,10 @@ alter table faas_signatory
     add reviewer_name varchar(100),
     add reviewer_title varchar(75),
     add reviewer_dtsigned datetime,
-    add reviewer_taskid varchar(50);
+    add reviewer_taskid varchar(50),
+    add assessor_name varchar(100),
+    add assessor_title varchar(100);
+
 
     
 drop table if exists rptacknowledgement_item

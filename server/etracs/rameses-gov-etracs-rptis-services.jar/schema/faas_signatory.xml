@@ -56,6 +56,13 @@
 		<field name="provrecommender_title" />
 		<field name="provrecommender_dtsigned" />
 		<field name="provrecommender_taskid" />
+		<field name="reviewer_objid" />
+		<field name="reviewer_name" />
+		<field name="reviewer_title" />
+		<field name="reviewer_dtsigned" />
+		<field name="reviewer_taskid" />
+		<field name="assessor_name" />
+		<field name="assessor_title" />
 	</element>
 
 </schema>

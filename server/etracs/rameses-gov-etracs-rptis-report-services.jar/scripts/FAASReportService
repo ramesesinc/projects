@@ -169,6 +169,7 @@ class FAASReportService
 		// then the municipal assessor is authorized 
 		// by the provincial assessor to approve the faas record 
 		if (isRecommenderAuthorized(faas)){
+			faas.authorized = true
 			faas.byauthority = 'By Authority of the Provincial Assessor.'
 		}
 

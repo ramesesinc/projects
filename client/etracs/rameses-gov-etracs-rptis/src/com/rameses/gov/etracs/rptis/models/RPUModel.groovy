@@ -41,7 +41,8 @@ public class RPUModel extends SubPageModel
     }
     
     void calculateAssessment(){
-        if (!entity.state.matches('CURRENT|CANCELLED')) {
+        //TODO: 
+        if (!entity.state.matches('CURRENT|CANCELLED') && entity.txntype.objid != 'TR') {
             entity.rpu.txntype = entity.txntype;
             entity.rpu.effectivityyear = entity.effectivityyear;
             entity.rpu.putAll( rpuSvc.calculateAssessment(entity.rpu) )

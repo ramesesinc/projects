@@ -96,6 +96,9 @@ class FAASService
 	@Service('RPTUtil')
 	def util
 
+	@Service('ReportParameterService')
+	def paramSvc 
+
 	
 	def STATE_INTERIM = 'INTERIM'
 	def STATE_FORAPPROVAL = 'FORAPPROVAL'
@@ -539,8 +542,13 @@ class FAASService
 
     @ProxyMethod
     public void saveSignatory( signatory ) {
-    	if (signatory)
+    	if (signatory) {
+    		if (!signatory.assessor) {
+	    		def param = paramSvc.getStandardParameter()
+	    		signatory.assessor = [name: param?.ASSESSORNAME, title: param?.ASSESSORTITLE]
+    		}
     		em_faas_signatory.save(signatory)
+    	}
     }
 
 
@@ -591,7 +599,7 @@ class FAASService
     public void updateSignatoryInfo(task) {
         if (task.state.matches('assign.*') || env.action?.matches('return.*'))
             return 
-        if (!task.state.matches('taxmapper|taxmapper_chief|appraiser|appraiser_chief|provrecommender|recommender|approver|provtaxmapper|provtaxmapperchief|provappraiser|provappraiserchief'))
+        if (!task.state.matches('taxmapper|taxmapper_chief|appraiser|appraiser_chief|provrecommender|recommender|approver|provtaxmapper|provtaxmapperchief|provappraiser|provappraiserchief|reviewer'))
             return
 
         def state = task.state.replaceAll('_', '') 
@@ -667,7 +675,14 @@ class FAASService
         def lguindex = em_faas.findLguIndexInfo([barangayid:faas.rp.barangay.objid])
 		def seqcount = util.toInteger2( var.td_autonumber_sequence_count, 5 )
 		
-        def values = [P:lguindex.provcityindex, C:lguindex.provcityindex, M:lguindex.munidistrictindex, D:lguindex.munidistrictindex, B:lguindex.barangayindex]
+        def values = [
+        	P: lguindex.provcityindex, 
+        	C: lguindex.provcityindex, 
+        	M: lguindex.munidistrictindex, 
+        	D: lguindex.munidistrictindex, 
+        	B: lguindex.barangayindex,
+        	R: 'F',
+    	]
         def tdno   = var.td_format 
         if (!tdno) tdno = 'YY-M-B'
 

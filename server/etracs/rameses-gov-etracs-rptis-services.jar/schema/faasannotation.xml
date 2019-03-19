@@ -7,8 +7,8 @@
 		<field name="txnno" />
 		<field name="txndate" />
 		<field name="fileno" required="true" />
-		<field name="orno" required="true" />
-		<field name="ordate" required="true" />
+		<field name="orno"/>
+		<field name="ordate" />
 		<field name="oramount" type="decimal"  />
 		<field name="memoranda" required="true" />
 		<complex name="faas" ref="faas" jointype="many-to-one" required="false"

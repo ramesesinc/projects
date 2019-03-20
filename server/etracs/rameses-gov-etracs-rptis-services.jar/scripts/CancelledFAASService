@@ -4,7 +4,7 @@ import com.rameses.services.extended.*;
 
 class CancelledFAASService
 {
-	@ActiveDB('cancelledfaas')
+	@DataContext('cancelledfaas')
     def em
     
 	@Env
@@ -42,6 +42,9 @@ class CancelledFAASService
 
     @DataContext('cancelledfaas_signatory')
     def em_signatory
+
+    @Service('ReportParameterService')
+    def paramSvc 
 
 
     def STATE_DRAFT 		= 'DRAFT'
@@ -140,8 +143,13 @@ class CancelledFAASService
     @ProxyMethod
     public def approve( entity ) {
         entity = open(entity)
+        if (entity.state == STATE_APPROVED) {
+            throw new Exception('Record has already been approved.\nClose and reopen the form to view current state.')
+        }
+
         entity.state = STATE_APPROVED
-        update(entity) 
+        em.update(entity)
+
         cancelFaas(entity)
         postLedgerCancellation(entity)
         txnRef.delete(entity.objid)
@@ -163,7 +171,7 @@ class CancelledFAASService
     public void updateSignatoryInfo(task) {
         if (task.state.matches('assign.*') || env.action?.matches('return.*'))
             return 
-        if (!task.state.matches('taxmapper|taxmapper_chief|appraiser|appraiser_chief|provrecommender|recommender|approver|provtaxmapper|provtaxmapperchief|provappraiser|provappraiserchief'))
+        if (!task.state.matches('taxmapper|taxmapper_chief|appraiser|appraiser_chief|provrecommender|recommender|approver|provtaxmapper|provtaxmapperchief|provappraiser|provappraiserchief|reviewer'))
             return
 
         def state = task.state.replaceAll('_', '') 
@@ -189,8 +197,13 @@ class CancelledFAASService
 
     @ProxyMethod
     public void saveSignatory( signatory ) {
-        if (signatory)
+        if (signatory) {
+            if (!signatory.assessor) {
+                def param = paramSvc.getStandardParameter()
+                signatory.assessor = [name: param?.ASSESSORNAME, title: param?.ASSESSORTITLE]
+            }
             em.save(signatory, SCHEMA_SIGNATORY)
+        }
     }
 
 

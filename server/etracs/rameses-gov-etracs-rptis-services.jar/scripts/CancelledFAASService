@@ -46,6 +46,9 @@ class CancelledFAASService
     @Service('ReportParameterService')
     def paramSvc 
 
+    @Service('SignatureService')
+    def sigSvc 
+
 
     def STATE_DRAFT 		= 'DRAFT'
     def STATE_FORAPPROVAL 	= 'FORAPPROVAL'
@@ -210,7 +213,7 @@ class CancelledFAASService
     @ProxyMethod
     public def buildReportData(entity){
         entity = open(entity)
-        def signatory = em.read(entity, SCHEMA_SIGNATORY)
+        def signatory = em_signatory.read(entity)
         if (signatory){
             entity.putAll(signatory)
         }
@@ -235,11 +238,25 @@ class CancelledFAASService
             }
         }
 
-        if (!entity.approver || !entity.approver.dtsigned){
-            entity.approver = [dtsigned:entity.txndate]
-        }
+        if (isRecommenderAuthorized(entity)){
+            entity.authorized = true
+        }   
 
+        entity.signatories = [:]
+        def retval = sigSvc.decodeSignatories(em.getSignatories(entity))
+        entity.signatories = retval.signatories 
+        entity.signaturetampered = retval.tampered
+        entity.tamperedsigmsg = retval.tamperedsigmsg
         return entity 
+    }
+
+    def isRecommenderAuthorized(entity){
+        if (entity.recommender && entity.recommender.name && 
+               entity.recommender.name.equalsIgnoreCase(entity.approver?.name)){
+            entity.recommender = [name:null, dtsigned:null]
+            return true 
+        }
+        return false 
     }
 
 

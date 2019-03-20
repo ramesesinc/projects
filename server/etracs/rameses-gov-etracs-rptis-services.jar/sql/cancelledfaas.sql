@@ -132,3 +132,29 @@ from barangay b
 	left join district d on b.parentid = d.objid 
 	left join city c on d.parentid = c.objid 
 where b.objid = $P{barangayid}	
+
+
+[getSignatories]
+select 
+	ft.objid,
+	ft.state,
+	ft.actor_name,
+	ft.actor_title,
+	ft.signature,
+	ft.enddate as dtsigned
+from cancelledfaas_task ft,
+	(
+		select 
+			refid, 
+			state, 
+			max(enddate) as enddate 
+		from cancelledfaas_task 
+		where refid = $P{objid}
+			and state not like 'assign%'
+			and enddate is not null 
+		group by refid, state 
+	) t 
+where ft.refid = $P{objid}
+  and ft.refid = t.refid 
+  and ft.state = t.state 
+  and ft.enddate = t.enddate

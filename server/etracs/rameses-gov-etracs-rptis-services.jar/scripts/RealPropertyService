@@ -221,12 +221,7 @@ class RealPropertyService
 
 	@ProxyMethod
 	public void updateBoundaries( entity ) {
-		def params = [:]
-		params.north = entity.north
-		params.east = entity.east
-		params.west = entity.west
-		params.south = entity.south
-		em_realproperty.find([objid:entity.objid]).update(params)
+		em_realproperty.update(entity)
 	}
 
 	@ProxyMethod 

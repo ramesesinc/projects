@@ -104,7 +104,7 @@ class FaasSketchInfoController
     }
     
     void update(){
-        rpSvc.updateBoundaries(entity.rp);
+        rpSvc.update(entity.rp);
         mode = MODE_READ;
     }
 

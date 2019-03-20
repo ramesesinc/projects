@@ -185,6 +185,10 @@ class RPTAssessmentNoticeService
 		def td = [objid:entity.items[0].faasid ]
 		faasSvc.loadSignatories(td)
 
+		if (isRecommenderAuthorized(td)){
+			td.authorized = true
+		}		
+
 		td.signatories = [:]
 		def retval = sigSvc.decodeSignatories(em.getSignatories(td))
 		td.signatories = retval.signatories 
@@ -201,5 +205,14 @@ class RPTAssessmentNoticeService
 		entity.putAll(td)
 		entity.objid = objid 
 	}	
+
+	def isRecommenderAuthorized(td){
+		if (td.recommender && td.recommender.name && 
+			   td.recommender.name.equalsIgnoreCase(td.approver?.name)){
+			td.recommender = [name:null, dtsigned:null]
+			return true 
+		}
+		return false 
+	}
 
 }

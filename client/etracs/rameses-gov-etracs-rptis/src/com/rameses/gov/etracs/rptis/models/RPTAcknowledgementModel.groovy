@@ -17,6 +17,9 @@ public class RPTAcknowledgementModel extends CrudFormModel
     @Service('Var')
     def var;
 
+    @Service('RPTTrackingService')
+    def trackingSvc;
+
     @Service('PersistenceService')
     def persistence;
 
@@ -56,7 +59,6 @@ public class RPTAcknowledgementModel extends CrudFormModel
     }
 
     public def getPrintFormData() {
-        println 'entity.items => ' + entity.items
         entity.landcount = entity.items.findAll{it.faas.rputype == 'land'}.size()
         entity.bldgcount = entity.items.findAll{it.faas.rputype == 'bldg'}.size()
         entity.machcount = entity.items.findAll{it.faas.rputype == 'mach'}.size()
@@ -64,6 +66,18 @@ public class RPTAcknowledgementModel extends CrudFormModel
         entity.misccount = entity.items.findAll{it.faas.rputype == 'misc'}.size()
         return entity; 
     }
+    
+    def getLogs() {
+        if (selectedItem == null || !selectedItem.newfaas) {
+            return [];
+        } else {
+            return trackingSvc.getLogs(selectedItem.newfaas);
+        }
+    }
+    
+    def logListHandler = [
+        fetchList: { getLogs() },
+    ] as BasicListModel
 }
 
 

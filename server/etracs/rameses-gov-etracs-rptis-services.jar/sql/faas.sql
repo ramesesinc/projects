@@ -381,7 +381,7 @@ WHERE f.rpuid = x.landrpuid
 
 
 [findLandFaasUnderTransaction]
-SELECT f.objid, tdno, utdno 
+SELECT f.objid, f.state, tdno, utdno 
 FROM faas f
 	inner join rpu r on f.rpuid = r.objid 
 where f.fullpin = $P{pin}

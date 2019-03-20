@@ -1192,7 +1192,7 @@ class FAASService
 	public void checkLandTxnReference(rp){
 		if (rp._checklandreference == null || rp._checklandreference == true){
 			def land = em_faas.findLandFaasUnderTransaction(rp)
-			if (land)
+			if (land && land.state == 'CURRENT')
 				throw new Exception('Land FAAS is currently under processing and referenced by FAAS No. ' + (land.tdno ? land.tdno : land.utdno) + '.')
 		}
 	}

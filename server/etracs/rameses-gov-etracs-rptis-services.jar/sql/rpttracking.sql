@@ -1,10 +1,9 @@
 [getLogs]
-select 
-	*
+select *
 from (
 	select 
-		startdate as dtfiled, 
-		state as action,
+		startdate, 
+		state,
 		assignee_name
 	from faas_task
 	where refid = $P{objid}
@@ -12,8 +11,8 @@ from (
 	union 
 
 	select 
-		startdate as dtfiled, 
-		state as action,
+		startdate, 
+		state,
 		assignee_name
 	from subdivision_task
 	where refid = $P{objid}
@@ -21,8 +20,8 @@ from (
 	union 
 
 	select 
-		startdate as dtfiled, 
-		state as action,
+		startdate, 
+		state,
 		assignee_name
 	from consolidation_task
 	where refid = $P{objid}
@@ -30,8 +29,8 @@ from (
 	union 
 
 	select 
-		startdate as dtfiled, 
-		state as action,
+		startdate, 
+		state,
 		assignee_name
 	from cancelledfaas_task
 	where refid = $P{objid}
@@ -39,10 +38,10 @@ from (
 	union 
 
 	select 
-		startdate as dtfiled, 
-		state as action,
+		startdate, 
+		state,
 		assignee_name
 	from resection_task
 	where refid = $P{objid}
 )x
-order by x.dtfiled 
+order by x.startdate

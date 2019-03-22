@@ -9,7 +9,8 @@ import com.rameses.osiris2.reports.*;
 import com.rameses.gov.etracs.rptis.util.*;
 
 
-class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.AbstractCashReceipt implements ViewHandler
+//class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.AbstractCashReceipt implements ViewHandler
+class CashReceiptModel extends com.rameses.enterprise.treasury.models.AbstractCashReceipt implements ViewHandler
 {
     @Binding
     def binding;

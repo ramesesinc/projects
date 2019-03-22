@@ -105,4 +105,8 @@ class RPTLedgerModel extends CrudFormModel
         }
         return inv;
     }    
+
+    def getMessagelist() {
+        return entity._messagelist
+    }
 }

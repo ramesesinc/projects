@@ -90,6 +90,7 @@ class TaxClearanceModel
     
     def open(){
         entity = svc.openClearance(entity.objid)
+        entity.reporttype = entity.properties?.reporttype
         return preview();
     }
     
@@ -161,6 +162,7 @@ class TaxClearanceModel
             it.rptcertificationid = entity.objid;
         }
         entity.items = items;
+        entity.properties = [reporttype: entity.reporttype];
         entity.putAll(svc.createClearance(entity));
     }
     

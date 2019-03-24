@@ -1,0 +1,14 @@
+import com.rameses.common.*
+import com.rameses.annotations.*
+import com.rameses.services.extended.*
+
+
+public class GSCTestService {
+	
+	@ProxyMethod
+	public def post(param) {
+		println 'param => ' + param 
+		return param 
+	}
+
+}

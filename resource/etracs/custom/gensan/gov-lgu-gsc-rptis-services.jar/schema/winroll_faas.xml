@@ -1,0 +1,7 @@
+<schema adapter="winroll">
+	<element tablename="faas">
+		<field name="objid" primary="true" />
+		<field name="tdno" />
+		<field name="pin" />
+	</element>
+</schema>

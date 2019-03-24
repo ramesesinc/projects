@@ -11,6 +11,9 @@
 		<field name="receivedby" required="true"  searchable="true" indexed="true" />
 		<field name="remarks" />
 		<field name="pin" searchable="true" indexed="true" />
+		<field name="createdby_objid" />
+		<field name="createdby_name" />
+		<field name="createdby_title"/>
 		<complex name="taxpayer" ref="entity" jointype="many-to-one" 
 			includefields="name,address.text,mobileno">
 			<key field="taxpayer_objid" target="objid" />

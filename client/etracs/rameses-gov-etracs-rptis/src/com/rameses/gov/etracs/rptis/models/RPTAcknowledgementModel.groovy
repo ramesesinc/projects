@@ -5,6 +5,7 @@ import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
+import com.rameses.common.*;
 
 public class RPTAcknowledgementModel extends CrudFormModel
 {
@@ -27,6 +28,20 @@ public class RPTAcknowledgementModel extends CrudFormModel
     def selectedItem;
     
     def types;
+
+    boolean isEditAllowed() {
+        if (entity.state != 'APPROVED') {
+            return super.isEditAllowed();
+        } else {
+            def isAdmin = false;
+            OsirisContext.env.ROLES.each{k,v ->
+                if (k == 'RPT.RECEIVER_ADMIN'){
+                    isAdmin = true;
+                }
+            }
+            return isAdmin;
+        }
+    }
     
     def getTxntypes() {
         if (!types) {

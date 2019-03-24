@@ -41,6 +41,9 @@ CREATE TABLE `rptacknowledgement` (
   `receivedby` varchar(255) DEFAULT NULL,
   `remarks` varchar(255) DEFAULT NULL,
   `pin` varchar(25) DEFAULT NULL,
+  `createdby_objid` varchar(25) DEFAULT NULL,
+  `createdby_name` varchar(25) DEFAULT NULL,
+  `createdby_title` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`objid`),
   UNIQUE KEY `ux_rptacknowledgement_txnno` (`txnno`),
   KEY `ix_rptacknowledgement_pin` (`pin`),
@@ -79,3 +82,8 @@ create index ix_rptacknowledgement_item_newfaasid on rptacknowledgement_item(new
 
 
     
+
+alter table rptacknowledgement 
+add createdby_objid varchar(50),
+add createdby_name varchar(150),
+add createdby_title varchar(100);

@@ -179,8 +179,8 @@ ORDER BY f.tdno
 SELECT * 
 FROM vw_faas_lookup
 where 1=1  
-${filters}
 ${fixfilters}
+${filters}
 ${orderby}
 
 

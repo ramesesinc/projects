@@ -17,7 +17,7 @@
             target="popup"
             index="1000" 
             role="TAXMAPPER"
-            visibleWhen="#{entity.state=='INTERIM'}" />            
+            visibleWhen="#{entity.state=='INTERIM' &amp;&amp; entity.taskstate == 'taxmapper'}" />            
         
     </invokers>
     

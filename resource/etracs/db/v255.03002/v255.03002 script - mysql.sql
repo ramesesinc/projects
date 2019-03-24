@@ -87,3 +87,64 @@ alter table rptacknowledgement
 add createdby_objid varchar(50),
 add createdby_name varchar(150),
 add createdby_title varchar(100);
+
+
+drop view if exists vw_faas_lookup 
+;
+
+
+CREATE view vw_faas_lookup AS 
+select 
+  fl.objid AS objid,
+  fl.state AS state,
+  fl.rpuid AS rpuid,
+  fl.utdno AS utdno,
+  fl.tdno AS tdno,
+  fl.txntype_objid AS txntype_objid,
+  fl.effectivityyear AS effectivityyear,
+  fl.effectivityqtr AS effectivityqtr,
+  fl.taxpayer_objid AS taxpayer_objid,
+  fl.owner_name AS owner_name,
+  fl.owner_address AS owner_address,
+  fl.prevtdno AS prevtdno,
+  fl.cancelreason AS cancelreason,
+  fl.cancelledbytdnos AS cancelledbytdnos,
+  fl.lguid AS lguid,
+  fl.realpropertyid AS realpropertyid,
+  fl.displaypin AS fullpin,
+  fl.originlguid AS originlguid,
+  e.name AS taxpayer_name,
+  e.address_text AS taxpayer_address,
+  pc.code AS classification_code,
+  pc.code AS classcode,
+  pc.name AS classification_name,
+  pc.name AS classname,
+  fl.ry AS ry,
+  fl.rputype AS rputype,
+  fl.totalmv AS totalmv,
+  fl.totalav AS totalav,
+  fl.totalareasqm AS totalareasqm,
+  fl.totalareaha AS totalareaha,
+  fl.barangayid AS barangayid,
+  fl.cadastrallotno AS cadastrallotno,
+  fl.blockno AS blockno,
+  fl.surveyno AS surveyno,
+  fl.pin AS pin,
+  fl.barangay AS barangay_name,
+  fl.trackingno
+from faas_list fl
+join propertyclassification pc on fl.classification_objid = pc.objid
+join entity e on fl.taxpayer_objid = e.objid
+;
+
+alter table faas modify column prevtdno varchar(800);
+alter table faas_list  
+  modify column prevtdno varchar(800),
+  modify column owner_name varchar(5000),
+  modify column cadastrallotno varchar(900);
+
+
+create index ix_faaslist_prevtdno on faas_list(prevtdno);
+create index ix_faaslist_cadastrallotno on faas_list(cadastrallotno);
+create index ix_faaslist_owner_name on faas_list(owner_name);
+create index ix_faaslist_txntype_objid on faas_list(txntype_objid);

@@ -155,7 +155,7 @@ public class ModifyPinModel
             },
             onempty : {
                 this.faas = null;
-                this.landfaas = nulll;
+                this.landfaas = null;
                 binding?.refresh('.*');
             }
         ]);

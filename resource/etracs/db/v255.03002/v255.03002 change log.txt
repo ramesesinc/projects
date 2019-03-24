@@ -3,7 +3,10 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Transaction Acknowledgement support
 	- Digital Copy Certification
+	- View Attachments support
+	- Reassign task support
 
 - LANDTAX
 	

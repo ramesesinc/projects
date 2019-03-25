@@ -43,7 +43,12 @@ class RPTTaskService
 
 	@ProxyMethod
 	public def getAssignees(param) {
-		def assignees =  em.getAssignees(param);
+		def assignees = []
+		def roles = getRoles(param)
+		roles.each{role ->
+			param.role = role 
+			assignees +=  em.getAssignees(param);
+		}
 		assignees.each {
 			it.name = it.lastname + ', ' + it.firstname 
 			if (it.middlename) {
@@ -114,6 +119,23 @@ class RPTTaskService
 			]
 			em_faaslist.find([objid: newtask.refid]).update(info)
 		}
+	}
+
+	private def getRoles(param) {
+		def roles = []
+		if (param.role) {
+			if (param.role.indexOf(',') >= 0) {
+				def tokens = param.role.split(',');
+				tokens.each{
+					if (it.trim().length() > 0) {
+						roles << it 
+					}
+				}
+			} else {
+				roles << param.role
+			}
+		}
+		return roles 
 	}
 
 }

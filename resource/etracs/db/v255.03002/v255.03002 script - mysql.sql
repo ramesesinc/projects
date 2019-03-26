@@ -148,3 +148,11 @@ create index ix_faaslist_prevtdno on faas_list(prevtdno);
 create index ix_faaslist_cadastrallotno on faas_list(cadastrallotno);
 create index ix_faaslist_owner_name on faas_list(owner_name);
 create index ix_faaslist_txntype_objid on faas_list(txntype_objid);
+
+
+
+alter table rptledger modify column prevtdno varchar(800);
+create index ix_rptledger_prevtdno on rptledger(prevtdno);
+create index ix_rptledgerfaas_tdno on rptledgerfaas(tdno);
+
+  

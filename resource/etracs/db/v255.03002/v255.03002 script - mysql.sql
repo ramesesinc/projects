@@ -133,8 +133,8 @@ select
   fl.barangay AS barangay_name,
   fl.trackingno
 from faas_list fl
-join propertyclassification pc on fl.classification_objid = pc.objid
-join entity e on fl.taxpayer_objid = e.objid
+left join propertyclassification pc on fl.classification_objid = pc.objid
+left join entity e on fl.taxpayer_objid = e.objid
 ;
 
 alter table faas modify column prevtdno varchar(800);

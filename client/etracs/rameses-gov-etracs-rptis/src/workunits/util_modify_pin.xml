@@ -17,7 +17,8 @@
             target="popup"
             index="1000" 
             role="TAXMAPPER"
-            visibleWhen="#{entity.state=='INTERIM' &amp;&amp; entity.taskstate == 'taxmapper'}" />            
+            icon="no-icon"
+            visibleWhen="#{entity.state=='INTERIM' &amp;&amp; entity.taskstate == 'taxmapper' &amp;&amp; entity.rpu.rputype == 'land'}" />            
         
     </invokers>
     

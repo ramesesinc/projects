@@ -205,7 +205,7 @@ class CancelledFAASService
                 def param = paramSvc.getStandardParameter()
                 signatory.assessor = [name: param?.ASSESSORNAME, title: param?.ASSESSORTITLE]
             }
-            em.save(signatory, SCHEMA_SIGNATORY)
+            em_signatory.save(signatory)
         }
     }
 

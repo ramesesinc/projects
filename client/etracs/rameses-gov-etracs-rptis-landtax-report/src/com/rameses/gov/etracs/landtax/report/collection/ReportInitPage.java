@@ -39,7 +39,6 @@ public class ReportInitPage extends javax.swing.JPanel {
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox6 = new com.rameses.rcp.control.XComboBox();
-        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
 
         setOpaque(false);
         setLayout(new java.awt.BorderLayout());
@@ -93,12 +92,6 @@ public class ReportInitPage extends javax.swing.JPanel {
         xComboBox6.setRequired(true);
         xFormPanel1.add(xComboBox6);
 
-        xIntegerField2.setCaption("Advance Year");
-        xIntegerField2.setName("entity.advanceyear"); // NOI18N
-        xIntegerField2.setPreferredSize(new java.awt.Dimension(120, 20));
-        xIntegerField2.setRequired(true);
-        xFormPanel1.add(xIntegerField2);
-
         add(xFormPanel1, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -108,6 +101,5 @@ public class ReportInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
-    private com.rameses.rcp.control.XIntegerField xIntegerField2;
     // End of variables declaration//GEN-END:variables
 }

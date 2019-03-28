@@ -588,7 +588,7 @@ class FAASService
         }
 
         //annotations
-        def annotations = em_faas_annotation.find([faasid:faas.objid]).list()
+        def annotations = em_faas_annotation.where(" faasid = :objid and state = 'APPROVED' ", faas).list()
         if(annotations){
         	msgs << 'FAAS has active Annotation # ' + annotations.fileno.join(',')
         }

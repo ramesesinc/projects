@@ -43,7 +43,9 @@ class RPTAcknowledgementInterceptor
 		def entity = evt.args[0]
 
 		entity.items.each{
-			it.trackingno = getNextTrackingSeries()
+			if (!it.trackingno) {
+				it.trackingno = getNextTrackingSeries()
+			}
 		}
 	}
 

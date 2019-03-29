@@ -57,7 +57,10 @@ class FAASChangeInfoInterceptor
 	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_faas_info'}")
 	public void updateFaasInfo(evt){
 		def changeinfo = evt.result
-
+		if (!changeinfo.newinfo.tdno) {
+			def faas = faasSvc.openFaas([objid: changeinfo.faasid])
+			changeinfo.newinfo.tdno = faasSvc.generateNextTdNo(faas)
+		}
 		changeinfo.newinfo.utdno = changeinfo.newinfo.tdno 
 		changeinfo.newinfo.txntypeid = changeinfo.newinfo.txntype.objid 
 		em.updateFaasInfo(changeinfo.newinfo);

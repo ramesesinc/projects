@@ -8,8 +8,9 @@
 	- View Attachments support
 	- Reassign task support
 	- Change Land Reference
-	
 
 - LANDTAX
+	- Report performance 
+	- Manual collection sharing update
 	
 

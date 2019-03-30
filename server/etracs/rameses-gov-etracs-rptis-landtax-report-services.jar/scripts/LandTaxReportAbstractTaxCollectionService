@@ -87,6 +87,32 @@ class LandTaxReportAbstractTaxCollectionService {
     }
 
 
+    @ProxyMethod 
+    def generateAbstractOfRPTCollectionSummary(entity) {
+        def remyr = dtsvc.getYear(entity.dtposted)
+
+        def params = [remittanceid:entity.objid]
+        def items = em.getAbstractOfRPTCollectionSummary(params)
+
+        if(! items ) throw new Exception('No records found.     ')
+        def header = [:]
+        header.TITLE = 'ABSTRACT OF REAL PROPERTY TAX COLLECTION SUMMARY'
+        header.PERIOD = ''
+        header.REMITTANCENO = entity.controlno; 
+        header.dtposted = dtsvc.format('MMMMM dd, yyyy', entity.controldate )
+        header.REMITTANCEDATE = header.dtposted;
+        header.REMITTANCEAMOUNT = entity.amount
+        header.COLLECTORNAME = entity.collector.name
+        header.COLLECTORTITLE = entity.collector.title
+        header.LIQUIDATINGOFFICER = entity.liquidatingofficer.name
+        header.LIQUIDATINGOFFICERTITLE = entity.liquidatingofficer.title
+        header.DATEPOSTED =  entity.controldate ;
+        header.AMTINWORDS = numSvc.convertDouble( entity.amount )
+
+        return  [ header:header, items:items]
+    }
+
+
     @ProxyMethod
     def generateAbstractOfRPTCollection( params ){ 
         String period;

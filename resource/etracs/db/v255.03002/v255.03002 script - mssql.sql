@@ -137,11 +137,8 @@ select
   fl.surveyno AS surveyno,
   fl.pin AS pin,
   fl.barangay AS barangay_name,
-  fl.trackingno,
-  rp.section,
-  rp.parcel
+  fl.trackingno
 from faas_list fl
-inner join realproperty rp on fl.realpropertyid = rp.objid 
 left join propertyclassification pc on fl.classification_objid = pc.objid
 left join entity e on fl.taxpayer_objid = e.objid
 go 

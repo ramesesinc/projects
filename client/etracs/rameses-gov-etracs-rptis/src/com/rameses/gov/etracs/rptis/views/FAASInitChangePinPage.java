@@ -47,12 +47,12 @@ public class FAASInitChangePinPage extends javax.swing.JPanel {
         formPanel1.setBorder(xTitledBorder1);
         formPanel1.setCaptionWidth(110);
 
-        xLookupField3.setCaption("Property to process");
-        xLookupField3.setCaptionWidth(130);
+        xLookupField3.setCaption("TD No. to revise");
         xLookupField3.setExpression("#{entity.faas.tdno}");
         xLookupField3.setHandler("lookupFaas");
-        xLookupField3.setHint("Search Property");
         xLookupField3.setName("entity.faas"); // NOI18N
+        xLookupField3.setCaptionWidth(130);
+        xLookupField3.setHint("Search Property");
         xLookupField3.setPreferredSize(new java.awt.Dimension(0, 19));
         xLookupField3.setRequired(true);
         formPanel1.add(xLookupField3);
@@ -149,13 +149,13 @@ public class FAASInitChangePinPage extends javax.swing.JPanel {
         xNumberField5.setRequired(true);
         formPanel1.add(xNumberField5);
 
+        xLabel1.setCaption("PIN No.");
+        xLabel1.setExpression("#{entity.fullpin}");
         xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         com.rameses.rcp.control.border.XLineBorder xLineBorder2 = new com.rameses.rcp.control.border.XLineBorder();
         xLineBorder2.setLineColor(new java.awt.Color(153, 153, 153));
         xLabel1.setBorder(xLineBorder2);
-        xLabel1.setCaption("PIN No.");
         xLabel1.setCaptionFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        xLabel1.setExpression("#{entity.fullpin}");
         xLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 30));
 

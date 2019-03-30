@@ -38,7 +38,7 @@ public class FaasWorkflowController extends RPTWorkflowController
     }
 
     String getTitle(){
-        return entity.txntype.name + ': (' +  task.title + ')   PIN: ' + entity.fullpin
+        return entity.txntype.name + ': (' +  task.title + ')'
     }
     
     def getSections(){

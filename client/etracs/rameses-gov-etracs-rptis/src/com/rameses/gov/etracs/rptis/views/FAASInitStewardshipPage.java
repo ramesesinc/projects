@@ -53,11 +53,11 @@ public class FAASInitStewardshipPage extends javax.swing.JPanel {
 
         formPanel1.add(xSeparator1);
 
-        xLookupField1.setCaption("Property to Steward");
+        xLookupField1.setCaption("TD No. to Steward");
         xLookupField1.setExpression("#{entity.faas.tdno}");
         xLookupField1.setHandler("lookupFaas");
-        xLookupField1.setHint("Search Property");
         xLookupField1.setName("entity.faas"); // NOI18N
+        xLookupField1.setHint("Search Property");
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 19));
         xLookupField1.setRequired(true);
         formPanel1.add(xLookupField1);

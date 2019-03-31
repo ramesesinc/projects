@@ -24,6 +24,7 @@ public class UploadImageController
     
     def afterupload;  
     def entity;
+    def parentid;
     def showheader = true;
     
     def file;
@@ -49,6 +50,7 @@ public class UploadImageController
         header = [ 
             objid   : (objid ? objid : 'I'+ new java.rmi.server.UID()), 
             refid   : entity.objid, 
+            parentid : parentid,
             title   : (showheader ? null : 'SKETCH'),
         ]
         file = null;

@@ -135,7 +135,7 @@ class ExaminationFindingController
     def addPhoto(){
         return InvokerUtil.lookupOpener('upload:image', [
             entity : finding,
-
+            parentid: entity.objid,
             afterupload: {
                 loadImages();
             }

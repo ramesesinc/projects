@@ -173,3 +173,8 @@ create index ix_rptledgerfaas_tdno on rptledgerfaas(tdno)
 go 
 
   
+alter table rptledger alter column owner_name varchar(1500) not null
+go 
+create index ix_rptledger_owner_name on rptledger(owner_name)
+go 
+

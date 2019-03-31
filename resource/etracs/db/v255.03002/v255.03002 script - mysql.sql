@@ -80,15 +80,6 @@ create index ix_rptacknowledgement_item_faasid  on rptacknowledgement_item(faas_
 create index ix_rptacknowledgement_item_newfaasid on rptacknowledgement_item(newfaas_objid)
 ;
 
-
-    
-
-alter table rptacknowledgement 
-add createdby_objid varchar(50),
-add createdby_name varchar(150),
-add createdby_title varchar(100);
-
-
 drop view if exists vw_faas_lookup 
 ;
 
@@ -131,9 +122,7 @@ select
   fl.surveyno AS surveyno,
   fl.pin AS pin,
   fl.barangay AS barangay_name,
-  fl.trackingno,
-  rp.section,
-  rp.parcel
+  fl.trackingno
 from faas_list fl
 left join propertyclassification pc on fl.classification_objid = pc.objid
 left join entity e on fl.taxpayer_objid = e.objid
@@ -158,4 +147,7 @@ alter table rptledger modify column prevtdno varchar(800);
 create index ix_rptledger_prevtdno on rptledger(prevtdno);
 create index ix_rptledgerfaas_tdno on rptledgerfaas(tdno);
 
+  
+alter table rptledger modify column owner_name varchar(1500) not null;
+create index ix_rptledger_owner_name on rptledger(owner_name);
   

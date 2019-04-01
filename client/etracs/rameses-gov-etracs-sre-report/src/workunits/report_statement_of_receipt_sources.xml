@@ -1,0 +1,14 @@
+<workunit extends="wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/treasury" 
+                 caption="Statement of Receipts Sources" action="init" 
+                 role="REPORT" permission="srs.viewreport" 
+                 target="window"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.sre.report.models.SRSReportModel"/>
+
+    <pages>
+        <page template="com.rameses.gov.etracs.sre.report.views.SRSCriteriaPage" />
+    </pages> 
+</workunit>

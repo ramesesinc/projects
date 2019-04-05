@@ -25,7 +25,6 @@ class LandTaxLGUAccountMappingService
 			em_mapping.buildProvinceShareAccounts()
 		} 
 		else if ('PROVINCE'.equalsIgnoreCase(env.ORGCLASS)) {
-			em_mapping.buildProvinceAccounts()
 			em_mapping.insertMunicipalitySharePayableAccounts()
 			em_mapping.insertMunicipalitySharePayableAccountTags()
 			em_mapping.buildProvinceRevenueAccounts()

@@ -12,11 +12,16 @@ class AttachmentDatabaseAdapter implements AttachmentAdapter
     def model;   
 
     def getFolderName() {
-        def folderFieldName = model.invoker.properties.folderFieldName;
-        if (!folderFieldName) throw new Exception('Invoker folderFieldName must be defined.');
-        def value = model.callerEntity[folderFieldName];
-        if (!value) {
-            value = model.callerEntity['prev' + folderFieldName];
+        def value = null;
+        if (model.folderName) {
+            value = model.folderName;
+        } else {
+            def folderFieldName = model.invoker.properties.folderFieldName;
+            if (!folderFieldName) throw new Exception('Invoker folderFieldName must be defined.');
+            value = model.callerEntity[folderFieldName];
+            if (!value) {
+                value = model.callerEntity['prev' + folderFieldName];
+            }
         }
         if (!value) throw new Exception('Folder Name is invalid.');
         return value;

@@ -99,13 +99,24 @@
 			</band>
 		</columnHeader>
 		<detail>
-			<band height="572"  isSplitAllowed="true" >
-				<image  scaleImage="RetainShape" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+			<band height="769"  isSplitAllowed="true" >
+				<image  scaleImage="FillFrame" vAlign="Middle" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="25"
+						x="0"
 						y="0"
-						width="545"
-						height="572"
+						width="570"
+						height="769"
+						key="image-2"/>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA["classpath://images/border-cert.png"]]></imageExpression>
+				</image>
+				<image  scaleImage="RetainShape" vAlign="Middle" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="30"
+						y="27"
+						width="511"
+						height="710"
 						key="image-1"/>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>

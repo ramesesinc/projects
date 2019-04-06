@@ -22,6 +22,7 @@ class AttachmentModel
     def listeners = [];    
     def entity;
     def files;
+    def folderName;
     def callerEntity;
     def selectedAttachment;
     def isMultiSelect = false;

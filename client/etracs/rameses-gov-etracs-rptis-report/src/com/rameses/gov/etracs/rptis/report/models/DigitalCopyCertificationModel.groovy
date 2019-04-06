@@ -45,7 +45,11 @@ public class DigitalCopyCertificationModel extends com.rameses.gov.etracs.rpt.re
     }
     
     def next(){
-    	opener = Inv.lookupOpener('attachment:view', [folderName: entity.tdno, isMultiSelect: true]);
+        def info = [:];
+        info.entity = [objid: entity.faasid];
+        info.folderName = entity.tdno;
+        info.isMultiSelect = true;
+    	opener = Inv.lookupOpener('attachment:view', info);
         mode = MODE_SELECT;
         return 'selectpage';
     }
@@ -58,8 +62,8 @@ public class DigitalCopyCertificationModel extends com.rameses.gov.etracs.rpt.re
 
         def folderName = opener.handle.getFolderName();
         entity.properties = [];
-        selectedItems.each{ item ->
-            entity.properties <<  [file:  folderName + '/' + item.objid]
+        selectedItems.each {
+            entity.properties <<  [filename: it.filepath];
         }
     }
 
@@ -67,23 +71,10 @@ public class DigitalCopyCertificationModel extends com.rameses.gov.etracs.rpt.re
         def list = [];
         entity.properties.each {
             it.putAll(entity);
-            it.filename = getFileServerPath() + it.file
             list << it;
         }
 
         return list;
-    }
-
-    def getFileServerPath() {
-        def varname = 'file_server_path';
-        def serverPath = var.get(varname);
-        if (!serverPath) {
-            throw new Exception('System variable ' + varname + ' is not defined.')
-        }
-        if (!serverPath.endsWith('/')) {
-            serverPath += '/'
-        }
-        return 'file:///' + serverPath;
     }
     
 }

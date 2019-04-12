@@ -61,6 +61,7 @@ public class RPTRequirementRuleService
 		fact.classificationid = txninfo.classificationid 
 		facts << fact
 		facts << createRpu(txninfo)
+		if (txninfo.attributes == null) txninfo.attributes = []
 		def titled = txninfo.attributes.find{it.attribute == 'TITLED'}
 		if (!titled) {
 			txninfo.attributes << [attribute: 'UNTITLED']

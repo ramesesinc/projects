@@ -6,7 +6,7 @@ import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
 import com.rameses.common.*;
 
-class ResectionInfoMainController
+class ResectionInfoMainModel
 {
     @Binding
     def binding;
@@ -65,15 +65,15 @@ class ResectionInfoMainController
             item.memoranda = entity.memoranda;
             if ('newfaas.parcel' == colname) {
                 item.putAll(svc.validateNewParcel(item));
-                buildPin(item);
             } else if ('newfaas.suffix' == colname) {
                 svc.validateNewParcel(item);
                 svc.validateNewSuffix(item);
-                buildPin(item);
             }
+            buildPin(item);
         },
         validate: {li ->
             def item = li.item;
+            buildPin(item);
             if (!item.newfaas.objid) {
                 item.putAll(svc.createNewFaas(item));
             }
@@ -91,6 +91,7 @@ class ResectionInfoMainController
             it.newfaas.rpid = item.newfaas.rpid;
             it.newfaas.section = item.newfaas.section;
             it.newfaas.parcel = item.newfaas.parcel;
+            buildPin(it);
             svc.updateItem(it);
         }
     }
@@ -98,13 +99,21 @@ class ResectionInfoMainController
     void buildPin(item) {
         def pins = [];
         pins << entity.barangay.pin;
+
+        //default to old pin: 3-2-3-2-3
+        def sectionLength = 2;
+        def parcelLength = 3;
+
         if ('new' == entity.pintype) {
-            pins << (item.newfaas.section + '').padLeft(3, '0');
-            pins << (item.newfaas.parcel + '').padLeft(2, '0');
-        } else {
-            pins << (item.newfaas.section + '').padLeft(2, '0');
-            pins << (item.newfaas.parcel + '').padLeft(3, '0');
-        }
+            sectionLength = 3;
+            parcelLength = 2;
+        } 
+
+        item.newfaas.ssection = (item.newfaas.section + '').padLeft(sectionLength, '0');
+        item.newfaas.sparcel = (item.newfaas.parcel + '').padLeft(parcelLength, '0');
+        pins << item.newfaas.ssection;
+        pins << item.newfaas.sparcel;
+
         if (item.newfaas.suffix && item.newfaas.suffix != 0) {
             pins << item.newfaas.suffix;
         }

@@ -631,8 +631,9 @@ update faas_list set tdno = $P{tdno} where objid = $P{objid}
 update rptledger set tdno = $P{tdno} where faasid = $P{objid} 
 
 [updateLedgerFaasTdNo]
-update rptledgerfaas rlf, rptledger rl set 
+update rlf set 
 	rlf.tdno = $P{tdno} 
+from rptledgerfaas rlf, rptledger rl
 where rlf.rptledgerid = rl.objid 
 and rlf.faasid = $P{objid} 
 

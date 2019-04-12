@@ -500,7 +500,7 @@ class RPTUtil
             }
             else {
                 if (it.fromyear == it.toyear && it.fromqtr == 1 && toqtr == 4)
-                    it.period = it.toyear
+                    it.period = it.toyear + ''
                 else if (it.fromyear == it.toyear && it.fromqtr == toqtr)
                     it.period = it.fromqtr + 'Q, ' + it.toyear
                 else if (it.fromyear == it.toyear)

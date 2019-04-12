@@ -11,7 +11,7 @@ import com.rameses.gov.etracs.rpt.common.*;
 
 class CashReceiptManualModel extends CashReceiptModel
 {
-    def billItems;
+    def selectedBillItem;
     
     void init(){
         super.init();
@@ -28,8 +28,8 @@ class CashReceiptManualModel extends CashReceiptModel
         fetchList : { return selectedItem?.postingitems },
         
         onColumnUpdate : { item, colname ->
-            if (!item[colname]){
-                throw new Exception('Value cannot be empty.');
+            if (item[colname] == null){
+                throw new Exception('Value for ' + colname + ' cannot be empty.');
             }
             item.total = item.amount + item.interest - item.discount 
         },
@@ -38,18 +38,22 @@ class CashReceiptManualModel extends CashReceiptModel
             buildShares(selectedItem);
             updateItemTotals();
             calcReceiptAmount();
+            listHandler.reload();
         },
     ] as EditorListModel
     
     void updateItemTotals(){
         selectedItem.total = selectedItem.postingitems.sum{ (it.total ? it.total : 0.0) }
+        entity.amount = itemsforpayment.total.sum();
         binding.refresh('selectedItem.total');
     }
 
     void buildShares(selectedItem) {
         def tmpbill = cloneBill();
         tmpbill.rptledger = selectedItem;
-        selectedItem.putAll(svc.buildShares(tmpbill));
+        def rptledger = svc.buildShares(tmpbill);
+        selectedItem.shares = rptledger.shares;
+        selectedItem.billitems = rptledger.billitems;
     }
         
 }

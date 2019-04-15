@@ -86,7 +86,7 @@
 						<subreportParameterExpression><![CDATA[$P{LGUTYPE}]]></subreportParameterExpression>
 					</subreportParameter>
 					<dataSourceExpression><![CDATA[$F{items}]]></dataSourceExpression>
-					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{rptcollectionitem}]]></subreportExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["rptcollectionitem.jasper"]]></subreportExpression>
 				</subreport>
 			</band>
 			</groupHeader>

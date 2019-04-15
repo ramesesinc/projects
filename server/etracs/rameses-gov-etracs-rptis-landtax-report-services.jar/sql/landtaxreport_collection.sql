@@ -143,3 +143,176 @@ where ${filter}
   and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid)
   and ri.revperiod = 'advance' 
 
+
+[getCollectionSummaryByMonth]
+select 
+  $P{year} as cy, 
+  x.revtype,
+  x.mon, 
+  sum(x.cytax) as cytax,
+  sum(x.cydisc) as cydisc,
+  sum(x.cynet) as cynet,
+  sum(x.cyint) as cyint,
+  sum(x.immediatetax) as immediatetax,
+  sum(x.immediateint) as immediateint,
+  sum(x.priortax) as priortax,
+  sum(x.priorint) as priorint,
+  sum(x.subtotaltax) as subtotaltax,
+  sum(x.subtotalint) as subtotalint,
+  sum(x.total) as total,
+  sum(x.gross) as gross
+from (
+  select 
+    rpi.priority as idx,
+    rpi.revtype, 
+    month(cr.receiptdate) as imon, 
+    case 
+      when month(cr.receiptdate) = 1 then 'JANUARY'
+      when month(cr.receiptdate) = 2 then 'FEBRUARY'
+      when month(cr.receiptdate) = 3 then 'MARCH'
+      when month(cr.receiptdate) = 4 then 'APRIL'
+      when month(cr.receiptdate) = 5 then 'MAY'
+      when month(cr.receiptdate) = 6 then 'JUNE'
+      when month(cr.receiptdate) = 7 then 'JULY'
+      when month(cr.receiptdate) = 8 then 'AUGUST'
+      when month(cr.receiptdate) = 9 then 'SEPTEMBER'
+      when month(cr.receiptdate) = 10 then 'OCTOBER'
+      when month(cr.receiptdate) = 11 then 'NOVEMBER'
+      else 'DECEMBER' 
+    end as mon, 
+    case when $P{year} = rpi.year then rpi.amount else 0 end as cytax,
+    case when $P{year} = rpi.year then rpi.discount else 0 end as cydisc,
+    case when $P{year} = rpi.year then rpi.amount - rpi.discount else 0 end as cynet,
+    case when $P{year} = rpi.year then rpi.interest else 0 end as cyint,
+
+    case when $P{year} - 1 = rpi.year then rpi.amount else 0 end as immediatetax,
+    case when $P{year} - 1 = rpi.year then rpi.interest else 0 end as immediateint,
+    
+    case when $P{year} > rpi.year then rpi.amount else 0 end as subtotaltax,
+    case when $P{year} > rpi.year then rpi.interest else 0 end as subtotalint,
+
+    case when $P{year} - 1 > rpi.year then rpi.amount else 0 end as priortax,
+    case when $P{year} - 1 > rpi.year then rpi.interest else 0 end as priorint,
+    
+    rpi.amount - rpi.discount + rpi.interest as total,
+    rpi.amount + rpi.interest as gross
+
+  from collectionvoucher cv
+    inner join remittance rem on cv.objid = rem.collectionvoucherid 
+    inner join cashreceipt cr on rem.objid = cr.remittanceid 
+    inner join rptpayment p on cr.objid = p.receiptid 
+    inner join rptledger rl on p.refid = rl.objid 
+    inner join barangay b on rl.barangayid = b.objid 
+    inner join rptpayment_item rpi on p.objid = rpi.parentid
+    left join cashreceipt_void v on cr.objid = v.receiptid 
+    where ${filter} 
+      and rpi.revperiod <> 'advance'
+      and v.objid is null
+) x 
+group by 
+  x.idx,
+  x.revtype,
+  x.imon,
+  x.mon 
+order by 
+  x.idx,
+  x.revtype,
+  x.imon
+  
+
+[getCollectionSummaryByBrgy]
+select 
+  x.brgyindex,
+  x.barangay,
+  $P{year} as cy, 
+  x.revtype,
+  sum(x.cytax) as cytax,
+  sum(x.cydisc) as cydisc,
+  sum(x.cynet) as cynet,
+  sum(x.cyint) as cyint,
+  sum(x.immediatetax) as immediatetax,
+  sum(x.immediateint) as immediateint,
+  sum(x.priortax) as priortax,
+  sum(x.priorint) as priorint,
+  sum(x.subtotaltax) as subtotaltax,
+  sum(x.subtotalint) as subtotalint,
+  sum(x.prevtotal) as prevtotal,
+  sum(x.total) as total
+from (
+  select 
+    b.indexno as brgyindex, 
+    b.name as barangay,
+    rpi.revtype, 
+    case when $P{year} = rpi.year then rpi.amount else 0 end as cytax,
+    case when $P{year} = rpi.year then rpi.discount else 0 end as cydisc,
+    case when $P{year} = rpi.year then rpi.amount - rpi.discount else 0 end as cynet,
+    case when $P{year} = rpi.year then rpi.interest else 0 end as cyint,
+
+    case when $P{year} - 1 = rpi.year then rpi.amount else 0 end as immediatetax,
+    case when $P{year} - 1 = rpi.year then rpi.interest else 0 end as immediateint,
+    
+    case when $P{year} > rpi.year then rpi.amount else 0 end as subtotaltax,
+    case when $P{year} > rpi.year then rpi.interest else 0 end as subtotalint,
+
+    case when $P{year} - 1 > rpi.year then rpi.amount else 0 end as priortax,
+    case when $P{year} - 1 > rpi.year then rpi.interest else 0 end as priorint,
+    
+    0 as prevtotal,
+    rpi.amount - rpi.discount + rpi.interest as total
+
+  from collectionvoucher cv
+    inner join remittance rem on cv.objid = rem.collectionvoucherid 
+    inner join cashreceipt cr on rem.objid = cr.remittanceid 
+    inner join rptpayment p on cr.objid = p.receiptid 
+    inner join rptledger rl on p.refid = rl.objid 
+    inner join barangay b on rl.barangayid = b.objid 
+    inner join rptpayment_item rpi on p.objid = rpi.parentid
+    left join cashreceipt_void v on cr.objid = v.receiptid 
+    where ${filter} 
+      and rpi.revperiod <> 'advance'
+      and v.objid is null
+) x 
+group by 
+  x.brgyindex,
+  x.barangay,
+  x.revtype
+order by 
+  x.brgyindex,
+  x.barangay, 
+  x.revtype
+  
+  
+[getPreviousCollectionSummaryByBrgy]
+select 
+  x.brgyindex,
+  x.barangay,
+  x.revtype,
+  sum(x.total) as total
+from (
+  select 
+    b.indexno as brgyindex, 
+    b.name as barangay,
+    rpi.revtype, 
+    rpi.amount - rpi.discount + rpi.interest as total
+  from collectionvoucher cv
+    inner join remittance rem on cv.objid = rem.collectionvoucherid 
+    inner join cashreceipt cr on rem.objid = cr.remittanceid 
+    inner join rptpayment p on cr.objid = p.receiptid 
+    inner join rptledger rl on p.refid = rl.objid 
+    inner join barangay b on rl.barangayid = b.objid 
+    inner join rptpayment_item rpi on p.objid = rpi.parentid
+    left join cashreceipt_void v on cr.objid = v.receiptid 
+    where ${filter}
+      and rpi.revperiod <> 'advance'
+      and v.objid is null
+) x 
+group by 
+  x.brgyindex,
+  x.barangay,
+  x.revtype
+order by 
+  x.brgyindex,
+  x.barangay, 
+  x.revtype
+  
+  

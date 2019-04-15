@@ -71,6 +71,6 @@ class RPTCollectionAdvanceReportController extends com.rameses.gov.etracs.rpt.re
     </code>
     
     <pages>
-        <page template="com.rameses.gov.etracs.landtax.report.collection.ReportInitPage"/>
+        <page template="com.rameses.gov.etracs.landtax.report.views.ReportInitPage"/>
     </pages>     
 </workunit>

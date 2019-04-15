@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.gov.etracs.landtax.report.collection;
+package com.rameses.gov.etracs.landtax.report.views;
 
 
 import com.rameses.osiris2.common.ui.ReportInitialTemplatePage;
@@ -35,6 +35,7 @@ public class ReportInitPage extends javax.swing.JPanel {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
+        xComboBox7 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xComboBox5 = new com.rameses.rcp.control.XComboBox();
@@ -43,22 +44,33 @@ public class ReportInitPage extends javax.swing.JPanel {
         setOpaque(false);
         setLayout(new java.awt.BorderLayout());
 
-        xFormPanel1.setCaptionWidth(100);
+        xFormPanel1.setCaptionWidth(130);
 
-        xComboBox4.setAllowNull(false);
         xComboBox4.setCaption("Posting Type");
         xComboBox4.setExpression("#{item.caption}");
         xComboBox4.setItems("postingtypes");
         xComboBox4.setName("entity.postingtype"); // NOI18N
+        xComboBox4.setAllowNull(false);
         xComboBox4.setPreferredSize(new java.awt.Dimension(200, 22));
         xComboBox4.setRequired(true);
         xFormPanel1.add(xComboBox4);
 
-        xComboBox3.setAllowNull(false);
+        xComboBox7.setCaption("Report Format");
+        xComboBox7.setExpression("#{item.caption}");
+        xComboBox7.setItems("reportformats");
+        xComboBox7.setName("entity.reportformat"); // NOI18N
+        xComboBox7.setAllowNull(false);
+        xComboBox7.setPreferredSize(new java.awt.Dimension(200, 22));
+        xComboBox7.setRequired(true);
+        xFormPanel1.add(xComboBox7);
+
         xComboBox3.setCaption("Period");
+        xComboBox3.setDepends(new String[] {"entity.reportformat"});
         xComboBox3.setExpression("#{item.name}");
         xComboBox3.setItems("periods");
         xComboBox3.setName("entity.period"); // NOI18N
+        xComboBox3.setAllowNull(false);
+        xComboBox3.setDynamic(true);
         xComboBox3.setPreferredSize(new java.awt.Dimension(200, 22));
         xComboBox3.setRequired(true);
         xFormPanel1.add(xComboBox3);
@@ -99,6 +111,7 @@ public class ReportInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XComboBox xComboBox6;
+    private com.rameses.rcp.control.XComboBox xComboBox7;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     // End of variables declaration//GEN-END:variables

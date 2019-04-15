@@ -145,11 +145,6 @@ class CancelledFAASService
 
     @ProxyMethod
     public def approve( entity ) {
-        entity = open(entity)
-        if (entity.state == STATE_APPROVED) {
-            throw new Exception('Record has already been approved.\nClose and reopen the form to view current state.')
-        }
-
         entity.state = STATE_APPROVED
         em.update(entity)
 

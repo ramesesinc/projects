@@ -163,7 +163,6 @@ select
   sum(x.gross) as gross
 from (
   select 
-    rpi.priority as idx,
     rpi.revtype, 
     month(cr.receiptdate) as imon, 
     case 
@@ -210,12 +209,10 @@ from (
       and v.objid is null
 ) x 
 group by 
-  x.idx,
   x.revtype,
   x.imon,
   x.mon 
 order by 
-  x.idx,
   x.revtype,
   x.imon
   

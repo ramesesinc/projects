@@ -421,8 +421,11 @@ class TDReportService
 	}
 
 	void padExtraItems(list, size) {
-		for (int i = list.size(); i < size; i++) {
-			list << [:]
+		def pad = util.toBoolean(var.getProperty('td_report_pad_items', 0), false)
+		if (pad) {
+			for (int i = list.size(); i < size; i++) {
+				list << [:]
+			}
 		}
 	}
 

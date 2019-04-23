@@ -29,3 +29,8 @@
 "entity.advanceyear"[isadvance == true]{
     visible:true;
 }
+
+"entity.reportformat" [isadvance == true] {
+    visible:false;
+    required:false;
+}

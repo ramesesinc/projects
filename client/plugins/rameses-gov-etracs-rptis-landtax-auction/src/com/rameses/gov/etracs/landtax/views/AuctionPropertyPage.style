@@ -1,0 +1,11 @@
+"entity.(soldto|bidamt)" [entity.state=='FORSALE']{
+    enabled:true;
+}
+
+"entity.(soldto|bidamt)" [mode=='read']{
+    enabled:false;
+}
+
+"entity.amtdue|entity.minbidamt|entity.rptledger.*"[true]{
+    enabled:false;
+}

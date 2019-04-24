@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="propertyauction_notice_delivery:open" 
+                 action="init" caption="Notice Delivery Information" 
+                 target="popup"
+                 role="AUCTIONEER" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.AuctionNoticeDeliveryModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.AuctionNoticeDeliveryPage"/>
+    </pages>
+</workunit>

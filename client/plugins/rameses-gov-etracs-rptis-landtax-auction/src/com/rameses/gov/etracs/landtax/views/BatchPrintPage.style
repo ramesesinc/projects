@@ -1,0 +1,7 @@
+"numCopies|printAll" [printing == false] {
+    enabled: true;
+}
+
+"numCopies|printAll|" [printing == true] {
+    enabled: false;
+}

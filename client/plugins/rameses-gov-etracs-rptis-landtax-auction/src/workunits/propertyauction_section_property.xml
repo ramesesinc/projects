@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
+    schemaName="propertyauction_property"
+    cols="state,rptledger.tdno,rptledger.owner.name,soldto.name,rptledger.titleno,rptledger.totalav"
+    allowDelete="#{false}"
+    allowCreate="#{false}"
+    allowPrint="#{false}"
+    autoResize="false"
+>
+    <invokers>
+        <invoker type="propertyauction:section" 
+                 caption="Auctioned Properties" 
+                 index="3" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.AuctionSectionPropertyModel" />
+</workunit>

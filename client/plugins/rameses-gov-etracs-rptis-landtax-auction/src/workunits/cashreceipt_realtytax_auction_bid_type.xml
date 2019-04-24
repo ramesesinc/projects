@@ -1,0 +1,28 @@
+<workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
+    <invokers>
+        <invoker type="collectiontype:handler" caption="Auction Bid" 
+            name="auctionbid" formno="51" formtype="serial" index="101"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.enterprise.treasury.controllers.*
+        
+        class  PropertyAuctionBidCollectionTypeModel {
+            @Caller 
+            def caller 
+            
+            def getEntity(){
+                return caller.entity
+            }
+            
+            
+        }
+        ]]>
+        
+    </code>
+</workunit>

@@ -1,0 +1,11 @@
+"entity.*" [ entity.state.matches('DRAFT|FORAPPROVAL') && mode == 'edit']{
+    enabled:true;
+}
+
+"entity.*" [ entity.state.matches('DRAFT|FORAPPROVAL') && mode != 'edit']{
+    enabled:false;
+}
+
+"entity.finalsaledate"[true] {
+    enabled:false;
+}

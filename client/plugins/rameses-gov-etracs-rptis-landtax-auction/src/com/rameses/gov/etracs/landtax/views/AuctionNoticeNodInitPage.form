@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.3" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xFormPanel1" min="-2" pref="316" max="-2" attributes="0"/>
+              <EmptySpace pref="409" max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xFormPanel1" min="-2" pref="172" max="-2" attributes="0"/>
+              <EmptySpace pref="298" max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <PropertyBean type="com.rameses.rcp.control.border.XTitledBorder">
+            <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[25, 10, 10, 10]"/>
+            </Property>
+            <Property name="title" type="java.lang.String" value="Notice of Delinquency Initial"/>
+          </PropertyBean>
+        </Property>
+        <Property name="caption" type="java.lang.String" value="Taxpayer"/>
+        <Property name="captionWidth" type="int" value="140"/>
+        <Property name="cellpadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[0, 5, 0, 0]"/>
+        </Property>
+        <Property name="required" type="boolean" value="true"/>
+      </Properties>
+      <SubComponents>
+        <Component class="com.rameses.rcp.control.XDateField" name="xDateField1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Computation Date"/>
+            <Property name="disableWhen" type="java.lang.String" value="#{mode != &apos;init&apos;}"/>
+            <Property name="name" type="java.lang.String" value="entity.dtcomputed" noResource="true"/>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox1">
+          <Properties>
+            <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[10, 0, 0, 0]"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="entity.includecy" noResource="true"/>
+            <Property name="showCaption" type="boolean" value="false"/>
+            <Property name="text" type="java.lang.String" value=" Include current year tax due?"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+  </SubComponents>
+</Form>

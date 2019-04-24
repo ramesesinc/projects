@@ -45,6 +45,10 @@
             includefields="indexno,pin,name">
                 <key field="barangayid" target="objid" />
         </complex>
+        <complex name="classification" ref="propertyclassification" jointype="many-to-one" required="false"
+            includefields="code,name">
+                <key field="classification_objid" target="objid" />
+        </complex>
 
     </element>
 </schema>

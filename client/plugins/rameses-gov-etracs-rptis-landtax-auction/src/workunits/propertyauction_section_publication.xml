@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
+    schemaName="propertyauction_publication"
+    cols="rptledger.tdno,rptledger.fullpin,rptledger.owner.name,rptledger.titleno,rptledger.totalareaha,rptledger.totalav"
+    allowDelete="#{false}"
+    allowCreate="#{false}"
+    allowOpen="#{false}"
+    allowPrint="#{false}"
+    autoResize="false"
+>
+    <invokers>
+        <invoker type="propertyauction:section" 
+                 caption="Publications" 
+                 index="2" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.AuctionSectionPublicationModel" />
+</workunit>

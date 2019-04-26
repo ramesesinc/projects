@@ -38,13 +38,16 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField4 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField7 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField8 = new com.rameses.rcp.control.XDecimalField();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
-        xDecimalField6 = new com.rameses.rcp.control.XDecimalField();
-        xLookupField2 = new com.rameses.rcp.control.XLookupField();
+        xLabel10 = new com.rameses.rcp.control.XLabel();
         xLabel8 = new com.rameses.rcp.control.XLabel();
         xDecimalField5 = new com.rameses.rcp.control.XDecimalField();
+        jPanel4 = new javax.swing.JPanel();
+        xDataTable2 = new com.rameses.rcp.control.XDataTable();
         jPanel3 = new javax.swing.JPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel6 = new com.rameses.rcp.control.XLabel();
@@ -97,8 +100,8 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel1.add(xLabel5);
 
-        xDecimalField1.setCaption("Area (ha)");
-        xDecimalField1.setName("entity.rptledger.totalareaha"); // NOI18N
+        xDecimalField1.setCaption("Area (sqm)");
+        xDecimalField1.setName("entity.rptledger.totalareasqm"); // NOI18N
         xDecimalField1.setScale(6);
         xDecimalField1.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField1.setEnabled(false);
@@ -118,42 +121,45 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
         xDecimalField4.setName("entity.amtdue"); // NOI18N
         xDecimalField4.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField4.setEnabled(false);
-        xDecimalField4.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
         xDecimalField4.setOpaque(false);
         xDecimalField4.setPreferredSize(new java.awt.Dimension(120, 20));
         xFormPanel1.add(xDecimalField4);
 
+        xDecimalField7.setCaption("Cost of Sale");
+        xDecimalField7.setName("entity.costofsale"); // NOI18N
+        xDecimalField7.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField7.setEnabled(false);
+        xDecimalField7.setForeground(new java.awt.Color(255, 0, 0));
+        xDecimalField7.setPreferredSize(new java.awt.Dimension(120, 22));
+        xFormPanel1.add(xDecimalField7);
+
+        xDecimalField8.setCaption("Min. Bid Amount");
+        xDecimalField8.setName("entity.minbidamt"); // NOI18N
+        xDecimalField8.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField8.setEnabled(false);
+        xDecimalField8.setForeground(new java.awt.Color(255, 0, 0));
+        xDecimalField8.setPreferredSize(new java.awt.Dimension(120, 22));
+        xFormPanel1.add(xDecimalField8);
+
         xFormPanel4.setCaptionWidth(120);
 
-        xDecimalField6.setCaption("Minimum Bid Amount");
-        xDecimalField6.setName("entity.minbidamt"); // NOI18N
-        xDecimalField6.setCellPadding(new java.awt.Insets(0, 0, 5, 0));
-        xDecimalField6.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xDecimalField6.setEnabled(false);
-        xDecimalField6.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
-        xDecimalField6.setForeground(new java.awt.Color(255, 0, 0));
-        xDecimalField6.setPreferredSize(new java.awt.Dimension(120, 22));
-        xFormPanel4.add(xDecimalField6);
+        xLabel10.setCaption("Name");
+        xLabel10.setExpression("#{entity.soldto.name}");
+        xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel10.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel4.add(xLabel10);
 
-        xLookupField2.setCaption("Bidder");
-        xLookupField2.setExpression("#{entity.soldto.name}");
-        xLookupField2.setHandler("entity:lookup");
-        xLookupField2.setName("entity.soldto"); // NOI18N
-        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLookupField2.setRequired(true);
-        xFormPanel4.add(xLookupField2);
-
-        xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel8.setCaption("Address");
-        xLabel8.setDepends(new String[] {"entity.soldto"});
         xLabel8.setExpression("#{entity.soldto.address.text}");
+        xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel8.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel4.add(xLabel8);
 
         xDecimalField5.setCaption("Bid Amount");
         xDecimalField5.setName("entity.bidamt"); // NOI18N
+        xDecimalField5.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField5.setEnabled(false);
         xDecimalField5.setPreferredSize(new java.awt.Dimension(120, 20));
-        xDecimalField5.setRequired(true);
         xFormPanel4.add(xDecimalField5);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -169,11 +175,80 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+                .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Bidder ", jPanel1);
+        jTabbedPane1.addTab("Winning Bidder ", jPanel1);
+
+        xDataTable2.setHandler("bidderListHandler");
+        xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "bidderno"}
+                , new Object[]{"caption", "Bidder No."}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "bidder.name"}
+                , new Object[]{"caption", "Name"}
+                , new Object[]{"width", 200}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "bidder.address"}
+                , new Object[]{"caption", "Address"}
+                , new Object[]{"width", 200}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            })
+        });
+        xDataTable2.setId("itemHandlers.bidders");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Bidders", jPanel4);
 
         xFormPanel2.setCaptionWidth(130);
 
@@ -209,7 +284,7 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -292,7 +367,7 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -323,18 +398,22 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
+    private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XDecimalField xDecimalField4;
     private com.rameses.rcp.control.XDecimalField xDecimalField5;
-    private com.rameses.rcp.control.XDecimalField xDecimalField6;
+    private com.rameses.rcp.control.XDecimalField xDecimalField7;
+    private com.rameses.rcp.control.XDecimalField xDecimalField8;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel10;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
@@ -343,6 +422,5 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;
     private com.rameses.rcp.control.XLabel xLabel9;
-    private com.rameses.rcp.control.XLookupField xLookupField2;
     // End of variables declaration//GEN-END:variables
 }

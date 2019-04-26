@@ -30,12 +30,10 @@ public class AuctionPage extends javax.swing.JPanel {
 
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xLabel11 = new com.rameses.rcp.control.XLabel();
+        xLabel12 = new com.rameses.rcp.control.XLabel();
         xDateField9 = new com.rameses.rcp.control.XDateField();
-        xDateField10 = new com.rameses.rcp.control.XDateField();
-        xDateField11 = new com.rameses.rcp.control.XDateField();
-        xDateField12 = new com.rameses.rcp.control.XDateField();
+        xTextField2 = new com.rameses.rcp.control.XTextField();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xTextField1 = new com.rameses.rcp.control.XTextField();
         xLabel6 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
         xLabel9 = new com.rameses.rcp.control.XLabel();
@@ -43,26 +41,34 @@ public class AuctionPage extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         xList1 = new com.rameses.rcp.control.XList();
         xSubFormPanel1 = new com.rameses.rcp.control.XSubFormPanel();
-        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
-        xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
+        xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
+        xDateField14 = new com.rameses.rcp.control.XDateField();
+        xDateField15 = new com.rameses.rcp.control.XDateField();
+        xDateField16 = new com.rameses.rcp.control.XDateField();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setPadding(new java.awt.Insets(10, 10, 10, 10));
         xTitledBorder1.setTitle("");
         xFormPanel4.setBorder(xTitledBorder1);
-        xFormPanel4.setCaptionWidth(150);
+        xFormPanel4.setCaptionWidth(130);
         xFormPanel4.setOpaque(true);
         xFormPanel4.setPadding(new java.awt.Insets(10, 10, 10, 10));
 
-        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel11.setCaption("State");
         xLabel11.setExpression("#{entity.state}");
+        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel11.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         xLabel11.setForeground(new java.awt.Color(204, 0, 0));
         xLabel11.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel4.add(xLabel11);
+
+        xLabel12.setCaption("Auction No.");
+        xLabel12.setExpression("#{entity.txnno}");
+        xLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel12.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        xLabel12.setForeground(new java.awt.Color(204, 0, 0));
+        xLabel12.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel4.add(xLabel12);
 
         xDateField9.setCaption("Auction Date");
         xDateField9.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -71,25 +77,12 @@ public class AuctionPage extends javax.swing.JPanel {
         xDateField9.setRequired(true);
         xFormPanel4.add(xDateField9);
 
-        xDateField10.setCaption("1st Publication Date ");
-        xDateField10.setName("entity.publicationdate1"); // NOI18N
-        xDateField10.setPreferredSize(new java.awt.Dimension(0, 20));
-        xDateField10.setRequired(true);
-        xFormPanel4.add(xDateField10);
-
-        xDateField11.setCaption("2nd Publication Date");
-        xDateField11.setName("entity.publicationdate2"); // NOI18N
-        xDateField11.setPreferredSize(new java.awt.Dimension(0, 20));
-        xDateField11.setRequired(true);
-        xFormPanel4.add(xDateField11);
-
-        xDateField12.setCaption("Final Sale Date");
-        xDateField12.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xDateField12.setEnabled(false);
-        xDateField12.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xDateField12.setName("entity.finalsaledate"); // NOI18N
-        xDateField12.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel4.add(xDateField12);
+        xTextField2.setCaption("Auction Location");
+        xTextField2.setName("entity.location"); // NOI18N
+        xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField2.setRequired(true);
+        xTextField2.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
+        xFormPanel4.add(xTextField2);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setPadding(new java.awt.Insets(10, 10, 10, 10));
@@ -99,17 +92,9 @@ public class AuctionPage extends javax.swing.JPanel {
         xFormPanel2.setOpaque(true);
         xFormPanel2.setPadding(new java.awt.Insets(10, 10, 10, 10));
 
-        xTextField1.setCaption("Auction Location");
-        xTextField1.setName("entity.location"); // NOI18N
-        xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField1.setRequired(true);
-        xTextField1.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
-        xFormPanel2.add(xTextField1);
-
         xLabel6.setCaption("Created By");
         xLabel6.setExpression("#{entity.createdby.name}");
         xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel6.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
         xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel6);
 
@@ -143,11 +128,11 @@ public class AuctionPage extends javax.swing.JPanel {
         xSubFormPanel1.setLayout(xSubFormPanel1Layout);
         xSubFormPanel1Layout.setHorizontalGroup(
             xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 763, Short.MAX_VALUE)
+            .addGap(0, 865, Short.MAX_VALUE)
         );
         xSubFormPanel1Layout.setVerticalGroup(
             xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 358, Short.MAX_VALUE)
+            .addGap(0, 381, Short.MAX_VALUE)
         );
 
         jSplitPane1.setRightComponent(xSubFormPanel1);
@@ -155,28 +140,30 @@ public class AuctionPage extends javax.swing.JPanel {
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder3.setPadding(new java.awt.Insets(10, 10, 10, 10));
         xTitledBorder3.setTitle("");
-        xFormPanel3.setBorder(xTitledBorder3);
-        xFormPanel3.setCaptionWidth(130);
-        xFormPanel3.setOpaque(true);
-        xFormPanel3.setPadding(new java.awt.Insets(10, 10, 10, 10));
+        xFormPanel5.setBorder(xTitledBorder3);
+        xFormPanel5.setCaptionWidth(140);
+        xFormPanel5.setOpaque(true);
+        xFormPanel5.setPadding(new java.awt.Insets(10, 10, 10, 10));
 
-        xDecimalField1.setCaption("Incidental Rate");
-        xDecimalField1.setName("entity.incidentalrate"); // NOI18N
-        xDecimalField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xDecimalField1.setRequired(true);
-        xFormPanel3.add(xDecimalField1);
+        xDateField14.setCaption("1st Publication Date ");
+        xDateField14.setName("entity.publicationdate1"); // NOI18N
+        xDateField14.setPreferredSize(new java.awt.Dimension(0, 20));
+        xDateField14.setRequired(true);
+        xFormPanel5.add(xDateField14);
 
-        xDecimalField2.setCaption("Min Incidental Fee");
-        xDecimalField2.setName("entity.minincidental"); // NOI18N
-        xDecimalField2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xDecimalField2.setRequired(true);
-        xFormPanel3.add(xDecimalField2);
+        xDateField15.setCaption("2nd Publication Date");
+        xDateField15.setName("entity.publicationdate2"); // NOI18N
+        xDateField15.setPreferredSize(new java.awt.Dimension(0, 20));
+        xDateField15.setRequired(true);
+        xFormPanel5.add(xDateField15);
 
-        xDecimalField3.setCaption("Max Incidental Fee");
-        xDecimalField3.setName("entity.maxincidental"); // NOI18N
-        xDecimalField3.setPreferredSize(new java.awt.Dimension(0, 20));
-        xDecimalField3.setRequired(true);
-        xFormPanel3.add(xDecimalField3);
+        xDateField16.setCaption("Final Sale Date");
+        xDateField16.setName("entity.finalsaledate"); // NOI18N
+        xDateField16.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDateField16.setEnabled(false);
+        xDateField16.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xDateField16.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel5.add(xDateField16);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -187,11 +174,11 @@ public class AuctionPage extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSplitPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)))
+                        .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -201,31 +188,29 @@ public class AuctionPage extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(xFormPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane1;
-    private com.rameses.rcp.control.XDateField xDateField10;
-    private com.rameses.rcp.control.XDateField xDateField11;
-    private com.rameses.rcp.control.XDateField xDateField12;
+    private com.rameses.rcp.control.XDateField xDateField14;
+    private com.rameses.rcp.control.XDateField xDateField15;
+    private com.rameses.rcp.control.XDateField xDateField16;
     private com.rameses.rcp.control.XDateField xDateField9;
-    private com.rameses.rcp.control.XDecimalField xDecimalField1;
-    private com.rameses.rcp.control.XDecimalField xDecimalField2;
-    private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
-    private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
+    private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XLabel xLabel11;
+    private com.rameses.rcp.control.XLabel xLabel12;
     private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XList xList1;
     private com.rameses.rcp.control.XSubFormPanel xSubFormPanel1;
-    private com.rameses.rcp.control.XTextField xTextField1;
+    private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables
 }

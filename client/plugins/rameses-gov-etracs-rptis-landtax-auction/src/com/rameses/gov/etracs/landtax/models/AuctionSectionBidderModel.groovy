@@ -6,14 +6,21 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 
-class AuctionPropertyLookupModel extends CrudLookupModel
-{   
-    def state = 'REDEMPTIONFORPAYMENT';
+class AuctionSectionBidderModel extends CrudListModel
+{
+    //auction entity
+    def entity; 
     
     public def getCustomFilter(){
-        if (state) {
-            return ["state = :state ", [state:state]]
-        }
+        return ["parent.objid = :auctionid", [auctionid:entity.objid]]
+    }
+    
+    def showMenu(){
         return null;
     }
+    
+    boolean isSurroundSearch(){
+        return false;
+    }
+    
 }

@@ -11,7 +11,7 @@
     <invokers>
         <invoker folderid="/menucategory/landtax/auction" 
                  action="init" caption="View Notices" 
-                role="AUCTIONEER" index="15" />
+                role="SHARED" index="15" />
     </invokers>
     <code class="com.rameses.gov.etracs.landtax.models.AuctionNoticeListModel" />
 </workunit>

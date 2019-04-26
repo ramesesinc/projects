@@ -9,7 +9,9 @@
 		<field name="soldto_marriedto" />
 		<field name="soldto_marriedtoaddress" />
 		<field name="amtdue" required="true" type="decimal" />
+		<field name="costofsale" required="true" type="decimal" />
 		<field name="amtduepaid" required="true" type="decimal" />
+		<field name="minbidamt" type="decimal" expr="amtdue + costofsale" />
 		<field name="bidamt" required="true" type="decimal" />
 		<field name="balance" required="true" type="decimal" />
 		<field name="redemptiondate" required="true" type="date" />
@@ -47,7 +49,7 @@
 		</complex>
 
 		<complex name="rptledger" ref="rptledger" jointype="many-to-one"
-			includefields="faasid,taxpayer.objid,taxpayer.name,taxpayer.address.text,owner.name,tdno,fullpin,titleno,cadastrallotno,totalmv,totalav,totalareaha,barangay.name,blockno">
+			includefields="faasid,taxpayer.objid,taxpayer.name,taxpayer.address.text,owner.name,tdno,fullpin,titleno,cadastrallotno,totalmv,totalav,totalareaha,totalareasqm,barangay.name,blockno">
 			<key field="rptledger_objid" target="objid" />
 		</complex>
     </element>

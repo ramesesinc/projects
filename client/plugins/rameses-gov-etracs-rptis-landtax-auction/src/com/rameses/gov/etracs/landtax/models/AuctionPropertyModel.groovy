@@ -11,7 +11,13 @@ class AuctionPropertyModel extends CrudFormModel
     @Service('PropertyAuctionPropertyService')
     def svc;
     
+    def bidders = [];
+    
     boolean isShowConfirm() { return false; }
+    
+    public void afterOpen(){
+        bidders = svc.getBidders([objid: entity.objid]);
+    }
     
     void submitForPayment(){
         if (MsgBox.confirm('Submit for Payment?')){
@@ -42,5 +48,10 @@ class AuctionPropertyModel extends CrudFormModel
         }
         return null;
     }
+    
+    
+    def bidderListHandler = [
+        fetchList : { bidders }
+    ] as BasicListModel
         
 }

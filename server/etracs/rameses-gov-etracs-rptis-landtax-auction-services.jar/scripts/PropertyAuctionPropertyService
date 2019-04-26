@@ -36,6 +36,9 @@ class PropertyAuctionPropertyService
     @DataContext('itemaccount')
     def em_itemaccount
 
+    @DataContext('vw_property_bidder')
+    def em_bidder 
+
 
     @ProxyMethod
     public void beforeUpdate(entity) {
@@ -45,13 +48,27 @@ class PropertyAuctionPropertyService
     }
 
     @ProxyMethod
+    public def getBidders(entity) {
+        return em_bidder.find([property_objid: entity.objid, state: 'APPROVED'])
+                        .orderBy('bidderno')
+                        .list()
+    }
+
+
+    @ProxyMethod
     public def submitSaleForPayment( prop ) {
         validate(prop, 'for sale')
+
+        if (!(prop.soldto && prop.soldto.objid)) {
+            throw new Exception('Winning Bidder must be specified.')
+        }
+        
+        if (prop.soldto.objid == prop.rptledger.taxpayer.objid) {
+            throw new Exception('Winning Bidder must not be equal to propert owner.')
+        }
+
         if (prop.bidamt <= prop.amtdue) {
             throw new Exception('Bid Amount must be greater than or equal to amount due.')
-        }
-        if (prop.soldto.objid == prop.rptledger.taxpayer.objid) {
-            throw new Exception('Bidder must not be equal to propert owner.')
         }
 
         prop.state = 'FORPAYMENT'

@@ -18,6 +18,9 @@ class PropertyAuctionService
     @Service('RPTUtil')
     def util
 
+    @Service('SequenceService')
+    def seqSvc
+
     @DataContext('propertyauction')
     def em_propertyauction     
 
@@ -56,9 +59,6 @@ class PropertyAuctionService
         entity.published2 = false
         entity.createdby = [name: env.FULLNAME, title: env.JOBTITLE]
         entity.finalsaledate = entity.auctiondate + 360 
-        entity.incidentalrate = 0.0
-        entity.minincidental = 0.0
-        entity.maxincidental = 0.0
         return entity
     }
 
@@ -140,7 +140,8 @@ class PropertyAuctionService
     public def approve( entity ) {
         validate(entity, 'draft')
         def approver = [objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE]
-        em_propertyauction.find([objid:entity.objid]).update([state:'APPROVED', approvedby:approver])
+        entity.txnno = 'A' + seqSvc.getNextFormattedSeries('AUCTION')
+        em_propertyauction.find([objid:entity.objid]).update([state:'APPROVED', approvedby:approver, txnno: entity.txnno])
 
         updateNopasAuctionReference(entity)
 
@@ -153,7 +154,7 @@ class PropertyAuctionService
         validate(entity, 'publication')
 
         //build auction property
-        def list = em_propertyauction_notice.select('objid,rptledger_objid,amtdue')
+        def list = em_propertyauction_notice.select('objid,rptledger_objid,amtdue,costofsale')
                         .where(''' step_objid = 'NOPAS' and state = 'PUBLISHED' ''')
                         .list()
 
@@ -165,11 +166,12 @@ class PropertyAuctionService
             p.rptledger = it.rptledger
             p.soldto = [:]
             p.amtdue = it.amtdue 
+            p.costofsale = it.costofsale
             p.amtduepaid = 0.0 
             p.bidamt = 0.0 
             p.balance = 0.0 
             p.notice = it 
-            p.minbidamt = it.amtdue + entity.costofsale 
+            p.minbidamt = it.amtdue + it.costofsale 
             p.redemptiondate = entity.finalsaledate
             em_propertyauction_property.create(p)
             em_propertyauction_notice.find([objid:it.objid]).update([state:'AUCTION'])

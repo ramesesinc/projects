@@ -9,6 +9,6 @@
     <invokers>
         <invoker folderid="/menucategory/landtax/auction" 
                  action="init" caption="Auction Steps" 
-                role="AUCTION_ADMIN" index="1" />
+                role="ADMIN" index="1" />
     </invokers>
 </workunit>

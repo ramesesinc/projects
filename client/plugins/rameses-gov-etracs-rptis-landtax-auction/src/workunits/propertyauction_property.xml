@@ -2,7 +2,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudForm.xml"
     schemaName="propertyauction_property"
     allowCreate="#{false}"
-    allowEdit="#{entity.state.matches('FORSALE')}"
+    allowEdit="#{false}"
     allowDelete="#{false}" >
     <invokers>
         <invoker type="propertyauction_property:open" 
@@ -13,7 +13,7 @@
         <invoker type="formActions" 
             action="submitForPayment" 
             caption="Submit for Payment" 
-            visibleWhen="#{mode == 'read' &amp;&amp; entity.state =='FORSALE'}"/>
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.state =='FORSALE' &amp;&amp; entity.soldto.objid != null}"/>
             
         <invoker type="formActions" 
             action="approveSale" 

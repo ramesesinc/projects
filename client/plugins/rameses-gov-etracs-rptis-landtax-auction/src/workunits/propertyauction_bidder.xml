@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml"
+    schemaName="propertyauction_bidder"
+    allowCreate="#{false}"
+    allowEdit="#{entity.state == 'DRAFT'}"
+    allowDelete="#{entity.state == 'DRAFT'}" >
+    <invokers>
+        <invoker folderid="/menucategory/landtax/auction" 
+                 action="create" caption="Register New Bidder" 
+                 role="AUCTIONEER" index="100" />
+        
+        <invoker type="propertyauction_bidder:create" 
+                 action="create" caption="Bidder (New)" 
+                 target="popup" 
+                 role="AUCTIONEER" />
+        
+        <invoker type="propertyauction_bidder:open" 
+                 action="open" caption="Bidder" 
+                 target="popup" 
+                 role="AUCTIONEER" />
+        
+        <invoker type="formActions" 
+            action="approve" 
+            caption="Approve" 
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.state =='DRAFT'}"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.AuctionBidderModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.AuctionBidderPage"/>
+    </pages>
+</workunit>

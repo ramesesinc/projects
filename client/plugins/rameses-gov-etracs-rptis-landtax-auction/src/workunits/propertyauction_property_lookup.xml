@@ -6,7 +6,7 @@
          <invoker type="propertyauction_property:lookup" caption="Auctioned Property Lookup" 
          		  action="init" target="popup" width="650" height="450"
                   cols="rptledger.tdno,rptledger.fullpin,rptledger.owner.name,rptledger.totalav" 
-                  hiddenCols="notice.toyear,rptledger.objid,soldto.name,soldto.address.text,rptledger.taxpayer.objid,rptledger.taxpayer.name,rptledger.taxpayer.address.text,rptledger.totalmv,rptledger.totalareaha" />
+                  hiddenCols="notice.toyear,rptledger.objid,soldto.name,soldto.address.text,rptledger.taxpayer.objid,rptledger.taxpayer.name,rptledger.taxpayer.address.text,rptledger.totalmv,rptledger.totalareaha,parent.objid" />
    </invokers>
    <code class="com.rameses.gov.etracs.landtax.models.AuctionPropertyLookupModel" />
 </workunit>

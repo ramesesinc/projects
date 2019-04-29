@@ -29,23 +29,10 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xLabel7 = new com.rameses.rcp.control.XLabel();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
-        xLabel3 = new com.rameses.rcp.control.XLabel();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
-        xLabel5 = new com.rameses.rcp.control.XLabel();
-        xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField4 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField7 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField8 = new com.rameses.rcp.control.XDecimalField();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
-        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
-        xLabel10 = new com.rameses.rcp.control.XLabel();
-        xLabel8 = new com.rameses.rcp.control.XLabel();
-        xDecimalField5 = new com.rameses.rcp.control.XDecimalField();
         jPanel4 = new javax.swing.JPanel();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
         jPanel3 = new javax.swing.JPanel();
@@ -55,74 +42,32 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
         jPanel2 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
+        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
+        xLabel11 = new com.rameses.rcp.control.XLabel();
+        xLabel12 = new com.rameses.rcp.control.XLabel();
+        xLabel13 = new com.rameses.rcp.control.XLabel();
+        xLabel14 = new com.rameses.rcp.control.XLabel();
+        xLabel15 = new com.rameses.rcp.control.XLabel();
+        xLabel16 = new com.rameses.rcp.control.XLabel();
+        xDecimalField6 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField9 = new com.rameses.rcp.control.XDecimalField();
+        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
+        xLabel10 = new com.rameses.rcp.control.XLabel();
+        xLabel8 = new com.rameses.rcp.control.XLabel();
+        xDecimalField5 = new com.rameses.rcp.control.XDecimalField();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setPadding(new java.awt.Insets(25, 10, 10, 10));
-        xTitledBorder1.setTitle("Property Information");
+        xTitledBorder1.setTitle("Bid Information");
         xFormPanel1.setBorder(xTitledBorder1);
         xFormPanel1.setCaptionWidth(110);
-
-        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel7.setCaption("State");
-        xLabel7.setExpression("#{entity.state}");
-        xLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xLabel7.setForeground(new java.awt.Color(204, 0, 0));
-        xLabel7.setPreferredSize(new java.awt.Dimension(0, 19));
-        xFormPanel1.add(xLabel7);
-
-        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel1.setCaption("TD No.");
-        xLabel1.setExpression("#{entity.rptledger.tdno}");
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 19));
-        xFormPanel1.add(xLabel1);
-
-        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel2.setCaption("PIN");
-        xLabel2.setExpression("#{entity.rptledger.fullpin}");
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 19));
-        xFormPanel1.add(xLabel2);
-
-        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel3.setCaption("Title No.");
-        xLabel3.setExpression("#{entity.rptledger.titleno}");
-        xLabel3.setPreferredSize(new java.awt.Dimension(0, 19));
-        xFormPanel1.add(xLabel3);
-
-        xLabel4.setCaption("Lot No.");
-        xLabel4.setExpression("#{entity.rptledger.cadastrallotno}");
-        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel4.setPreferredSize(new java.awt.Dimension(0, 19));
-        xFormPanel1.add(xLabel4);
-
-        xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel5.setCaption("Owner Name");
-        xLabel5.setExpression("#{entity.rptledger.owner.name}");
-        xLabel5.setPreferredSize(new java.awt.Dimension(0, 19));
-        xFormPanel1.add(xLabel5);
-
-        xDecimalField1.setCaption("Area (sqm)");
-        xDecimalField1.setName("entity.rptledger.totalareasqm"); // NOI18N
-        xDecimalField1.setScale(6);
-        xDecimalField1.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xDecimalField1.setEnabled(false);
-        xDecimalField1.setOpaque(false);
-        xDecimalField1.setPreferredSize(new java.awt.Dimension(120, 20));
-        xFormPanel1.add(xDecimalField1);
-
-        xDecimalField2.setCaption("Assessed Value");
-        xDecimalField2.setName("entity.rptledger.totalav"); // NOI18N
-        xDecimalField2.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xDecimalField2.setEnabled(false);
-        xDecimalField2.setOpaque(false);
-        xDecimalField2.setPreferredSize(new java.awt.Dimension(120, 20));
-        xFormPanel1.add(xDecimalField2);
 
         xDecimalField4.setCaption("Tax Due");
         xDecimalField4.setName("entity.amtdue"); // NOI18N
         xDecimalField4.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField4.setEnabled(false);
         xDecimalField4.setOpaque(false);
-        xDecimalField4.setPreferredSize(new java.awt.Dimension(120, 20));
+        xDecimalField4.setPreferredSize(new java.awt.Dimension(0, 22));
         xFormPanel1.add(xDecimalField4);
 
         xDecimalField7.setCaption("Cost of Sale");
@@ -130,7 +75,7 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
         xDecimalField7.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField7.setEnabled(false);
         xDecimalField7.setForeground(new java.awt.Color(255, 0, 0));
-        xDecimalField7.setPreferredSize(new java.awt.Dimension(120, 22));
+        xDecimalField7.setPreferredSize(new java.awt.Dimension(0, 22));
         xFormPanel1.add(xDecimalField7);
 
         xDecimalField8.setCaption("Min. Bid Amount");
@@ -138,48 +83,8 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
         xDecimalField8.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField8.setEnabled(false);
         xDecimalField8.setForeground(new java.awt.Color(255, 0, 0));
-        xDecimalField8.setPreferredSize(new java.awt.Dimension(120, 22));
+        xDecimalField8.setPreferredSize(new java.awt.Dimension(0, 22));
         xFormPanel1.add(xDecimalField8);
-
-        xFormPanel4.setCaptionWidth(120);
-
-        xLabel10.setCaption("Name");
-        xLabel10.setExpression("#{entity.soldto.name}");
-        xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel10.setPreferredSize(new java.awt.Dimension(0, 19));
-        xFormPanel4.add(xLabel10);
-
-        xLabel8.setCaption("Address");
-        xLabel8.setExpression("#{entity.soldto.address.text}");
-        xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel8.setPreferredSize(new java.awt.Dimension(0, 19));
-        xFormPanel4.add(xLabel8);
-
-        xDecimalField5.setCaption("Bid Amount");
-        xDecimalField5.setName("entity.bidamt"); // NOI18N
-        xDecimalField5.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xDecimalField5.setEnabled(false);
-        xDecimalField5.setPreferredSize(new java.awt.Dimension(120, 20));
-        xFormPanel4.add(xDecimalField5);
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jTabbedPane1.addTab("Winning Bidder ", jPanel1);
 
         xDataTable2.setHandler("bidderListHandler");
         xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
@@ -237,14 +142,14 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
+                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -277,14 +182,14 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -360,18 +265,104 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
+                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jTabbedPane1.addTab("Payments", jPanel2);
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder2.setPadding(new java.awt.Insets(25, 10, 10, 10));
+        xTitledBorder2.setTitle("Property Information");
+        xFormPanel3.setBorder(xTitledBorder2);
+        xFormPanel3.setCaptionWidth(110);
+
+        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel11.setCaption("State");
+        xLabel11.setExpression("#{entity.state}");
+        xLabel11.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel11.setForeground(new java.awt.Color(204, 0, 0));
+        xLabel11.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel3.add(xLabel11);
+
+        xLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel12.setCaption("TD No.");
+        xLabel12.setExpression("#{entity.rptledger.tdno}");
+        xLabel12.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel3.add(xLabel12);
+
+        xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel13.setCaption("PIN");
+        xLabel13.setExpression("#{entity.rptledger.fullpin}");
+        xLabel13.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel3.add(xLabel13);
+
+        xLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel14.setCaption("Title No.");
+        xLabel14.setExpression("#{entity.rptledger.titleno}");
+        xLabel14.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel3.add(xLabel14);
+
+        xLabel15.setCaption("Lot No.");
+        xLabel15.setExpression("#{entity.rptledger.cadastrallotno}");
+        xLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel15.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel3.add(xLabel15);
+
+        xLabel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel16.setCaption("Owner Name");
+        xLabel16.setExpression("#{entity.rptledger.owner.name}");
+        xLabel16.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel3.add(xLabel16);
+
+        xDecimalField6.setCaption("Area (sqm)");
+        xDecimalField6.setName("entity.rptledger.totalareasqm"); // NOI18N
+        xDecimalField6.setScale(6);
+        xDecimalField6.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField6.setEnabled(false);
+        xDecimalField6.setOpaque(false);
+        xDecimalField6.setPreferredSize(new java.awt.Dimension(120, 20));
+        xFormPanel3.add(xDecimalField6);
+
+        xDecimalField9.setCaption("Assessed Value");
+        xDecimalField9.setName("entity.rptledger.totalav"); // NOI18N
+        xDecimalField9.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField9.setEnabled(false);
+        xDecimalField9.setOpaque(false);
+        xDecimalField9.setPreferredSize(new java.awt.Dimension(120, 20));
+        xFormPanel3.add(xDecimalField9);
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder3.setPadding(new java.awt.Insets(25, 10, 10, 10));
+        xTitledBorder3.setTitle("Winning Bidder");
+        xFormPanel4.setBorder(xTitledBorder3);
+        xFormPanel4.setCaptionWidth(120);
+
+        xLabel10.setCaption("Name");
+        xLabel10.setExpression("#{entity.soldto.name}");
+        xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel10.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel4.add(xLabel10);
+
+        xLabel8.setCaption("Address");
+        xLabel8.setExpression("#{entity.soldto.address.text}");
+        xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel8.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel4.add(xLabel8);
+
+        xDecimalField5.setCaption("Bid Amount");
+        xDecimalField5.setName("entity.bidamt"); // NOI18N
+        xDecimalField5.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField5.setEnabled(false);
+        xDecimalField5.setPreferredSize(new java.awt.Dimension(120, 20));
+        xFormPanel4.add(xDecimalField5);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -380,46 +371,54 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTabbedPane1))
+                    .addComponent(jTabbedPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1)
+                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
-    private com.rameses.rcp.control.XDecimalField xDecimalField1;
-    private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XDecimalField xDecimalField4;
     private com.rameses.rcp.control.XDecimalField xDecimalField5;
+    private com.rameses.rcp.control.XDecimalField xDecimalField6;
     private com.rameses.rcp.control.XDecimalField xDecimalField7;
     private com.rameses.rcp.control.XDecimalField xDecimalField8;
+    private com.rameses.rcp.control.XDecimalField xDecimalField9;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
-    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel10;
-    private com.rameses.rcp.control.XLabel xLabel2;
-    private com.rameses.rcp.control.XLabel xLabel3;
-    private com.rameses.rcp.control.XLabel xLabel4;
-    private com.rameses.rcp.control.XLabel xLabel5;
+    private com.rameses.rcp.control.XLabel xLabel11;
+    private com.rameses.rcp.control.XLabel xLabel12;
+    private com.rameses.rcp.control.XLabel xLabel13;
+    private com.rameses.rcp.control.XLabel xLabel14;
+    private com.rameses.rcp.control.XLabel xLabel15;
+    private com.rameses.rcp.control.XLabel xLabel16;
     private com.rameses.rcp.control.XLabel xLabel6;
-    private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;
     private com.rameses.rcp.control.XLabel xLabel9;
     // End of variables declaration//GEN-END:variables

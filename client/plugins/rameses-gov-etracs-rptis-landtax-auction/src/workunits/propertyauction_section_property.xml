@@ -11,6 +11,10 @@
         <invoker type="propertyauction:section" 
                  caption="Auctioned Properties" 
                  index="3" />
+        
+        <invoker type="formActions" 
+            action="bidProperty" caption="Bid Property"
+        />
     </invokers>
     <code class="com.rameses.gov.etracs.landtax.models.AuctionSectionPropertyModel" />
 </workunit>

@@ -84,6 +84,7 @@ class SubdividedLandController
         return InvokerUtil.lookupOpener('realproperty:create', [
             entity     : entity,
             barangayid : motherlands[0].barangayid,
+            lands      : lands,
             
             oncreate : { rp -> 
                 def land = [

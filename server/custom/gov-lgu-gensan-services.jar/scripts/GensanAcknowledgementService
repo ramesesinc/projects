@@ -1,0 +1,35 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class GensanAcknowledgementService
+{
+	@Service('SequenceService')
+	def seqSvc
+
+	@Service('OrgService')
+	def orgSvc 	
+
+
+	@ProxyMethod
+	public def getNextAcknowledgementSeries() {
+		def orgcode =  getRootCode() 
+		def key = 'RPTACKNOWLEDGEMENT-' + orgcode
+		return  'RA' + orgcode + seqSvc.getNextFormattedSeries(key)
+	}
+
+	@ProxyMethod
+	public def getNextTrackingSeries() {
+		def orgcode =  getRootCode() 
+		def key = 'RPTTRACKING-' + orgcode
+		return  'RT' + orgcode + seqSvc.getNextFormattedSeries(key)
+	}
+
+	@ProxyMethod
+	public def getRootCode() {
+		def org = orgSvc.getRoot()
+		return org.code.replaceAll('-','') 
+	}	
+	
+}
+

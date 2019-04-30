@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.gov.etracs.rptis.views;
+package gov.lgu.gensan.rptis.views;
 
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
@@ -10,12 +10,12 @@ import com.rameses.seti2.views.CrudFormPage;
 
 @Template(CrudFormPage.class)
 @StyleSheet
-public class RPTAcknowledgementPage extends javax.swing.JPanel {
+public class AcknowledgementPage extends javax.swing.JPanel {
 
     /**
      * Creates new form RPTTrackingPage
      */
-    public RPTAcknowledgementPage() {
+    public AcknowledgementPage() {
         initComponents();
     }
 
@@ -130,8 +130,8 @@ public class RPTAcknowledgementPage extends javax.swing.JPanel {
         xDataTable1.setBorder(xTitledBorder2);
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "faas"}
-                , new Object[]{"caption", "TD No."}
+                new Object[]{"name", "ref"}
+                , new Object[]{"caption", "Ref No."}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -143,7 +143,7 @@ public class RPTAcknowledgementPage extends javax.swing.JPanel {
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler("#{item.faas.tdno}", "faas:lookup")}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler("#{item.refno}", "faas:lookup")}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "trackingno"}
@@ -242,7 +242,7 @@ public class RPTAcknowledgementPage extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)))
+                        .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(

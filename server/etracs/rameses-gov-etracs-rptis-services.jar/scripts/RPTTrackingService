@@ -11,6 +11,7 @@ class RPTTrackingService
 	
 	@ProxyMethod
 	public def getLogs(entity) {
+		println 'entity  => ' + entity 
 		return em.getLogs(entity)
 	}
 

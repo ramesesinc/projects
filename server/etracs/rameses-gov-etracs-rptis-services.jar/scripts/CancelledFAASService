@@ -263,6 +263,8 @@ class CancelledFAASService
 
         //if land check that all improvements are cancelled
         if (faas.rputype == 'land'){
+            println 'faas => ' + faas 
+            throw new Exception('test')
             def improvements = em.getNonCancelledImprovements([realpropertyid:faas.realpropertyid])
 
             if (improvements.size() == 1) {

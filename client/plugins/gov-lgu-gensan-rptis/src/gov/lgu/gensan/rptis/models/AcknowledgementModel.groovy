@@ -1,4 +1,4 @@
-package com.rameses.gov.etracs.rptis.models;
+package gov.lgu.gensan.rptis.models;
         
 import com.rameses.rcp.annotations.*;
 import com.rameses.rcp.common.*;
@@ -7,7 +7,7 @@ import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 import com.rameses.common.*;
 
-public class RPTAcknowledgementModel extends CrudFormModel
+public class AcknowledgementModel extends CrudFormModel
 {
     @Service('FAASService')
     def faasSvc;
@@ -60,6 +60,10 @@ public class RPTAcknowledgementModel extends CrudFormModel
         entity.receivedby = OsirisContext.env.FULLNAME;
     }
 
+    public void afterOpen(){
+        entity.txntype = getTxntypes().find{it.objid == entity.txntype?.objid}
+    }
+
     def calcReleaseDate() {
         def numdays = var.getProperty('assessor_acknowledgement_receipt_numdays', 9);
         return (dtSvc.getServerDate() + numdays);
@@ -83,16 +87,25 @@ public class RPTAcknowledgementModel extends CrudFormModel
     }
     
     def getLogs() {
-        if (selectedItem == null || !selectedItem.newfaas) {
+        if (selectedItem == null) {
             return [];
-        } else {
+        } else if (selectedItem.newfaas && selectedItem.newfaas.objid) {
             return trackingSvc.getLogs(selectedItem.newfaas);
+        } else {
+            return trackingSvc.getLogs(selectedItem.ref);
         }
     }
     
     def logListHandler = [
         fetchList: { getLogs() },
     ] as BasicListModel
+
+
+
+    public void afterColumnUpdate(String name, def item, String colName ) {
+        item.refno = item.ref?.tdno;
+        item.reftype = 'faas';
+    }
 }
 
 

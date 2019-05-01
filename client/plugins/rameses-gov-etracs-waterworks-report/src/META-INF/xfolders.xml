@@ -1,0 +1,7 @@
+<folders>
+    <folder id="explorer">
+        <folder id="report" caption="Reports">
+            <folder id="waterworks" caption="Waterworks" />
+        </folder>
+    </folder>    
+</folders>    

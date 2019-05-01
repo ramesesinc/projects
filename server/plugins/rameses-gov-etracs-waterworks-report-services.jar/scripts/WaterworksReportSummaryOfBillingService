@@ -1,0 +1,57 @@
+import com.rameses.annotations.*; 
+
+class WaterworksReportSummaryOfBillingService {
+	
+	@DataContext('barangay')
+	def brgy_db; 
+
+	@DataContext('waterworks_zone')
+	def zone_db; 
+
+	@ActiveDB(value='waterworks_report', em='waterworks')
+	def report_db; 
+
+	@Service('DateService')
+	def dateSvc;
+
+	@ProxyMethod 
+	public def initReport( param ) {
+		def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
+		def serverdate = YMD.format( dateSvc.getBasicServerDate());
+
+		def res = [:]; 
+		res.serverdate = serverdate; 
+		res.zones = report_db.getZones(); 
+		res.barangays = report_db.getBarangays(); 
+		return res; 
+	}
+
+	@ProxyMethod 
+	public def getReport( param ) {
+		param.barangayid = param.barangay?.objid; 
+		param.zoneid = param.zone?.objid;
+
+		def filters = []; 
+		filters << 'v.year='+ param.year; 
+
+		if ( param.period?.type == 'quarterly' ) {
+			def strmonth = '0'; 
+			if ( param.qtr == 1 ) strmonth = "1,2,3"; 
+			else if ( param.qtr == 2 ) strmonth = "4,5,6"; 
+			else if ( param.qtr == 3 ) strmonth = "7,8,9"; 
+			else if ( param.qtr == 4 ) strmonth = "10,11,12"; 
+
+			filters << 'v.month in ('+ strmonth +')'; 
+		} 
+		else if ( param.period?.type == 'monthly' ) {
+			filters << 'v.month='+ param.month?.index; 
+		} 
+
+		if ( param.zoneid ) filters << ''' v.zone_objid = $P{zoneid} '''; 
+		if ( param.barangayid ) filters << ''' v.barangay_objid = $P{barangayid} '''; 
+
+		param.filters = filters.join(' AND '); 
+
+		return report_db.getReportSummaryOfBilling( param ); 
+	} 
+}

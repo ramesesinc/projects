@@ -24,6 +24,10 @@ class PropertyAuctionBiddingService
     @DataContext('vw_property_bidder')
     def em_bidder 
 
+    def STATE_DRAFT = 'DRAFT'
+    def STATE_BIDDING = 'BIDDING'
+    def STATE_CLOSED = 'CLOSED'
+
 
     @ProxyMethod
     public def beforeCreate(entity) {
@@ -40,6 +44,30 @@ class PropertyAuctionBiddingService
         entity.calls = getCalls(entity)
         return entity 
     }
+
+    @ProxyMethod
+    public def startBidding(entity) {
+        def old = em_bidding.find([objid: entity.objid]).first()
+        if (!old) throw new Exception('Record does not exist or has already been deleted.')
+        if (old.state == STATE_BIDDING) throw new Exception('Record is already under bidding.')
+        if (old.state == STATE_CLOSED) throw new Exception('Record has already been closed.')
+        entity.state = STATE_BIDDING
+        em_bidding.update(entity)
+        return entity 
+    }
+
+    @ProxyMethod
+    public def closeBidding(entity) {
+        println 'entity => ' + entity
+        def old = em_bidding.find([objid: entity.objid]).first()
+        if (!old) throw new Exception('Record does not exist or has already been deleted.')
+        if (old.state == STATE_CLOSED) throw new Exception('Record has already been closed.')
+        entity.state = STATE_CLOSED
+        em_bidding.update(entity)
+        return entity 
+    }
+
+
 
     def getBidders(entity) {
         return em_bidder.find([property_objid: entity.property.objid])

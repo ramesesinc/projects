@@ -25,5 +25,33 @@ class PropertyAuctionBiddingInterceptor
 		svc.open(entity)
 	}
 
+
+
+	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname=='propertyauction_bidding'}") 
+	public void getNodeList( evt ) {
+		def arg = evt.args[0]
+		def result = evt.result
+		result << [state: 'DRAFT', title: 'DRAFT']
+		result << [state: 'BIDDING', title: 'BIDDING']
+		result << [state: 'CLOSED', title: 'CLOSED']
+	}
+
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'propertyauction_bidding' }")
+	public void loadList(def evt) {
+		def o = evt.args[0];
+		if( !o.node?.state ) return;
+
+		def m   = [state: o.node.state];
+		def str = " state = :state "
+
+		//add to first position of where
+		if( o.where ) {
+			o.where[0] = str + " AND " + o.where[0];	
+			o.where[1].putAll( m );
+		}
+		else {
+			o.where = [str, m];
+		}
+	}	
 }
 

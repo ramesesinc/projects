@@ -12,6 +12,24 @@ class AuctionBiddingModel extends CrudFormModel
     def svc;
 
     def callformats = ['STANDARD', 'MODIFIED']
+    
+    
+    void startBidding() {
+        if (MsgBox.confirm('Start bidding session?')) {
+            entity.putAll(svc.startBidding(entity));
+        }
+    }
+    
+    def bidding() {
+        
+    }
+    
+    def closeBidding() {
+        if (MsgBox.confirm('Close bidding session?\n')) {
+            entity.putAll(svc.closeBidding(entity));
+            return '_close';
+        }
+    }
 
     @PropertyChangeListener
     def listener = [

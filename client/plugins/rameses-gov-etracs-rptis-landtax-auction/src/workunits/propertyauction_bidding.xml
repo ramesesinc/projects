@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit extends="com/rameses/seti2/templates/CrudForm.xml"
     schemaName="propertyauction_bidding"
+    allowCreate="#{false}"
     allowEdit="#{false}"
     allowDelete="#{entity.state.matches('DRAFT')}" >
     <invokers>
@@ -15,13 +16,18 @@
         <invoker type="formActions" 
             action="startBidding" 
             caption="Start Bidding" 
-            visibleWhen="#{mode == 'init'}"/>
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'DRAFT'}"/>
         
         <invoker type="formActions" 
+            action="bidding" 
+            caption="Start Bidding Session" 
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'BIDDING' }"/>
+            
+        <invoker type="formActions" 
             action="closeBidding" 
-            caption="Close Bidding" 
-            visibleWhen="#{mode == 'bidding'}"/>
-        
+            caption="Close Bidding Session" 
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'BIDDING' }"/>
+
     </invokers>
     <code class="com.rameses.gov.etracs.landtax.models.AuctionBiddingModel" />
     <pages>

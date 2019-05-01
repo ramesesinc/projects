@@ -1,0 +1,21 @@
+<workunit extends="wtemplates/LookupController.xml">
+    
+    <invokers>
+        <invoker type="unuse_checkpayment:lookup" caption="Unuse Check Payment Lookup" width="1024"/>
+    </invokers>
+   
+    <code>
+    <![CDATA[
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+
+class UnuseCheckPaymentModel extends BasicLookupController {
+    String serviceName = "UnuseCheckPaymentQueryService";
+    String entityName = "unuse_checkpayment";
+    String title = "Check Payment Lookup: Unuse";
+}      
+    ]]>
+    </code>
+</workunit>

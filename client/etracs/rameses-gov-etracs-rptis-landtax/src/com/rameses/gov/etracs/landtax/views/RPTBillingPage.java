@@ -35,6 +35,7 @@ public class RPTBillingPage extends javax.swing.JPanel {
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
+        xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
@@ -89,40 +90,48 @@ public class RPTBillingPage extends javax.swing.JPanel {
 
         formPanel1.add(xSeparator1);
 
+        xComboBox4.setCaption("Report Format");
+        xComboBox4.setExpression("#{item.title}");
+        xComboBox4.setItems("reportFormats");
+        xComboBox4.setName("bill.reportformat"); // NOI18N
+        xComboBox4.setAllowNull(false);
+        xComboBox4.setCaptionWidth(120);
+        xComboBox4.setPreferredSize(new java.awt.Dimension(100, 22));
+        xComboBox4.setRequired(true);
+        formPanel1.add(xComboBox4);
+
         xNumberField1.setCaption("Year to Bill");
-        xNumberField1.setCaptionWidth(90);
-        xNumberField1.setCellPadding(new java.awt.Insets(0, 90, 0, 0));
-        xNumberField1.setIndex(-10);
         xNumberField1.setName("bill.billtoyear"); // NOI18N
+        xNumberField1.setCaptionWidth(120);
+        xNumberField1.setIndex(-10);
         xNumberField1.setPattern("0000");
-        xNumberField1.setPreferredSize(new java.awt.Dimension(70, 19));
+        xNumberField1.setPreferredSize(new java.awt.Dimension(100, 19));
         xNumberField1.setRequired(true);
         formPanel1.add(xNumberField1);
 
-        xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Quarter to Bill");
-        xComboBox1.setCaptionWidth(90);
-        xComboBox1.setCellPadding(new java.awt.Insets(0, 90, 0, 0));
         xComboBox1.setItems("quarters");
         xComboBox1.setName("bill.billtoqtr"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(70, 22));
+        xComboBox1.setAllowNull(false);
+        xComboBox1.setCaptionWidth(120);
+        xComboBox1.setPreferredSize(new java.awt.Dimension(100, 22));
         xComboBox1.setRequired(true);
         formPanel1.add(xComboBox1);
 
-        xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox1.setCaption("");
-        xCheckBox1.setCaptionWidth(90);
-        xCheckBox1.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
-        xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xCheckBox1.setName("bill.advancebill"); // NOI18N
+        xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox1.setCellPadding(new java.awt.Insets(5, 40, 0, 0));
+        xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox1.setShowCaption(false);
         xCheckBox1.setText("Is Advance Billing?");
         formPanel1.add(xCheckBox1);
 
         xDateField1.setCaption("Advance Billing Date");
-        xDateField1.setCaptionWidth(120);
-        xDateField1.setCellPadding(new java.awt.Insets(0, 90, 0, 0));
         xDateField1.setDepends(new String[] {"bill.advancebill"});
         xDateField1.setName("bill.billdate"); // NOI18N
+        xDateField1.setCaptionWidth(130);
+        xDateField1.setCellPadding(new java.awt.Insets(0, 40, 0, 0));
         xDateField1.setPreferredSize(new java.awt.Dimension(100, 19));
         formPanel1.add(xDateField1);
 
@@ -156,8 +165,8 @@ public class RPTBillingPage extends javax.swing.JPanel {
         xComboBox3.setPreferredSize(new java.awt.Dimension(250, 20));
         formPanel1.add(xComboBox3);
 
-        xPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 10, 0));
         xPanel2.setVisibleWhen("#{processing == true}");
+        xPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 10, 0));
         xPanel2.setLayout(new java.awt.BorderLayout());
 
         xLabel3.setFontStyle("font-weight:bold;font-size:12;");
@@ -175,6 +184,8 @@ public class RPTBillingPage extends javax.swing.JPanel {
         xTitledBorder2.setTitle("List of Properties");
         xPanel1.setBorder(xTitledBorder2);
 
+        xDataTable1.setHandler("listHandler");
+        xDataTable1.setName("selectedItem"); // NOI18N
         xDataTable1.setAutoResize(false);
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
@@ -359,8 +370,6 @@ public class RPTBillingPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable1.setHandler("listHandler");
-        xDataTable1.setName("selectedItem"); // NOI18N
 
         xButton1.setMnemonic('a');
         xButton1.setName("selectAll"); // NOI18N
@@ -371,9 +380,9 @@ public class RPTBillingPage extends javax.swing.JPanel {
         xButton2.setText("Deselect All");
 
         xIntegerField1.setDepends(new String[] {"bill.*"});
+        xIntegerField1.setName("count"); // NOI18N
         xIntegerField1.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xIntegerField1.setEnabled(false);
-        xIntegerField1.setName("count"); // NOI18N
 
         jLabel1.setText("No. of Properties:");
 
@@ -399,7 +408,7 @@ public class RPTBillingPage extends javax.swing.JPanel {
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
+                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -444,6 +453,7 @@ public class RPTBillingPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
+    private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;

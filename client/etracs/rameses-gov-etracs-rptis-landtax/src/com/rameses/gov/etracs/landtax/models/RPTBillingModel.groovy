@@ -27,7 +27,7 @@ class RPTBillingModel
     def showBack = false;
     
     
-        
+    
     void init() {
         mode = 'init';
         showBack = true;
@@ -49,11 +49,16 @@ class RPTBillingModel
      * REPORT SUPPORT 
      * 
     =============================================================*/
+    def reportFormats  = [
+        [code: 'STANDARD', title: 'STANDARD', reportname: 'rptbilling.jasper'],
+        [code: 'SUMMARY', title: 'SUMMARY', reportname: 'rptbilling_summary.jasper'],
+        
+    ]
     
     def reportpath = 'com/rameses/gov/etracs/landtax/reports/'
             
     def report = [
-        getReportName : { return reportpath + 'rptbilling.jasper' },
+        getReportName : { return reportpath + bill.reportformat.reportname },
         getReportData : { return bill },
         getParameters : {
             def params = reportSvc.getStandardParameter()

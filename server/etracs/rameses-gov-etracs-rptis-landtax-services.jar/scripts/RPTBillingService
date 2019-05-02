@@ -317,7 +317,11 @@ public class RPTBillingService
 		if (!tmpbill.items) return;
 		
 		def rptledger = tmpbill.rptledger
-		rptledger.items = buildItemsForReport(tmpbill)
+		if (!bill.reportformat || 'STANDARD'.equalsIgnoreCase(bill.reportformat.code)) {
+			rptledger.items = buildItemsForReport(tmpbill)
+		} else {
+			rptledger.items = buildAnnualItemsForReport(tmpbill)
+		}
 
 		if (bill._forpayment && bill._forpayment == true){
         	rptledger.pay = true
@@ -335,7 +339,7 @@ public class RPTBillingService
         		sharesTotal = numSvc.roundA(rptledger.shares.sum{ (it.amount ? it.amount : 0) }, 2)
         	}
         	if (itemsTotal != postItemsTotal && itemsTotal != sharesTotal){
-        		throw new Exception('There is discrepancy in items and shares total.\nPlease verify rules.')
+        		throw new Exception('There is a discrepancy in items and shares total.\nPlease verify rules.')
         	}
 		}
 
@@ -371,6 +375,11 @@ public class RPTBillingService
 				bill.totals[k] = 0
 			}
 			bill.totals[k] = numSvc.round(bill.totals[k] + v)
+		}
+
+		if (bill.reportformat && 'SUMMARY'.equalsIgnoreCase(bill.reportformat.code)) {
+			rptledger.putAll(rptledger.items[0])
+			rptledger.remove('items')
 		}
 	}
 
@@ -436,6 +445,30 @@ public class RPTBillingService
 			def byrq = b.year + '-' + (b.qtr ? b.qtr : 0)
 			return ayrq <=> byrq
 		}
+		return items
+	}
+
+	def buildAnnualItemsForReport(bill){
+		bill.totals = [total:0.0]
+		def items = []
+		def minyear = bill.items.year.min() 
+		def maxyear = bill.items.year.max()
+		def first = bill.items.first()
+		def item = [:]
+		item.originalav = first.rptledgerfaas.assessedvalue 
+		item.taxdifference = 0
+		item.period = buildPeriod(bill, bill.items, minyear)
+		item.total = 0.0 
+		bill.items.each{
+			item[it.revtype] = numSvc.round(it.amtdue)
+			item[it.revtype+'int'] = numSvc.round(it.interest)
+			item[it.revtype+'disc'] = numSvc.round(it.discount)
+			item[it.revtype+'net'] = numSvc.round(it.amtdue - it.discount + it.interest)
+			item[it.revtype+'dp'] = numSvc.round(it.interest - it.discount)
+			item.total = numSvc.round(item.total + item[it.revtype+'net'])
+			calcBillTotals(it.revtype, bill, item)
+		}
+		items << item
 		return items
 	}
 

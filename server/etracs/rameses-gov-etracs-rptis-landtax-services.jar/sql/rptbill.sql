@@ -25,6 +25,7 @@ SELECT
 	rl.cadastrallotno,
 	rl.barangayid,
 	rl.classcode,
+  pc.name as classification,
   rl.titleno,
     rl.nextbilldate,
     case when m.objid is not null then m.parentid else null end as parentlguid,
@@ -32,6 +33,7 @@ SELECT
 FROM rptledger rl 
 	INNER JOIN barangay b ON rl.barangayid = b.objid 
 	INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
+  left join propertyclassification pc on rl.classification_objid = pc.objid 
   left join faas f on rl.faasid = f.objid 
   left join municipality m on b.parentid = m.objid 
   left join district d  on b.parentid = d.objid 

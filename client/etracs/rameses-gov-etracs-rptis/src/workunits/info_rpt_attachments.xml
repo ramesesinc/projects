@@ -3,7 +3,7 @@
     <invokers>
         <invoker type="faas:info" 
             action="init" caption="Attachments" 
-            folderFieldName="tdno"
+            folderFieldName="trackingno"
             index="1010" />
 
         <invoker type="subdivision:info" 
@@ -21,7 +21,7 @@
                  caption="Attachments" 
                  target="popup" 
                  index="100000" 
-                 folderFieldName="tdno" 
+                 folderFieldName="trackingno" 
                  visibleWhen="#{selectedEntity != null}" />
 
         <invoker type="attachment:view" 

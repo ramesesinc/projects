@@ -1,8 +1,10 @@
-<workunit schemaName="rptacknowledgement" 
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml"
+          schemaName="rptacknowledgement" 
           windowTitle="Acknowledgement Receipt"
           allowDelete="#{entity.state != 'APPROVED'}" 
           allowEdit="#{entity.state != 'APPROVED'}" 
-          cols="state,txnno,txndate,taxpayer.name,txntype.objid" 
+          cols="txnno,txndate,taxpayer.name,txntype.objid" 
+          hiddenCols="state"
           orderBy="txnno desc">
     <invokers>
         <invoker folderid="/menucategory/rpt/mgmt" 
@@ -11,8 +13,4 @@
                  role="SHARED" 
                  permission="rptacknowledgement.viewlist" />
     </invokers>
-    <code class="com.rameses.seti2.models.CrudListModel"/>
-    <pages>
-        <page template="com.rameses.seti2.views.CrudListPage"/>
-    </pages>
 </workunit>

@@ -9,7 +9,7 @@
 		<field name="newfaas_objid" />
 		<field name="remarks"  />
 		<complex name="newfaas" ref="faas" jointype="many-to-one" required="false"
-			includefields="tdno,fullpin">
+			includefields="state,tdno,fullpin">
 			<key field="newfaas_objid" target="objid" />
 		</complex>
 	</element>

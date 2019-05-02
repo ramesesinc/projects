@@ -46,7 +46,6 @@ class CityInfoInterceptor
 	public void getLgus(evt){
 		def list = evt.result 
 		list += citySvc.getList([:])
-		println 'getLgus -> ' + list 
 	}
 }
 

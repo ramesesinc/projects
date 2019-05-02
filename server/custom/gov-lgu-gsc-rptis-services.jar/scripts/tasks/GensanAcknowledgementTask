@@ -1,0 +1,70 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class GensanAcknowledgementTask
+{
+	@Service('DateService')
+	def dtSvc 
+
+	@DataContext('rptacknowledgement')
+	def em_acknowledgement
+
+	@DataContext('rptacknowledgement_item')
+	def em_item
+
+	@DataContext('subdivision')
+	def em_subdivision
+
+
+	@Schedule(interval=30)
+	public def closingAcknowledgement(task) {
+		println 'Closing acknowledgements....'
+		def list = em_acknowledgement.select('objid,txnno,txntype_objid,dtchecked')
+						.where(" state = 'APPROVED' and (dtchecked is null or dtchecked < :currdate)", [currdate: dtSvc.serverDate])
+						.orderBy('txndate')
+						.limit(10)
+						.list()
+
+		list.each {
+			if (it.txntype?.objid == 'SD') {
+				closeSubdivision(it)
+			} else {
+				closeFaas(it)
+			}
+		}
+	}	
+
+	void closeSubdivision(entity) {
+		def items = em_item.find([parent_objid: entity.objid]).list()
+		def item = items.find{it.reftype == 'subdivision'}
+		if (!item) return
+		def subdivision = em_subdivision.find([objid: item.ref.objid]).first()
+		if (!subdivision) {
+			closeAcknowledgement(entity)
+		} else {
+			reskedAcknowledgement(entity)
+		}
+	}
+
+	void closeFaas(entity) {
+		def p = [objid: entity.objid, state:'CURRENT']
+		def items = em_item.where('parent_objid = :objid and state <> :state', p).list()
+		if (!items) {
+			closeAcknowledgement(entity)
+		} else {
+			reskedAcknowledgement(entity)
+		}
+	}
+
+	void closeAcknowledgement(entity) {
+		println 'Closing Acknowledgement ' + entity.txnno 
+		em_acknowledgement.find([objid: entity.objid]).update([state: 'CLOSED'])
+	}
+
+	void reskedAcknowledgement(entity) {
+		em_acknowledgement.find([objid: entity.objid]).update([dtchecked: dtSvc.serverDate + 1 ])
+	}
+
+}
+

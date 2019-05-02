@@ -78,11 +78,11 @@ public class AcknowledgementModel extends CrudFormModel
     }
 
     public def getPrintFormData() {
-        entity.landcount = entity.items.findAll{it.faas.rputype == 'land'}.size()
-        entity.bldgcount = entity.items.findAll{it.faas.rputype == 'bldg'}.size()
-        entity.machcount = entity.items.findAll{it.faas.rputype == 'mach'}.size()
-        entity.planttreecount = entity.items.findAll{it.faas.rputype == 'planttree'}.size()
-        entity.misccount = entity.items.findAll{it.faas.rputype == 'misc'}.size()
+        entity.landcount = entity.items.findAll{it.ref.rputype == 'land'}.size()
+        entity.bldgcount = entity.items.findAll{it.ref.rputype == 'bldg'}.size()
+        entity.machcount = entity.items.findAll{it.ref.rputype == 'mach'}.size()
+        entity.planttreecount = entity.items.findAll{it.ref.rputype == 'planttree'}.size()
+        entity.misccount = entity.items.findAll{it.ref.rputype == 'misc'}.size()
         return entity; 
     }
     

@@ -4,7 +4,7 @@
           allowDelete="#{entity.state != 'APPROVED'}" 
           allowEdit="#{entity.state != 'APPROVED'}" 
           cols="txnno,txndate,taxpayer.name,txntype.objid" 
-          hiddenCols="state"
+          hiddenCols="state,taxpayer.entityname"
           orderBy="txnno desc">
     <invokers>
         <invoker folderid="/menucategory/rpt/mgmt" 

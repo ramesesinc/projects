@@ -88,10 +88,11 @@ class CancelledFAASService
             entity.txnno = getNextSeries(entity)
         if (!entity.txndate)
             entity.txndate = dateSvc.serverDate
-        txnRef.insertRef( entity.faas.objid, entity.objid, 'FAAS is currently referenced by Cancellation No. ' + entity.txnno + '.')
-        if (!entity.state ) 
+        if (!entity.state ) {
             entity.state = STATE_DRAFT
+        }
         em.create(entity)
+        txnRef.insertRef( entity.faas.objid, entity.objid, 'FAAS is currently referenced by Cancellation No. ' + entity.txnno + '.')
         saveSignatory(entity)
         return entity
     }

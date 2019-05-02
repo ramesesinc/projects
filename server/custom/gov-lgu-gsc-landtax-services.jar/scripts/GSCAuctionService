@@ -1,0 +1,53 @@
+import com.rameses.common.*
+import com.rameses.annotations.*
+import com.rameses.services.extended.*
+
+class GSCAuctionService {
+	@Env 
+	def env 
+
+	@Service('DateService')
+	def dtSvc 
+
+	@Service("ActionPermissionService")
+	def actionPermissionSvc;
+
+	@Service("LogService")
+	def logSvc ;
+
+	@ActiveDB(value='gsc_lgrpts', em='lgrpts')
+	def em 
+
+	@DataContext('sys_user')
+	def em_user 
+
+
+
+
+	@ProxyMethod
+	public def redeemAuction(redeem) {
+		def approver = getApprover(redeem)
+		redeem.tdno = redeem.ledger.tdno.replaceAll('F-', '')
+		redeem.createdby_name = env.FULLNAME
+		redeem.createdby_title = env.JOBTITLE
+		redeem.approvedby_name = approver.name 
+		redeem.approvedby_title = approver.title 
+		redeem.dtapproved = dtSvc.serverDate
+		em.insertRedeemedAuction(redeem)
+		log(redeem)
+		return redeem 
+	}
+
+	def getApprover(redeem) {
+		def user = actionPermissionSvc.checkAllowedAction( [username:redeem.username, password: redeem.password, action: 'rptledger.approve_redeemed' ] );
+		return [
+			name: user.firstname + ' ' + user.lastname,
+			title: user.jobtitle,
+		]
+	}
+
+	void log(redeem) {
+		logSvc.logA('redeemed', 'rptledger', redeem.ledger.objid, redeem.remarks)
+	}
+	
+}

@@ -16,7 +16,7 @@
 		<field name="createdby_title"/>
 		<field name="dtchecked"/>
 		<complex name="taxpayer" ref="entity" jointype="many-to-one" 
-			includefields="name,address.text,mobileno">
+			includefields="name,entityname,address.text,mobileno">
 			<key field="taxpayer_objid" target="objid" />
 		</complex>
 		<complex name="txntype" ref="faas_txntype" jointype="many-to-one" >

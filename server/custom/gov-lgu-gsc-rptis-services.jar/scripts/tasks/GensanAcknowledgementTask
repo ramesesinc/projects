@@ -19,7 +19,6 @@ class GensanAcknowledgementTask
 
 	@Schedule(interval=30)
 	public def closingAcknowledgement(task) {
-		println 'Closing acknowledgements....'
 		def list = em_acknowledgement.select('objid,txnno,txntype_objid,dtchecked')
 						.where(" state = 'APPROVED' and (dtchecked is null or dtchecked < :currdate)", [currdate: dtSvc.serverDate])
 						.orderBy('txndate')

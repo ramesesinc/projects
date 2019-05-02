@@ -10,6 +10,12 @@ class GensanAcknowledgementService
 	@Service('OrgService')
 	def orgSvc 	
 
+	@DataContext('rptacknowledgement_item')
+	def em_tracking
+
+	@DataContext('faas_list')
+	def em_faas_list
+
 
 	@ProxyMethod
 	public def getNextAcknowledgementSeries() {
@@ -30,6 +36,27 @@ class GensanAcknowledgementService
 		def org = orgSvc.getRoot()
 		return org.code.replaceAll('-','') 
 	}	
+
+	@ProxyMethod
+	public def assignTracking(param) {
+		def tracking = em_tracking.find([trackingno: param.trackingno]).first()
+		if (!tracking) {
+			throw new Exception('Tracking ' + param.trackingno + ' does not exist.')
+		}
+		if (tracking.ref && tracking.ref.objid) {
+			throw new Exception('Tracking ' + param.trackingno + ' is already assigned to ' + param.reftype + ' ' + param.refno + '.')
+		}
+		tracking.ref = param.ref
+		tracking.reftype = param.reftype 
+		tracking.refno = param.refno 
+		em_tracking.update(tracking)
+		if (param.reftype == 'faas') {
+			tracking.newfaas = tracking.ref 
+			em_tracking.update(tracking)
+			em_faas_list.find([objid: tracking.newfaas.objid]).update([trackingno: tracking.trackingno])
+		}
+		return tracking 
+	}
 	
 }
 

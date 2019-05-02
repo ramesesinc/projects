@@ -1,0 +1,34 @@
+<workunit>
+    <invokers>
+        <invoker type="subdivision:info:main:formActions" 
+                 action="init" caption="Assign Tracking Number"  
+                 role="RECEIVER,RECEIVER_ADMIN" 
+                 visibleWhen="#{entity.trackingno == null}"
+                 refType="subdivision"
+                 field="txnno"
+                 index="10000"
+                 target="popup" />
+        
+        <invoker type="consolidation:info:main:formActions" 
+                 action="init" caption="Assign Tracking Number"  
+                 role="RECEIVER,RECEIVER_ADMIN" 
+                 visibleWhen="#{entity.trackingno == null}"
+                 refType="consolidation"
+                 field="txnno"
+                 index="10000"
+                 target="popup" />
+        
+        <invoker type="faas:formActions" 
+                 action="init" caption="Assign Tracking Number"  
+                 role="RECEIVER,RECEIVER_ADMIN" 
+                 visibleWhen="#{entity.trackingno == null &amp;&amp; entity.txntype.objid == 'ND'}"
+                 refType="faas"
+                 field="tdno"
+                 index="10000"
+                 target="popup" />
+    </invokers>
+    <code class="gov.lgu.gensan.rptis.models.AssignTrackingModel"/>
+    <pages>
+        <page template="gov.lgu.gensan.rptis.views.AssignTrackingPage"/>
+    </pages>
+</workunit>

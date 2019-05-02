@@ -2,7 +2,7 @@ import com.rameses.annotations.*
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
 
-class GensanRPTTrackingInterceptor
+class GensanTrackingInterceptor
 {
 	@Service('GensanAcknowledgementService')
 	def svc
@@ -54,34 +54,6 @@ class GensanRPTTrackingInterceptor
 		}
 	}
 
-
-	/*========================================================
-	** SUBDIVISION
-	========================================================*/
-	@After(pattern='SubdivisionService.addMotherLand', index=1000000)
-	public void addMotherLand(evt){
-		def land = evt.result
-		
-		//load motherland tracking info
-		def tracking = em_tracking.find([ref_objid: land.landfaasid]).first()
-		if (tracking) {
-			def subdivision = em_subdivision.find([objid: land.subdivisionid]).first()
-			def subtracking = em_tracking.find([ref_objid: subdivision.objid]).first()
-			if (!subtracking) {
-				//add tracking for the subdivision
-				tracking.objid = null
-				tracking.reftype = 'subdivision'
-				tracking.refno = subdivision.txnno
-				tracking.trackingno = svc.getNextTrackingSeries()
-				tracking.ref = [objid: subdivision.objid]
-				tracking.newfaas = null
-				em_tracking.create(tracking)
-			}
-
-		}
-
-	}
-
 	@After(pattern='SubdivisionService.createSubdividedLand', index=1000000)
 	public void createSubdividedLand(evt){
 		def land = evt.result
@@ -111,5 +83,48 @@ class GensanRPTTrackingInterceptor
 		em_tracking.find([ref_objid: land.newfaasid]).delete()
 	}
 	
+
+
+
+	@After(pattern='FAASService.openFaas', index=1000000)
+	public void openFaas(evt){
+		def faas = evt.result
+		def tracking = em_tracking.find([ref_objid: faas.objid]).first()
+		faas.trackingno = tracking?.trackingno 
+	}
+
+	@Before(pattern='FAASService.deleteFaas', index=1000000)
+	public void deleteFaas(evt){
+		def faas = evt.args[0]
+		em_tracking.find([ref_objid: faas.objid]).update([ref_objid: null, refno: null, reftype: null])
+	}
+
+	@After(pattern='SubdivisionService.open', index=1000000)
+	public void openSubdivision(evt){
+		def subdivision = evt.result
+		def tracking = em_tracking.find([ref_objid: subdivision.objid]).first()
+		subdivision.trackingno = tracking?.trackingno 
+	}
+
+	@Before(pattern='SubdivisionService.delete', index=1000000)
+	public void deleteSubdivision(evt){
+		def subdivision = evt.args[0]
+		em_tracking.find([ref_objid: subdivision.objid]).update([ref_objid: null, refno: null, reftype: null])
+	}
+
+
+	@After(pattern='ConsolidationService.open', index=1000000)
+	public void openConsolidation(evt){
+		def consolidation = evt.result
+		def tracking = em_tracking.find([ref_objid: consolidation.objid]).first()
+		consolidation.trackingno = tracking?.trackingno 
+	}
+
+	@Before(pattern='ConsolidationService.delete', index=1000000)
+	public void deleteConsolidation(evt){
+		def consolidation = evt.args[0]
+		em_tracking.find([ref_objid: consolidation.objid]).update([ref_objid: null, refno: null, reftype: null])
+	}
+
 }
 

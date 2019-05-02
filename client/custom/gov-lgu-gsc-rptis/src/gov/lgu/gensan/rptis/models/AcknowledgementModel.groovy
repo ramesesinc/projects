@@ -71,6 +71,7 @@ public class AcknowledgementModel extends CrudFormModel
 
     void approve() {
         if (MsgBox.confirm('Approve?')) {
+            entity._schemaname = 'rptacknowledgement';
             entity.state = 'APPROVED';
             persistence.update(entity);
             reload();

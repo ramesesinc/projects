@@ -166,6 +166,7 @@ class FAASService
 		faas.datacapture = false
 		faas.prevtdno = 'NEW'
 		faas.prevpin = ''
+		faas.effectivityyear = dtSvc.serverYear + 1
 		if(info.state) faas.state = info.state 
         createFaas(faas)
         return faas

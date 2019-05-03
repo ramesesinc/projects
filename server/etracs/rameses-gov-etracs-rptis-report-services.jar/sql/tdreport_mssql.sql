@@ -42,7 +42,7 @@ SELECT
 	b.indexno AS barangayindex, 
 	et.code AS legalbasis, 
 	ry.ordinanceno, ry.ordinancedate, ry.sangguniangname,
-	(select trackingno from rpttracking t where objid = f.objid) as trackingno
+	(select trackingno from faas_list where objid = f.objid) as trackingno
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid

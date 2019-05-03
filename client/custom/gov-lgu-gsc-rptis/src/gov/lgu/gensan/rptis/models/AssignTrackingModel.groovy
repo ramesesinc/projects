@@ -34,11 +34,10 @@ public class AssignTrackingModel
     }
     
     def assign() {
-        if (MsgBox.confirm('Assign tracking number?')) {
-            svc.assignTracking(tracking);
-            caller.binding.refresh();
-            return '_close';
-        }
+        svc.assignTracking(tracking);
+        entity.trackingno = tracking.trackingno;
+        caller.binding.refresh();
+        return '_close';
     }
 }
 

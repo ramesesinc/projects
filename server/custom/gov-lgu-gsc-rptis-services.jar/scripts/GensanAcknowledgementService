@@ -38,6 +38,18 @@ class GensanAcknowledgementService
 	}	
 
 	@ProxyMethod
+	public void addItems(entity) {
+		if (entity.count <= 0) return
+		for (int i = 0; i < entity.count; i++) {
+			def tracking = [:]
+			tracking.parent = entity
+			tracking.trackingno = getNextTrackingSeries()
+			tracking.reftype = 'faas'
+			em_tracking.create(tracking)
+		}
+	}
+
+	@ProxyMethod
 	public def assignTracking(param) {
 		def tracking = em_tracking.find([trackingno: param.trackingno]).first()
 		if (!tracking) {

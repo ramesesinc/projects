@@ -63,10 +63,10 @@ class GensanAcknowledgementInterceptor
 	public void getNodeList( evt ) {
 		def arg = evt.args[0]
 		def result = evt.result
-		result << [state: 'ALL', title: 'ALL']
 		result << [state: 'DRAFT', title: 'DRAFT']
 		result << [state: 'APPROVED', title: 'APPROVED']
 		result << [state: 'CLOSED', title: 'CLOSED']
+		result << [state: 'ALL', title: 'ALL']
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'rptacknowledgement' }")

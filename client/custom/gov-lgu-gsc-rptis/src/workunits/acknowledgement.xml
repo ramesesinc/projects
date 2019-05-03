@@ -26,6 +26,11 @@
                 action="approve" caption="Approve" 
                 role="RECEIVER,RECEIVER_ADMIN" 
                 visibleWhen="#{mode=='read' &amp;&amp; entity.state == 'DRAFT'}" />
+                
+        <invoker type="formActions" 
+                action="addItems" caption="Add Tracking Items" 
+                role="RECEIVER,RECEIVER_ADMIN" 
+                visibleWhen="#{mode=='read' &amp;&amp; entity.state == 'APPROVED'}" />
 
     </invokers>
     <code class="gov.lgu.gensan.rptis.models.AcknowledgementModel"/>

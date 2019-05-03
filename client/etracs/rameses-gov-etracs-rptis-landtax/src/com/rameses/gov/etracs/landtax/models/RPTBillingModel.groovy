@@ -32,6 +32,7 @@ class RPTBillingModel
         mode = 'init';
         showBack = true;
         bill = svc.initBill();
+        bill.reportformat = reportFormats[0];
     }
     
     def back() {
@@ -92,6 +93,9 @@ class RPTBillingModel
     void buildBill(){
         bill.totals = [:];
         bill.putAll(svc.generateBill(bill));
+        if (!bill.reportformat) {
+            bill.reportformat = reportFormats[0];
+        }
         report.viewReport();
     }     
     

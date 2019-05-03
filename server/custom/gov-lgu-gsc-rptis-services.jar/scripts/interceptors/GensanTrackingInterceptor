@@ -89,14 +89,14 @@ class GensanTrackingInterceptor
 	@After(pattern='FAASService.openFaas', index=1000000)
 	public void openFaas(evt){
 		def faas = evt.result
-		def tracking = em_tracking.find([ref_objid: faas.objid]).first()
+		def tracking = em_faas_list.select('trackingno').find([objid: faas.objid]).first()
 		faas.trackingno = tracking?.trackingno 
 	}
 
 	@Before(pattern='FAASService.deleteFaas', index=1000000)
 	public void deleteFaas(evt){
 		def faas = evt.args[0]
-		em_tracking.find([ref_objid: faas.objid]).update([ref_objid: null, refno: null, reftype: null])
+		em_tracking.find([newfaas_objid: faas.objid]).update([newfaas_objid: null])
 	}
 
 	@After(pattern='SubdivisionService.open', index=1000000)

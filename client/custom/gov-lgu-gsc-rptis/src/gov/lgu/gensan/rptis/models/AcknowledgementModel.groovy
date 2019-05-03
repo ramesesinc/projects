@@ -18,6 +18,9 @@ public class AcknowledgementModel extends CrudFormModel
     @Service('Var')
     def var;
 
+    @Service('GensanAcknowledgementService')
+    def svc;
+    
     @Service('RPTTrackingService')
     def trackingSvc;
 
@@ -75,6 +78,21 @@ public class AcknowledgementModel extends CrudFormModel
             entity.state = 'APPROVED';
             persistence.update(entity);
             reload();
+        }
+    }
+    
+    void addItems() {
+        def scount = MsgBox.prompt('Enter number of items to add:');
+        if (scount) {
+            try {
+                int count = new BigDecimal(scount.toString()).intValue();
+                if (count > 0) {
+                    svc.addItems([objid: entity.objid, count: count]);
+                    reloadEntity();
+                }
+            } catch(e) {
+                throw new Exception('Invalid number value.');
+            }
         }
     }
 

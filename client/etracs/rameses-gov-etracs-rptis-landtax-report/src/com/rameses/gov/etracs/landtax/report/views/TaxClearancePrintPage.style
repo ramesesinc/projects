@@ -1,0 +1,20 @@
+"entity.*|doBuild"[mode=='init']{
+    enabled:true;
+}
+"doCancel"[mode=='init']{
+    enabled:false;
+}
+"loadingicon"[mode=='init']{
+    visible:false;
+}
+
+
+"entity.*|doBuild"[mode=='processing']{
+    enabled:false;
+}
+"doCancel"[mode=='processing']{
+    enabled:true;
+}
+"loadingicon"[mode=='processing']{
+    visible:true;
+}

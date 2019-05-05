@@ -27,6 +27,9 @@ class RPTLedgerService
     @Service('NumberService')
     def numSvc 
 
+    @Service('PersistenceService')
+    def persistence
+
     @Service('FAASService')
     def faasSvc
 
@@ -1113,6 +1116,29 @@ class RPTLedgerService
 
         def nonzeroItem = em_rptledger_faas.where("rptledgerid = :objid and state = 'APPROVED' and  assessedvalue > 0 and taxable = 1 ", ledger).first()
         return nonzeroItem != null
+    }
+
+    @ProxyMethod
+    public void deleteFromRevertedFaas(faas) {
+        def ledger = em_rptledger.find([faasid: faas.objid]).first()
+
+        if (!ledger)
+            return
+
+        if (checkHasPayment(ledger)){
+            em_rptledger.find([objid: ledger.objid]).update([state: 'PENDING'])
+            //cancel ledgerfaas to retain reference
+            em_rptledger_faas.find([rptledgerid: ledger.objid, faasid: faas.objid])
+                             .update([state: 'CANCELLED'])
+        } else {
+            ledger._schemaname = 'rptledger'
+            persistence.removeEntity(ledger)
+        }
+    }
+
+    def checkHasPayment(ledger) {
+        def pmt = em_rptpayment.find([refid: ledger.objid]).first()
+        return pmt != null 
     }
 
 }

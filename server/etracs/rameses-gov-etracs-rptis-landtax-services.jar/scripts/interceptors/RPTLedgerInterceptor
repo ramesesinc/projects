@@ -10,17 +10,17 @@ class RPTLedgerInterceptor
     @ActiveDB('rptledger')
     def em
 
-	@Service('RPTLedgerService')
+    @Service('RPTLedgerService')
     def svc
 
     @Service('Var')
-	def var
+    def var
 
     @Service('RealPropertyService')
     def rpSvc
 
-	@Service('RPTUtil')
-	def util 
+    @Service('RPTUtil')
+    def util 
 
     @Service('LogService')
     def logSvc
@@ -49,8 +49,11 @@ class RPTLedgerInterceptor
     @DataContext('faas_txntype')
     def em_faas_txntype
 
+    @DataContext('sys_org')
+    def em_org 
+
     def STATE_PENDING   = 'PENDING'
-	def STATE_APPROVED  = 'APPROVED'
+    def STATE_APPROVED  = 'APPROVED'
 
 
     @After(pattern="RPTLedgerService.(create|createSubLedger|update|updateSubLedger|approve|fixLedger|updateState|updateFaasReference)") 
@@ -71,34 +74,45 @@ class RPTLedgerInterceptor
         svc.delete(ledger)
     }
 
-	@After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{env && !env?.ORGCLASS?.equalsIgnoreCase('province')}")
-	public void postFaasToRPTLedger(evt){
-        def faas = evt.result 
-        if (util.isTrue(faas.datacapture) && (faas.previousfaases.size() == 0 || faas.previousfaases.findAll{it.prevfaasid != null}.size() == 0 )) {
-            postNewLedger(faas)
-        }
-        else if ((faas.txntype.objid.matches('SD|CS') || isFAASFromSubdivision(faas)) && faas.rpu.rputype == 'land'){
-            svc.postNewLedger(faas)
-        }
-        else if ((faas.txntype.objid.matches('SD|CS') || isFAASFromSubdivision(faas)) && faas.rpu.rputype != 'land'){
-            svc.postLedgerFaasData(faas);
-        }
-        else if ( faas.txntype.newledger ) {
-            postNewLedger(faas)
-        }
-        else {
-            svc.postLedgerFaasData(faas);
-        }       
-	}
-
-    @After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{env && env?.ORGCLASS?.equalsIgnoreCase('province')}")
-    public void postToProvinceLedger(evt){
+    @After(pattern="FAASService.(approveFaas|approveFaasByRemote)")
+    public void postFaasToRPTLedger(evt){
+        println 'postFaasToRPTLedger ....'
         def faas = evt.result 
 
-        if (isLedgerExisting(faas)){
-            svc.postLedgerFaasData(faas)
+        def org = em_org.select('orgclass').find([root: 1]).first()
+        if (org.orgclass.equalsIgnoreCase('PROVINCE')) {
+            if (isLedgerExisting(faas)){
+                svc.postLedgerFaasData(faas)
+            }
+        } else {
+            if (util.isTrue(faas.datacapture) && (faas.previousfaases.size() == 0 || faas.previousfaases.findAll{it.prevfaasid != null}.size() == 0 )) {
+                postNewLedger(faas)
+            }
+            else if ((faas.txntype.objid.matches('SD|CS') || isFAASFromSubdivision(faas)) && faas.rpu.rputype == 'land'){
+                svc.postNewLedger(faas)
+            }
+            else if ((faas.txntype.objid.matches('SD|CS') || isFAASFromSubdivision(faas)) && faas.rpu.rputype != 'land'){
+                svc.postLedgerFaasData(faas);
+            }
+            else if ( faas.txntype.newledger ) {
+                postNewLedger(faas)
+            }
+            else {
+                svc.postLedgerFaasData(faas);
+            }   
         }
     }
+
+    // @After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{env && env?.ORGCLASS?.equalsIgnoreCase('province')}")
+    // public void postToProvinceLedger(evt){
+    //     def faas = evt.result 
+
+    //     println 'postToProvinceLedger...'
+
+    //     if (isLedgerExisting(faas)){
+    //         svc.postLedgerFaasData(faas)
+    //     }
+    // }
 
     def isLedgerExisting(faas){
         def ledger = em_ledger.select('objid').find([faasid:faas.objid]).first() 
@@ -204,6 +218,13 @@ class RPTLedgerInterceptor
         rlf.assessedvalue = newrpu.totalav 
         rlf.systemcreated = true 
         return rlf 
+    }
+
+
+    @After(pattern="FAASService.revertToInterim")
+    public void revertToInterim(evt){
+        def faas = evt.result 
+        svc.deleteFromRevertedFaas(faas)
     }
 
 }

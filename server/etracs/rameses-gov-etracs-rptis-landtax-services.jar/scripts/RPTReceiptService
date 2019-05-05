@@ -58,7 +58,6 @@ class RPTReceiptService
 	@DataContext('faas_restriction')
 	def em_faas_restriction
 
-
 	@ProxyMethod
 	public def create(receipt) {
 		validateTotals(receipt)
@@ -297,6 +296,13 @@ class RPTReceiptService
 	}
 
 	@ProxyMethod
+	public def buildShares(bill) {
+		def rptledger = bill.rptledger
+		rptledger.shares = billSvc.getShares(bill)
+		return rptledger 
+	}
+
+	@ProxyMethod
 	public void formatReceiptForPrinting(receipt){
 		receipt._items = em.getItemsForPrinting(receipt)
 		util.buildPeriodCovered(receipt._items)
@@ -353,7 +359,9 @@ class RPTReceiptService
 		def totalShares = ZERO
 		receipt.ledgers.each{
 			totalItems += numSvc.round(it.postingitems.sum{ it.total ? it.total : ZERO})
-			totalShares += (it.shares.sum{ it.amount ? it.amount : ZERO})
+			if (it.shares) {
+				totalShares += (it.shares.sum{ it.amount ? it.amount : ZERO})
+			}
 			totalShares += (it.billitems.sum{ it.amount - it.share })
 			totalShares = numSvc.round(totalShares) 
 		}
@@ -534,7 +542,6 @@ class RPTReceiptService
 			it.receipt = pmt
 			em_faas_restriction.update(it)
 		}
-	}	
-
+	}
 }
 

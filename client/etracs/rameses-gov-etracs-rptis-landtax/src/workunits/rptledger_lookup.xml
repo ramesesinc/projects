@@ -2,4 +2,5 @@
     <invokers>
         <invoker type="rptledger:lookup" action="init" caption="Realty Tax Ledger Lookup" target="popup" width="700"/>
     </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.RPTLedgerLookupModel" />
 </workunit>

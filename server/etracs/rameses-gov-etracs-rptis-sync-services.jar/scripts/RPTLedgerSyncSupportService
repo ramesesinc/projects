@@ -9,7 +9,7 @@ class RPTLedgerSyncSupportService
     @Env
     def env
 
-    @Service('SyncService')
+    @Service('RPTMainSyncService')
     def syncSvc 
     
     @Service('OrgService')

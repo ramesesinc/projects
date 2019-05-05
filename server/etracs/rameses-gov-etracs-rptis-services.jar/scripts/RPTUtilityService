@@ -34,7 +34,7 @@ class RPTUtilityService
 	@ProxyMethod
 	public void updatePin( info ) { 
 		rpuSvc.validateSuffix(info.rputype, info.suffix) 
-		rpuSvc.checkDuplicateFullPin([objid:info.rpuid, ry: info.ry, fullpin:info.newpin])
+		rpuSvc.checkDuplicateFullPin([objid:info.rpuid, ry: info.ry, fullpin:info.newpin, rputype: info.rputype])
 		def tokens = info.newpin.tokenize('-')
 		info.ssection = tokens[3]
 		info.sparcel = tokens[4]

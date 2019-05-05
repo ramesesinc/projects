@@ -36,7 +36,7 @@ class DistrictModel extends CrudFormModel {
             }
             entity.pin = list.join("-");
             entity.code = entity.pin;
-            entity.objid = entity.pin;
+            entity.objid = entity.pin.toString().replaceAll('-', '');
         }
     ];
     

@@ -8,20 +8,27 @@
             
         <invoker type="rpttaxclearance:open" action="open" caption="Realty Tax Clearance" />
         
-        <!-- create -->
-        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode=='create'}" immediate="true"/>
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" visibleWhen="#{mode=='init'}" immediate="true" />
+        <invoker type="formActions" action="next" caption="Next" mnemonic="n" visibleWhen="#{mode=='init'}"/>
+        
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" visibleWhen="#{mode=='create'}" immediate="true" />
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="Ctrl S" icon="images/toolbars/save.png" visibleWhen="#{mode=='create'}"/>
         
         <!-- preview -->
         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode=='preview'}"  immediate="true"/>
         <invoker type="formActions" action="doNew" caption="New" mnemonic="n" icon="images/toolbars/create.png" visibleWhen="#{mode=='preview'}"/>
+        
+        <!-- print -->
+        <invoker type="formActions" action="cancelPrint" caption="Cancel" visibleWhen="#{mode=='print'}" />
     </invokers>
         
-    <code class="com.rameses.gov.etracs.landtax.report.taxclearance.TaxClearanceController">
+    <code class="com.rameses.gov.etracs.landtax.report.models.TaxClearanceModel">
     </code>
     
     <pages>
-        <page template="com.rameses.gov.etracs.landtax.report.taxclearance.TaxClearancePage" />
+        <page template="com.rameses.gov.etracs.landtax.report.views.TaxClearancePage" />
+        <page name="init" template="com.rameses.gov.etracs.landtax.report.views.TaxClearanceInitPage" />
         <page name="preview" template="com.rameses.gov.etracs.rpt.report.PreviewPage" />
+        <page name="print" template="com.rameses.gov.etracs.landtax.report.views.TaxClearancePrintPage" />
     </pages>
 </workunit>

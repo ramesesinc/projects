@@ -1,0 +1,40 @@
+"lookup" [addoption == 'bytd']{
+    enabled:true;
+}
+
+"lookup" [addoption != 'bytd']{
+    enabled:false;
+}
+
+"entity.(year|qtr)" [entity.reporttype.name == 'fullypaid'] {
+    visible:true;
+    required:true;
+}
+
+"entity.(year|qtr)" [entity.reporttype.name != 'fullypaid'] {
+    visible:false;
+    required:false;
+}
+
+"entity.effectivityyear" [entity.reporttype.name == 'newdiscovery'] {
+    visible:true;
+    required:true;
+}
+
+"entity.effectivityyear" [entity.reporttype.name != 'newdiscovery'] {
+    visible:false;
+    required:false;
+}
+
+"lookup|addoption|selectedItem" [taxpayer == null] {
+    enabled:false;
+
+}
+
+"lookup|addoption|selectedItem" [taxpayer != null] {
+    enabled:true;
+}
+
+"entity.(effectivityyear|year|qtr)" [true] {
+    enabled:false;
+}

@@ -12,6 +12,10 @@ public class SyncCoordinatorService {
 		require(syncdata, 'action', 'action')
 		require(syncdata, 'remote', 'remote')
 		require(syncdata.remote, 'orgcode', 'remote.orgcode')
+		
+		if (syncdata.idx == null) {
+			syncdata.idx = 0
+		}
 
 		def svc = dynSvc.lookup(syncdata.remote.orgcode + ':RemoteSyncService', 'gdx-service')
 		return svc.receive(syncdata)

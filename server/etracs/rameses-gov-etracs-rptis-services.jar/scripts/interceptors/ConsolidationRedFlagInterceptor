@@ -13,7 +13,7 @@ class ConsolidationRedFlagInterceptor
 		def entity  = evt.result 
 		if (!entity.objid){
 			try {
-				def f = svc.openConsolidation(redflag.refid)
+				def f = svc.open([objid:redflag.refid])
 				entity.putAll(f)
 			}
 			catch(Exception e) {

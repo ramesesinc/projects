@@ -1,138 +1,63 @@
-[getList]
-SELECT 
-	r.objid, r.state, r.pintype, r.txnno, r.section, b.name AS barangay 
-FROM resection r 
-	INNER JOIN barangay b ON r.barangayid = b.objid 
-where 1=1 ${filters}	
-ORDER BY r.txnno DESC 
+[getItems]
+select f.objid, r.rputype, rp.pintype, rp.pin, r.suffix  
+from faas f 
+inner join rpu r on f.rpuid = r.objid 
+inner join realproperty rp on f.realpropertyid = rp.objid 
+where f.state = 'CURRENT' 
+and rp.barangayid = $P{barangayid}
+and rp.section = $P{section}
 
 
-[findBarangayLastSection]
-SELECT MAX(section) AS section
-FROM realproperty 
-WHERE barangayid = $P{barangayid}
-  AND state = 'CURRENT' 
+[deleteFaasTasks]
+delete from faas_task 
+where refid in (
+	select newfaas_objid 
+	from resection_item 
+	where parent_objid = $P{objid}
+)
+
+[insertFaasSignatories]
+INSERT INTO faas_task 
+     (objid, refid, parentprocessid, state, startdate, enddate, 
+      assignee_objid, assignee_name, assignee_title, 
+      actor_objid, actor_name, actor_title, message, signature) 
+select
+    concat(rt.objid, f.utdno) as objid, 
+    ri.newfaas_objid, 
+    rt.parentprocessid, 
+    rt.state, 
+    rt.startdate, 
+    rt.enddate, 
+    rt.assignee_objid, 
+    rt.assignee_name, 
+    rt.assignee_title, 
+    rt.actor_objid, 
+    rt.actor_name, 
+    rt.actor_title, 
+    rt.message, 
+    rt.signature
+from resection r
+    inner join resection_item ri on r.objid = ri.parent_objid
+	inner join faas f on ri.newfaas_objid = f.objid 
+    inner join resection_task rt on r.objid = rt.refid 
+where r.objid = $P{objid}
+  and rt.state not like 'assign%'
+  and not exists(select * from faas_task where objid = concat(rt.objid, f.utdno))
 
 
-[getAffectedRpus]
-SELECT
-	r.rputype,
-	f.objid AS prevfaasid,
-	r.objid AS prevrpuid,
-	rp.objid AS prevrpid,
-	f.tdno,
-	r.fullpin
-FROM faas f 
-	INNER JOIN rpu r ON f.rpuid = r.objid
-	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
-WHERE rp.barangayid = $P{barangayid}
-  AND rp.section = $P{section}
-  AND f.state = 'CURRENT' 
-  AND r.state = 'CURRENT'
-  AND rp.state = 'CURRENT'
-ORDER BY r.fullpin   
+[findPendingFaasesCount]
+select count(*) as icount 
+from resection_item ri 
+	inner join faas f on ri.newfaas_objid = f.objid 
+where ri.parent_objid = $P{objid}
+and f.state = 'PENDING'
 
 
-[getResectionItems]
-SELECT *
-FROM resectionitem 
-WHERE resectionid = $P{resectionid}
-ORDER BY newsection
-
-
-[getResectionAffectedRpus]
-SELECT
-	arpu.*,
-	r.rputype,
-	f.objid AS prevfaasid,
-	r.objid AS prevrpuid,
-	rp.objid AS prevrpid,
-	f.tdno,
-	r.fullpin
-FROM resectionaffectedrpu arpu
-	INNER JOIN faas f ON arpu.prevfaasid = f.objid
-	INNER JOIN rpu r ON f.rpuid = r.objid
-	INNER JOIN realproperty rp ON r.realpropertyid = rp.objid 
-WHERE arpu.resectionid = $P{resectionid}
-ORDER BY r.fullpin 
-
-
-
-[findAffectedLandByPrevId]
-SELECT *
-FROM resectionaffectedrpu arpu
-WHERE arpu.prevrpid = $P{prevrpid}
- AND arpu.rputype = 'land' 
-  
-
-
-
-[deleteResectionItems]
-DELETE FROM resectionitem WHERE resectionid = $P{objid}
-
-[deleteResectionAffectedRpus]
-DELETE FROM resectionaffectedrpu WHERE resectionid = $P{objid}
-
-
-
-[findSection]
-SELECT MAX(section) AS section
-FROM realproperty 
-WHERE barangayid = $P{barangayid}
-  AND section = $P{section}
-
-
-[findState]  
-SELECT state FROM resection WHERE objid = $P{objid}
-
-
-  
-[clearAffectedRpuNewRefIds]
-UPDATE resectionaffectedrpu SET 
-	newfaasid = null, newrpuid = null, newrpid = null 
-WHERE resectionid = $P{objid}
-
-[approveResection]
-UPDATE resection SET state = 'APPROVED' WHERE objid = $P{objid}
-
-
-[updateState]
-UPDATE resection SET state = $P{state} WHERE objid = $P{objid} AND state = $P{prevstate}
-
-
-[updateAffectedRpu]
-UPDATE resectionaffectedrpu SET 
-	newfaasid = $P{newfaasid},
-	newrpuid = $P{newrpuid},
-	newrpid = $P{newrpid},
-	newtdno = $P{newtdno},
-	newutdno = $P{newutdno}
-WHERE objid = $P{objid}	
-
-
-[updateFaasTdInfo]
-UPDATE faas SET 
-	tdno = $P{newtdno},
-	utdno = $P{newutdno}
-WHERE objid = $P{newfaasid}
-
-#===============================================================
-#
-#  ASYNCHRONOUS APPROVAL SUPPORT 
-#
-#================================================================
-
-[findFaasByNewRpuId]
-SELECT 
-	r.ry AS rpu_ry, 
-	rp.barangayid AS rp_barangay_objid
-FROM rpu r 
-	INNER JOIN realproperty rp ON r.realpropertyid = rp.objid 
-WHERE r.objid =  $P{newrpuid}	
-
-
-
-[findTrackingNo]
-SELECT trackingno FROM rpttracking WHERE objid = $P{objid}
-
-
+[findFaasInfo]
+select 
+  f.*,
+  rp.barangayid as rp_barangay_objid,
+  rp.ry as rpu_ry 
+from faas f 
+inner join realproperty rp on f.realpropertyid = rp.objid 
+where f.objid = $P{objid}

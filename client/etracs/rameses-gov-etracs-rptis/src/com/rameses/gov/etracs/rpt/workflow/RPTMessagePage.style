@@ -1,4 +1,4 @@
-"assignee"[ assignees == null ] {
+"assignee"[ assignees == null || assignees.size() > 0 ] {
     visible: false;
 }   
 
@@ -9,3 +9,8 @@
 "showSignViewer|paste"[digitalsigactive == true]{
     visible:true;
 }
+
+"assignee"[ assignees != null && assignees.size() > 0 ] {
+    visible: true;
+    required: true;
+}   

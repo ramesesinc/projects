@@ -38,8 +38,6 @@ class MCSettlementService
 	@Service('Var')
 	def var 
 
-	@Service('RPTTrackingService')
-    def trackingSvc    
 
 	@Env
 	def env
@@ -76,7 +74,6 @@ class MCSettlementService
     	em.create(entity)
     	workflowSvc.insert(entity)
     	txnRef.insert([objid:prevfaas.objid, refid:entity.objid, msg:'FAAS is currently referenced by Multiple Claim Settlement No. ' + entity.txnno + '.'])
-		trackingSvc.assignTrackingNo(entity, 'mcsettlement', 'Document is currently reviewed.')
 
     	def otherclaims = em.getOpenOtherClaims(prevfaas)
     	if (!otherclaims)

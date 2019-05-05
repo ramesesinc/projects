@@ -13,7 +13,7 @@ class SubdivisionRedFlagInterceptor
 		def entity  = evt.result 
 		if (!entity.objid){
 			try{
-				def s = svc.openSubdivision(redflag.refid)
+				def s = svc.open(redflag.refid)
 				entity.putAll(s)
 			}
 			catch(e){

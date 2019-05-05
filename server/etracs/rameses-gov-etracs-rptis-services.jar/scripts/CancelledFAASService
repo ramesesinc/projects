@@ -4,7 +4,7 @@ import com.rameses.services.extended.*;
 
 class CancelledFAASService
 {
-	@ActiveDB('cancelledfaas')
+	@DataContext('cancelledfaas')
     def em
     
 	@Env
@@ -37,6 +37,18 @@ class CancelledFAASService
     @DataContext('faas_list')
     def faaslistDb
 
+    @DataContext('cancelledfaas_task')
+    def em_task
+
+    @DataContext('cancelledfaas_signatory')
+    def em_signatory
+
+    @Service('ReportParameterService')
+    def paramSvc 
+
+    @Service('SignatureService')
+    def sigSvc 
+
 
     def STATE_DRAFT 		= 'DRAFT'
     def STATE_FORAPPROVAL 	= 'FORAPPROVAL'
@@ -58,13 +70,13 @@ class CancelledFAASService
     }
 
     @ProxyMethod
-    public def initCancelledFaas(entity){
-        createCancelledFaas(entity)
+    public def init(entity){
+        create(entity)
         return entity
     }
 
     @ProxyMethod
-    public def createCancelledFaas(entity){
+    public def create(entity){
         txnRef.checkReference(entity.faas.objid)
         validateFaas(entity.faas)
         entity.faasid = entity.faas.objid 
@@ -86,8 +98,8 @@ class CancelledFAASService
 
 
     @ProxyMethod
-    public def updateCancelledFaas( entity) {
-        def old = openCancelledFaas(entity)
+    public def update( entity) {
+        def old = open(entity)
         if (old.state == STATE_APPROVED ) 
             throw new Exception('Document has already been approved.')
         em.update(entity)
@@ -96,7 +108,7 @@ class CancelledFAASService
 
 
     @ProxyMethod
-    public def deleteCancelledFaas( entity ) {
+    public def delete( entity ) {
         txnRef.delete(entity.objid)
         em.deleteSignatories(entity)
         em.deleteRequirements(entity)
@@ -107,7 +119,7 @@ class CancelledFAASService
 
 
     @ProxyMethod
-    public def openCancelledFaas( entity ) {
+    public def open( entity ) {
         entity = em.findById(entity)
         if (!entity)
             throw new Exception('Record does not exist or has already been deleted.')
@@ -118,23 +130,24 @@ class CancelledFAASService
     @ProxyMethod
     public def submitForApproval(entity){
         entity.state = STATE_FORAPPROVAL
-        updateCancelledFaas(entity)
+        update(entity)
         return entity 
     }
 
 
     @ProxyMethod
-    public def disapproveFaasCancellation( entity ) {
+    public def disapprove( entity ) {
         entity.state = STATE_DRAFT
-        updateCancelledFaas(entity)
+        update(entity)
         return entity 
     }
 
 
     @ProxyMethod
-    public def approveFaasCancellation( entity ) {
+    public def approve( entity ) {
         entity.state = STATE_APPROVED
-        updateCancelledFaas(entity) 
+        em.update(entity)
+
         cancelFaas(entity)
         postLedgerCancellation(entity)
         txnRef.delete(entity.objid)
@@ -142,10 +155,9 @@ class CancelledFAASService
     }
 
     @ProxyMethod
-    public def approveFaasCancellationByProvince( entity ) {
-        return approveFaasCancellation(entity)
+    public def onlineApprove( entity ) {
+        return approve(entity)
     }
-
 
     @ProxyMethod
     public def getCancelReasons(  ) {
@@ -157,7 +169,7 @@ class CancelledFAASService
     public void updateSignatoryInfo(task) {
         if (task.state.matches('assign.*') || env.action?.matches('return.*'))
             return 
-        if (!task.state.matches('taxmapper|taxmapper_chief|appraiser|appraiser_chief|provrecommender|recommender|approver|provtaxmapper|provtaxmapperchief|provappraiser|provappraiserchief'))
+        if (!task.state.matches('taxmapper|taxmapper_chief|appraiser|appraiser_chief|provrecommender|recommender|approver|provtaxmapper|provtaxmapperchief|provappraiser|provappraiserchief|reviewer'))
             return
 
         def state = task.state.replaceAll('_', '') 
@@ -183,15 +195,20 @@ class CancelledFAASService
 
     @ProxyMethod
     public void saveSignatory( signatory ) {
-        if (signatory)
-            em.save(signatory, SCHEMA_SIGNATORY)
+        if (signatory) {
+            if (!signatory.assessor) {
+                def param = paramSvc.getStandardParameter()
+                signatory.assessor = [name: param?.ASSESSORNAME, title: param?.ASSESSORTITLE]
+            }
+            em_signatory.save(signatory)
+        }
     }
 
 
     @ProxyMethod
     public def buildReportData(entity){
-        entity = openCancelledFaas(entity)
-        def signatory = em.read(entity, SCHEMA_SIGNATORY)
+        entity = open(entity)
+        def signatory = em_signatory.read(entity)
         if (signatory){
             entity.putAll(signatory)
         }
@@ -216,11 +233,25 @@ class CancelledFAASService
             }
         }
 
-        if (!entity.approver || !entity.approver.dtsigned){
-            entity.approver = [dtsigned:entity.txndate]
-        }
+        if (isRecommenderAuthorized(entity)){
+            entity.authorized = true
+        }   
 
+        entity.signatories = [:]
+        def retval = sigSvc.decodeSignatories(em.getSignatories(entity))
+        entity.signatories = retval.signatories 
+        entity.signaturetampered = retval.tampered
+        entity.tamperedsigmsg = retval.tamperedsigmsg
         return entity 
+    }
+
+    def isRecommenderAuthorized(entity){
+        if (entity.recommender && entity.recommender.name && 
+               entity.recommender.name.equalsIgnoreCase(entity.approver?.name)){
+            entity.recommender = [name:null, dtsigned:null]
+            return true 
+        }
+        return false 
     }
 
 
@@ -250,6 +281,7 @@ class CancelledFAASService
         def pdate = dateSvc.parseDate(entity.dtapproved, null)
 
         def faas = entity.faas 
+        if (!faas) faas = [objid: entity.faasid]
 
         def cancelledbytdnos = 'Cancellation No. ' + entity.txnno
         if (entity.cancelledbytdnos){
@@ -305,5 +337,25 @@ class CancelledFAASService
             em_rptledger_faas.find([objid:lf.objid]).update([toyear:txnyear, toqtr:4])
         }
     }
+
+
+    /*----------------------------------------------------------------------------------------------
+    *
+    * REMOTE SUPPORT 
+    *
+    ----------------------------------------------------------------------------------------------*/
+    @ProxyMethod
+    public void postRemoteApproval(entity) {
+        approve(entity)
+        
+        em_task.where('refid = :objid and enddate is null', entity).delete()
+
+        entity.tasks.each{
+            em_task.save(it)
+        }
+
+        em_signatory.save(entity.signatory)
+    }
+
 }
 

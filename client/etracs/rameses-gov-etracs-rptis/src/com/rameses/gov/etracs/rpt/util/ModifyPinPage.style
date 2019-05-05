@@ -19,7 +19,6 @@
 
 "landfaas" [faas &&  faas.rputype != 'land']{
     visible:true;
-    required:true;
 }
 
 "entity.suffix" [faas && faas.rputype != null && faas.rputype == 'land']{

@@ -34,27 +34,30 @@ class SubdivisionInitController
     def faasSvc;
 
     def entity = [:]
+    def attributes;
     
     String getTitle(){
         return 'Subdivision: Initial';
     }
     
     void init(){
-        entity.attributes = faasSvc.getTxnTypeAttributes([objid:'SD'])
+        attributes = faasSvc.getTxnTypeAttributes([objid:'SD'])
     }
 
     
     def process(){
         entity.objid = 'SD' + new java.rmi.server.UID();
         entity.filetype = 'subdivision';
-        def newentity = svc.createSubdivision(entity)
+        entity.attributes = listHandler.selectedValue;
+        def newentity = svc.create(entity)
         return InvokerUtil.lookupOpener('subdivision:open', [entity:newentity]);
     }
         
     
     def listHandler = [
-        fetchList : { return entity.attributes }
-    ] as EditorListModel;
+        fetchList : { attributes },
+        isMultiSelect: { true },
+    ] as BasicListModel;
             
 }
 

@@ -83,7 +83,7 @@ public class AddFaasRequirementDocumentController
     def addImage(){
         return InvokerUtil.lookupOpener('upload:image', [
                 entity : requirement,
-                    
+                parentid: requirement.refid,    
                 afterupload: {
                     loadImages();
                     listHandler?.load();

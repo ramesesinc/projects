@@ -51,10 +51,15 @@ public class RPTRedFlagService
 	@ProxyMethod
 	public def create( entity ) {
 		entity.state = STATE_OPEN
-		if (!entity.caseno)
+		if (!entity.caseno){
 			entity.caseno = getNextSeries(entity)
-		if (!entity.filedby.date)
+		}
+		if (!entity.filedby) {
+			entity.filedby = [objid: env.USERID, name: env.NAME]
+		}
+		if (!entity.filedby.date){
 			entity.filedby.date = dtSvc.serverDate
+		}
 
 		writeInfo(entity)
 		em.create(entity)
@@ -135,5 +140,35 @@ public class RPTRedFlagService
 		def key = 'RPTREDFLAG-' + lguid  
 		return lguid + seqSvc.getNextFormattedSeries(key)
 	}
+
+
+
+
+	
+	/*====================================================
+	* sync support 
+	====================================================*/
+
+	@ProxyMethod
+	public def getDataToResolve(redflag) {
+		return open(redflag)
+	}
+
+	@ProxyMethod
+	public void postDataToResolve(redflag) {
+		save(redflag)
+	}
+
+	
+	@ProxyMethod
+	public def getResolvedData(redflag) {
+		return open(redflag)
+	}
+
+	@ProxyMethod
+	public void postResolvedData(redflag) {
+		save(redflag)
+	}
+
 }
 

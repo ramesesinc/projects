@@ -40,6 +40,7 @@ class RevenueSharingService  {
 		} catch(Throwable t) {
 			throw t;
 			//do nothing 
+			throw t;
 		} 
 		return resultList; 
 	} 

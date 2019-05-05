@@ -47,7 +47,7 @@ public class AbstractConsolidationController extends com.rameses.gov.etracs.rpt.
             
     public void afterSignal(Object result){
         super.afterSignal(result);
-        entity.putAll(svc.openConsolidation(entity.objid));
+        entity.putAll(svc.open([objid: entity.objid]));
         if (task && task.state.matches('cityapprover|provapprover|forprovsubmission')){
             autoposting = true;
         }

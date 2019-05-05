@@ -23,12 +23,12 @@ public class SubmitToProvinceSubdivisionTask implements Runnable{
             svc.initApproveSubdivision(entity);
             showinfo(' .... Done\n');
             
-            showinfo('Assigning new TD No. to Subdivided Lands and Affected RPUs');
-            svc.assignNewTdNos(entity);
-            showinfo(' .... Done\n');
+            // showinfo('Assigning new TD No. to Subdivided Lands and Affected RPUs');
+            // svc.assignNewTdNos(entity);
+            // showinfo(' .... Done\n');
             
             showinfo('Subdivision Approval');
-            entity.putAll(svc.submitToProvinceSubdivision(entity));
+            entity.putAll(svc.submitToProvince(entity));
             showinfo(' .... Done\n');
             
             oncomplete();

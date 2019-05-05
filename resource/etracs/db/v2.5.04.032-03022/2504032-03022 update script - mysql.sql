@@ -35,11 +35,18 @@ drop table if exists sync_data;
 
 create table `sync_data` (
   `objid` varchar(50) not null,
+  `parentid` varchar(50) not null,
   `refid` varchar(50) not null,
   `reftype` varchar(50) not null,
   `action` varchar(50) not null,
   `orgid` varchar(50) null,
+  `remote_orgid` varchar(50) null,
+  `remote_orgcode` varchar(20) null,
+  `remote_orgclass` varchar(20) null,
   `dtfiled` datetime not null,
+  `idx` int not null,
+  `sender_objid` varchar(50) null,
+  `sender_name` varchar(150) null,
   primary key (`objid`)
 ) engine=innodb default charset=utf8
 ;

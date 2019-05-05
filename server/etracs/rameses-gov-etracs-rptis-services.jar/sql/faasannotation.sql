@@ -14,7 +14,7 @@ FROM faasannotation fa
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN propertyclassification pc on r.classification_objid = pc.objid 
 where 1=1 ${filters}
-ORDER BY fa.txnno DESC 
+
 
 
 [getActiveAnnotationsByFaasId]

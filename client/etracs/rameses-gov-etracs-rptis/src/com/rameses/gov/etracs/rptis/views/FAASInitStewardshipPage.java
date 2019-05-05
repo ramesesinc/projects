@@ -53,11 +53,11 @@ public class FAASInitStewardshipPage extends javax.swing.JPanel {
 
         formPanel1.add(xSeparator1);
 
-        xLookupField1.setCaption("Property to Steward");
+        xLookupField1.setCaption("TD No. to Steward");
         xLookupField1.setExpression("#{entity.faas.tdno}");
         xLookupField1.setHandler("lookupFaas");
-        xLookupField1.setHint("Search Property");
         xLookupField1.setName("entity.faas"); // NOI18N
+        xLookupField1.setHint("Search Property");
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 19));
         xLookupField1.setRequired(true);
         formPanel1.add(xLookupField1);
@@ -77,23 +77,8 @@ public class FAASInitStewardshipPage extends javax.swing.JPanel {
         xLabel2.setShowCaption(false);
         formPanel1.add(xLabel2);
 
+        xDataTable1.setHandler("listHandler");
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "selected"}
-                , new Object[]{"caption", " "}
-                , new Object[]{"width", 40}
-                , new Object[]{"minWidth", 40}
-                , new Object[]{"maxWidth", 40}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.CheckBoxColumnHandler(java.lang.Boolean.class, true, false)}
-            }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "attribute"}
                 , new Object[]{"caption", "Attributes"}
@@ -110,7 +95,6 @@ public class FAASInitStewardshipPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable1.setHandler("listHandler");
         xDataTable1.setImmediate(true);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);

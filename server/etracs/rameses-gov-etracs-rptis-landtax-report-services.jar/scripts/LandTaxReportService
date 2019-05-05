@@ -140,9 +140,9 @@ class LandTaxReportService
 			period = 'FOR THE MONTH OF ' + util.getMonthName( params.month.index ) + ', ' + params.year  
 		} 
 
-		params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
+		params.filter = ' cv.controldate >= $P{fromdate} AND cv.controldate < $P{todate} '
 		if (params.postingtype && params.postingtype.code == 'byrem'){
-			params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
+			params.filter = ' rem.controldate between $P{fromdate} AND $P{todate} '
 		}
 
 		def data = [:]
@@ -162,22 +162,58 @@ class LandTaxReportService
 
 
 	void buildStandardReport(data, params){
-		data.items = landtaxreport_collection.getStandardReport( params ); 
+		if (params.reportformat.code == 'summbymon'){
+			buildSummaryByMonth(data, params)
+		} else if (params.reportformat.code == 'summbybrgy'){
+			buildSummaryByBrgy(data, params)
+		} else {
+			data.items = landtaxreport_collection.getStandardReport( params ); 
+			if ( !data.items ) throw new Exception("No record(s) found."); 
+
+			data.items.each {
+				it.classname =  (it.special == 1? "  *" + it.classname : it.classname); 
+			}
+			initShares(data)
+			def disposition = landtaxreport_collection.findStandardDispositionReport( params ); 		
+			if ( disposition ) {
+				data.putAll ( disposition ); 
+				data.provcityshare = data.provcitybasicshare.add( data.provcitysefshare );
+				data.munishare = data.munibasicshare.add( data.munisefshare );
+				data.brgyshare = data.brgybasicshare.add( data.brgysefshare );
+			} 
+		}
+	}
+
+	void buildSummaryByMonth(data, params) {
+		data.items = landtaxreport_collection.getCollectionSummaryByMonth( params ); 
 		if ( !data.items ) throw new Exception("No record(s) found."); 
 
-		data.items.each {
-			it.classname =  (it.special == 1? "  *" + it.classname : it.classname); 
+		if (params.year != dateSvc.serverYear) {
+			data.asof = 'As of December 31, ' + params.year 	
+		} else {
+			data.asof = 'As of ' + dateSvc.format('MMMMM dd, yyyy', dateSvc.serverDate)
 		}
+	}
 
-		initShares(data)
+	void buildSummaryByBrgy(data, params) {
+		def p = [:]
+		p.putAll(params)
 
-		def disposition = landtaxreport_collection.findStandardDispositionReport( params ); 		
-		if ( disposition ) {
-			data.putAll ( disposition ); 
-			data.provcityshare = data.provcitybasicshare.add( data.provcitysefshare );
-			data.munishare = data.munibasicshare.add( data.munisefshare );
-			data.brgyshare = data.brgybasicshare.add( data.brgysefshare );
-		} 
+		data.items = landtaxreport_collection.getCollectionSummaryByBrgy( params ); 
+		if ( !data.items ) throw new Exception("No record(s) found."); 
+
+		if (p.month.index != 1) {
+			//build previous total
+			p.fromdate = params.year + '-' + (params.month.index-1) + '-01 00:00:00'
+			p.todate = dateSvc.format( 'yyyy-MM-dd', dateSvc.getMonthEndDate( dateSvc.parse('yyyy-MM-dd', p.fromdate)) )  + " 23:59:59"
+			def prevtotals = landtaxreport_collection.getPreviousCollectionSummaryByBrgy(p);
+			prevtotals.each{prev -> 
+				def item = data.items.find{ it.brgyindex == prev.brgyindex && it.revtype == prev.revtype}
+				if (item) {
+					item.prevtotal = prev.total
+				}
+			}
+		}
 	}
 
 

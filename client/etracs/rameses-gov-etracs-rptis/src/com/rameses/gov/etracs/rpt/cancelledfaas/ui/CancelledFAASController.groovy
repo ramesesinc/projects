@@ -40,7 +40,7 @@ public class CancelledFAASController
     }
     
     void open(){
-        entity.putAll(svc.openCancelledFaas(entity));
+        entity.putAll(svc.open(entity));
         if (taskstate) entity.taskstate = taskstate;
         if (assignee) entity.assignee = assignee;
         entity.reason = getCancelReasons().find{it.objid == entity.reason.objid}
@@ -52,21 +52,21 @@ public class CancelledFAASController
     }
     
     void cancelEdit(){
-        entity.putAll(svc.openCancelledFaas(entity));
+        entity.putAll(svc.open(entity));
         if (taskstate) entity.taskstate = taskstate;
         if (assignee) entity.assignee = assignee;
         mode = MODE_READ;
     }
     
     void save(){
-        entity.putAll(svc.updateCancelledFaas(entity));
+        entity.putAll(svc.update(entity));
         mode = MODE_READ;
     }
     
     
     def delete(){
         if (MsgBox.confirm('Delete?')){
-            svc.deleteCancelledFaas(entity);
+            svc.delete(entity);
             return '_close';
         }
         return null;

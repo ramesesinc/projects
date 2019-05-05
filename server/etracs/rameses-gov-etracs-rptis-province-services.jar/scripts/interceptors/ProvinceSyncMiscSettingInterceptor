@@ -20,7 +20,7 @@ class ProvinceSyncMiscSettingInterceptor
 
 
 
-    @After(pattern="SyncService.receive", eval="#{args[0].reftype == 'rysetting_misc' && 'SYNC-REVISION-SETTING'.equalsIgnoreCase(args[0].action)}") 
+    @After(pattern="RPTMainSyncService.receive", eval="#{args[0].reftype == 'rysetting_misc' && 'SYNC-REVISION-SETTING'.equalsIgnoreCase(args[0].action)}") 
     public void syncSetting(evt){
     	def params = evt.args[0]
         def result = evt.result 

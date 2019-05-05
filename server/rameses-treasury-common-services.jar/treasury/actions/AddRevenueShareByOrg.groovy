@@ -7,7 +7,6 @@ import treasury.facts.*;
 import com.rameses.osiris3.common.*;
 
 
-
 class AddRevenueShareByOrg implements RuleActionHandler  {
 
 	public void execute(def params, def drools) {

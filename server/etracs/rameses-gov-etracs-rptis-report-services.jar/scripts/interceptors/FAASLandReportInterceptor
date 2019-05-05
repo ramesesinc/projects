@@ -65,13 +65,10 @@ class FaasLandReportInterceptor
 		if (showplantadj){
 			def plantadj = em.findPlantTreeAdjustment(faas.rpu)
 			if (plantadj){
-				if (faas.landadjustments.size()  == 0){
-					plantadj.adjtypename = 'TOTAL LAND ADJUSTMENT';
-					faas.landadjustments << plantadj
-				}
-				else {
-					if (faas.landadjustments.size()  == 1)
+				if (faas.landadjustments.size()  != 0) {
+					if (faas.landadjustments.size()  == 1) {
 						faas.landadjustments << [:]
+					}
 					faas.landadjustments[1].basemarketvalue = plantadj.basemarketvalue
 					faas.landadjustments[1].adjustment = plantadj.adjustment
 					faas.landadjustments[1].marketvalue = plantadj.marketvalue

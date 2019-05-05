@@ -22,7 +22,7 @@ public class TransmittalExportSubdivisionModel extends TransmittalExportModel
             data.subdivisiondata = [objid:transmittalitem.refid, txnno:transmittalitem.refno]; 
         }
         else{
-            def subdivision = subdivisionSvc.openSubdivision(transmittalitem.refid);
+            def subdivision = subdivisionSvc.open(transmittalitem.refid);
             if (subdivision.originlguid == OsirisContext.env.ORGID)
                 data.subdivisiondata = supportSvc.buildSubdivisionData(subdivision);
             else

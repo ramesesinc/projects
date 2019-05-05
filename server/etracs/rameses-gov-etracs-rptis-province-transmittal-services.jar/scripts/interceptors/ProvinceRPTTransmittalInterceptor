@@ -42,7 +42,7 @@ class ProvinceRPTTransmittalInterceptor
 	}
 
 
-	@After(pattern='SubdivisionService.approveSubdivision', index=1005)
+	@After(pattern='SubdivisionService.approve', index=1005)
 	public void approveSubdivisionTransmittalItem(evt){
 		def subdivision = evt.result 
 
@@ -57,7 +57,7 @@ class ProvinceRPTTransmittalInterceptor
 	}
 
 
-	@After(pattern='ConsolidationService.approveConsolidation', index=1005)
+	@After(pattern='ConsolidationService.approve', index=1005)
 	public void approveConsolidationTransmittalItem(evt){
 		def consolidation = evt.result 
 
@@ -71,7 +71,7 @@ class ProvinceRPTTransmittalInterceptor
 				.update(updateditem)
 	}
 
-	@After(pattern='CancelledFAASService.approveFaasCancellation', index=1005)
+	@After(pattern='CancelledFAASService.approve', index=1005)
 	public void approveCancelledFaasTransmittalItem(evt){
 		def cancelledfaas = evt.result 
 

@@ -3,42 +3,18 @@ import com.rameses.common.*
 
 class AsyncSyncTask {
 
-	@Service('SyncService')
+	@Service('RPTMainSyncService')
 	def svc 
 
-
-	/*----------------------------------------------------------------------
-	* To handle multiple remote sites, such as province
-	* synching to multiple municipalities, the following 
-	* steps are applied to make sure that messages are forwarded
-	* even if one or more remote sites are down
-	* 
-	*  get data to sync from forprocess list 
-	*  if there are forprocess data
-	*     for each data 
-    *        if data.remoteorg is present in pending list 
-	*           process n numbers of pending items by remoteorg 
-	*        otherwise
-    *           send the actual data
-	*  otherwise	      
-	*     move n numbers of pending items to forprocess
-	-----------------------------------------------------------------------*/
 	@Schedule(interval=2)
 	public void processPending(task) {
-		def forprocessItems = svc.getForProcessItems()
-		if (forprocessItems) {
-			forprocessItems.each {syncdata ->
-				def pendingItems = svc.getPendingItems(syncdata)
-				if (pendingItems) {
-					pendingItems.each{pitem ->
-						svc.sendAsyncData(pitem)
-					}
-				} else {
-					svc.sendAsyncData(syncdata)
-				}
-			}
-		} else {
-			svc.movePendingToForProcess()
+		svc.getForProcessItems().each {syncdata ->
+			svc.sendAsyncData(syncdata)
 		}
+	}
+
+	@Schedule(interval=60)
+	public void reschedulePendingTask(task) {
+		svc.movePendingToForProcess()
 	}
 }

@@ -48,7 +48,7 @@ class SubdivisionSupportService
     @ProxyMethod
     public def buildSubdivisionData(subdivision){
         def data = [:]
-        data.putAll(subdivisionSvc.openSubdivision(subdivision.objid))
+        data.putAll(subdivisionSvc.open(subdivision.objid))
 
         buildExaminationFindings(data)
         data.requirements = reqSvc.getRequirements(subdivision.objid)

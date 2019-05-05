@@ -1,90 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="resection:info" action="init" caption="General Info" index="-10"/>
+        <invoker type="resection:info" 
+                 action="init" caption="Resection" 
+                 index="20"/>
         
-        <invoker type="formActions" action="refresh" caption="Refresh" mnemonic="r" />
-        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{showActions == true}" role="APPRAISER"/>
-        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode != 'read'}" />
+        <invoker type="formActions" 
+                 action="edit" caption="Edit" 
+                 visibleWhen="#{showActions &amp;&amp; mode=='read'}"
+                role="TAXMAPPER"/>
+                 
+        <invoker type="formActions" 
+                 action="save" caption="Save" 
+                 visibleWhen="#{mode=='edit'}" />
+        
+        <!-- TODO
+        <invoker type="formActions" caption="Remote Tools" mnemonic="r" name="popupSupportInfo" visibleWhen="#{showSupport}" category="resection:info:remotetool" index="100000" role="ADMIN"/>
+        -->
    </invokers>
-   <code>
-
-<![CDATA[
-
-import com.rameses.rcp.annotations.* 
-import com.rameses.rcp.common.* 
-import com.rameses.osiris2.client.*
-import com.rameses.osiris2.common.*
-import com.rameses.gov.etracs.rptis.util.RPTUtil;
-
-class ResectionMainInfoController
-{
-    @Binding
-    def binding;
-    
-    @Caller
-    def caller;
-    
-    
-    def svc;
-    
-    def MODE_READ = 'read';
-    def MODE_EDIT = 'edit';
-    
-    def mode;
-    
-    def entity;
-    
-    String title = 'General Information'
-    
-    
-    void init(){
-        entity = svc.openResection( entity.objid );
-        mode = MODE_READ;
-    }
-    
-    
-    boolean getAllowEdit(){
-        if (entity.state == 'APPROVED') return false;
-        if (mode == 'read') return false;
-        return true;
-    }
-    
-    
-    void edit(){
-        caller.addMessage([type:'main', msg:'General Info is still in editing mode.']);
-        mode = MODE_EDIT;
-    }
-    
-    
-    void save(){
-        entity.putAll( svc.updateResection(entity) );
-        caller.clearMessages('main');
-        mode = MODE_READ;
-    }
-    
-    void refresh(){}
-    
-    
-    List getQuarters(){
-        return [1,2,3,4]
-    }
-    
-    boolean getShowActions(){
-        if (entity.taskstate && entity.taskstate.matches('assign.*')) return false;
-        if (entity.state.matches('FORAPPROVAL|FORPROVAPPROVAL|APPROVED')) return false;
-        if (mode != MODE_READ) return false;
-        return true;
-    }
-    
-}
-       
-
-]]>
+   <code class="com.rameses.gov.etracs.rptis.models.ResectionInfoMainModel">
    </code>
     
     <pages> 
-        <page name="init" template="com.rameses.gov.etracs.rpt.resection.ResectionInfoMainPage"/>
+        <page template="com.rameses.gov.etracs.rptis.views.ResectionInfoMainPage"/>
     </pages>
 </workunit>
 

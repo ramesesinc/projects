@@ -3,7 +3,7 @@
     <invokers>
         <invoker type="planttreerysetting:create" 
                  action="create" 
-                 caption="Miscellaneous Revision Setting" 
+                 caption="Plant/Tree Revision Setting" 
                  target="window" 
                  entityName="planttreerysetting" 
                  serviceName="PlantTreeRYSettingService"

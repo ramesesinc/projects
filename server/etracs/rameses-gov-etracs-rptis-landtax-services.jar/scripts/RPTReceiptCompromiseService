@@ -105,7 +105,18 @@ class RPTReceiptCompromiseService
 			receipt.remarks = (receipt.remarks ? receipt.remarks : 'Current year payment')
 			postRequiredPayment(receipt)
 			postRptPayment(receipt)
+			updateLedgerPaidYearQtr(receipt)
 		}
+	}
+
+	void updateLedgerPaidYearQtr(receipt) {
+		def lastitem = receipt.bill.rptledger.postingitems.last()
+
+		def params = [:]
+		params.objid = receipt.bill.rptledger.objid 
+		params.lastyearpaid = lastitem.year 
+		params.lastqtrpaid = (lastitem.qtr ? lastitem.qtr : 4)
+		em_rptledger.find([objid:params.objid]).update(params)
 	}
 
 	@ProxyMethod
@@ -160,16 +171,10 @@ class RPTReceiptCompromiseService
 		receipt.items = []
 		def item = null 
 
-		bill.rptledger.shares.each{
-			item = createReceiptItem(receipt, it.payableitem)
-			item.amount = numSvc.roundA(it.amount, 4)
-			item.discount = numSvc.roundA(it.discount, 4)
-			receipt.items << item
-		}
 		bill.billitems.each{
 			item = createReceiptItem(receipt, it.item)
-			item.amount = numSvc.roundA(it.amount - it.share, 4)
-			item.discount = numSvc.roundA(it.discount - it.sharedisc, 4)
+			item.amount = numSvc.roundA(it.amount, 4)
+			item.discount = numSvc.roundA(it.discount, 4)
 			receipt.items << item
 		}
 	}
@@ -397,8 +402,8 @@ class RPTReceiptCompromiseService
 	def postRptPayment(receipt){
 		def pmt = [:]
 		pmt.type = 'compromise'
-		pmt.refid = receipt.compromise.objid 
-		pmt.reftype = 'rptcompromise'
+		pmt.refid = receipt.bill.rptledger.objid
+		pmt.reftype = 'rptledger'
 		pmt.receiptid = receipt.objid 
 		pmt.receiptno = receipt.receiptno 
 		pmt.receiptdate = receipt.receiptdate 

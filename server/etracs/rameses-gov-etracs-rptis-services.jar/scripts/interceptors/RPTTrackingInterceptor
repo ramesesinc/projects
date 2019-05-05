@@ -1,55 +1,41 @@
 import com.rameses.annotations.*
-import com.rameses.eserver.*;
 import com.rameses.common.*;
+import com.rameses.services.extended.*;
 
 class RPTTrackingInterceptor
 {
-	@Service('RPTTrackingService')
-    def svc
+	@DataContext('rptacknowledgement_item')
+	def em_tracking
 
+	@DataContext('faas_previous')
+	def em_faas_previous
 
-	@After(pattern='FAASService.createFaas')
-	public void afterCreateFaas(evt){
-		def faas = evt.result 
-		if (!faas.trackingno)
-			svc.assignTrackingNo(faas, 'faas', 'Document is currently reviewed.')
-	}
-
-	@After(pattern='FAASService.open|TDReportService.buildTaxDec')
-	public void afterOpenFaas(evt){
-		def faas = evt.result 
-		def tracking = svc.findById(faas.objid)
-		faas.trackingno = tracking?.trackingno
-	}
-
-
-	@After(pattern='SubdivisionService.createSubdivision')
-	public void afterCreateSubdivision(evt){
-		def subdivision = evt.result 
-		svc.assignTrackingNo(subdivision, 'subdivision', 'Document is currently reviewed.')
-	}
-
-	@After(pattern='SubdivisionService.openSubdivision')
-	public void afterOpenSubdivision(evt){
-		def subdivision = evt.result 
-		def tracking = svc.findById(subdivision.objid)
-		subdivision.trackingno = tracking?.trackingno
-	}
-
-
-	@After(pattern='ConsolidationService.createConsolidation')
-	public void afterCreateConsolidation(evt){
-		def consolidation = evt.result 
-		svc.assignTrackingNo(consolidation, 'consolidation', 'Document is currently reviewed.')
-	}
-
-	@After(pattern='ConsolidationService.openConsolidation')
-	public void afterOpenConsolidation(evt){
-		def consolidation = evt.result 
-		def tracking = svc.findById(consolidation.objid)
-		consolidation.trackingno = tracking?.trackingno
-	}
+	@DataContext('faas_list')
+	def em_faas_list
 	
+	@After(pattern='FAASService.initOnlineTransaction', index=1000000)
+	public void afterCreateFaas(evt){
+		def faas = evt.result
+		
+		faas.previousfaases.each {
+			def tracking = em_tracking.find([faas_objid: it.prevfaasid]).first() 
+			if (tracking) {
+				tracking.newfaas = [objid: faas.objid]
+				em_tracking.update(tracking)
+				em_faas_list.find([objid: faas.objid]).update([trackingno: tracking.trackingno])
+			}
+		}
+	}
+
+
+	@Before(pattern='FAASService.deleteFaas', index=1000000)
+	public void beforeDeleteFaas(evt){
+		def faas = evt.args[0]
+
+		em_faas_previous.find([faasid: faas.objid]).list().each {
+			em_tracking.find([faas_objid: it.prevfaasid]).update([newfaas_objid: null])	
+		}
+	}
 
 }
 

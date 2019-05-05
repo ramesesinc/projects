@@ -487,32 +487,32 @@ class RPTUtil
                 if (it.fromyear == it.toyear && it.fromqtr == toqtr)
                     it.period = 'Partial ' + it.fromqtr + 'Q, ' + it.toyear
                 else if (it.fromyear == it.toyear && (toqtr - it.fromqtr) == 1 )
-                    it.period = 'Full Q' + it.fromqtr + ',' + it.fromyear + ' (Partial' + toqtr + 'Q,' + it.toyear + ')' 
+                    it.period = 'Q' + it.fromqtr + ',' + it.fromyear + ' (Partial' + toqtr + 'Q,' + it.toyear + ')' 
                 else if (it.fromyear == it.toyear)
-                    it.period = 'Full Q' + it.fromqtr + '' + (toqtr-1) + ',' + it.fromyear + ' (Partial ' + toqtr + 'Q,' + it.toyear + ')' 
+                    it.period = 'Q' + it.fromqtr + '' + (toqtr-1) + ',' + it.fromyear + ' (Partial ' + toqtr + 'Q,' + it.toyear + ')' 
 
                 else if ((it.toyear - it.fromyear) == 1 && toqtr == 1)
-                    it.period = 'Full ' + (it.fromyear) + ' (Partial ' + toqtr + 'Q,' + it.toyear + ')' 
+                    it.period = (it.fromyear) + ' (Partial ' + toqtr + 'Q,' + it.toyear + ')' 
                 else if ((it.toyear - it.fromyear) > 1 && toqtr == 1)
-                    it.period = 'Full ' + it.fromyear + '-' + (it.toyear-1) + ' (Partial ' + toqtr + 'Q,' + it.toyear + ')' 
+                    it.period = it.fromyear + '-' + (it.toyear-1) + ' (Partial ' + toqtr + 'Q,' + it.toyear + ')' 
                 else 
-                    it.period = 'Full ' + it.fromyear + '-' + (toqtr-1) + 'Q,'+ it.toyear + ' (Partial ' + toqtr + 'Q,' + it.toyear + ')' 
+                    it.period = it.fromyear + '-' + (toqtr-1) + 'Q,'+ it.toyear + ' (Partial ' + toqtr + 'Q,' + it.toyear + ')' 
             }
             else {
                 if (it.fromyear == it.toyear && it.fromqtr == 1 && toqtr == 4)
-                    it.period = 'Full ' + it.toyear
+                    it.period = it.toyear + ''
                 else if (it.fromyear == it.toyear && it.fromqtr == toqtr)
-                    it.period = 'Full ' + it.fromqtr + 'Q, ' + it.toyear
+                    it.period = it.fromqtr + 'Q, ' + it.toyear
                 else if (it.fromyear == it.toyear)
-                    it.period = 'Full ' + it.fromqtr + '' + toqtr + 'Q, ' + it.toyear 
+                    it.period = it.fromqtr + '' + toqtr + 'Q, ' + it.toyear 
                 else if (it.fromqtr == 1 && toqtr == 4)
-                    it.period = 'Full ' + it.fromyear + '-' + it.toyear 
+                    it.period = it.fromyear + '-' + it.toyear 
                 else if (it.fromqtr == 1 && toqtr != 4)
-                    it.period = 'Full ' + it.fromyear + '-' + toqtr + 'Q,' + it.toyear 
+                    it.period = it.fromyear + '-' + toqtr + 'Q,' + it.toyear 
                 else if (it.fromqtr != 1 && toqtr == 4)
-                    it.period = 'Full ' + it.fromqtr + 'Q,' + it.fromyear + '-' + it.toyear
+                    it.period = it.fromqtr + 'Q,' + it.fromyear + '-' + it.toyear
                 else 
-                    it.period = 'Full ' + it.fromqtr + 'Q,' + it.fromyear + '-' + toqtr + 'Q,' + it.toyear
+                    it.period = it.fromqtr + 'Q,' + it.fromyear + '-' + toqtr + 'Q,' + it.toyear
             }
         }
     }    

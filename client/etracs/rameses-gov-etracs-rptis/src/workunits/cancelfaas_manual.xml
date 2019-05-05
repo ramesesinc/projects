@@ -8,8 +8,8 @@
         <invoker type="cancelledfaas:open" 
             action="open" caption="Cancelled FAAS (Manual)" target="window"  />
             
-        <invoker folderid="/menucateogry/rpt/manual" 
-            action="init"  caption="Manually Cancel FAAS" index="5" 
+        <invoker folderid="/menucategory/rpt/manual" 
+            action="init"  caption="Cancel FAAS" index="5" 
             role="RECORD,APPRAISER" permission="cancelfaas.create"/>
    </invokers>
    <code>       
@@ -75,7 +75,7 @@ public class CancelledFAASController extends PageFlowController
     
     
     def open(){
-        entity = svc.openCancelledFaas(entity)
+        entity = svc.open(entity)
         entity.reason = cancelReasons.find{it.objid == entity.reason.objid}
         formId = entity.faas.tdno 
         formTitle = 'Cancelled FAAS: ' + formId
@@ -147,15 +147,15 @@ public class CancelledFAASController extends PageFlowController
     
     void save(){
         if (mode == MODE_CREATE)
-            entity = svc.createCancelledFaas(entity)
+            entity = svc.create(entity)
         else 
-            entity = svc.updateCancelledFaas(entity)
+            entity = svc.update(entity)
         mode = MODE_READ;
     }    
    
     
     void delete(){
-        svc.deleteCancelledFaas(entity)
+        svc.delete(entity)
     }
     
     
@@ -170,13 +170,13 @@ public class CancelledFAASController extends PageFlowController
     }
     
     
-    void disapproveFaasCancellation(){
-        entity = svc.disapproveFaasCancellation(entity)
+    void disapprove(){
+        entity = svc.disapprove(entity)
     }
     
     
-    void approveFaasCancellation() {
-        entity = svc.approveFaasCancellation(entity);
+    void approve() {
+        entity = svc.approve(entity);
     }
     
     
@@ -225,8 +225,8 @@ public class CancelledFAASController extends PageFlowController
             <transition caption="Edit"   to="back-to-forapproval" action="edit" name="edit" mnemonic="e" shortcut="ctrl E" icon="images/toolbars/edit.png"  visibleWhen="#{mode == 'read'}" role="RECORD_APPROVER"/>
             <transition caption="Cancel" to="back-to-forapproval" action="cancelEdit" name="cancel"  mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode != 'read'}"/>
             <transition caption="Save"   to="back-to-forapproval" action="save" name="save" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"  visibleWhen="#{mode != 'read'}" />
-            <transition caption="Disapprove" to="default" action="disapproveFaasCancellation" mnemonic="d" visibleWhen="#{mode == 'read'}" confirm="Disapprove record?" role="RECORD_APPROVER"/>
-            <transition caption="Approve" to="approved" action="approveFaasCancellation" mnemonic="v" icon="images/toolbars/approve.png" visibleWhen="#{mode == 'read'}" confirm="Approve record?" role="RECORD_APPROVER"/>
+            <transition caption="Disapprove" to="default" action="disapprove" mnemonic="d" visibleWhen="#{mode == 'read'}" confirm="Disapprove record?" role="RECORD_APPROVER"/>
+            <transition caption="Approve" to="approved" action="approve" mnemonic="v" icon="images/toolbars/approve.png" visibleWhen="#{mode == 'read'}" confirm="Approve record?" role="RECORD_APPROVER"/>
         </page>
         
         <process name="back-to-forapproval">

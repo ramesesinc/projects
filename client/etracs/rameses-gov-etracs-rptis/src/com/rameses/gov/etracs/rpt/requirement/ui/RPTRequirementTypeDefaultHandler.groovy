@@ -10,6 +10,9 @@ import javax.swing.JFileChooser;
         
 public class RPTRequirementTypeDefaultHandler 
 {
+    @Binding 
+    def binding;
+   
     @Caller
     def caller; 
     
@@ -68,9 +71,30 @@ public class RPTRequirementTypeDefaultHandler
         }
         listHandler?.load();
     }
-            
-            
-            
+
+    def complied() {
+        entity.complied = true;
+        return new PopupOpener(outcome:'complied');
+    }
+    
+    def postComplied() {
+        svc.update(entity);
+        if (onupdate) onupdate();
+        mode = MODE_READ;
+        caller?.binding?.refresh('entity.*');
+        return '_close';
+    }
+    
+    void uncomplied() {
+        if (MsgBox.confirm('Uncomplied selected requirememt?')) {
+            entity.complied = false;
+            entity.value.txnno = null;
+            entity.value.txndate = null;
+            entity.value.remarks = null;
+            svc.update(entity);
+            binding?.refresh('entity.*');
+        }
+    }
             
     def listHandler = [
         getRows  : { return (images.size() + 1 )},
@@ -81,7 +105,7 @@ public class RPTRequirementTypeDefaultHandler
     def addImage(){
         return InvokerUtil.lookupOpener('upload:image', [
                 entity : entity,
-                    
+                parentid : entity.refid, 
                 afterupload: {
                     loadImages();
                 }

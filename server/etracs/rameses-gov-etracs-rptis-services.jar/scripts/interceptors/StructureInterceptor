@@ -24,10 +24,10 @@ class StructureInterceptor
 	public void insertMaterials( evt ) {
 		def structure = evt.result 
 		structure.materials?.each{
-			if(it.isnew){
+			it.display = (it.display == 1)
+			try{
 				structurematerial.create(it)
-			}
-			else {
+			}catch(e) {
 				it.structureid = it.structure.objid 
 				it.materialid = it.material.objid 
 				em.updateMaterial(it)

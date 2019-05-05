@@ -37,3 +37,10 @@ from subdivision_task
 where refid = $P{refid}
 and state = 'recommender' 
 order by startdate desc 
+
+[getTargetAssignees]
+select u.objid, u.name, u.jobtitle as title 
+from sys_user u 
+inner join sys_usergroup_member  m on u.objid = m.user_objid 
+where m.usergroup_objid = $P{role}
+order by u.name 

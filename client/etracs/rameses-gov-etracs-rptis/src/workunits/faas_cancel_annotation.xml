@@ -43,14 +43,14 @@ public class CancelAnnotationController extends PageFlowController
     
     
     def init(){
-        entity = svc.initCancelAnnotation(annotation.objid)
+        entity = svc.init(annotation)
         mode = MODE_CREATE
         return super.signal('init')
     }
     
     
     def open(){
-        entity = svc.openCancelAnnotation(entity.objid)
+        entity = svc.open(entity)
         mode = MODE_READ;
         return super.signal('open');
     }
@@ -89,15 +89,15 @@ public class CancelAnnotationController extends PageFlowController
     
     void save(){
         if (mode == MODE_CREATE)
-            entity = svc.createCancelAnnotation(entity)
+            entity = svc.create(entity)
         else 
-            entity = svc.updateCancelAnnotation(entity)
+            entity = svc.update(entity)
         mode = MODE_READ;
     }    
    
     
     void delete(){
-        svc.deleteCancelAnnotation(entity)
+        svc.delete(entity)
     }
     
     
@@ -110,17 +110,17 @@ public class CancelAnnotationController extends PageFlowController
    
     
     void submitCancelAnnotationForApproval(){
-        entity = svc.submitCancelAnnotationForApproval(entity);
+        entity = svc.submitForApproval(entity);
     }
     
     
     void disapproveCancelAnnotation(){
-        entity = svc.disapproveCancelAnnotation(entity)
+        entity = svc.disapprove(entity)
     }
     
     
     void approveCancelAnnotation() {
-        entity = svc.approveCancelAnnotation(entity);
+        entity = svc.approve(entity);
     }
 
     

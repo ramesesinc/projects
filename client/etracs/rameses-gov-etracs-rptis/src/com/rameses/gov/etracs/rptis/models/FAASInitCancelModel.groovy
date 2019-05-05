@@ -18,7 +18,7 @@ class FAASInitCancelModel extends FAASInitTxnModel
     }
     
     def process(){
-        def cancelledfaas = cancelSvc.initCancelledFaas( entity );
+        def cancelledfaas = cancelSvc.init( entity );
         return Inv.lookupOpener('cancelledfaas:online:open', [entity:cancelledfaas]);
     }
     

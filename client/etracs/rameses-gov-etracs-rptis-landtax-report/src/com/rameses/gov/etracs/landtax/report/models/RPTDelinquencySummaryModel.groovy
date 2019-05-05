@@ -5,7 +5,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 
-class RPTDelinquencySummaryController extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+class RPTDelinquencySummaryModel extends com.rameses.gov.etracs.rpt.report.AsyncReportController
 {
     @Service('LandTaxReportDelinquencyService') 
     def svc
@@ -29,7 +29,7 @@ class RPTDelinquencySummaryController extends com.rameses.gov.etracs.rpt.report.
     Map getParameters(){
         def map = [:]
         map.PERIODNAME = 'Computed as of ' + (new java.text.SimpleDateFormat('MMMMM dd, yyyy').format(reportdata[0].dtgenerated));
-        if (entity.format.reporttype == 'summary') {
+        if (entity.format.reporttype.matches('summary|byclassdetailed')) {
             map.TITLE = 'SUMMARY OF REALTY TAX DELINQUENCY';
             map.SUBTITLE = entity.period?.caption + ' '  + entity.year 
         }
@@ -59,8 +59,9 @@ class RPTDelinquencySummaryController extends com.rameses.gov.etracs.rpt.report.
     }
     
     def formats = [
-        [reporttype:'summary', caption:'STANDARD', reportname:'rptdelinquency_summary.jasper'],
-        [reporttype:'certifiedlist', caption:'CERTIFIED LIST', reportname:'rptdelinquency_certified_list.jasper'],
-        [reporttype:'byclassification', caption:'BY CLASSIFICATION', reportname:'rptdelinquency_classification.jasper'],
+        [reporttype:'summary', caption:'Standard', reportname:'rptdelinquency_summary.jasper'],
+        [reporttype:'certifiedlist', caption:'Certified List', reportname:'rptdelinquency_certified_list.jasper'],
+        [reporttype:'byclassification', caption:'By Classification', reportname:'rptdelinquency_classification.jasper'],
+        [reporttype:'byclassdetailed', caption:'By Classification (Detailed)', reportname:'rptdelinquency_classification_detailed.jasper'],
     ]
 }

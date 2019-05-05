@@ -66,16 +66,39 @@
 	<variable name="TNETTOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{netgrandtotal}]]></variableExpression>
 	</variable>
-		<background>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</background>
-		<title>
-			<band height="58"  isSplitAllowed="true" >
+	<variable name="basic" class="java.lang.Number" resetType="Group" resetGroup="YEAR" calculation="Sum">
+		<variableExpression><![CDATA[$F{basic}]]></variableExpression>
+	</variable>
+	<variable name="basicdisc" class="java.lang.Number" resetType="Group" resetGroup="YEAR" calculation="Sum">
+		<variableExpression><![CDATA[$F{basicdisc}]]></variableExpression>
+	</variable>
+	<variable name="basicnet" class="java.lang.Number" resetType="Group" resetGroup="YEAR" calculation="Sum">
+		<variableExpression><![CDATA[$F{basicnet}]]></variableExpression>
+	</variable>
+	<variable name="sef" class="java.lang.Number" resetType="Group" resetGroup="YEAR" calculation="Sum">
+		<variableExpression><![CDATA[$F{sef}]]></variableExpression>
+	</variable>
+	<variable name="sefdisc" class="java.lang.Number" resetType="Group" resetGroup="YEAR" calculation="Sum">
+		<variableExpression><![CDATA[$F{sefdisc}]]></variableExpression>
+	</variable>
+	<variable name="sefnet" class="java.lang.Number" resetType="Group" resetGroup="YEAR" calculation="Sum">
+		<variableExpression><![CDATA[$F{sefnet}]]></variableExpression>
+	</variable>
+	<variable name="idle" class="java.lang.Number" resetType="Group" resetGroup="YEAR" calculation="Sum">
+		<variableExpression><![CDATA[$F{idle}]]></variableExpression>
+	</variable>
+	<variable name="netgrandtotal" class="java.lang.Number" resetType="Group" resetGroup="YEAR" calculation="Sum">
+		<variableExpression><![CDATA[$F{netgrandtotal}]]></variableExpression>
+	</variable>
+
+		<group  name="YEAR" >
+			<groupExpression><![CDATA[$F{year}]]></groupExpression>
+			<groupHeader>
+			<band height="60"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="88"
-						y="14"
+						y="16"
 						width="157"
 						height="12"
 						key="textField-83"/>
@@ -88,9 +111,10 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="14"
+						y="16"
 						width="88"
 						height="44"
+						forecolor="#000000"
 						key="staticText-31"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -106,7 +130,7 @@ CLASSIFICATION]]></text>
 				<staticText>
 					<reportElement
 						x="443"
-						y="14"
+						y="16"
 						width="64"
 						height="44"
 						key="staticText-64"/>
@@ -126,7 +150,7 @@ Net Collection
 				<staticText>
 					<reportElement
 						x="245"
-						y="14"
+						y="16"
 						width="157"
 						height="12"
 						key="staticText-71"/>
@@ -143,7 +167,7 @@ Net Collection
 				<staticText>
 					<reportElement
 						x="186"
-						y="26"
+						y="28"
 						width="59"
 						height="32"
 						key="staticText-81"/>
@@ -163,7 +187,7 @@ Net Collection
 				<staticText>
 					<reportElement
 						x="88"
-						y="26"
+						y="28"
 						width="51"
 						height="32"
 						key="staticText-83"/>
@@ -182,7 +206,7 @@ Collection
 				<staticText>
 					<reportElement
 						x="139"
-						y="26"
+						y="28"
 						width="47"
 						height="32"
 						key="staticText-84"/>
@@ -198,27 +222,10 @@ Collection
 
 (2)]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="0"
-						y="0"
-						width="507"
-						height="14"
-						key="textField-69"/>
-					<box leftPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["PROVINCE/CITY : " + ( $P{LGUTYPE}.equals("municipality") ? $P{PARENTLGUNAME} : $P{LGUNAME}) + "                         MUNICIPALITY : " + ( $P{LGUTYPE}.equals("municipality") ? $P{LGUNAME} : "")]]></textFieldExpression>
-				</textField>
 				<staticText>
 					<reportElement
 						x="245"
-						y="26"
+						y="28"
 						width="51"
 						height="32"
 						key="staticText-91"/>
@@ -237,7 +244,7 @@ Collection
 				<staticText>
 					<reportElement
 						x="296"
-						y="26"
+						y="28"
 						width="47"
 						height="32"
 						key="staticText-92"/>
@@ -256,7 +263,7 @@ Collection
 				<staticText>
 					<reportElement
 						x="402"
-						y="14"
+						y="16"
 						width="41"
 						height="44"
 						key="staticText-98"/>
@@ -276,7 +283,7 @@ Collection
 				<staticText>
 					<reportElement
 						x="343"
-						y="26"
+						y="28"
 						width="59"
 						height="32"
 						key="staticText-104"/>
@@ -293,6 +300,218 @@ Collection
 =(6)
 ]]></text>
 				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="507"
+						height="17"
+						backcolor="#CCCCCC"
+						key="textField-84"/>
+					<box leftPadding="4" rightPadding="4">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{year}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="24"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="88"
+						height="13"
+						key="textField-85"
+						stretchType="RelativeToBandHeight"/>
+					<box leftPadding="3" rightPadding="5">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Sub-Total"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="88"
+						y="0"
+						width="51"
+						height="13"
+						key="textField-86"
+						stretchType="RelativeToBandHeight"/>
+					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{basic}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="(###0.00)" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="139"
+						y="0"
+						width="47"
+						height="13"
+						key="textField-87"
+						stretchType="RelativeToBandHeight"/>
+					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{basicdisc}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="186"
+						y="0"
+						width="59"
+						height="13"
+						key="textField-88"
+						stretchType="RelativeToBandHeight"/>
+					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{basicnet}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="245"
+						y="0"
+						width="51"
+						height="13"
+						key="textField-89"
+						stretchType="RelativeToBandHeight"/>
+					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{sef}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="(#,##0.00)" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="296"
+						y="0"
+						width="47"
+						height="13"
+						key="textField-90"
+						stretchType="RelativeToBandHeight"/>
+					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{sefdisc}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="343"
+						y="0"
+						width="59"
+						height="13"
+						key="textField-91"
+						stretchType="RelativeToBandHeight"/>
+					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{sefnet}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="443"
+						y="0"
+						width="64"
+						height="13"
+						key="textField-92"
+						stretchType="RelativeToBandHeight"/>
+					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{netgrandtotal}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="402"
+						y="0"
+						width="41"
+						height="13"
+						key="textField-93"
+						stretchType="RelativeToBandHeight"/>
+					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{idle}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="20"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="507"
+						height="14"
+						key="textField-69"/>
+					<box leftPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["PROVINCE/CITY : " + ( $P{LGUTYPE}.equals("municipality") ? $P{PARENTLGUNAME} : $P{LGUNAME}) + "                         MUNICIPALITY : " + ( $P{LGUTYPE}.equals("municipality") ? $P{LGUNAME} : "")]]></textFieldExpression>
+				</textField>
 			</band>
 		</title>
 		<pageHeader>

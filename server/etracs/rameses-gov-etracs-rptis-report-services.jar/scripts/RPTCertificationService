@@ -46,7 +46,7 @@ class RPTCertificationService
 		if (!cert.objid)
 			cert.objid = 'C' + new java.rmi.server.UID()
 		if (!cert.txnno){
-			cert.txnno = seqSvc.getNextFormattedSeries('RPTCERTIFICATION')
+			cert.txnno = env.ORGCODE.replaceAll('-', '') + seqSvc.getNextFormattedSeries('RPTCERTIFICATION')
 		}
 		cert.txndate = dtSvc.serverDate
 		cert.createdbyid = env.USERID

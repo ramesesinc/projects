@@ -47,12 +47,12 @@ public class FAASInitChangePinPage extends javax.swing.JPanel {
         formPanel1.setBorder(xTitledBorder1);
         formPanel1.setCaptionWidth(110);
 
-        xLookupField3.setCaption("Property to process");
-        xLookupField3.setCaptionWidth(130);
+        xLookupField3.setCaption("TD No. to revise");
         xLookupField3.setExpression("#{entity.faas.tdno}");
         xLookupField3.setHandler("lookupFaas");
-        xLookupField3.setHint("Search Property");
         xLookupField3.setName("entity.faas"); // NOI18N
+        xLookupField3.setCaptionWidth(130);
+        xLookupField3.setHint("Search Property");
         xLookupField3.setPreferredSize(new java.awt.Dimension(0, 19));
         xLookupField3.setRequired(true);
         formPanel1.add(xLookupField3);
@@ -149,33 +149,18 @@ public class FAASInitChangePinPage extends javax.swing.JPanel {
         xNumberField5.setRequired(true);
         formPanel1.add(xNumberField5);
 
+        xLabel1.setCaption("PIN No.");
+        xLabel1.setExpression("#{entity.fullpin}");
         xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         com.rameses.rcp.control.border.XLineBorder xLineBorder2 = new com.rameses.rcp.control.border.XLineBorder();
         xLineBorder2.setLineColor(new java.awt.Color(153, 153, 153));
         xLabel1.setBorder(xLineBorder2);
-        xLabel1.setCaption("PIN No.");
         xLabel1.setCaptionFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        xLabel1.setExpression("#{entity.fullpin}");
         xLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 30));
 
+        xDataTable1.setHandler("listHandler");
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "selected"}
-                , new Object[]{"caption", " "}
-                , new Object[]{"width", 40}
-                , new Object[]{"minWidth", 40}
-                , new Object[]{"maxWidth", 40}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.CheckBoxColumnHandler(java.lang.Boolean.class, true, false)}
-            }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "attribute"}
                 , new Object[]{"caption", "Attributes"}
@@ -192,7 +177,6 @@ public class FAASInitChangePinPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable1.setHandler("listHandler");
         xDataTable1.setImmediate(true);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);

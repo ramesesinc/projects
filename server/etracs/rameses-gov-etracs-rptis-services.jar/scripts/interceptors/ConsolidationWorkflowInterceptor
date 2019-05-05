@@ -44,7 +44,7 @@ class ConsolidationWorkflowInterceptor
 	def em_rpu_assessment
 
 
-	@After(pattern='ConsolidationService.createConsolidation')
+	@After(pattern='ConsolidationService.create')
 	public void afterCreate(evt){
 		def consolidation = evt.result 
 		def info = evt.args[0] 
@@ -59,7 +59,7 @@ class ConsolidationWorkflowInterceptor
 	public void handleWorkflowOpen( evt ) {
 		def task = evt.result 
 		if ( ! task.refid ) throw new Exception('RefId is required.')
-		task.data = consolidationSvc.openConsolidation(task.refid)
+		task.data = consolidationSvc.open([objid: task.refid])
 		task.data.taskid = task.objid 
 		task.data.taskstate = task.state
 		task.data.assignee = task.assignee 
@@ -78,7 +78,7 @@ class ConsolidationWorkflowInterceptor
 	@Before(pattern="ConsolidationWorkflowService.signal", eval="#{args[0].action =='delete'}", index=10) 
 	public void beforeDeleteConsolidation( evt ) {
 		def consolidation = evt.args[0].data
-		consolidationSvc.deleteConsolidation(consolidation)
+		consolidationSvc.delete(consolidation)
 	}
 
 	@After(pattern="ConsolidationWorkflowService.signal", eval="#{args[0].action =='delete'}", index=10) 
@@ -126,7 +126,7 @@ class ConsolidationWorkflowInterceptor
 	@Before(pattern="ConsolidationWorkflowService.signal", eval="#{args[0].state.equalsIgnoreCase('appraiser') && !args[0].action?.matches('return.*')}", index=15) 
 	public void validateAppraisalInfo( evt ) {
 		def consolidation = evt.args[0].data
-		consolidation = consolidationSvc.openConsolidation(consolidation.objid)
+		consolidation = consolidationSvc.open(consolidation)
 
 		//check existing assessment 
 		def assessment = em_rpu_assessment.find([rpuid:consolidation.newrpuid]).first()

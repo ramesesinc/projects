@@ -106,7 +106,6 @@
                         <Property name="checkValue" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                           <Connection code="1" type="code"/>
                         </Property>
-                        <Property name="disableWhen" type="java.lang.String" value="#{true}"/>
                         <Property name="name" type="java.lang.String" value="entity.sharing" noResource="true"/>
                         <Property name="uncheckValue" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                           <Connection code="0" type="code"/>

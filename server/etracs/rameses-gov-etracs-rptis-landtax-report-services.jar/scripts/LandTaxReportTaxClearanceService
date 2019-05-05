@@ -25,6 +25,9 @@ class LandTaxReportTaxClearanceService
     @Service('ReportParameterService')
     def paramSvc 
 
+    @DataContext('cashreceipt')
+    def em_cashreceipt
+
 
     @ProxyMethod
     public def getReportTypes() {
@@ -55,6 +58,28 @@ class LandTaxReportTaxClearanceService
             official            : false,
             reporttype          : getReportTypes().first(),
         ]
+    }
+
+    @ProxyMethod
+    public void checkDuplicateReceipt(entity) {
+        def onlinePaymentRequired = util.toBoolean(var.landtax_clearance_online_payment_required, false)
+        if (onlinePaymentRequired) {
+            def rct = em_cashreceipt.select('objid,void.objid,void.reason')
+                                    .find([receiptno: entity.orno, formno:'51'])
+                                    .first();
+            if (!rct) {
+                throw new Exception('O.R. No. ' + entity.orno + ' does not exist.')
+            } else if (rct.void?.objid) {
+                throw new Exception('O.R. No. ' + entity.orno + ' has already been voided.')
+            }
+            
+            def dup = em.findPaidClearance(entity)
+            if (dup) {
+                throw new Exception('O.R. No. ' + entity.orno + ' is already referenced by Clearance No. ' + dup.txnno + '.')
+            }
+        }
+
+
     }
 
 

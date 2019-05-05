@@ -176,8 +176,8 @@ FROM (
 	SELECT 
 		dpc.code as dominantclasscode,
 		dpc.name as dominantclassname, 
-		pc.code as classcode,
-		pc.name as classname, 
+		case when pc.code is null then lal.code else pc.code end as classcode,
+		case when pc.name is null then lal.name else pc.name end as classname, 
 		lal.code AS actualuse,
 		lal.name AS actualusename,
 		ra.marketvalue,
@@ -189,7 +189,7 @@ FROM (
 		inner join rpu r on ra.rpuid = r.objid 
 		inner join propertyclassification dpc on r.classification_objid = dpc.objid 
 		INNER JOIN landassesslevel lal ON ra.actualuse_objid = lal.objid 
-		inner join propertyclassification pc on lal.classification_objid = pc.objid 
+		left join propertyclassification pc on lal.classification_objid = pc.objid 
 	WHERE ra.rpuid = $P{objid}	
 
 	UNION ALL 

@@ -22,8 +22,8 @@
         <invoker type="formActions" action="gotoInit" caption="Back" mnemonic="n" visibleWhen="#{mode=='create'}" />
         <invoker type="formActions" action="save" caption="Save" shortcut="ctrl S" mnemonic="s"  visibleWhen="#{mode=='create' || mode=='edit' }"/>
         <invoker type="formActions" action="edit" caption="Edit" shortcut="ctrl E" mnemonic="e" role="ADMIN,LANDTAX" permission="rptcompromise.edit" visibleWhen="#{mode=='view' &amp;&amp; entity.state=='DRAFT'}" />
-        <invoker type="formActions" action="submit" caption="Submit" shortcut="ctrl S" mnemonic="s"  role="ADMIN,LANDTAX" permission="rptcompromise.submit" visibleWhen="#{mode=='view' &amp;&amp; entity.state=='DRAFT'}" />
-        <invoker type="formActions" action="submitForApproval" caption="Submit For Approval" shortcut="ctrl S" mnemonic="s"  role="ADMIN,LANDTAX" permission="rptcompromise.submitforapproval" visibleWhen="#{mode=='view' &amp;&amp; entity.state=='FORPAYMENT'}" />
+        <invoker type="formActions" action="submit" caption="Submit for Payment" shortcut="ctrl S" mnemonic="s"  role="ADMIN,LANDTAX" permission="rptcompromise.submit" visibleWhen="#{mode=='view' &amp;&amp; entity.state=='DRAFT'}" />
+        <invoker type="formActions" action="submitForApproval" caption="Submit for Approval" shortcut="ctrl S" mnemonic="s"  role="ADMIN,LANDTAX" permission="rptcompromise.submitforapproval" visibleWhen="#{mode=='view' &amp;&amp; entity.state=='FORPAYMENT'}" />
         <invoker type="formActions" action="approve" caption="Approve" shortcut="ctrl A" mnemonic="a"  role="ADMIN,LANDTAX" permission="rptcompromise.approve" visibleWhen="#{mode=='view' &amp;&amp; entity.state=='FORAPPROVAL'}" />
         <invoker type="formActions" action="delete" caption="Delete"  mnemonic="d" role="ADMIN,LANDTAX" permission="rptcompromise.delete" visibleWhen="#{showDeleteAction}" />
         <invoker type="formActions" action="capturePayment" caption="Capture Installment Payment"  role="ADMIN,LANDTAX" visibleWhen="#{mode=='view' &amp;&amp; entity.state=='APPROVED'}" />

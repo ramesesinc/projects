@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml"
-    schemaName="landtax_lgu_account_mapping"
-    cols="revtype,revperiod,item.title"
+    schemaName="vw_landtax_lgu_account_mapping"
+    cols="item.title,item.type,item.fund.title"
     orderBy="revtype,revperiod"
     allowCreate="false"
     allowDelete="false"

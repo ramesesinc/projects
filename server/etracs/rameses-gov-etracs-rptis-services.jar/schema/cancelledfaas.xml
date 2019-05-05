@@ -13,6 +13,10 @@
 		<field name="lasttaxyear" type="integer" />
 		<field name="cancelledbytdnos" />
 		<field name="cancelledbypins" />
+		<complex name="reason" ref="cancelfaasreason" jointype="many-to-one" required="false"
+			includefields="code,name">
+				<key field="reason_objid" target="objid" />
+		</complex>
 	</element>
 
 	<element name="signatory" tablename="cancelledfaas_signatory">

@@ -21,6 +21,9 @@ public class ModifyPinModel
 
     @Service('Var')
     def varSvc 
+
+    @Service('FAASLookupService')
+    def faasLookupSvc 
     
     @PropertyChangeListener
     def listener = [
@@ -58,6 +61,9 @@ public class ModifyPinModel
     }
     
     void create() {
+        def faases = faasLookupSvc.lookupFaas([objid: entity.objid]);
+        if (!faases) throw new Exception('FAAS does not exist or has already been deleted.');
+        faas  = faases[0];
         init();
         updateFaas(faas);
         externalCall = true;
@@ -78,14 +84,17 @@ public class ModifyPinModel
             }
             
             def rp = svc.updatePin(entity)
-            if (!externalCall && caller?.faas){
-                caller.faas.fullpin = entity.newpin
-                caller.faas.rpu?.fullpin = entity.newpin
-                if ( rp ) {
-                    caller.faas.rp.pintype = rp.pintype 
-                    caller.faas.rp.pin = rp.pin
-                    caller.faas.rp.section = rp.section
-                    caller.faas.rp.parcel = rp.parcel
+            if (externalCall && caller ){
+                def callerentity = caller.entity;
+                if (callerentity) {
+                    callerentity.fullpin = entity.newpin
+                    callerentity.rpu?.fullpin = entity.newpin
+                    if ( rp ) {
+                        callerentity.rp.pintype = rp.pintype 
+                        callerentity.rp.pin = rp.pin
+                        callerentity.rp.section = rp.section
+                        callerentity.rp.parcel = rp.parcel
+                    }
                 }
             }
             
@@ -93,6 +102,7 @@ public class ModifyPinModel
             onUpdate();
             
             if (externalCall) {
+                caller?.binding?.refresh();
                 return '_close';
             } else {
                 clearInfo()
@@ -120,7 +130,6 @@ public class ModifyPinModel
         def tokens = f.fullpin.tokenize('-');
         
         if (f.rputype == 'land'){
-            println 'f.barangayid => ' + f.barangayid
             entity.suffix = 0
             entity.munidistrict = getMuniDistrictList().find{it.indexno == tokens[1]}
             entity.barangay = getBarangayList().find{it.objid == f.barangayid}
@@ -146,7 +155,7 @@ public class ModifyPinModel
             },
             onempty : {
                 this.faas = null;
-                this.landfaas = nulll;
+                this.landfaas = null;
                 binding?.refresh('.*');
             }
         ]);

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="resection:open" action="open" caption="Resection" target="window"  />
+   </invokers>
+
+   <code class="com.rameses.gov.etracs.rptis.models.ResectionModel">
+   </code>
+
+   <pages> 
+        <page template="com.rameses.gov.etracs.rpt.workflow.InfoPage"/>
+        <page name="completed" template="com.rameses.gov.etracs.rpt.workflow.InfoPage"/>
+         <page name="wait" template="com.rameses.gov.etracs.rpt.util.WaitInfoPage"/>
+    </pages>
+</workunit>
+
+

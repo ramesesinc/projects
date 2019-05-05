@@ -36,6 +36,13 @@ public class SketchPage extends javax.swing.JPanel {
         xButton2 = new com.rameses.rcp.control.XButton();
         xButton3 = new com.rameses.rcp.control.XButton();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
+        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
+        xTextField9 = new com.rameses.rcp.control.XTextField();
+        xTextField13 = new com.rameses.rcp.control.XTextField();
+        xTextField17 = new com.rameses.rcp.control.XTextField();
+        xFormPanel7 = new com.rameses.rcp.control.XFormPanel();
+        xTextField16 = new com.rameses.rcp.control.XTextField();
+        xTextField33 = new com.rameses.rcp.control.XTextField();
         xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
         xTextField12 = new com.rameses.rcp.control.XTextField();
         xTextField30 = new com.rameses.rcp.control.XTextField();
@@ -43,8 +50,8 @@ public class SketchPage extends javax.swing.JPanel {
         xTextField14 = new com.rameses.rcp.control.XTextField();
         xTextField31 = new com.rameses.rcp.control.XTextField();
 
-        xImageCanvas1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xImageCanvas1.setName("image"); // NOI18N
+        xImageCanvas1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xImageCanvas1.setNoImageBackground(new java.awt.Color(255, 255, 255));
         xImageCanvas1.setText("xImageCanvas1");
 
@@ -63,10 +70,59 @@ public class SketchPage extends javax.swing.JPanel {
         xButton3.setText("Remove");
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setPadding(new java.awt.Insets(20, 10, 10, 10));
         xTitledBorder1.setTitle("Boundary Details");
         xFormPanel3.setBorder(xTitledBorder1);
         xFormPanel3.setCaptionPadding(new java.awt.Insets(0, 0, 0, 0));
         xFormPanel3.setPadding(new java.awt.Insets(0, 5, 2, 5));
+
+        xFormPanel4.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel4.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel4.setShowCaption(false);
+
+        xTextField9.setCaption("Survey No.");
+        xTextField9.setName("entity.rp.surveyno"); // NOI18N
+        xTextField9.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
+        xTextField9.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField9.setStretchWidth(30);
+        xFormPanel4.add(xTextField9);
+
+        xTextField13.setCaption("Lot No.");
+        xTextField13.setName("entity.rp.cadastrallotno"); // NOI18N
+        xTextField13.setCaptionWidth(65);
+        xTextField13.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
+        xTextField13.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField13.setStretchWidth(40);
+        xFormPanel4.add(xTextField13);
+
+        xTextField17.setCaption("Block No.");
+        xTextField17.setName("entity.rp.blockno"); // NOI18N
+        xTextField17.setCaptionWidth(65);
+        xTextField17.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField17.setStretchWidth(30);
+        xFormPanel4.add(xTextField17);
+
+        xFormPanel3.add(xFormPanel4);
+
+        xFormPanel7.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel7.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel7.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel7.setShowCaption(false);
+
+        xTextField16.setCaption("Street");
+        xTextField16.setName("entity.rp.street"); // NOI18N
+        xTextField16.setStretchWidth(100);
+        xFormPanel7.add(xTextField16);
+
+        xTextField33.setCaption("Purok");
+        xTextField33.setCaptionWidth(70);
+        xTextField33.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
+        xTextField33.setName("entity.rp.purok"); // NOI18N
+        xTextField33.setStretchWidth(100);
+        xFormPanel7.add(xTextField33);
+
+        xFormPanel3.add(xFormPanel7);
 
         xFormPanel5.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel5.setPadding(new java.awt.Insets(0, 0, 0, 0));
@@ -121,7 +177,7 @@ public class SketchPage extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 675, Short.MAX_VALUE))
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 882, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -130,7 +186,7 @@ public class SketchPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xImageCanvas1, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE)
+                .addComponent(xImageCanvas1, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -146,13 +202,20 @@ public class SketchPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XFormPanel xFormPanel6;
+    private com.rameses.rcp.control.XFormPanel xFormPanel7;
     private com.rameses.rcp.control.XImageCanvas xImageCanvas1;
     private com.rameses.rcp.control.XTextField xTextField12;
+    private com.rameses.rcp.control.XTextField xTextField13;
     private com.rameses.rcp.control.XTextField xTextField14;
+    private com.rameses.rcp.control.XTextField xTextField16;
+    private com.rameses.rcp.control.XTextField xTextField17;
     private com.rameses.rcp.control.XTextField xTextField30;
     private com.rameses.rcp.control.XTextField xTextField31;
+    private com.rameses.rcp.control.XTextField xTextField33;
+    private com.rameses.rcp.control.XTextField xTextField9;
     // End of variables declaration//GEN-END:variables
     
 }

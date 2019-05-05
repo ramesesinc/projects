@@ -54,7 +54,7 @@ public abstract class ChangeFaasInfoController
     
     def save(){
         if (MsgBox.confirm('Save and apply changes?')){
-            svc.updateInfo(changeinfo);
+            changeinfo.putAll(svc.updateInfo(changeinfo));
             updateEntityInfo(changeinfo.newinfo);
             caller.refreshForm();
             return '_close';

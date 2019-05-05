@@ -40,12 +40,19 @@ abstract class RPTWorkflowController extends WorkflowController
         loadSections();
     }
     
+    public void onEnd() {
+        //workaround to close actions when no task is available
+        entity.taskstate = 'xxx';
+        loadSections();
+    }
+    
     public void afterSignal(Object result){
         if (result.data){
             entity.putAll(result.data)
         }
-        if (prevtask.action != 'delete')
+        if (prevtask.action != 'delete'){
             loadSections();
+        }
     }
     
 

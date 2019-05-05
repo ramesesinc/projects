@@ -14,6 +14,11 @@ class RPTReceiptCompromiseInterceptor
 	@Service('Var') 
 	def var;
 
+	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'cashreceipt' && result.collectiontype?.handler?.toString().matches('rptcompromise') }", index=1000)
+	public void afterOpenCashReceiptSchema( evt ) {
+		openReceipt( evt );  
+	} 
+
 	@After(pattern="CashReceiptService.open", eval="#{result.collectiontype?.handler.toString().matches('rptcompromise')}") 
 	public void openReceipt( evt ) {
 		def receipt = evt.result

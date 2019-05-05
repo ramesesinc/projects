@@ -9,7 +9,8 @@ import com.rameses.osiris2.reports.*;
 import com.rameses.gov.etracs.rptis.util.*;
 
 
-class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.AbstractCashReceipt implements ViewHandler
+//class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.AbstractCashReceipt implements ViewHandler
+class CashReceiptModel extends com.rameses.enterprise.treasury.models.AbstractCashReceipt implements ViewHandler
 {
     @Binding
     def binding;
@@ -104,6 +105,18 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
             if (!billedLedgers) {
                 billedLedgers = svc.getLedgersForPayment(bill);    
             }
+            
+            if (payoption == 'bycount') {
+                if (!bill.itemcount) bill.itemcount = 5; 
+                if (billedLedgers.size() > bill.itemcount) {
+                    def items = [];
+                    for (int i = 0; i < bill.itemcount; i++) {
+                        items << billedLedgers[i];
+                    }
+                    billedLedgers = items;
+                }
+            }
+
             billedLedgers.each {
                 try {
                     msg = 'Processing ledger ' + (it.rptledger ? it.rptledger.tdno : '...');

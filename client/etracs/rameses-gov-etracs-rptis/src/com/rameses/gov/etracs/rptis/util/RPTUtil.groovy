@@ -79,6 +79,7 @@ class RPTUtil
             newpin += entity.barangay?.pin + '-';
         }
         else if( entity.barangay && entity.pintype == 'old') {
+            entity.useoldpin = true;
             if (entity.useoldpin){
                 newpin += entity.barangay?.oldpin + '-';
             }

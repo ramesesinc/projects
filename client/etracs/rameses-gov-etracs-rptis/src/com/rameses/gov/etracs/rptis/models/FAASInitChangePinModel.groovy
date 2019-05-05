@@ -51,19 +51,17 @@ class FAASInitChangePinModel extends FAASInitTxnModel
         binding?.refresh('entity.pin');
     }
     
-    
+
     void afterLookupFaas(){
+        entity.rp = rpSvc.open([objid:entity.faas.realpropertyid]);
         entity.rputype = entity.faas.rputype;
-        entity.isection = RPTUtil.toInteger(entity.faas.section);
-        entity.iparcel = RPTUtil.toInteger(entity.faas.parcel);
+        entity.isection = RPTUtil.toInteger(entity.rp.section);
+        entity.iparcel = RPTUtil.toInteger(entity.rp.parcel);
         entity.suffix = entity.faas.suffix;
         entity.barangay = barangays.find{it.objid == entity.faas.barangayid }
-        entity.rp = rpSvc.open([objid:entity.faas.realpropertyid]);
         buildPin();
     }
-    
 
-    
     def getLookupRealProperty(){
         return InvokerUtil.lookupOpener('realproperty:lookup', [
             onselect: { 

@@ -1,6 +1,18 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="ResectionListService" entityName="resection" formTarget="window" >
+<workunit schemaName="resection" 
+          windowTitle="Resections"
+          allowDelete="#{entity.state=='DRAFT'}" 
+          cols="state,lgu.name,barangay.name,pintype,section" 
+          hiddenCols="taskid,taskaction,assignee.objid"
+          orderBy="state,lgu.name,barangay.name,section" >
     <invokers>
-        <invoker folderid="/explorer/txn/rpt/list" caption="Resections"  target="window" index="210"  role="ASSESSOR_SHARED,SHARED"/>
-        <invoker type="quick_launcher" code="RS00" caption="Resections" role="ASSESSOR_SHARED,SHARED" />
+        <invoker folderid="/menucategory/rpt/mgmt" 
+                 action="init" caption="View Resections"  
+                 index="1001" 
+                 role="SHARED" 
+                 permission="resection.viewlist" />
     </invokers>
+    <code class="com.rameses.seti2.models.CrudListModel"/>
+    <pages>
+        <page template="com.rameses.seti2.views.CrudListPage"/>
+    </pages>
 </workunit>

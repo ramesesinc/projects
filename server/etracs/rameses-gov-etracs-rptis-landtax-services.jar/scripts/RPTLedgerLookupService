@@ -11,7 +11,7 @@ class RPTLedgerLookupService
     @ProxyMethod
     public def getList( params ) {
         if (! params) params = [:]
-        params.state = 'APPROVED'
+        
         params.tdno = params.searchtext
         params.prevtdno = params.searchtext
         params.searchtext = (params.searchtext ? params.searchtext : '') + '%'
@@ -19,6 +19,14 @@ class RPTLedgerLookupService
         params.fixfilters = ''
         params.filters = ''
         params.orderby = ''
+
+        if (params.state) {
+            params.fixfilters += ' AND rl.state = $P{state}'
+        }
+        if (params.taxpayer?.objid) {
+            params.taxpayerid = params.taxpayer.objid
+            params.fixfilters += ' AND rl.taxpayer_objid = $P{taxpayerid}'
+        }
 
         def filters = [
             ' AND rl.tdno = $P{tdno}',
@@ -38,6 +46,7 @@ class RPTLedgerLookupService
             [name:'taxpayer.name', caption:'Taxpayer Name', width:250],
             [name:'fullpin', caption:'PIN', width:150],
             [name:'totalav', caption:'Assessed Value', type:'decimal', width:110],
+            [name:'taxable', caption:'Tax?', type:'boolean', width:50],
             [name:'state', caption:'State', width:100],
         ]   
     }

@@ -11,8 +11,7 @@ import com.rameses.osiris3.common.*;
 class AddRevenueShare implements RuleActionHandler  {
 
 	public void execute(def params, def drools) {
-
-		def refitem = params.refitem;
+def refitem = params.refitem;
 		def payableaccount = params.payableaccount;
 		def amt = params.amount.decimalValue;
 		def org = params.org;
@@ -37,6 +36,7 @@ class AddRevenueShare implements RuleActionHandler  {
 		}
 
 		rs.amount  = amt;
+
 		if (!ct.result.sharing) {
 			ct.result.sharing = []
 		}

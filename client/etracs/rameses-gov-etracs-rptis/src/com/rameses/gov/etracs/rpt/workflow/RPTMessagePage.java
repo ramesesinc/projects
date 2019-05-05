@@ -42,10 +42,11 @@ public class RPTMessagePage extends javax.swing.JPanel {
 
         jLabel1.setText("Please enter a message ");
 
+        xImageCanvas2.setName("signature.image"); // NOI18N
+        xImageCanvas2.setVisibleWhen("#{mode=='sign'}");
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Signature");
         xImageCanvas2.setBorder(xTitledBorder1);
-        xImageCanvas2.setName("signature.image"); // NOI18N
         xImageCanvas2.setNoImageBackground(new java.awt.Color(255, 255, 255));
         xImageCanvas2.setText("xImageCanvas1");
 
@@ -53,7 +54,9 @@ public class RPTMessagePage extends javax.swing.JPanel {
         xComboBox1.setExpression("#{item.name} #{item.title? ' ('+item.title +')': '' }");
         xComboBox1.setItems("assignees");
         xComboBox1.setName("assignee"); // NOI18N
+        xComboBox1.setCellPadding(new java.awt.Insets(0, 0, 5, 0));
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 22));
+        xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
 
         jScrollPane1.setName("message"); // NOI18N
@@ -106,7 +109,7 @@ public class RPTMessagePage extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     

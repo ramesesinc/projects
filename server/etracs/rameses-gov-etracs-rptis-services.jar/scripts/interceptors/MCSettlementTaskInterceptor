@@ -10,9 +10,6 @@ class MCSettlementTaskInterceptor
 	@Service('RPTTaskService')
 	def taskSvc
 
-	@Service('RPTTrackingService')
-    def trackingSvc
-    
     @Service('RPTWorkflowService')
     def workflowSvc 
 
@@ -81,7 +78,6 @@ class MCSettlementTaskInterceptor
 	@After(pattern="MCSettlementService.approve") 
 	public void approve( evt ) {
 		taskSvc.closeTask([objid:evt.result.objid])
-		trackingSvc.updateMessage([objid:evt.result.objid, msg:DOC_NAME + ' is already approved.'])
 	}
 
 	@After(pattern="MCSettlementService.disapprove") 

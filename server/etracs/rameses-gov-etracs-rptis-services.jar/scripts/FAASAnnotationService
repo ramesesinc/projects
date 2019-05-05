@@ -32,6 +32,9 @@ class FAASAnnotationService
 
 	@Env
 	def env
+
+	@DataContext('faasannotation')
+	def em_annotation
 	
 	def SCHEMA_NAME = 'faasannotation'
 	
@@ -77,7 +80,7 @@ class FAASAnnotationService
 	
 
 	@ProxyMethod
-	public def initAnnotation( faas ) {
+	public def init( faas ) {
 		txnRef.checkReference(faas.objid)
 		if (faas.state == 'CANCELLED') throw new Exception('FAAS has already been cancelled.')
 		if (faas.state != 'CURRENT') throw new Exception('FAAS is not yet approved. Only current record is allowed.')
@@ -91,7 +94,7 @@ class FAASAnnotationService
 	}
 	
 	@ProxyMethod
-	public Map createAnnotation( annotation ) {
+	public Map create( annotation ) {
 		validateInfo( annotation )
 		annotation.state  = STATE_DRAFT
 		annotation.txnno  = getNextSeries()
@@ -104,7 +107,7 @@ class FAASAnnotationService
 
 
 	@ProxyMethod
-	public Map updateAnnotation( annotation ) {
+	public Map update( annotation ) {
 		validateInfo( annotation )
 		em.update(annotation)
 		return annotation 
@@ -112,8 +115,8 @@ class FAASAnnotationService
 
 
 	@ProxyMethod
-	public def openAnnotation( objid ) {
-		def annotation = em.findById([objid:objid])
+	public def open( annotation ) {
+		annotation = em_annotation.read(annotation)
 		if( !annotation ) throw new Exception('Record does not exist or has already been deleted.')
 		return annotation 
 	}
@@ -142,21 +145,22 @@ class FAASAnnotationService
 
 
 	@ProxyMethod
-	public def deleteAnnotation( annotation ) {
+	public def delete( annotation ) {
 		txnRef.delete(annotation.objid)
 		em.delete(annotation)	
 	}
 
 
 	@ProxyMethod
-	public def cancelAnnotation(annotation) {
+	public def cancel(annotation) {
+		annotation = open(annotation)
 		annotation.state = STATE_CANCELLED
 		em.update(annotation)
 	}
 
 
 	@ProxyMethod
-	public Map submitAnnotationForApproval( annotation ) {
+	public Map submitForApproval( annotation ) {
 		validateInfo( annotation )
 		annotation.state = STATE_FORAPPROVAL
 		em.update(annotation )
@@ -165,7 +169,7 @@ class FAASAnnotationService
 
 
 	@ProxyMethod
-	public Map approveAnnotation( annotation ) {
+	public Map approve( annotation ) {
 		validateInfo(annotation)
 		annotation.state = STATE_APPROVED
 		em.update(annotation )
@@ -174,7 +178,7 @@ class FAASAnnotationService
 
 
 	@ProxyMethod
-	public def disapproveAnnotation( annotation ) {
+	public def disapprove( annotation ) {
 		annotation.state = STATE_DRAFT
 		em.update(annotation) 
 		return annotation 
@@ -233,6 +237,16 @@ class FAASAnnotationService
 
 	def getNextSeries(){
 		return env.ORGID.replaceAll('-', '') + seqSvc.getNextFormattedSeries('FAASAnnotation')
+	}
+
+
+
+	@ProxyMethod
+	public void postRemote(annotation){
+		def exist = em_annotation.find([objid: annotation.objid]).first() != null
+		if (!exist) {
+			em_annotation.create(annotation)
+		}
 	}
 
 }

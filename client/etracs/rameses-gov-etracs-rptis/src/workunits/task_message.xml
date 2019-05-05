@@ -1,10 +1,14 @@
 <workunit>
     <invokers>
-        <invoker type="rptmessage:create" action="showSignViewer" caption="Message" />
+        <invoker type="rptmessage:info" action="init" caption="Message" />
+        <invoker type="rptmessage:sign" action="sign" caption="Message" />
+        
+        <!-- DEPRECIATED: backward compat -->
+        <invoker type="rptmessage:create" action="sign" caption="Message" />
     </invokers>
     <code>
     <![CDATA[
-                import com.rameses.rcp.common.*;
+        import com.rameses.rcp.common.*;
         import com.rameses.rcp.annotations.*;
         import com.rameses.osiris2.client.*;
         import com.rameses.osiris2.common.*;   
@@ -28,17 +32,16 @@
             def digitalsigactive;
             def handler;
             
-            void showSignViewer(){
-                signature = [:];
-                loadDigitalSignatureStatus();
-                if (digitalsigactive)
-                    SigIdViewer.open(model); 
+            def mode = 'info';
+            
+            void init() {
+                mode = 'info';
             }
             
-            void loadDigitalSignatureStatus(){
-                if (digitalsigactive == null)
-                    digitalsigactive = var.getProperty('digital_signature_active', 0);
-                digitalsigactive = digitalsigactive.toString().toLowerCase().matches('1|y|yes|t|true')
+            void sign(){
+                mode = 'sign';
+                signature = [:];
+                SigIdViewer.open(model); 
             }
             
             def model = [
@@ -55,11 +58,10 @@
             ] as SigIdModel
             
             def doOk() {
-                if ( digitalsigactive && signature.numstrokes == 0)
+                if (mode == 'sign' && signature.numstrokes == 0) {
                     throw new Exception('Signature is required.');
-                if (!digitalsigactive)
-                    signature = null;
-                    
+                }
+                
                 task.message = message;
                 task.signature = signature;
                 if(assignee) task.assignee = assignee;

@@ -8,214 +8,33 @@ class LandTaxLGUAccountMappingService
 	def env 
 
 	@DataContext('landtax_lgu_account_mapping')
-	def landtax_lgu_account_mapping
-
-	@DataContext('itemaccount')
-	def em_itemaccount
-
-	@DataContext('org')
-	def org 
-
+	def em_mapping
 
 	@ProxyMethod 
 	public def buildAccounts( params ) {
-		if ( !hasMapping()){
-			if ('city'.equalsIgnoreCase(env.ORGCLASS)){
-				doBuildAccounts([lgutype:'city'])
-				doBuildAccounts([lgutype:'barangay'])
-			}
-			else{
-				doBuildAccounts([lgutype:'province'])
-				doBuildAccounts([lgutype:'municipality'])
-				doBuildAccounts([lgutype:'barangay'])
-			}
-		}
-		else{
-			doBuildAccounts(params)
-		}
-		
-		return landtax_lgu_account_mapping.where('lgu.orgclass = :orgclass', [orgclass:params.lgutype])
-						.orderBy('lgu.code,revtype,revperiod')
-						.list()
-	}
+		em_mapping.deleteLandTaxAccountTags()
+		em_mapping.deleteLandTaxAccounts()
 
-	def hasMapping(){
-		return landtax_lgu_account_mapping.where('1=1').first() != null 
-	}
+		em_mapping.insertRevenueAccounts()
+		em_mapping.insertRevenueAccountTags()
 
-	void doBuildAccounts(params){
-		if (formigrate(params)){
-			migrateMappings(params)
-		}
-		else{
-			def stats = landtax_lgu_account_mapping.findLguStats(params) 
-			if ( stats?.totalcount > 0 ) { 
-				buildItemAccounts(params) 
-				buildAccountMappings(params) 
-			} 
-		}
-	}
-
-	def formigrate(params){
-		if ('barangay'.equalsIgnoreCase(params.lgutype) && landtax_lgu_account_mapping.findBrgyMappingCount().count > 0 ){
-			return true
-		}
-		else if ('province'.equalsIgnoreCase(params.lgutype) && landtax_lgu_account_mapping.findProvinceMappingCount().count > 0 ){
-			return true 
-		}
-		else if ('municipality'.equalsIgnoreCase(params.lgutype) && landtax_lgu_account_mapping.findMunicipalityMappingCount().count > 0 ){
-			return true
-		}
-		return false 
-	}
-
-	void migrateMappings(params){
-		landtax_lgu_account_mapping.removeAccountMappings(params)
-		if ('barangay'.equalsIgnoreCase(params.lgutype)){
-			landtax_lgu_account_mapping.migrateBarangayMappings(params)
-		}
-		else if ('province'.equalsIgnoreCase(params.lgutype)){
-			landtax_lgu_account_mapping.migrateProvinceMappings(params)
-		}
-		else if ('municipality'.equalsIgnoreCase(params.lgutype)){
-			landtax_lgu_account_mapping.migrateMunicipalityMappings(params)
+		if ('MUNICIPALITY'.equalsIgnoreCase(env.ORGCLASS)) {
+			em_mapping.insertProvinceSharePayableAccounts()
+			em_mapping.insertProvinceSharePayableAccountTags()
+			em_mapping.buildMunicipalityRevenueAccounts()
+			em_mapping.buildProvinceShareAccounts()
+		} 
+		else if ('PROVINCE'.equalsIgnoreCase(env.ORGCLASS)) {
+			em_mapping.insertMunicipalitySharePayableAccounts()
+			em_mapping.insertMunicipalitySharePayableAccountTags()
+			em_mapping.buildProvinceRevenueAccounts()
+			em_mapping.buildMunicipalityShareAccounts()
+		} else {
+			em_mapping.buildCityRevenueAccounts()
 		}
 
-	}
-
-
-	void buildItemAccounts(params) {
-		if ('barangay'.equalsIgnoreCase(params.lgutype)){
-			landtax_lgu_account_mapping.buildBrgyItemAccounts()
-		}
-		else if ('city'.equalsIgnoreCase(params.lgutype)){
-			buildItemAccountSql(params)
-			createItemAccounts(landtax_lgu_account_mapping.getCityItemAccounts(params))
-		}
-		else if ('province'.equalsIgnoreCase(params.lgutype)){
-			buildItemAccountSql(params)
-			createItemAccounts(landtax_lgu_account_mapping.getProvinceItemAccounts(params))
-		}
-		else if ('municipality'.equalsIgnoreCase(params.lgutype)){
-			buildItemAccountSql(params)
-			createItemAccounts(landtax_lgu_account_mapping.getMunicipalityItemAccounts(params))
-		}
-	}
-
-	void createItemAccounts(accts){
-		accts.each{
-			it.tags = []
-			em_itemaccount.save(it)
-		}
-	}
-
-
-	void buildItemAccountSql(params){
-		params.itemaccountsql = '''
-			select 'basiccurrent' as objid, 'basic' as revtype, 'current' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_BASIC_CURRENT'
-			union 
-			select 'basiccurrentint' as objid, 'basicint' as revtype, 'current' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_BASIC_CURRENT_PENALTY'
-			union 
-			select 'basicprev' as objid, 'basic' as revtype, 'previous' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_BASIC_PREVIOUS'
-			union 
-			select 'basicprevint' as objid, 'basicint' as revtype, 'previous' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_BASIC_PREVIOUS_PENALTY'
-			union 
-			select 'basicprior' as objid, 'basic' as revtype, 'prior' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_BASIC_PRIOR' 
-			union 
-			select 'basicpriorint' as objid, 'basicint' as revtype, 'prior' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_BASIC_PRIOR_PENALTY' 
-			union 
-			select 'basicadvance' as objid, 'basic' as revtype, 'advance' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_BASIC_ADVANCE' 
-			union 
-			select 'sefcurrent' as objid, 'sef' as revtype, 'current' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_SEF_CURRENT'
-			union 
-			select 'sefcurrentint' as objid, 'sefint' as revtype, 'current' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_SEF_CURRENT_PENALTY'
-			union 
-			select 'sefprev' as objid, 'sef' as revtype, 'previous' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_SEF_PREVIOUS'
-			union 
-			select 'sefprevint' as objid, 'sefint' as revtype, 'previous' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_SEF_PREVIOUS_PENALTY'
-			union 
-			select 'sefprior' as objid, 'sef' as revtype, 'prior' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_SEF_PRIOR' 
-			union 
-			select 'sefpriorint' as objid, 'sefint' as revtype, 'prior' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_SEF_PRIOR_PENALTY' 
-			union 
-			select 'sefadvance' as objid, 'sef' as revtype, 'advance' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_SEF_ADVANCE' 
-			union 
-			select 'basicidlecurrent' as objid, 'basicidle' as revtype, 'current' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_BASIC_IDLE_CURRENT'
-			union 
-			select 'basicidlecurrentint' as objid, 'basicidleint' as revtype, 'current' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_BASIC_IDLE_CURRENT_PENALTY'
-			union 
-			select 'basicidleprev' as objid, 'basicidle' as revtype, 'previous' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_BASIC_IDLE_PREVIOUS'
-			union 
-			select 'basicidleprevint' as objid, 'basicidleint' as revtype, 'previous' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_BASIC_IDLE_PREVIOUS_PENALTY'
-			union 
-			select 'basicidleadvance' as objid, 'basicidle' as revtype, 'advance' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_BASIC_IDLE_ADVANCE' 		
-			union 
-			select 'firecodecurrent' as objid, 'firecode' as revtype, 'current' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_FIRE_CODE_CURRENT' 		
-			union 
-			select 'firecodeprevious' as objid, 'firecode' as revtype, 'previous' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_FIRE_CODE_PREVIOUS' 		
-			union 
-			select 'firecodeadvance' as objid, 'firecode' as revtype, 'advance' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_FIRE_CODE_ADVANCE' 		
-			union 
-			select 'firecodeprior' as objid, 'firecode' as revtype, 'prior' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_FIRE_CODE_PRIOR' 		
-			union 
-			select 'shcurrent' as objid, 'sh' as revtype, 'current' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_SH_CURRENT'
-			union 
-			select 'shcurrentint' as objid, 'shint' as revtype, 'current' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_SH_CURRENT_PENALTY'
-			union 
-			select 'shprev' as objid, 'sh' as revtype, 'previous' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_SH_PREVIOUS'
-			union 
-			select 'shprevint' as objid, 'shint' as revtype, 'previous' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_SH_PREVIOUS_PENALTY'
-			union 
-			select 'shprior' as objid, 'sh' as revtype, 'prior' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_SH_PRIOR' 
-			union 
-			select 'shpriorint' as objid, 'shint' as revtype, 'prior' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_SH_PRIOR_PENALTY' 
-			union 
-			select 'shadvance' as objid, 'sh' as revtype, 'advance' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_SH_ADVANCE' 
-		''' 
-	}
-
-
-	void buildAccountMappings(params) {
-		landtax_lgu_account_mapping.removeAccountMappings(params) 
-		def orgs = org.select('objid').find([orgclass:params.lgutype]).list()
-		orgs.each{
-			def accts = landtax_lgu_account_mapping.getAccountsByOrg([lguid:it.objid, itemid:'%'+it.objid, orgclass:params.lgutype])
-			accts.each{ acct -> 
-				updateRevenueInfo(acct)
-				if (acct.revtype && acct.revperiod ){
-					landtax_lgu_account_mapping.save(acct)
-				}
-			}
-		}
-	}
-
-	void updateRevenueInfo(item){
-		if (item.objid.matches('basicidle.*int.*'))
-			item.revtype = 'basicidleint'
-		else if (item.objid.matches('basicidle.*'))
-			item.revtype = 'basicidle'
-		else if (item.objid.matches('basic.*int.*'))
-			item.revtype = 'basicint'
-		else if (item.objid.matches('basic.*'))
-			item.revtype = 'basic'
-		else if (item.objid.matches('sef.*int.*'))
-			item.revtype = 'sefint'
-		else if (item.objid.matches('sef.*'))
-			item.revtype = 'sef'
-		else if (item.objid.matches('firecode.*'))
-			item.revtype = 'firecode'
-		else if (item.objid.matches('sh.*int.*'))
-			item.revtype = 'shint'
-		else if (item.objid.matches('sh.*'))
-			item.revtype = 'sh'
-
-		if (item.objid.matches('.*advance.*'))
-			item.revperiod = 'advance'
-		else if (item.objid.matches('.*current.*'))
-			item.revperiod = 'current'			
-		else if (item.objid.matches('.*prev.*'))
-			item.revperiod = 'previous'			
-		else if (item.objid.matches('.*prior.*'))
-			item.revperiod = 'prior'			
+		em_mapping.insertBrgySharePayableAccounts()
+		em_mapping.insertBrgySharePayableAccountTags()
+		em_mapping.buildBrgyShareAccounts()
 	}
 }

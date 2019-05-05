@@ -76,6 +76,8 @@ public abstract class AbstractCertificationController
         entity.certifiedbytitle = var.get("ASSESSORCERTIFIEDBYTITLE");
         entity.byauthority      = var.get("ASSESSORBYAUTHORITY");
         entity.byauthoritytitle = var.get("ASSESSORBYAUTHORITYTITLE");
+        entity.attestedby      = var.get("ASSESSORATTESTEDBY");
+        entity.attestedbytitle = var.get("ASSESSORATTESTEDBYTITLE");
         entity.purpose          = var.get("TDTRUECOPYPURPOSE");
         if (!entity.purpose){
             entity.purpose = "whatever legal purposes it may serve him/her"; 

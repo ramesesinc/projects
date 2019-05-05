@@ -112,6 +112,8 @@ select
 	f.administrator_address,
 	f.rpuid, 
 	f.lguid,
+	f.txntype_objid, 
+	ft.displaycode as txntype_code,
 	rpu.rputype,
 	rpu.ry,
 	rpu.fullpin ,
@@ -141,6 +143,7 @@ FROM assessmentnoticeitem ni
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
 	INNER JOIN sys_org o ON f.lguid = o.objid 
 	INNER JOIN entity e on f.taxpayer_objid = e.objid 
+	INNER JOIN faas_txntype ft on f.txntype_objid = ft.objid 
 ;
 
 

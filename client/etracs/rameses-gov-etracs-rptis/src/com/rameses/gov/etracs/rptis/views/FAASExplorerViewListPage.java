@@ -201,16 +201,16 @@ public class FAASExplorerViewListPage extends javax.swing.JPanel {
         xFormPanel6.add(xTextField13);
 
         xTextField15.setCaption("Doc No.");
+        xTextField15.setName("query.trackingno"); // NOI18N
         xTextField15.setCaptionWidth(55);
         xTextField15.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
-        xTextField15.setName("query.utdno"); // NOI18N
         xTextField15.setStretchWidth(100);
         xFormPanel6.add(xTextField15);
 
         xTextField6.setCaption("Block No.");
+        xTextField6.setName("query.blockno"); // NOI18N
         xTextField6.setCaptionWidth(60);
         xTextField6.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
-        xTextField6.setName("query.blockno"); // NOI18N
         xTextField6.setStretchWidth(100);
         xFormPanel6.add(xTextField6);
 

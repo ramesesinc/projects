@@ -30,6 +30,7 @@ class FAASInitNewDiscoveyModel extends FAASInitTxnModel
     
     def pinTypes = ['new', 'old']
     def rpuTypes;
+    def attributes;
     
     @PropertyChangeListener
     def listener = [
@@ -57,7 +58,7 @@ class FAASInitNewDiscoveyModel extends FAASInitTxnModel
         entity.rputype = 'land';
         entity.suffix = 0;
         rpuTypes = rpuSvc.getRpuTypes();
-        entity.attributes = faasSvc.getTxnTypeAttributes([objid:'ND'])
+        attributes = faasSvc.getTxnTypeAttributes([objid:'ND'])
     }
     
     def getLookupBarangay(){
@@ -111,6 +112,7 @@ class FAASInitNewDiscoveyModel extends FAASInitTxnModel
     
     def process(){
         entity.txntype = [objid:'ND'];
+        entity.attributes = listHandler.selectedValue;
         def faas = svc.initNewDiscovery(entity);
         faas.lgu = entity.lgu 
         return InvokerUtil.lookupOpener('faas:open', [entity:faas]);
@@ -126,8 +128,9 @@ class FAASInitNewDiscoveyModel extends FAASInitTxnModel
     }
         
     def listHandler = [
-        fetchList : { return entity.attributes }
-    ] as EditorListModel;
+        fetchList : { return attributes },
+        isMultiSelect : { true }
+    ] as BasicListModel;
              
     
 }

@@ -43,6 +43,7 @@ class FaasSketchInfoController
         return InvokerUtil.lookupOpener('upload:image', [
             objid           : entity.objid,
             entity          : entity,
+            parentid        : entity.objid,
             autoClose       : true,
             showheader      : false,
 
@@ -104,7 +105,7 @@ class FaasSketchInfoController
     }
     
     void update(){
-        rpSvc.updateBoundaries(entity.rp);
+        rpSvc.update(entity.rp);
         mode = MODE_READ;
     }
 

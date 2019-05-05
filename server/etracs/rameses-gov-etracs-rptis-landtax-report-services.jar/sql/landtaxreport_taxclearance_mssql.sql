@@ -72,13 +72,14 @@ select
     rl.objid as rptledgerid, 
     xr.receiptno as orno,
     xr.txndate as ordate,
-    sum(ri.basic + ri.basicint - ri.basicdisc + ri.sef + ri.sefint - ri.sefdisc) as oramount,
-    sum(ri.basic) as basic,
-    sum(ri.basicdisc) as basicdisc,
-    sum(ri.basicint) as basicint,
-    sum(ri.sef) as sef,
-    sum(ri.sefdisc) as sefdisc,
-  sum(ri.sefint) as sefint,  
+    SUM(ri.amount + ri.interest - ri.discount) AS oramount,
+    SUM(CASE WHEN ri.revtype = 'basic' THEN ri.amount ELSE 0 END) AS basic,
+    SUM(CASE WHEN ri.revtype = 'basic' THEN ri.discount ELSE 0 END) AS basicdisc,
+    SUM(CASE WHEN ri.revtype = 'basic' THEN ri.interest ELSE 0 END) AS basicint,
+    SUM(CASE WHEN ri.revtype = 'sef' THEN ri.amount ELSE 0 END) AS sef,
+    SUM(CASE WHEN ri.revtype = 'sef' THEN ri.discount ELSE 0 END) AS sefdisc,
+    SUM(CASE WHEN ri.revtype = 'sef' THEN ri.interest ELSE 0 END) AS sefint,
+
     case when (min(ri.qtr) = 1 and max(ri.qtr) = 4) or ((min(ri.qtr) = 0 and max(ri.qtr) = 0))
         then  'FULL ' + convert(varchar(4), ri.year)
         else
@@ -88,7 +89,7 @@ select
 from rptcertificationitem rci 
     inner join rptledger rl on rci.refid = rl.objid 
     inner join rptpayment rp on rl.objid  = rp.refid 
-    inner join vw_rptpayment_item ri on rp.objid = ri.parentid
+    inner join rptpayment_item ri on rp.objid = ri.parentid
     inner join cashreceipt xr on rp.receiptid = xr.objid 
     left join cashreceipt_void cv on xr.objid = cv.receiptid  
 where rci.rptcertificationid = $P{rptcertificationid}
@@ -123,3 +124,9 @@ where rci.rptcertificationid = $P{rptcertificationid}
   and rl.objid = $P{rptledgerid}
   and ( ( $P{year} > rc.fromyear and $P{year} < rc.toyear)  or (($P{year} = rc.fromyear or $P{year} = rc.toyear) and  rc.toqtr <= $P{qtr}))
 group by rl.objid, rc.refno, rc.refdate, rc.fromyear, rc.toyear 
+
+
+[findPaidClearance]
+select objid, txnno
+from rptcertification 
+where orno = $P{orno}

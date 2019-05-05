@@ -20,6 +20,11 @@ public class ManualApproveSubdivisionTask implements Runnable{
     public void run(){
         try{
             showinfo('Initializing...Done\n');
+            
+            showinfo('Assigning new TD No. to Subdivided Lands and Affected RPUs');
+            svc.assignNewTdNos(entity);
+            showinfo(' .... Done\n');
+
             showinfo('Processing Subdivided Lands\n');
             svc.getSubdividedLandsForApproval(entity.objid).each{ land ->
                 showinfo('Approving Subdivided Land FAAS for PIN ' + land.newpin );
@@ -42,7 +47,7 @@ public class ManualApproveSubdivisionTask implements Runnable{
             }            
             
             showinfo('Subdivision Approval')
-            entity.putAll(svc.approveSubdivision(entity));
+            entity.putAll(svc.approve(entity));
             showinfo(' .... Done\n');
             
             oncomplete()

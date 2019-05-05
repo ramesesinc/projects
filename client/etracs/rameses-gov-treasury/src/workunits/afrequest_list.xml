@@ -1,21 +1,25 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
-          schemaName="afrequest" allowCreate="false" allowDelete="false">
+          schemaName="afrequest" allowCreate="false" 
+          allowDelete="#{entity?.state.toString().matches('FOR_APPROVAL|OPEN')}"> 
     <invokers>
         <invoker folderid="menucategory/treasury/af" 
-                 action="init" caption="AF Requests" 
-                 role="AFO" index="1" 
-                 cols="reqno,dtfiled,reqtype,requester.name,org.name" 
-                 hiddenCols="state" 
                  formTitle="View AF Requests" 
-                 allowDelete="#{entity?.state == 'OPEN'}" />
+                 caption="View AF Requests" 
+                 action="init" index="21" 
+                 cols="reqno,dtfiled,reqtype,requester.name,org.name" 
+                 hiddenCols="state">
+            <action role="AFO" /> 
+            <action role="SHARED" allowCreate="false" allowDelete="false"/> 
+        </invoker> 
         
         <invoker folderid="menucategory/treasury/collection" 
-                 action="init" caption="View AF Requests" 
+                 formTitle="View AF Requests" 
+                 caption="View AF Requests" action="init" 
                  role="COLLECTOR" index="101" 
                  cols="reqno,dtfiled,reqtype,requester.name,org.name"
                  hiddenCols="state" 
-                 customFilter="requester.objid =:userid"
-                 formTitle="View AF Requests" 
-                 allowDelete="#{entity?.state == 'OPEN'}" />
+                 customFilter="requester.objid =:userid" />
     </invokers>
+
+    <code class="com.rameses.enterprise.treasury.models.AFRequestListModel"/> 
 </workunit>

@@ -38,6 +38,8 @@ public class CashReceiptConvertCheckToCashPageInit extends javax.swing.JPanel {
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
+        xLabel6 = new com.rameses.rcp.control.XLabel();
+        xLabel7 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
@@ -85,6 +87,22 @@ public class CashReceiptConvertCheckToCashPageInit extends javax.swing.JPanel {
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel3);
 
+        xLabel6.setCaption("Cash");
+        xLabel6.setDepends(new String[] {"receipt"});
+        xLabel6.setExpression("#{receiptCash}");
+        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel6.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel6);
+
+        xLabel7.setCaption("Non-Cash");
+        xLabel7.setDepends(new String[] {"receipt"});
+        xLabel7.setExpression("#{receiptNonCash}");
+        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel7.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel7);
+
         xLabel5.setCellPadding(new java.awt.Insets(20, 0, 5, 0));
         xLabel5.setFontStyle("font-weight: bold; font-size: 12;");
         xLabel5.setPadding(new java.awt.Insets(0, 0, 0, 0));
@@ -118,7 +136,7 @@ public class CashReceiptConvertCheckToCashPageInit extends javax.swing.JPanel {
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -129,6 +147,8 @@ public class CashReceiptConvertCheckToCashPageInit extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel5;
+    private com.rameses.rcp.control.XLabel xLabel6;
+    private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     // End of variables declaration//GEN-END:variables

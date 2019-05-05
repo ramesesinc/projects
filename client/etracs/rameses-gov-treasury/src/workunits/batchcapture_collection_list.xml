@@ -7,18 +7,18 @@
     
     <invokers>
         <invoker folderid="menucategory/treasury/mgmt" index="-5"
-                 caption="Batch Capture List" action="init" 
+                 caption="View Batch Captures" action="init" 
                  role="DATA_CONTROLLER" tag="shared"
                  allowCreate="false" allowDelete="false"/>
 
         <invoker folderid="menucategory/treasury/collection" 
-                 caption="Batch Capture List" action="init" 
+                 caption="View Batch Captures" action="init" 
                  role="COLLECTOR" tag="collector" />
         
         <invoker folderid="menucategory/treasury/subcollection" 
-                 caption="Batch Capture List" action="init" 
+                 caption="View Batch Captures" action="init" 
                  role="SUBCOLLECTOR" tag="subcollector" 
-                 index="-5" />
+                 index="-6" />
 
     </invokers>
     

@@ -11,16 +11,23 @@
         
         <!-- Buttons -->
         <invoker type="formActions" caption="Submit for Liquidation" 
-                 action="remit" visibleWhen="#{ entity.state == 'DRAFT' }"/>
+                 action="remit" mnemonic="s" 
+                 visibleWhen="#{ entity.state == 'DRAFT' }"/>
         
-        <invoker type="formActions" caption="Reports" name="popupReports" 
-                 visibleWhen="#{entity.state != 'DRAFT' }" category="remittance:reports" /> 
+        <invoker type="formActions" caption="Reports" 
+                 name="popupReports" mnemonic="r" 
+                 visibleWhen="#{entity.state != 'DRAFT' }" 
+                 category="remittance:reports" 
+                 icon="images/toolbars/report.png"/> 
         
-        <invoker type="formActions" caption="Cash Breakdown" name="updateCashByRemittance" 
+        <invoker type="formActions" caption="Cash Breakdown" 
+                 name="updateCashByRemittance" mnemonic="b" 
                  visibleWhen="#{entity.state == 'DRAFT' }"  />
         
-        <invoker type="formActions" caption="Export" name="doExport" 
-                 visibleWhen="#{entity.state != 'DRAFT'}" mnemonic="e" index="100" />        
+        <invoker type="formActions" caption="Export" 
+                 name="doExport" mnemonic="e" 
+                 visibleWhen="#{entity.state != 'DRAFT'}" 
+                 index="100" />        
     </invokers>
    
    <code class="com.rameses.enterprise.treasury.models.RemittanceModel" />

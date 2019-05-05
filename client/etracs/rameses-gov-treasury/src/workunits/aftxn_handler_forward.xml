@@ -5,8 +5,8 @@
         <invoker type="aftxn:handler:forward" action="init" caption="Forward AF to collector"/>
         
         <!-- buttons -->
-        <invoker type="formActions" action="close" caption="Back" immediate="true"/>
-        <invoker type="formActions" action="save" caption="Save" />
+        <invoker type="formActions" action="close" caption="Back" mnemonic="B" immediate="true"/>
+        <invoker type="formActions" action="save" caption="Save" mnemonic="S" />
     </invokers>
     <code class="com.rameses.enterprise.treasury.models.AFTxnHandlerForward" />
     <pages>

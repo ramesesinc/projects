@@ -1,10 +1,10 @@
 <workunit>
     
    <invokers>
-         <invoker type="cashreceipt:batch:misc" caption="Batch Cash Receipt Capture(Miscellaneous)" action="init"/>
-         <invoker type="formActions" caption="Cancel" action="_close" immediate="true"/>
-         <invoker type="formActions" caption="Save" action="save"/>
-         <invoker type="formActions" caption="Post" action="post"/>
+         <invoker type="cashreceipt:batch:misc" caption="Batch Cash Receipt Capture (Miscellaneous)" action="init"/>
+         <invoker type="formActions" caption="Cancel" action="_close" mnemonic="c" immediate="true"/>
+         <invoker type="formActions" caption="Save" action="save" mnemonic="s"/>
+         <invoker type="formActions" caption="Post" action="post" mnemonic="p"/>
    </invokers>
    
    <code>

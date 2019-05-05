@@ -42,13 +42,13 @@ class TCReportService {
 		if ( params.day ){ 
 			def dtstr = params.year +'-'+ params.month.index.toString().padLeft(2, '0') +'-'+ params.day.toString().padLeft(2, '0'); 
 			params.fromdate =  new java.sql.Date( YMD.parse( dtstr ).getTime()); 
-			params.todate   =  new java.sql.Date( com.rameses.util.DateUtil.add( params.fromdate, "1d").getTime()); 
+			params.todate   =  new java.sql.Date( DateUtil.add( params.fromdate, "1d").getTime()); 
 			periodtype = 'DAILY';
-
-		} else { 
+		} 
+		else { 
 			def dtstr = params.year +'-'+ params.month.index.toString().padLeft(2, '0') +'-01'; 
 			params.fromdate =  new java.sql.Date( YMD.parse( dtstr ).getTime()); 
-			params.todate   =  new java.sql.Date( com.rameses.util.DateUtil.add( params.fromdate, "1M").getTime()); 
+			params.todate   =  new java.sql.Date( DateUtil.add( params.fromdate, "1M").getTime()); 
 		} 
 
 		params.filter = ''; 
@@ -100,14 +100,15 @@ class TCReportService {
 
 	@ProxyMethod 
 	public def getAbstractOfCollection( params ) {
+		def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
 		if ( params.day ) { 
 			def strdate = params.year + '-' + params.month.index.toString().padLeft(2, '0') +'-'+ params.day.toString().padLeft(2, '0'); 
-			params.fromdate = java.sql.Date.valueOf( strdate ); 
-			params.todate = DateUtil.add( params.fromdate, '1d' ); 
+			params.fromdate = new java.sql.Date( YMD.parse( strdate ).getTime() ); 
+			params.todate = new java.sql.Date( DateUtil.add( params.fromdate, '1d' ).getTime() ); 
 		} else {
 			def strdate = params.year +'-'+ params.month.index.toString().padLeft(2, '0') +'-01'; 
-			params.fromdate = java.sql.Date.valueOf( strdate ); 
-			params.todate = DateUtil.add( params.fromdate, '1d' ); 
+			params.fromdate = new java.sql.Date( YMD.parse( strdate ).getTime() ); 
+			params.todate = new java.sql.Date( DateUtil.add( params.fromdate, '1M' ).getTime() ); 
 		} 
 
 		params.filter = ''; 

@@ -9,6 +9,9 @@ import com.rameses.util.*;
 
 class CashReceiptIssueModel extends CashReceiptAbstractIssueModel  {
 
+    @Service('Var')
+    def varSvc;
+
     def handler;
     boolean showPrintDialog = false;
 
@@ -26,7 +29,9 @@ class CashReceiptIssueModel extends CashReceiptAbstractIssueModel  {
             def op = super.signal("back");
             binding.fireNavigation( op );
         },
-        forward: {
+        forward: { o-> 
+            if ( o ) entity.putAll( o ); 
+            
             //print will be done here
             if( mode == "ONLINE" ) {
                 printReceipt();
@@ -131,11 +136,23 @@ class CashReceiptIssueModel extends CashReceiptAbstractIssueModel  {
         ReportUtil.print(reportHandle.report, showPrintDialog);
     }
     
+    def void_requires_approval; 
+    boolean isVoidRequiresApproval() {
+        if ( void_requires_approval == null ) {
+            def sval = varSvc.get('cashreceipt_void_requires_approval'); 
+            void_requires_approval = ( "true".equals(sval.toString()) ? true : false); 
+        }
+        if ( void_requires_approval instanceof Boolean ) {
+            return (void_requires_approval ? true : false); 
+        }
+        return false; 
+    }
+
     public void voidReceipt() { 
         if ( entity.voided.toString().matches('1|true')) {
             MsgBox.alert('Cash Receipt is already voided'); 
         } else {
-            Modal.show( "void_cashreceipt", [applySecurity : false, receipt: entity ]);
+            Modal.show( "void_cashreceipt", [applySecurity : isVoidRequiresApproval(), receipt: entity ]);
         }
     }
 

@@ -4,9 +4,20 @@
         <invoker type="cashreceipt:batchcapture:postcreate:cashticket" caption="New Capture Cash Ticket"/>
 
         <invoker type="cashreceipt:cashticket"/>
-        <invoker type="formActions" action="_close" caption="Back" immediate="true" visibleWhen="#{ mode=='init' }" mnemonic="b" shortcut="ctrl B"  icon="images/toolbars/arrow_left.png"/>
-        <invoker type="formActions" action="save" caption="Submit" visibleWhen="#{ mode=='init' }" mnemonic="s" shortcut="ctrl S"/>
-        <invoker type="formActions" action="_close:_close" caption="Close" visibleWhen="#{ mode=='completed' }" mnemonic="c" shortcut="ctrl W" icon="images/toolbars/cancel.png"/>
+        
+        <invoker type="formActions" action="_close" caption="Back" 
+                 mnemonic="b" shortcut="ctrl B" immediate="true" 
+                 visibleWhen="#{ mode=='init' }" 
+                 icon="images/toolbars/arrow_left.png"/>
+        
+        <invoker type="formActions" action="save" caption="Submit" 
+                 mnemonic="s" shortcut="ctrl S" 
+                 visibleWhen="#{ mode=='init' }" /> 
+        
+        <invoker type="formActions" action="_close:_close" caption="Close" 
+                 mnemonic="c" shortcut="ctrl W" 
+                 visibleWhen="#{ mode=='completed' }" 
+                 icon="images/toolbars/cancel.png"/>
     </invokers>
     
     <code>

@@ -130,8 +130,8 @@ public class AFTxnEntryPage extends javax.swing.JPanel {
                 new Object[]{"name", "item"}
                 , new Object[]{"caption", "Item Code"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
-                , new Object[]{"maxWidth", 100}
+                , new Object[]{"minWidth", 30}
+                , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", true}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -147,8 +147,8 @@ public class AFTxnEntryPage extends javax.swing.JPanel {
                 new Object[]{"name", "item.title"}
                 , new Object[]{"caption", "Title"}
                 , new Object[]{"width", 200}
-                , new Object[]{"minWidth", 200}
-                , new Object[]{"maxWidth", 200}
+                , new Object[]{"minWidth", 30}
+                , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -162,7 +162,7 @@ public class AFTxnEntryPage extends javax.swing.JPanel {
                 new Object[]{"name", "unit"}
                 , new Object[]{"caption", "Unit"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 30}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", true}
                 , new Object[]{"resizable", true}
@@ -178,7 +178,7 @@ public class AFTxnEntryPage extends javax.swing.JPanel {
                 new Object[]{"name", "qty"}
                 , new Object[]{"caption", "Qty"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 30}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", true}
                 , new Object[]{"resizable", true}
@@ -195,7 +195,7 @@ public class AFTxnEntryPage extends javax.swing.JPanel {
                 new Object[]{"name", "cost"}
                 , new Object[]{"caption", "Unit Cost"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 30}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
@@ -211,7 +211,7 @@ public class AFTxnEntryPage extends javax.swing.JPanel {
                 new Object[]{"name", "linetotal"}
                 , new Object[]{"caption", "Total Cost"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 30}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
@@ -237,6 +237,21 @@ public class AFTxnEntryPage extends javax.swing.JPanel {
                 , new Object[]{"visibleWhen", "#{ entity.txntype == 'ISSUE' }"}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.ComboBoxColumnHandler("itemTxnTypes", null, null)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", null}
+                , new Object[]{"caption", " "}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
 
@@ -249,7 +264,7 @@ public class AFTxnEntryPage extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(690, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -257,8 +272,8 @@ public class AFTxnEntryPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(xDataTable2, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(155, Short.MAX_VALUE))
+                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

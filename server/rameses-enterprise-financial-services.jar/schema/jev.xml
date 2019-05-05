@@ -1,25 +1,35 @@
 <schema>
-	<element tablename="jev">
-		<field name="objid" primary="true"/>
-		<field name="jevno" caption="Jev No"/>
-		<field name="jevdate" caption="Jev Date"/>
-		<field name="dtposted" required="true" caption="Date Posted" type="date"/>
-		<field name="txntype" required="true" caption="Txn Type"/>
-		<field name="refid" required="true"/>
-		<field name="refno" required="true" caption="Ref No"/>
-		<field name="reftype" required="true" caption="Ref Type"/>
-		<field name="refdate" required="true" caption="Ref Date" type="date"/>
-		<field name="amount" required="true" caption="Amount" type="decimal"/>
-		<field name="state" required="true"/>
-		<field name="postedby_objid" required="true"/>
-		<field name="postedby_name" required="true"/>
-		<field name="verifiedby_objid" />
-		<field name="verifiedby_name" />
-		<field name="dtverified" type="date"/>
 
-		<!-- items -->
-		<complex name="items" ref="jevfund" jointype="one-to-many">
+	<element tablename="jev">
+		<field name="objid" primary="true" prefix="JEV"/>
+		<field name="state" />
+		<field name="jevno" />
+		<field name="jevdate" type="date"/>
+		
+		<field name="refid" required="true"/>
+		<field name="refno" caption="Ref No" required="true"/>
+		<field name="refdate" caption="Ref Date" required="true"/>
+		<field name="reftype" />
+
+		<field name="postedby_objid" />
+		<field name="postedby_name" caption="Posted By"/>
+		<field name="dtposted" type="timestamp"/>
+		<field name="txntype" />
+		<field name="amount" type="decimal" caption="Amount"/>
+
+		<field name="verifiedby_objid" />
+		<field name="verifiedby_name" caption="Verified By"/>
+		<field name="dtverified" type="timestamp"/>
+
+		<complex name="fund" ref="fund" jointype="many-to-one" includefields="objid,code,title" required="false">
+			<key field="fundid" target="objid" />
+		</complex>
+
+		<complex name="items" ref="jevitem" jointype="one-to-many">
 			<key field="objid" target="jevid" />
 		</complex>
+
+		<field name="batchid" />
 	</element>
+
 </schema>

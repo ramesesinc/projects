@@ -30,6 +30,7 @@ class CashReceiptConvertCashToCheckModel {
     void init() {
         mode = 'init'; 
         receipt = null; 
+        remarks = null; 
     }
     
     def getTitle() {
@@ -66,10 +67,10 @@ class CashReceiptConvertCashToCheckModel {
     
     def decformat = new java.text.DecimalFormat("#,##0.00");  
     def getReceiptAmount() {
-        def amount = receipt?.amount; 
-        if ( amount == null ) return ""; 
+        def amount = (receipt?.amount ? receipt.amount : 0.0); 
         return decformat.format( amount ); 
     }
+   
     def getCheckAmount() {
         def amount = check?.amount; 
         if ( amount == null ) return "";
@@ -79,6 +80,13 @@ class CashReceiptConvertCashToCheckModel {
     def getCheck() {
         if ( receipt?.updateinfo?.checks ) { 
             return receipt.updateinfo.checks.first(); 
+        }
+        else if (receipt?.updateinfo?.paymentitems ) {
+            def payitem = receipt.updateinfo.paymentitems.first();
+            def chk = [:]; 
+            chk.putAll( payitem.check ); 
+            chk.amount = receipt.amount; 
+            return chk; 
         }
         return null; 
     }
@@ -94,6 +102,7 @@ class CashReceiptConvertCashToCheckModel {
         }
         if ( !param.fundList ) throw new Exception("Please provide a fund for each item"); 
         
+        param.options = [ allowSplit: false ]; 
         param.saveHandler = { o-> 
             receipt.updateinfo = o; 
             binding.notifyDepends("check"); 

@@ -19,4 +19,39 @@ class CashTicketListModel extends CrudListModel {
         op.target = 'window';
         return op;
     }
+        
+    public void initColumn( c ) { 
+        if ( c.name == 'series' ) { 
+            c.visible = false; 
+            c.hidden = true; 
+        } 
+        else if ( c.name == 'formno') {
+            c.width = 80; 
+            c.maxWidth = 100; 
+        }
+        else if ( c.name == 'receiptno') {
+            c.width = 100; 
+            c.maxWidth = 150; 
+        }
+        else if ( c.name == 'receiptdate') {
+            c.width = 100; 
+            c.maxWidth = 150;
+        }
+        else if ( c.name == 'stub') {
+            c.width = 60; 
+            c.maxWidth = 80;
+            c.type = 'integer';
+        }
+        else if ( c.name == 'amount') {
+            c.width = 100; 
+            c.maxWidth = 120;
+        }
+        else if ( c.name == 'voided') {
+            c.width = 60; 
+            c.maxWidth = 80;
+        }        
+        else if ( c.name == 'collector.name') {
+            c.caption = 'Collector'; 
+        } 
+    }     
 }

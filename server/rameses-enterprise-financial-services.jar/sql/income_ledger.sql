@@ -1,51 +1,47 @@
 [getReport]
-SELECT * FROM (
-	
-	SELECT x1.objid, x1.code, x1.title, x1.amount, x1.leftindex, x1.rightindex, x1.level, x1.type 
-	FROM 
-	(SELECT main.objid, main.code, main.title, main.type, 
-		(SELECT SUM(a2.amount)
-	    FROM ( SELECT a1.itemacctid, SUM(a1.amount) AS amount
-		   FROM (
-		     SELECT il.itemacctid, SUM(il.amount) AS amount
-		     FROM vw_income_ledger il 
-		     ${filter}
-		     GROUP BY il.itemacctid
-		   ) a1
-		  GROUP BY a1.itemacctid) a2
-	   INNER JOIN itemaccount ia ON ia.objid = a2.itemacctid
-	   LEFT JOIN ( SELECT itemid, acctid FROM account_item_mapping aim WHERE maingroupid = $P{maingroup} ) aim ON ia.objid = aim.itemid
-	   LEFT JOIN account acc ON acc.objid = aim.acctid 
-	   WHERE NOT(acc.leftindex IS NULL)
-	   AND acc.leftindex > main.leftindex AND acc.rightindex < main.rightindex 	   
-	) AS amount,
-	main.leftindex, main.rightindex, main.level
-	FROM account main
-	WHERE main.maingroupid = $P{maingroup}) x1 
-	WHERE NOT(x1.amount IS NULL)
-	
-				
-    UNION
-    
-    (SELECT x2.objid, x2.code, x2.title, x2.amount, x2.leftindex, x2.rightindex, x2.level, 'itemaccount' AS type
-    FROM
-    (SELECT ia.objid, ia.code, ia.title, a2.amount, acc.leftindex, acc.rightindex, acc.level + 1 AS level 
-	FROM ( SELECT a1.itemacctid, SUM(a1.amount) AS amount
-		   FROM (
-		     SELECT il.itemacctid, SUM(il.amount) AS amount
-		     FROM vw_income_ledger il 
-		     ${filter}
-		     GROUP BY il.itemacctid) a1
-		  GROUP BY a1.itemacctid) a2
-	INNER JOIN itemaccount ia ON ia.objid = a2.itemacctid
-	LEFT JOIN ( SELECT itemid, acctid FROM account_item_mapping aim WHERE maingroupid = $P{maingroup} ) aim ON ia.objid = aim.itemid
-	LEFT JOIN account acc ON acc.objid = aim.acctid 
-	WHERE NOT(acc.leftindex IS NULL)) x2)
-				
-) tp 				
-${typefilter}
-ORDER BY tp.leftindex, tp.level		
-		
+select 
+	t1.objid, t1.code, t1.title, t1.type, 
+	t1.leftindex, t1.rightindex, t1.level, 
+	t1.maingroupid, sum(t1.amount) as amount 
+from ( 
+	select 
+		a.objid, a.code, a.title, a.type, 
+		a.leftindex, a.rightindex, a.level, 
+		a.maingroupid, sum(a.amount) as amount 
+	from vw_account_item_mapping a 
+	where a.maingroupid = $P{maingroupid} ${filter} 
+	group by 	
+		a.objid, a.code, a.title, a.type, 
+		a.leftindex, a.rightindex, a.level, 
+		a.maingroupid 
 
+	union all 
 
+	select 
+		p.objid, p.code, p.title, p.type, 
+		p.leftindex, p.rightindex, p.level, 
+		p.maingroupid, 0.0 as amount  
+	from account p 
+		inner join ( 
+			select a.maingroupid, max(a.leftindex) as leftindex 
+			from vw_account_item_mapping a 
+			where a.maingroupid = $P{maingroupid} ${filter} 
+			group by a.maingroupid 
+		)m on p.maingroupid = m.maingroupid 
+	where p.leftindex < m.leftindex 
 
+	union all 
+
+	select 
+		a.itemid as objid, a.itemcode as code, a.itemtitle as title, 'itemaccount' as type, 
+		a.leftindex, a.rightindex, a.level+1 as level, a.maingroupid, sum(a.amount) as amount 
+	from vw_account_item_mapping a 
+	where a.maingroupid = $P{maingroupid} ${filter} ${itemacctfilter} 
+	group by 
+		a.itemid, a.itemcode, a.itemtitle, a.leftindex, a.rightindex, a.maingroupid 	
+)t1 
+group by 
+	t1.objid, t1.code, t1.title, t1.type, 
+	t1.leftindex, t1.rightindex, t1.level, 
+	t1.maingroupid 
+order by t1.leftindex, t1.level, t1.code  

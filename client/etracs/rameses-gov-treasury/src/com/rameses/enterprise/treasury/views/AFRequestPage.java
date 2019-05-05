@@ -49,46 +49,45 @@ public class AFRequestPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(100);
 
-        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel2.setCaption("Requested By");
         xLabel2.setExpression("#{ entity.requester.name }");
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLabel2.setVisibleWhen("#{ mode == 'read' }");
         xFormPanel1.add(xLabel2);
 
-        xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel5.setCaption("Req Date");
         xLabel5.setExpression("#{ entity.dtfiled }");
+        xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 22));
-        xLabel5.setVisibleWhen("#{ mode == 'read' }");
         xFormPanel1.add(xLabel5);
 
         xLabel6.setCaption("Resp. Center");
         xLabel6.setExpression("#{ entity.respcenter.name }");
-        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel6.setPreferredSize(new java.awt.Dimension(0, 22));
         xFormPanel1.add(xLabel6);
 
-        xLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+
         xLabel3.setCaption("Req No");
         xLabel3.setExpression("#{entity.reqno}");
+        xLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 22));
         xFormPanel2.add(xLabel3);
 
-        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel7.setCaption("Req Type");
         xLabel7.setExpression("#{ entity.reqtype }");
+        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         xLabel7.setPreferredSize(new java.awt.Dimension(0, 22));
         xFormPanel2.add(xLabel7);
 
-        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel4.setCaption("Status");
         xLabel4.setExpression("#{ entity.state }");
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel4.setPreferredSize(new java.awt.Dimension(0, 22));
-        xLabel4.setVisibleWhen("#{ mode == 'read' }");
         xFormPanel2.add(xLabel4);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
@@ -99,8 +98,8 @@ public class AFRequestPage extends javax.swing.JPanel {
                 .add(21, 21, 21)
                 .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 344, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(35, 35, 35)
-                .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 238, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(198, Short.MAX_VALUE))
+                .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 280, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(156, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -120,8 +119,8 @@ public class AFRequestPage extends javax.swing.JPanel {
                 new Object[]{"name", "item"}
                 , new Object[]{"caption", "Item Code"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
-                , new Object[]{"maxWidth", 100}
+                , new Object[]{"minWidth", 30}
+                , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -136,8 +135,8 @@ public class AFRequestPage extends javax.swing.JPanel {
                 new Object[]{"name", "item.title"}
                 , new Object[]{"caption", "Title"}
                 , new Object[]{"width", 255}
-                , new Object[]{"minWidth", 260}
-                , new Object[]{"maxWidth", 200}
+                , new Object[]{"minWidth", 30}
+                , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -151,7 +150,7 @@ public class AFRequestPage extends javax.swing.JPanel {
                 new Object[]{"name", "unit"}
                 , new Object[]{"caption", "Unit"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", true}
                 , new Object[]{"resizable", true}
@@ -167,7 +166,7 @@ public class AFRequestPage extends javax.swing.JPanel {
                 new Object[]{"name", "qty"}
                 , new Object[]{"caption", "Qty"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 30}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", true}
                 , new Object[]{"resizable", true}
@@ -179,6 +178,21 @@ public class AFRequestPage extends javax.swing.JPanel {
                 , new Object[]{"alignment", "CENTER"}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", null}
+                , new Object[]{"caption", " "}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
 
@@ -191,7 +205,7 @@ public class AFRequestPage extends javax.swing.JPanel {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(116, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -199,8 +213,8 @@ public class AFRequestPage extends javax.swing.JPanel {
                 .add(14, 14, 14)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(xDataTable1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 384, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(37, Short.MAX_VALUE))
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     

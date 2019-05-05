@@ -30,6 +30,7 @@ class CashReceiptConvertCheckToCashModel {
     void init() {
         mode = 'init'; 
         receipt = null; 
+        remarks = null;
     }
     
     def getTitle() {
@@ -56,10 +57,18 @@ class CashReceiptConvertCheckToCashModel {
     
     def decformat = new java.text.DecimalFormat("#,##0.00");  
     def getReceiptAmount() {
-        def amount = receipt?.amount; 
-        if ( amount == null ) return ""; 
+        def amount = (receipt?.amount ? receipt.amount : 0.0); 
         return decformat.format( amount ); 
     }
+    def getReceiptNonCash() {
+        def totalnoncash = (receipt?.totalnoncash ? receipt.totalnoncash : 0.0); 
+        return decformat.format( totalnoncash ); 
+    }  
+    def getReceiptCash() {
+        def amount = (receipt?.amount ? receipt.amount : 0.0); 
+        def totalnoncash = (receipt?.totalnoncash ? receipt.totalnoncash : 0.0); 
+        return decformat.format( amount - totalnoncash ); 
+    } 
     
     def doCancel() {
         if ( mode == 'finish') return '_close'; 

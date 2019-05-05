@@ -1,11 +1,12 @@
 <workunit extends="wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/treasury" caption="Cashbook" action="setup"  
-                 target="window" index="7" role="COLLECTOR,REPORT" permission="cashbook.viewreport">
-            <action role="COLLECTOR" tag="COLLECTOR"/>  
+        <invoker folderid="/explorer/report/treasury" 
+        		 caption="Cashbook (Collector)" action="setup"  
+                 role="REPORT,COLLECTOR" permission="cashbook.viewreport" target="window">
             <action role="REPORT" tag="REPORT"/> 
+            <action role="COLLECTOR" tag="COLLECTOR"/> 
         </invoker>
     </invokers>
     
-    <code class="com.rameses.gov.treasury.report.models.CollectorCashbookReportModel"/>
+    <code class="com.rameses.gov.treasury.report.models.CashbookCollectorReportModel"/>
 </workunit>

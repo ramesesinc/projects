@@ -2,24 +2,26 @@
     <invokers>
        
         <invoker folderid="menucategory/treasury/remittance" 
-                 caption="Prepare Collection Voucher" 
                  windowTitle="Prepare Collection Voucher"
-                 formTitle="Prepare Collection Voucher"
-                 action="init" index="30" role="LIQUIDATING_OFFICER"/>
+                 formTitle="Prepare Collection Voucher" 
+                 caption="Prepare Collection Voucher" action="init" 
+                 role="LIQUIDATING_OFFICER" index="30" />
         
         <invoker type="collectionvoucher:create" 
-                 caption="New Collection Voucher" 
                  windowTitle="New Collection Voucher"
-                 formTitle="New Collection Voucher"
-                 action="init" index="30" role="LIQUIDATING_OFFICER"/>
+                 formTitle="New Collection Voucher" 
+                 caption="New Collection Voucher" action="init" 
+                 role="LIQUIDATING_OFFICER" index="30" />
         
-        <invoker type="formActions" caption="Submit for Liquidation"  action="submitForLiquidation"/>
+        <invoker type="formActions" 
+                 caption="Submit for Liquidation" action="submitForLiquidation" 
+                 role="LIQUIDATING_OFFICER" mnemonic="s" />
     </invokers>
    
-   <code class="com.rameses.enterprise.treasury.models.CollectionVoucherInitialModel" />
+    <code class="com.rameses.enterprise.treasury.models.CollectionVoucherInitialModel" />
   
-   <pages>
-       <page template="com.rameses.enterprise.treasury.views.CollectionVoucherInitialPage" />
-   </pages>
+    <pages>
+        <page template="com.rameses.enterprise.treasury.views.CollectionVoucherInitialPage" />
+    </pages>
    
 </workunit>

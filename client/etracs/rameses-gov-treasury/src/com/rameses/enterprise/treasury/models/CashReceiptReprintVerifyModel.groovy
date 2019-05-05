@@ -26,8 +26,11 @@ class CashReceiptReprintVerifyModel  {
     
     def doOk() {
         if(!receipt) throw new Exception("Please pass a receipt");
-        entity.username = username;
-        entity.password = user.encodePwd( password, username );
+
+        if ( applySecurity ) {
+            entity.username = username;
+            entity.password = user.encodePwd( password, username );
+        }
         entity.applysecurity = applySecurity;
         entity.receiptid = receipt.objid;
         entity.reason = remarks;

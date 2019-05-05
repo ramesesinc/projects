@@ -57,6 +57,10 @@
 	<variable name="TENDBALANCE" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{runbalance}]]></variableExpression>
 	</variable>
+	<variable name="RUNBAL" class="java.lang.Number" resetType="Report" calculation="Nothing">
+		<variableExpression><![CDATA[$V{RUNBAL} + $F{dr} - $F{cr}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
 		<background>
 			<band height="0"  isSplitAllowed="true" >
 			</band>
@@ -70,12 +74,12 @@
 			</band>
 		</pageHeader>
 		<columnHeader>
-			<band height="18"  isSplitAllowed="true" >
+			<band height="39"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						x="0"
-						y="0"
-						width="107"
+						y="21"
+						width="65"
 						height="18"
 						key="staticText-8"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -91,9 +95,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="107"
-						y="0"
-						width="84"
+						x="65"
+						y="21"
+						width="144"
 						height="18"
 						key="staticText-30"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -109,9 +113,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="191"
-						y="0"
-						width="89"
+						x="209"
+						y="21"
+						width="113"
 						height="18"
 						key="staticText-31"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -127,12 +131,12 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="280"
-						y="0"
-						width="94"
+						x="322"
+						y="21"
+						width="80"
 						height="18"
 						key="staticText-32"/>
-					<box rightPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="5">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
@@ -141,16 +145,16 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="9"/>
 					</textElement>
-				<text><![CDATA[Dr]]></text>
+				<text><![CDATA[DR]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="374"
-						y="0"
-						width="94"
+						x="402"
+						y="21"
+						width="80"
 						height="18"
 						key="staticText-33"/>
-					<box rightPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="5">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
@@ -159,16 +163,16 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="9"/>
 					</textElement>
-				<text><![CDATA[Cr]]></text>
+				<text><![CDATA[CR]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="468"
-						y="0"
-						width="94"
+						x="482"
+						y="21"
+						width="80"
 						height="18"
 						key="staticText-34"/>
-					<box rightPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="5">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
@@ -179,123 +183,154 @@
 					</textElement>
 				<text><![CDATA[Balance]]></text>
 				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="0"
+						width="36"
+						height="19"
+						key="staticText-36"/>
+					<box leftPadding="1"></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="9"/>
+					</textElement>
+				<text><![CDATA[Fund :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="39"
+						y="0"
+						width="522"
+						height="19"
+						key="textField-22"/>
+					<box>					<pen lineWidth="0.0" lineStyle="Solid"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="9" isUnderline="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{FUNDNAME}]]></textFieldExpression>
+				</textField>
 			</band>
 		</columnHeader>
 		<detail>
 			<band height="15"  isSplitAllowed="true" >
-				<textField isStretchWithOverflow="true" pattern="MM/dd/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="MM/dd/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
 						y="0"
-						width="107"
+						width="65"
 						height="15"
 						key="textField"
 						stretchType="RelativeToBandHeight"/>
-					<box leftPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" topPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
+					<textElement textAlignment="Center" verticalAlignment="Top">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.util.Date"><![CDATA[$F{refdate}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="107"
+						x="65"
 						y="0"
-						width="84"
+						width="144"
 						height="15"
 						key="textField"
 						stretchType="RelativeToBandHeight"/>
-					<box leftPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="5" rightPadding="5" topPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
+					<textElement textAlignment="Left" verticalAlignment="Top">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{refno}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="191"
+						x="209"
 						y="0"
-						width="89"
+						width="113"
 						height="15"
 						key="textField"
 						stretchType="RelativeToBandHeight"/>
-					<box leftPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="5" rightPadding="5" topPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
+					<textElement textAlignment="Left" verticalAlignment="Top">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{reftype}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="280"
+						x="322"
 						y="0"
-						width="94"
+						width="80"
 						height="15"
 						key="textField"
 						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="5" rightPadding="5" topPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
+					<textElement textAlignment="Right" verticalAlignment="Top">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{dr}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{dr}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="374"
+						x="402"
 						y="0"
-						width="94"
+						width="80"
 						height="15"
 						key="textField"
 						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="5" rightPadding="5" topPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
+					<textElement textAlignment="Right" verticalAlignment="Top">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{cr}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{cr}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="468"
+						x="482"
 						y="0"
-						width="94"
+						width="80"
 						height="15"
 						key="textField"
 						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="5" rightPadding="5" topPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
+					<textElement textAlignment="Right" verticalAlignment="Top">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{runbalance}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{RUNBAL}]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>
@@ -304,68 +339,7 @@
 			</band>
 		</columnFooter>
 		<pageFooter>
-			<band height="21"  isSplitAllowed="true" >
-				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Transparent"
-						x="0"
-						y="5"
-						width="563"
-						height="11"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="textField-4"
-						positionType="Float"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["GENERATED BY: ETRACS v2.5          PRINTED BY: " + $P{PRINTEDBY} + "          PRINT DATE: "  + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format($P{PRINTDATE}) )]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Transparent"
-						x="437"
-						y="0"
-						width="65"
-						height="11"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="textField-5"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Transparent"
-						x="502"
-						y="0"
-						width="61"
-						height="11"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="textField-6"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["" + $V{PAGE_NUMBER} + ""]]></textFieldExpression>
-				</textField>
+			<band height="0"  isSplitAllowed="true" >
 			</band>
 		</pageFooter>
 		<summary>
@@ -374,10 +348,10 @@
 					<reportElement
 						x="0"
 						y="0"
-						width="280"
+						width="322"
 						height="18"
 						key="staticText-35"/>
-					<box rightPadding="5">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="20">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
@@ -390,13 +364,13 @@
 				</staticText>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="280"
+						x="322"
 						y="0"
-						width="94"
+						width="80"
 						height="18"
 						key="textField-19"
 						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="5">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
@@ -409,13 +383,13 @@
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="374"
+						x="402"
 						y="0"
-						width="94"
+						width="80"
 						height="18"
 						key="textField-20"
 						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="5">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
@@ -426,15 +400,15 @@
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTALCR}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="468"
+						x="482"
 						y="0"
-						width="94"
+						width="80"
 						height="18"
 						key="textField-21"
 						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="5">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
@@ -443,7 +417,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTALDR}.subtract( $V{TOTALCR} )]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[($V{TOTALDR} - $V{TOTALCR})]]></textFieldExpression>
 				</textField>
 			</band>
 		</summary>

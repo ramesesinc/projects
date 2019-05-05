@@ -37,6 +37,7 @@ public class OrgMainPage extends javax.swing.JPanel {
 
         xTileView1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         xTileView1.setCellSize(new java.awt.Dimension(75, 80));
+        xTileView1.setDynamic(true);
         xTileView1.setName("orgModel"); // NOI18N
         xTileView1.setOpaque(false);
         xTileView1.setPadding(new java.awt.Insets(10, 20, 10, 0));

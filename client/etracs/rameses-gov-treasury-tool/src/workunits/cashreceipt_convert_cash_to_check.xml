@@ -16,5 +16,5 @@
     <pages>
         <page template="com.rameses.gov.treasury.tool.views.CashReceiptConvertCashToCheckPageInit"/>
         <page name="finish" template="com.rameses.gov.treasury.tool.views.CashReceiptConvertCashToCheckPageFinish"/>
-    </pages>        
+    </pages> 
 </workunit>

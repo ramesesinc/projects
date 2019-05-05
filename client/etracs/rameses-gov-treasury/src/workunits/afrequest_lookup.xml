@@ -1,17 +1,22 @@
-<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="afrequest" allowCreate="false">
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
+          schemaName="afrequest" allowCreate="false">
     <invokers>
-        <invoker type="afrequest_collection:lookup" caption="Lookup AF for ISSUE" 
-                 action="init"
+        <invoker type="afrequest_collection:lookup" 
+                 formTitle="Lookup Request List" 
+                 caption="Lookup AF for ISSUE" 
+                 action="init" width="750" height="480" 
                  customFilter="state='OPEN' AND reqtype='COLLECTION'"
                  cols="reqno,dtfiled,reqtype,requester.name,org.name"
-                 hiddenCols="reqtype"
-                 formTitle="Lookup Request List"/>
+                 hiddenCols="reqtype" 
+                 orderBy="dtfiled" />
         
-        <invoker type="afrequest_purchase:lookup" caption="Lookup AF Request" 
-                 action="init"
+        <invoker type="afrequest_purchase:lookup" 
+                 formTitle="Lookup Request List" 
+                 caption="Lookup AF Request" 
+                 action="init" width="750" height="480" 
                  customFilter="state='OPEN' AND reqtype='PURCHASE'"
                  cols="reqno,dtfiled,reqtype,requester.name,org.name"
-                 hiddenCols="reqtype"
-                 formTitle="Lookup Request List"/>
+                 hiddenCols="reqtype" 
+                 orderBy="dtfiled" />
     </invokers>
 </workunit>

@@ -24,7 +24,10 @@ class ItemAccountLookupModel extends CrudLookupModel {
         def s = [ " state = 'ACTIVE' "];
         def parm = [:];
         if(tag) {
-            if(tag.matches('CASH|CASH_IN_BANK') ) {
+            if ( tag == 'GENERIC_ACCOUNT' ) {
+                s << " generic = 1 ";
+            }
+            else if(tag.matches('CASH|CASH_IN_BANK') ) {
                 s << "type = :atype";
                 parm.atype = tag;
             }
@@ -37,10 +40,10 @@ class ItemAccountLookupModel extends CrudLookupModel {
                 s << "type = 'PAYABLE' ";
             }
         }
-        if(fundid) {
+        if ( fundid ) { 
             s << "fund.objid = :fundid";
             parm.fundid = fundid;
-        }
+        } 
         return [s.join(" AND "), parm ];
     }
    

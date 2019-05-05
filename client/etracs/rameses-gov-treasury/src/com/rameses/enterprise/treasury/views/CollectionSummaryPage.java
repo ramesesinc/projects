@@ -117,6 +117,7 @@ public class CollectionSummaryPage extends javax.swing.JPanel {
         xFormPanel2.setPadding(new java.awt.Insets(0, 0, 10, 0));
 
         xDecimalField1.setCaption("Total Collection");
+        xDecimalField1.setDepends(new String[] {"totals"});
         xDecimalField1.setName("totalCollection"); // NOI18N
         xDecimalField1.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField1.setEnabled(false);
@@ -125,6 +126,7 @@ public class CollectionSummaryPage extends javax.swing.JPanel {
         xFormPanel2.add(xDecimalField1);
 
         xDecimalField2.setCaption("Cash Tendered");
+        xDecimalField2.setDepends(new String[] {"totals"});
         xDecimalField2.setName("cashTendered"); // NOI18N
         xDecimalField2.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField2.setFocusAccelerator('c');
@@ -133,6 +135,7 @@ public class CollectionSummaryPage extends javax.swing.JPanel {
         xFormPanel2.add(xDecimalField2);
 
         xDecimalField3.setCaption("Change");
+        xDecimalField3.setDepends(new String[] {"totals"});
         xDecimalField3.setName("change"); // NOI18N
         xDecimalField3.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField3.setEnabled(false);

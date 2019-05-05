@@ -16,7 +16,19 @@ class CashbookLiquidationReportService {
 		buildParams( params ); 
 
 		def result = [:]; 
-		result.items = reportdb.getReport( params.filter ); 
+		result.items = reportdb.getDetails( params.filter ); 
+
+		def balinfo = reportdb.findBeginBalance( params.filter ); 
+		if ( balinfo?.balance ) { 
+			def m = [refno: '** BEGIN BALANCE **', dr: balinfo.balance, cr: 0.0, amount: balinfo.balance];  
+			if ( result.items ) {
+				result.items.add(0, m); 
+			} 
+			else {
+				result.items << m; 
+			}
+		} 
+
 		result.header = params.remove('header'); 
 		return result; 
 	}

@@ -10,9 +10,25 @@ import com.rameses.util.*;
 
 class CashReceiptModel extends CrudFormModel { 
 
+    @Service('Var')
+    def varSvc;
+
     String schemaName = "cashreceipt";    
     def afcontrol;
+
+    def reprint_requires_approval; 
     
+    boolean isReprintRequiresApproval() {
+        if ( reprint_requires_approval == null ) {
+            def sval = varSvc.get('cashreceipt_reprint_requires_approval'); 
+            reprint_requires_approval = ( "false".equals(sval.toString()) ? false : true); 
+        }
+        if ( reprint_requires_approval instanceof Boolean ) {
+            return (reprint_requires_approval ? true : false); 
+        }
+        return false; 
+    }
+
     void loadAfControl() {
         if ( !afcontrol ) { 
             def m = [_schemaname: "af_control"];
@@ -54,7 +70,7 @@ class CashReceiptModel extends CrudFormModel {
     public void print( def name ) { 
         boolean pass = false; 
         def h = { pass = true; } 
-        Modal.show("cashreceipt:reprint:verify", [ handler: h, receipt: entity ]); 
+        Modal.show("cashreceipt:reprint:verify", [ handler: h, receipt: entity, applySecurity: isReprintRequiresApproval() ]); 
         if ( !pass ) return; 
         
         def op = null; 

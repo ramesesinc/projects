@@ -1,31 +1,37 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
           schemaName="af_control" allowDelete="false" allowCreate="false">
-   <invokers>
-       
-       <invoker folderid="menucategory/treasury/af" 
-                cols="afid,dtfiled,batchno,stubno,owner.name,startseries,currentseries,endseries,prefix,suffix,qtybalance,assignee.name,respcenter.name"       
-                caption="AF Controls" formTitle="AF Controls" role="AFO" action="init" tag="AFO" 
-                orderBy="afid,dtfiled,batchno,stubno"/>
-           
-       <invoker folderid="menucategory/treasury/collection" 
-            cols="afid,stubno,assignee.name,startseries,currentseries,endseries,prefix,suffix,qtybalance,active,txnmode,fund.title,respcenter.name"       
-            caption="View Accountable Forms" 
-            action="init"
-            index="102"
-            customFilter="owner.objid = :userid"
-            formTitle="Manage Accountable Forms" role="COLLECTOR" tag="COLLECTION" />
-      
-        <invoker folderid="menucategory/treasury/subcollection" 
-            cols="afid,stubno,owner.name,startseries,currentseries,endseries,prefix,suffix,qtybalance,active,txnmode,fund.title,respcenter.name"       
-            caption="View Accountable Forms" 
-            action="init"
-            customFilter="assignee.objid = :userid"
-            formTitle="Manage Accountable Forms" role="SUBCOLLECTOR" tag="SUBCOLLECTION" />
-   </invokers>
+  <invokers>
+     
+     <invoker folderid="menucategory/treasury/af" 
+              formTitle="AF Controls" 
+              caption="AF Controls" 
+              action="init" 
+              cols="afid,dtfiled,batchno,stubno,startseries,endseries,currentseries,qtybalance,prefix,suffix,owner.name,respcenter.name,currentdetail.txntype" 
+              orderBy="afid,dtfiled,batchno,stubno">
+        <action role="AFO" tag="AFO" /> 
+        <action role="SHARED" tag="SHARED" allowCreate="false" allowDelete="false"/> 
+     </invoker>
+         
+     <invoker folderid="menucategory/treasury/collection" 
+              formTitle="Manage Accountable Forms" 
+              caption="View Accountable Forms" 
+              action="init" role="COLLECTOR" tag="COLLECTION" index="102" 
+              cols="afid,stubno,startseries,endseries,currentseries,qtybalance,prefix,suffix,active,txnmode,assignee.name,fund.title,respcenter.name" 
+              customFilter="owner.objid = :userid" 
+              orderBy="afid,dtfiled,batchno,startseries" />
+    
+      <invoker folderid="menucategory/treasury/subcollection" 
+               formTitle="Manage Accountable Forms" 
+               caption="View Accountable Forms" 
+               action="init" role="SUBCOLLECTOR" tag="SUBCOLLECTION" 
+               cols="afid,stubno,startseries,endseries,currentseries,qtybalance,prefix,suffix,active,txnmode,owner.name,fund.title,respcenter.name" 
+               customFilter="assignee.objid = :userid" 
+               orderBy="afid,dtfiled,batchno,startseries"/> 
+  </invokers> 
   
-   <code class="com.rameses.enterprise.treasury.models.AFControlListModel" />
-   
-    <pages>
-        <page name="queryForm" template="com.rameses.enterprise.treasury.views.AFControlQueryPanel"/>
-    </pages>
+  <code class="com.rameses.enterprise.treasury.models.AFControlListModel" />
+
+  <pages>
+    <page name="queryForm" template="com.rameses.enterprise.treasury.views.AFControlQueryPanel"/>
+  </pages>
 </workunit>

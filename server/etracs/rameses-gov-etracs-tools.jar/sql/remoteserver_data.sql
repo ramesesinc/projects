@@ -57,12 +57,6 @@ select af.* from (
     where o.org_objid = $P{orgid} 
     union 
     select af.objid 
-    from sys_usergroup_member ugm 
-      inner join af_control afc on ugm.user_objid = afc.owner_objid 
-      inner join af on afc.afid=af.objid 
-    where ugm.org_objid = $P{orgid} 
-    union 
-    select af.objid 
     from af_control afc 
       inner join af on afc.afid = af.objid 
     where afc.org_objid = $P{orgid} 
@@ -218,9 +212,8 @@ select ugm.* from (
     union 
     select objid from sys_usergroup_member where org_objid = $P{orgid} 
   )t1 
-)t2, sys_usergroup_member ugm, sys_user u       
+)t2, sys_usergroup_member ugm      
 where ugm.objid = t2.objid  
-  and ugm.user_objid = u.objid 
 
 
 [getBanks]

@@ -2,7 +2,7 @@
     <invokers>
         <invoker type="attachment:preview" caption="Preview" 
                  action="init" target="popup" alwaysOnTop="true" 
-                 width="800" height="600"/>
+                 width="1000" height="900"/>
 
         <invoker type="formActions" action="_close" caption="Close" />
     </invokers>

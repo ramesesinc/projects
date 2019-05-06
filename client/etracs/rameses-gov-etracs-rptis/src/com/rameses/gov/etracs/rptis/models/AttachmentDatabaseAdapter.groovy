@@ -28,8 +28,8 @@ class AttachmentDatabaseAdapter implements AttachmentAdapter
     }
 
 
-    def createFolderInfo() {
-        def folderPath = DBImageUtil.instance.cacheDirectory + File.separatorChar + getFolderName();
+    def createFolderInfo(folderName) {
+        def folderPath = DBImageUtil.instance.cacheDirectory + File.separatorChar + folderName;
         def file = new java.io.File(folderPath);
         
         def info = [
@@ -44,26 +44,39 @@ class AttachmentDatabaseAdapter implements AttachmentAdapter
     }
 
     public void loadFolders(files) {
-        files << createFolderInfo();
+        files << createFolderInfo(getFolderName());
+    }
+
+    public void loadFolders(files, folderName) {
+        files << createFolderInfo(folderName);
     }
         
     public void loadItems( info ) { 
-        def folderName = getFolderName();
+        def folderName = info.objid;
         info.items = []; 
-        def headers = getHeaders();
+        def headers = getHeaders(info);
         headers.each {
             def f = DBImageUtil.instance.getImage2(folderName, it.objid);
-            info.items << [
+            def item = [
                 objid: f.name,
                 caption: it.title,
                 filepath: f.canonicalPath,
-                thumbnail:  model.createThumbnail(f),
             ];
+
+            if (info._addThumbnail == null || info._addThumbnail == true) {
+                item.thumbnail = model.createThumbnail(f);
+            }
+
+            info.items << item;
         }
     }
 
-    def getHeaders() {
-        return model.querySvc.getList([_schemaname: 'dbimage_header', findBy:[parentid: model.callerEntity.objid]]);
+    def getHeaders(info) {
+        if (info.prevEntity) {
+            return  model.querySvc.getList([_schemaname: 'dbimage_header', findBy:[parentid: info.prevEntity.objid]]);    
+        } else {
+            return  model.querySvc.getList([_schemaname: 'dbimage_header', findBy:[parentid: model.callerEntity.objid]]);
+        }
     }
     
 }

@@ -62,7 +62,7 @@
 						key="staticText-1"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
 					</textElement>
 				<text><![CDATA[REPUBLIC OF THE PHILIPPINES]]></text>
 				</staticText>
@@ -125,7 +125,7 @@
 						key="textField-3"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma"/>
+						<font fontName="Tahoma" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PERIOD}.toString().toUpperCase()]]></textFieldExpression>
 				</textField>

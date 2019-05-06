@@ -16,6 +16,9 @@ class AFCancelSeriesService  {
 	@DataContext("af_control") 
 	def afctrl_db;
 
+	@DataContext("sys_user") 
+	def user_db;
+
 	@Service("AFControlService")
 	def afSvc;
 
@@ -28,26 +31,38 @@ class AFCancelSeriesService  {
 
 	@ProxyMethod
 	public def init( entity ) {  
+		if ( !entity.formno ) throw new Exception('formno parameter is required'); 
+		if ( !entity.controlid ) throw new Exception('controlid parameter is required'); 
+
+		def afcrec = afctrl_db.find([ objid: entity.controlid ]).select('objid,owner.*,af.formtype').first(); 
+		if ( !afcrec?.objid ) 
+			throw new Exception('AFControl record not found'); 
+		if ( afcrec.af?.formtype.toString().toLowerCase() != 'serial')
+			throw new Exception('AF form type must be a serial');  
+		if ( !afcrec.owner?.objid ) 
+			throw new Exception('AFControl must have an owner information');
+
+		def usrrec = user_db.find([ objid: afcrec.owner.objid ]).select('objid,jobtitle').first(); 
+		if ( !usrrec?.objid ) throw new Exception('User record not found');  
+
+		afcrec.owner.title = usrrec.jobtitle;
+
 		def coltype = coltype_db.find([ formno: entity.formno, state: 'ACTIVE' ]).orderBy('name').first(); 
 		entity.collectiontype = coltype; 
-
-		def rundate = dateSvc.serverDate; 
 
 		entity.objid = "CRCT"+ new java.rmi.server.UID();
 		entity.org = [objid: env.ORGID, name: env.ORGNAME];
 		entity.user = [objid: env.USERID, name: env.FULLNAME];
-		entity.collector = [objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE];
-		entity.txndate = rundate;
-		entity.receiptdate = rundate;
-		entity.state = "CANCELLED";
-		entity.paidby = "-";
-		entity.paidbyaddress = "-";
-		entity.amount = 0.0 ;
-		entity.totalcash = 0.0;
-		entity.totalnoncash=0.0;
-		entity.cashchange=0.0;
-		entity.totalcredit=0.0;
-		entity.txnmode ='ONLINE';
+		entity.collector = afcrec.owner; 
+		entity.state = "CANCELLED"; 
+		entity.paidby = "-"; 
+		entity.paidbyaddress = "-"; 
+		entity.amount = 0.0 ; 
+		entity.totalcash = 0.0; 
+		entity.totalnoncash=0.0; 
+		entity.cashchange=0.0; 
+		entity.totalcredit=0.0; 
+		entity.txnmode ='ONLINE'; 
 		return entity; 
 	}
 
@@ -65,6 +80,7 @@ class AFCancelSeriesService  {
 		if ( !receipt.paymentitems ) receipt.paymentitems = [];
 
 		def rundate = dateSvc.serverDate; 
+		receipt.receiptdate = rundate;
 		receipt.txndate = rundate; 
 		receipt_db.create( receipt );  
 

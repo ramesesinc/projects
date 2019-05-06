@@ -145,7 +145,8 @@ class CollectionVoucherService  {
 	public void postJev( def o ) { 
 		//post to jev
 		def p = cvEm.find([objid: o.objid]).first();
-		if(!p) throw new Exception("Collection Voucher not found!");
+		if ( !p ) throw new Exception("Collection Voucher not found!"); 
+		
 		def ref = [refid:p.objid,refno:p.controlno,reftype:'collectionvoucher', refdate:p.controldate, txntype:'COLLECTION'];
 
 		def jevBatch = [:];

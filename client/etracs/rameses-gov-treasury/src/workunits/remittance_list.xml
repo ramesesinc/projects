@@ -5,7 +5,7 @@
                  caption="View Remittances" windowTitle="Remittances By Collector"
                  formTitle="Remittances By Collector" formId="treasury-collection-remittance"
                  cols="controlno,controldate,collector.name,liquidatingofficer.name,amount,state"
-                 hiddenCols="collector.objid,liquidatingofficer.objid"
+                 hiddenCols="collector.objid,liquidatingofficer.objid,dtposted"
                  orderBy="controlno"
                  role="COLLECTOR" 
                  allowDelete="#{entity?.state == 'DRAFT'}" 
@@ -15,7 +15,7 @@
                  caption="View Remittances" windowTitle="Remittances" 
                  formTitle="Remittances" formId="treasury-remittance" 
                  cols="controlno,controldate,collector.name,liquidatingofficer.name,amount,state"
-                 hiddenCols="collector.objid,liquidatingofficer.objid"
+                 hiddenCols="collector.objid,liquidatingofficer.objid,dtposted"
                  orderBy="controlno" 
                  role="LIQUIDATING_OFFICER"
                  target="window" index="-4" tag="ALL" />
@@ -24,7 +24,7 @@
                  caption="View Remittances" windowTitle="Remittances" 
                  formTitle="Remittances" formId="treasury-mgmt-remittance"
                  cols="controlno,controldate,collector.name,liquidatingofficer.name,amount,state"
-                 hiddenCols="collector.objid,liquidatingofficer.objid"
+                 hiddenCols="collector.objid,liquidatingofficer.objid,dtposted"
                  orderBy="controlno"
                  role="SHARED"
                  target="window" index="-4" tag="ALL"/>        

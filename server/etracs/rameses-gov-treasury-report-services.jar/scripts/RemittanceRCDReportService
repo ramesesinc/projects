@@ -91,6 +91,7 @@ class RemittanceRCDReportService {
 		result.nonserialsummary = result.nonserialremittances; 
 
 		if ( result?.cashbreakdown ) {
+			def coins = 0.0;
 			def denoms = [ 1000, 500, 200, 100, 50, 20, 10, 5, 1, 0.50, 0.25, 0.10, 0.05, 0.01 ]; 
 			denoms.each{ d-> 
 				def dd = result.cashbreakdown.find{( it.denomination == d )} 
@@ -98,8 +99,14 @@ class RemittanceRCDReportService {
 					def str = d.toString().replace('.',''); 
 					result.put("dqty"+ str, dd.qty ); 
 					result.put("damt"+ str, dd.amount); 
+					
+					if ( d < 10 ) coins += dd.amount; 
 				}
 			}
+
+			if ( coins > 0 ) { 
+				result.put("damtCoins", coins); 
+			} 
 		}
 	}
 

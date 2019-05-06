@@ -13,9 +13,12 @@ class CashReceiptListInterceptor {
 			result << [ id:'unremitted', title: 'Unremitted'];	
 			result << [ id:'delegated', title: 'Delegated'];
 			result << [ id:'remitted', title: 'Remitted'];	
-		} else if ( x._tag == 'subcollector' ) {
+			result << [ id:'voided', title: 'Voided'];	
+		} 
+		else if ( x._tag == 'subcollector' ) {
 			result << [ id:'unremitted', title: 'Unremitted'];	
 			result << [ id:'remitted', title: 'Remitted']; 
+			result << [ id:'voided', title: 'Voided'];	
 		} 
 		else if( x._tag == 'unremitted' ) {
 			result << [ id:'unremitted', title: 'Unremitted'];	
@@ -27,7 +30,6 @@ class CashReceiptListInterceptor {
 			result << [ id:'unremitted', title: 'Unremitted'];	
 			result << [ id:'remitted', title: 'Remitted'];	
 		}
-
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'cashreceipt' }")
@@ -39,32 +41,40 @@ class CashReceiptListInterceptor {
 		def qmap = [:];
 
 		if ( o._tag == 'collector' ) {
+			qmap.userid = env.USERID;
 			qarr << " collector.objid = :userid ";
+
 			if ( o.node.id == 'unremitted' ) { 
 				qarr << " remittanceid is null AND state = 'POSTED' ";
 			} else if ( o.node.id == 'delegated' ) { 
 				qarr << " remittanceid is null and subcollector.objid is not null "; 
-			} else { 
+			} else if ( o.node.id == 'remitted' ) { 
 				qarr << " remittanceid is not null "; 
+			} else if ( o.node.id == 'voided' ) { 
+				qarr << " void.objid is not null "; 
 			}
-
+		} 
+		else if ( o._tag == 'subcollector' ) {
 			qmap.userid = env.USERID;
-
-		} else if ( o._tag == 'subcollector' ) {
 			qarr << " subcollector.objid = :userid ";
-			qarr << " subcollector.remittanceid is " + (o.node.id == 'unremitted' ? 'null' : 'not null');
-			qmap.userid = env.USERID;
 
-		} else if ( o.node.id == 'unremitted' ) { 
+			if ( o.node.id == 'unremitted' ) {
+				qarr << " subcollector.remittanceid is null AND state = 'DELEGATED' "; 
+			} else if ( o.node.id == 'remitted' ) { 
+				qarr << " subcollector.remittanceid is not null AND state = 'POSTED' "; 
+			} else if ( o.node.id == 'voided' ) { 
+				qarr << " void.objid is not null "; 
+			} 
+		} 
+		else if ( o.node.id == 'unremitted' ) { 
 			qarr << " remittanceid IS NULL AND state = 'POSTED' "; 
-
-		} else if( o.node.id == 'remitted' ) { 
+		} 
+		else if( o.node.id == 'remitted' ) { 
 			qarr << " remittanceid IS NOT NULL "; 
-
 		} 
 
-		def orderbys = [];
-		if ( o.orderBy ) orderbys << o.orderBy;
+		def orderbys = []; 
+		if ( o.orderBy ) orderbys << o.orderBy; 
 
 		if ( o.node?.id.toString().matches('unremitted|delegated')) {
 			orderbys << " formno, receiptdate, series "; 

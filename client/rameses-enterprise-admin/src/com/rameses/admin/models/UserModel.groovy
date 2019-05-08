@@ -30,25 +30,38 @@ public class UserModel  {
     def selectedUsergroup;
     def usergroups;
     
-    void refresh() {
-        title = entity.name;
-        init();
-    }
-            
     void open() {
         initiator = 'open';
-        entity = service.open( [objid: entity.objid]);
+        def o = service.open([ objid: entity.objid ]); 
+        if ( o ) entity.putAll( o ); 
+
         refresh();
     }
 
     void edit() {
-        def h = { o->
-            entity.putAll( o );
-            refresh();
-        }
-        binding.fireNavigation( Inv.lookupOpener( "sys_user:edit", [entity: entity, handler: h] ) );
+        sectionHandler.setSelectedIndex( 0 ); 
+        initiator = 'edit'; 
     }
     
+    void cancelEdit() {
+        open(); 
+    }
+    
+    void save() {
+        def buff = new StringBuilder(); 
+        buff.append( entity.lastname ).append(", ").append( entity.firstname ); 
+        if ( entity.middlename ) buff.append(" ").append( entity.middlename ); 
+        
+        entity.name = buff.toString(); 
+        service.update( entity ); 
+        open();
+    }
+
+    void refresh() {
+        title = entity.name;
+        init();
+    }
+        
     void initList() {
         usergroups = service.getUsergroups( [objid: entity.objid] );
         domainList = usergroups*.domain?.unique();
@@ -112,9 +125,21 @@ public class UserModel  {
     def _sections; 
     def getSections() {
         if ( _sections == null ) {
-            _sections = Inv.lookupOpeners('sys_user:sections', [caller: this]); 
+            _sections = Inv.lookupOpeners('sys_user:sections', [caller: this, entity: entity]); 
         }
         return _sections;
     }
+    
+    def sectionHandler = [
+        getOpeners: {
+            return getSections(); 
+        }, 
+        beforeSelect: { op,idx-> 
+            if ( initiator == 'edit' && (idx == 1 || idx==2)) {
+                return false; 
+            }
+            return true; 
+        }
+    ] as TabbedPaneModel;
 }
         

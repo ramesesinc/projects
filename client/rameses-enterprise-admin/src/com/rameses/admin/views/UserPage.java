@@ -5,12 +5,14 @@
 package com.rameses.admin.views;
 
 import com.rameses.osiris2.themes.FormPage;
+import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 
 /**
  *
  * @author dell
  */
+@StyleSheet
 @Template(FormPage.class)
 public class UserPage extends javax.swing.JPanel {
 
@@ -55,6 +57,7 @@ public class UserPage extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         photoComponent1 = new com.rameses.enterprise.components.PhotoComponent();
 
+        xTabbedPane1.setHandler("sectionHandler");
         xTabbedPane1.setItems("sections");
 
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);

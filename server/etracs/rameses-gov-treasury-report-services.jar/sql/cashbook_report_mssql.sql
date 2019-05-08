@@ -49,6 +49,19 @@ from (
 		and r.liquidatingofficer_objid is not null 
 )t1 
 
+[findRevolvingFund]
+select 
+	year(controldate) as controlyear, 
+	month(controldate) as controlmonth, 
+	sum(amount) as amount, 
+	((year(controldate)*12) + month(controldate)) as indexno 
+from cashbook_revolving_fund 
+where issueto_objid = $P{accountid} 
+	and controldate <= $P{fromdate} 
+	and state = 'POSTED' 
+group by year(controldate), month(controldate), ((year(controldate)*12) + month(controldate)) 
+order by ((year(controldate)*12) + month(controldate)) desc 
+
 [getDetails]
 select * 
 from ( 

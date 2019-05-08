@@ -59,7 +59,7 @@ from cashbook_revolving_fund
 where issueto_objid = $P{accountid} 
 	and controldate <= $P{fromdate} 
 	and state = 'POSTED' 
-group by year(controldate), month(controldate) 
+group by year(controldate), month(controldate), ((year(controldate)*12) + month(controldate)) 
 order by ((year(controldate)*12) + month(controldate)) desc 
 
 [getDetails]

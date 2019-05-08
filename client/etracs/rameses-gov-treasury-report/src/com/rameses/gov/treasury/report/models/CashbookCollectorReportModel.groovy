@@ -21,7 +21,7 @@ class CashbookCollectorReportModel extends AsyncReportController {
     def funds = [];
     def months = [];
     def tag;
-
+    
     def templates = [ 
         [code:'detail', name:'DETAIL'], 
         [code:'summary', name:'SUMMARY'] 
@@ -30,6 +30,8 @@ class CashbookCollectorReportModel extends AsyncReportController {
         [code:'daily', name:'DAILY'],
         [code:'monthly', name:'MONTHLY'],
     ]; 
+    
+    def allow_multiple_fund_selection; 
 
     void setup( inv ) { 
         tag = inv?.properties?.tag; 
@@ -48,8 +50,14 @@ class CashbookCollectorReportModel extends AsyncReportController {
         months = resp.months; 
         entity.date = resp.date; 
         entity.year = resp.year; 
+        
+        allow_multiple_fund_selection = resp.allow_multiple_fund_selection; 
         return 'default'; 
     }
+
+    boolean isDynamic() { 
+        return true; 
+    } 
 
     public String getReportName() {
         if ( entity.template?.code == 'summary' ) {
@@ -65,22 +73,29 @@ class CashbookCollectorReportModel extends AsyncReportController {
     void buildResult( o ) {
         data = o; 
     }
-        
+
+    
+    def lookupFund = Inv.lookupOpener('report_fund:lookup', [multiSelect: true]); 
+
     def formControl = [
-        getFormControls: {
-            return [
-                new FormControl( "combo", [caption:'Template', name:'entity.template', required:true, items:'templates', expression:'#{item.name}', preferredSize:'100,20', captionWidth:100, allowNull: false]), 
-                new FormControl( "combo", [caption:'Period', name:'entity.period', required:true, items:'periods', expression:'#{item.name}', preferredSize:'100,20', captionWidth:100, allowNull: false]), 
-                new FormControl( "date", [caption:'Date', name:'entity.date', required:true, preferredSize:'100,20', captionWidth:100, depends:'entity.period', visibleWhen:'#{entity.period?.code == "daily"}']), 
-                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100, depends:'entity.period', visibleWhen:'#{entity.period?.code == "monthly"}']), 
-                new FormControl( "combo", [caption:'Month', name:'entity.month', required:true, items:'months', expression:'#{item.name}', preferredSize:'100,20', captionWidth:100, depends:'entity.period', visibleWhen:'#{entity.period?.code == "monthly"}']),
-                new FormControl( "combo", [caption:'Account', name:'entity.account', required:true, items:'accounts', expression:'#{item.description ? item.description : item.fullname}', preferredSize:'0,20', captionWidth:100]),
-                new FormControl( "combo", [caption:'Fund', name:'entity.fund', required:true, items:'funds', expression:'#{item.title}', preferredSize:'0,20', captionWidth:100]),
-            ];
-        }
+        getControlList: {
+            def list = []; 
+            list << [type:"combo", caption:'Template', name:'entity.template', required:true, items:'templates', expression:'#{item.name}', preferredSize:'100,20', captionWidth:100, allowNull: false]; 
+            list << [type:"combo", caption:'Period', name:'entity.period', required:true, items:'periods', expression:'#{item.name}', preferredSize:'100,20', captionWidth:100, allowNull: false]; 
+            list << [type:"date", caption:'Date', name:'entity.date', required:true, preferredSize:'100,20', captionWidth:100, depends:'entity.period', visibleWhen:'#{entity.period?.code == "daily"}']; 
+            list << [type:"integer", caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100, depends:'entity.period', visibleWhen:'#{entity.period?.code == "monthly"}']; 
+            list << [type:"combo", caption:'Month', name:'entity.month', required:true, items:'months', expression:'#{item.name}', preferredSize:'100,20', captionWidth:100, depends:'entity.period', visibleWhen:'#{entity.period?.code == "monthly"}']; 
+            list << [type:"combo", caption:'Account', name:'entity.account', required:true, items:'accounts', expression:'#{item.description ? item.description : item.fullname}', preferredSize:'0,20', captionWidth:100]; 
+            if ( allow_multiple_fund_selection ) {
+                list << [type:"lookup", caption:'Fund', name:'entity.fund', required:true, handlerObject: lookupFund, expression:'#{item.title}', preferredSize:'0,20', captionWidth:100]; 
+            } else {
+                list << [type:"combo", caption:'Fund', name:'entity.fund', required:true, items:'funds', expression:'#{item.title}', preferredSize:'0,20', captionWidth:100];                 
+            }
+            return list;
+        } 
     ] as FormPanelModel;
    
     Map getParameters() {
         return data.info;
-    }
+    }    
 } 

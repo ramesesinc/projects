@@ -108,5 +108,13 @@ public class UserModel  {
     def resetPassword() {
         return Inv.lookupOpener('user:resetpassword', [entity: entity]); 
     } 
+    
+    def _sections; 
+    def getSections() {
+        if ( _sections == null ) {
+            _sections = Inv.lookupOpeners('sys_user:sections', [caller: this]); 
+        }
+        return _sections;
+    }
 }
         

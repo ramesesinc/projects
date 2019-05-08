@@ -78,6 +78,14 @@
 		<variableExpression><![CDATA[$F{cr}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
+	<variable name="TOTAL_DR" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[($F{refdate} ? $F{dr} : 0.0)]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="TOTAL_CR" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[($F{refdate} ? $F{cr} : 0.0)]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
 
 		<group  name="refdate" >
 			<groupExpression><![CDATA[$F{refdate}]]></groupExpression>
@@ -688,7 +696,7 @@ Collections
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="9"/>
 					</textElement>
-				<text><![CDATA[T O T A L]]></text>
+				<text><![CDATA[TOTAL THIS MONTH]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -707,7 +715,7 @@ Collections
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTALDR}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTAL_DR}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -726,7 +734,7 @@ Collections
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTALCR}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTAL_CR}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -745,7 +753,7 @@ Collections
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[($V{TOTALDR} - $V{TOTALCR})]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[($V{TOTAL_DR} - $V{TOTAL_CR})]]></textFieldExpression>
 				</textField>
 			</band>
 		</summary>

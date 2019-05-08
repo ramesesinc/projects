@@ -2,8 +2,8 @@
     <invokers>
         <invoker type="sys_user:open" action="open" caption="User"  target="popup"/>
         
-        <invoker type="formActions" action="_exit" caption="Close"/>
-        <invoker type="formActions" caption="Edit" action="edit"/>
+        <invoker type="formActions" action="_exit" caption="Close" mnemonic="c"/>
+        <invoker type="formActions" caption="Edit" action="edit" mnemonic="e"/>
         <invoker type="formActions" caption="Reset Password" action="resetPassword" 
                  mnemonic="r" visibleWhen="#{initiator != 'create'}"/>
     </invokers>

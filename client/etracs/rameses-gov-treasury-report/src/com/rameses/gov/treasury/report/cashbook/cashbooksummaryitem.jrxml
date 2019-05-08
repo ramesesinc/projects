@@ -40,6 +40,7 @@
 	<parameter name="ACCOUNTTITLE" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="FROMPERIOD" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="TOPERIOD" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="REV_FUND_AMT" isForPrompting="false" class="java.lang.Number"/>
 
 	<field name="refno" class="java.lang.String"/>
 	<field name="reftype" class="java.lang.String"/>
@@ -48,6 +49,7 @@
 	<field name="runbalance" class="java.math.BigDecimal"/>
 	<field name="refdate" class="java.util.Date"/>
 	<field name="particulars" class="java.lang.String"/>
+	<field name="balance" class="java.lang.Number"/>
 
 	<variable name="TOTALDR" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{dr}]]></variableExpression>
@@ -84,6 +86,10 @@
 	</variable>
 	<variable name="TOTAL_CR" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[($F{refdate} ? $F{cr} : 0.0)]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="REV_AMT" class="java.lang.Number" resetType="Report" calculation="Nothing">
+		<variableExpression><![CDATA[($P{REV_FUND_AMT} ? $P{REV_FUND_AMT} : 0.0)]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 
@@ -343,7 +349,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Top">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{RUN_DR} - $V{RUN_CR}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[($V{REV_AMT} + $V{RUN_DR}) - $V{RUN_CR}]]></textFieldExpression>
 				</textField>
 			</band>
 			</groupFooter>
@@ -666,7 +672,7 @@ Collections
 					<textElement textAlignment="Right" verticalAlignment="Top">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[($F{refdate} == null ? $V{RUNBAL} : null)]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[($F{refdate} == null ? ($V{RUNBAL} + $V{REV_AMT}) : null)]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>

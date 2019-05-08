@@ -43,6 +43,7 @@
 	<parameter name="PERIODCOVERED" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="TREASURERNAME" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="TREASURERTITLE" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="REV_FUND_AMT" isForPrompting="false" class="java.lang.Number"/>
 
 	<field name="balance" class="java.lang.Number"/>
 	<field name="items" class="java.lang.Object"/>
@@ -169,6 +170,9 @@
 					</subreportParameter>
 					<subreportParameter  name="ACCOUNTNAME">
 						<subreportParameterExpression><![CDATA[$P{ACCOUNTNAME}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="REV_FUND_AMT">
+						<subreportParameterExpression><![CDATA[$P{REV_FUND_AMT}]]></subreportParameterExpression>
 					</subreportParameter>
 					<dataSourceExpression><![CDATA[$F{items}]]></dataSourceExpression>
 					<subreportExpression  class="java.lang.String"><![CDATA["cashbooksummaryitem.jasper"]]></subreportExpression>

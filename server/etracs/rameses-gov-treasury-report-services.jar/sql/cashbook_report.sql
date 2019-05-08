@@ -5,23 +5,62 @@ from (
 	from vw_cashbook_cashreceipt 
 	where refdate < $P{fromdate} 
 		and collectorid = $P{accountid} 
-		and fundid = $P{fundid} 
+		and fundid in (${fundfilter}) 
 	union all 
 	select sum(dr) as dr, sum(cr) as cr 
 	from vw_cashbook_cashreceiptvoid 
 	where refdate < $P{fromdate} 
 		and collectorid = $P{accountid} 
-		and fundid = $P{fundid} 
+		and fundid in (${fundfilter})
 	union all 
 	select sum(v.dr) as dr, sum(v.cr) as cr  
 	from vw_cashbook_remittance v, remittance r  
 	where v.refdate < $P{fromdate} 
 		and v.collectorid = $P{accountid} 
-		and v.fundid = $P{fundid} 
+		and v.fundid in (${fundfilter})
 		and v.objid = r.objid 
 		and r.liquidatingofficer_objid is not null 
 )t1 
 
+[findBeginBalance2]
+select sum(dr) as dr, sum(cr) as cr, sum(dr)-sum(cr) as balance 
+from ( 
+	select sum(dr) as dr, sum(cr) as cr 
+	from vw_cashbook_cashreceipt 
+	where refdate >= $P{fromdate} 
+		and refdate < $P{todate} 
+		and collectorid = $P{accountid} 
+		and fundid in (${fundfilter})
+	union all 
+	select sum(dr) as dr, sum(cr) as cr 
+	from vw_cashbook_cashreceiptvoid 
+	where refdate >= $P{fromdate} 
+		and refdate < $P{todate} 
+		and collectorid = $P{accountid} 
+		and fundid in (${fundfilter})
+	union all 
+	select sum(v.dr) as dr, sum(v.cr) as cr  
+	from vw_cashbook_remittance v, remittance r  
+	where v.refdate >= $P{fromdate} 
+		and v.refdate < $P{todate} 
+		and v.collectorid = $P{accountid} 
+		and v.fundid in (${fundfilter})
+		and v.objid = r.objid 
+		and r.liquidatingofficer_objid is not null 
+)t1 
+
+[findRevolvingFund]
+select 
+	year(controldate) as controlyear, 
+	month(controldate) as controlmonth, 
+	sum(amount) as amount, 
+	((year(controldate)*12) + month(controldate)) as indexno 
+from cashbook_revolving_fund 
+where issueto_objid = $P{accountid} 
+	and controldate <= $P{fromdate} 
+	and state = 'POSTED' 
+group by year(controldate), month(controldate) 
+order by ((year(controldate)*12) + month(controldate)) desc 
 
 [getDetails]
 select * 
@@ -31,7 +70,7 @@ from (
 	where refdate >= $P{fromdate} 
 		and refdate <  $P{todate} 
 		and collectorid = $P{accountid} 
-		and fundid = $P{fundid} 
+		and fundid in (${fundfilter})
 	group by refdate, refno, reftype, sortdate 
 	union all 
 	select refdate, refno, reftype, sum(dr) as dr, sum(cr) as cr, sortdate 
@@ -39,7 +78,7 @@ from (
 	where refdate >= $P{fromdate} 
 		and refdate <  $P{todate} 
 		and collectorid = $P{accountid} 
-		and fundid = $P{fundid} 
+		and fundid in (${fundfilter})
 	group by refdate, refno, reftype, sortdate 
 	union all 
 	select v.refdate, v.refno, v.reftype, v.dr, v.cr, v.sortdate  
@@ -47,7 +86,7 @@ from (
 	where v.refdate >= $P{fromdate} 
 		and v.refdate <  $P{todate} 
 		and v.collectorid = $P{accountid} 
-		and v.fundid = $P{fundid} 
+		and v.fundid in (${fundfilter})
 		and r.objid = v.objid 
 		and r.liquidatingofficer_objid is not null 
 )t1 
@@ -67,7 +106,7 @@ from (
 	where c.refdate >= $P{fromdate} 
 		and c.refdate <  $P{todate} 
 		and c.collectorid = $P{accountid} 
-		and c.fundid = $P{fundid} 
+		and c.fundid in (${fundfilter})
 		and af.formtype = 'serial' 
 	group by 
 		c.refdate, c.formno, c.controlid, 
@@ -85,7 +124,7 @@ from (
 	where c.refdate >= $P{fromdate} 
 		and c.refdate <  $P{todate} 
 		and c.collectorid = $P{accountid} 
-		and c.fundid = $P{fundid} 
+		and c.fundid in (${fundfilter})
 		and af.formtype = 'serial' 
 	group by c.refdate, c.objid, c.formno, c.fundid  	
 
@@ -100,7 +139,7 @@ from (
 	where c.refdate >= $P{fromdate} 
 		and c.refdate <  $P{todate} 
 		and c.collectorid = $P{accountid} 
-		and c.fundid = $P{fundid} 
+		and c.fundid in (${fundfilter})
 		and af.formtype = 'cashticket' 
 	group by c.refdate, c.formno, af.title 
 
@@ -114,7 +153,7 @@ from (
 	where v.refdate >= $P{fromdate} 
 		and v.refdate <  $P{todate} 
 		and v.collectorid = $P{accountid } 
-		and v.fundid = $P{fundid} 
+		and v.fundid in (${fundfilter})
 		and r.objid = v.objid 
 		and r.liquidatingofficer_objid is not null 
 )t1 

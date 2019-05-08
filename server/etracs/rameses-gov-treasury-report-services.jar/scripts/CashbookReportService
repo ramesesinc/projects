@@ -20,9 +20,15 @@ class CashbookReportService {
 
 	@Env
 	def env; 
+
+	@Service('Var')
+	def var; 
  
 	@ProxyMethod 
 	public def initReport( param ) { 
+		def allow_multiple_fund_selection = var.cashbook_report_allow_multiple_fund_selection; 
+		allow_multiple_fund_selection = allow_multiple_fund_selection.toString().matches('true|1'); 
+
 		def wheresql = ['usergroup.objid = :uroleid']; 
 		def whereparam = [uroleid: 'TREASURY.COLLECTOR']; 
 
@@ -51,43 +57,81 @@ class CashbookReportService {
 			funds  : funds, 
 			date   : dateSvc.getBasicServerDate(),
 			year   : dateSvc.getServerYear(), 
-			months : dateSvc.getMonths()
+			months : dateSvc.getMonths(), 
+
+			allow_multiple_fund_selection : allow_multiple_fund_selection  
 		]; 
 	} 
 
 	@ProxyMethod
 	public def generateReport( params ) {
-		buildDateFilter( params )
+		buildDateFilter( params ); 
 		params.accountid = params.account ? params.account.objid : env.USERID;
 		params.fundid = params.fund.objid; 
 
+		if ( params.fund instanceof java.util.List ) {
+			params.fundfilter = params.fund.collect{( "'"+ it.objid +"'" )}.join(","); 
+			params.fundtitle = params.fund.collect{ it.title }.join(", ");
+		} 
+		else if ( params.fund ) {
+			params.fundfilter = "'"+ params.fund.objid +"'"; 
+			params.fundtitle = params.fund.title; 
+		} 
+		else {
+			params.fundfilter = "''"; 
+		}
+
 		def data = [:];
-		if ( params.template?.code == 'summary' ) {
+		def balinfo = null; 
+		def revfund = null;
+		boolean is_summary = ( params.template?.code == 'summary' ); 
+
+		if ( is_summary ) {
 			data.items = report_db.getSummaries( params ); 
+
+			def m = [:];
+			m.putAll( params );  
+			m.fromdate = new java.text.SimpleDateFormat('yyyy-01-01').format( params.fromdate );
+			m.todate = params.fromdate; 
+			balinfo = report_db.findBeginBalance2( m ); 
+
+			m.fromdate = params.fromdate;
+			revfund = report_db.findRevolvingFund( m ); 
 		} 
 		else { 
 			data.items = report_db.getDetails( params ); 
+			balinfo = report_db.findBeginBalance( params ); 
 		} 
 
-		def balinfo = report_db.findBeginBalance( params ); 
-		if ( balinfo?.balance ) { 
-			balinfo = [refid:'begin_balance', reftype:'** BEGIN BALANCE **', dr: balinfo.balance, cr:0.0]; 
-			balinfo.particulars = balinfo.reftype; 
+		if ( balinfo ) {
+			balinfo.refid = 'begin_balance'; 
+			balinfo.reftype = '** BEGIN BALANCE **'; 
+			balinfo.particulars = balinfo.reftype;
 
-			if ( data.items ) {
-				data.items.add(0, balinfo); 
-			} else {
-				data.items << balinfo; 
-			}
+			boolean allow_begbal = false; 
+			if ( is_summary && (balinfo.dr || balinfo.cr || balinfo.balance)) {
+				allow_begbal = true; 
+			} else if ( balinfo.balance ) {
+				allow_begbal = true; 
+			} 
+
+			if ( allow_begbal ) {
+				if ( data.items ) {
+					data.items.add(0, balinfo); 
+				} else {
+					data.items << balinfo; 
+				}
+			} 
 		}
 
 		if ( !data.items ) throw new Exception("No record(s) that matches your criteria");
 
 		def MDY = new java.text.SimpleDateFormat("MMMMM dd, yyyy");
 		data.info = [
-			FUNDNAME 	 : params.fund.title, 
+			FUNDNAME 	 : params.fundtitle, 
 			ACCOUNTNAME	 : (params.account ? params.account.name : env.FULLNAME),  
-			ACCOUNTTITLE : (params.account ? params.account.title : env.JOBTITLE)  
+			ACCOUNTTITLE : (params.account ? params.account.title : env.JOBTITLE), 
+			REV_FUND_AMT : revfund?.amount  
 		]; 
 		if ( params.period?.code == 'daily' ) { 
 			data.info.PERIOD = MDY.format( params.fromdate ); 

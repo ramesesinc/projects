@@ -1,0 +1,17 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="cashbook_revolving_fund" 
+          allowCreate="false" allowDelete="false" >
+
+    <invokers>
+        <invoker folderid="menucategory/treasury/mgmt" 
+                 caption="View Cashbook Revolving Funds" action="init" 
+                 cols="controldate,issueto.name,amount,dtfiled,filedby.name,remarks"
+                 hiddenCols="state,filedby.objid,issueto.objid" 
+                 orderBy="controldate DESC, dtfiled DESC" 
+                 target="window"> 
+            <action role="SHARED" tag="SHARED"/> 
+            <action role="COLLECTOR" tag="COLLECTOR" allowCreate="true" /> 
+        </invoker> 
+    </invokers>
+    
+</workunit>

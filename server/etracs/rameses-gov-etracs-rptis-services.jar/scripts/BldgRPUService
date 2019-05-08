@@ -16,6 +16,9 @@ class BldgRPUService
 	@DataContext('bldgrpu')
 	def em_bldgrpu
 
+	@DataContext('rpu')
+	def em_rpu
+
 	@DataContext('structure')
 	def em_structure
 
@@ -217,6 +220,8 @@ class BldgRPUService
 
 	@ProxyMethod
 	public def saveBldgLand(item){
+		def landrpu = em_rpu.select('rpumasterid').find([objid: item.landfaas.rpuid]).first()
+		item.landrpumaster = [objid: landrpu?.rpumasterid]
 		em_bldgrpu_land.save(item)
 		return item 
 	}

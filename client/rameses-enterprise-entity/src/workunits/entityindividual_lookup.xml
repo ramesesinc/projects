@@ -15,4 +15,6 @@
                 hiddenCols="entityname,gender,type" 
                 surroundSearch="false" />
    </invokers>
+   
+   <code class="com.rameses.entity.models.EntityIndividualLookupModel"/>  
 </workunit>

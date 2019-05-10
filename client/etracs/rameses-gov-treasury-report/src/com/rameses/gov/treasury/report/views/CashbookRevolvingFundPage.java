@@ -35,6 +35,7 @@ public class CashbookRevolvingFundPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
@@ -53,6 +54,14 @@ public class CashbookRevolvingFundPage extends javax.swing.JPanel {
         xDecimalField2.setName("entity.amount"); // NOI18N
         xDecimalField2.setRequired(true);
         xFormPanel1.add(xDecimalField2);
+
+        xComboBox1.setCaption("Fund");
+        xComboBox1.setExpression(" #{item.title}");
+        xComboBox1.setItems("funds");
+        xComboBox1.setName("entity.fund"); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(250, 20));
+        xComboBox1.setRequired(true);
+        xFormPanel1.add(xComboBox1);
 
         xLabel1.setCaption("State");
         xLabel1.setExpression("#{entity.state}");
@@ -102,6 +111,7 @@ public class CashbookRevolvingFundPage extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;

@@ -61,4 +61,16 @@ class CashbookRevolvingFundModel extends CrudFormModel {
         entity.filedby = [objid: env.USERID, name: env.FULLNAME];
         entity.issueto = [objid: env.USERID, name: env.FULLNAME];
     }
+    
+    private def _funds; 
+    
+    public def getFunds() {
+        if ( _funds == null ) { 
+            def m = [_schemaname: 'vw_fund'];
+            m.where = [" state = 'ACTIVE' "]; 
+            m.orderBy = " group.indexno, code, title ";
+            _funds = qryService.getList( m ); 
+        }
+        return _funds; 
+    }
 }        

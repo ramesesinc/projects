@@ -5,7 +5,7 @@
     <invokers>
         <invoker folderid="menucategory/treasury/mgmt" 
                  caption="View Cashbook Revolving Funds" action="init" 
-                 cols="controldate,issueto.name,amount,dtfiled,filedby.name,remarks"
+                 cols="controldate,issueto.name,amount,fund.title,dtfiled,filedby.name,remarks"
                  hiddenCols="state,filedby.objid,issueto.objid" 
                  orderBy="controldate DESC, dtfiled DESC" 
                  target="window"> 

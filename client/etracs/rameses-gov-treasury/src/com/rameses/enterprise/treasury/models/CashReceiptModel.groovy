@@ -113,4 +113,9 @@ class CashReceiptModel extends CrudFormModel {
             return null; 
         }
     }    
+    
+    def decformat = new java.text.DecimalFormat('#,##0.00'); 
+    def getFormattedAmount() {
+        return decformat.format( entity.amount ? entity.amount : 0.0 ); 
+    }
 } 

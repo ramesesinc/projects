@@ -148,13 +148,16 @@ from (
 	select 
 		v.refdate, null as controlid, v.reftype as formno, null as minseries, null as maxseries, 
 		('REMITTANCE - '+ r.liquidatingofficer_name) as particulars, v.refno, 
-		v.dr, v.cr, v.sortdate 
+		sum(v.dr) as dr, sum(v.cr) as cr, v.sortdate 
 	from vw_cashbook_remittance v, remittance r 
 	where v.refdate >= $P{fromdate} 
 		and v.refdate <  $P{todate} 
-		and v.collectorid = $P{accountid } 
+		and v.collectorid = $P{accountid} 
 		and v.fundid = $P{fundid} 
 		and r.objid = v.objid 
 		and r.liquidatingofficer_objid is not null 
+	group by 
+		v.refdate, v.reftype, v.refno, v.sortdate, 
+		concat('REMITTANCE - ', r.liquidatingofficer_name) 
 )t1 
 order by refdate, sortdate 

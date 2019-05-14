@@ -21,7 +21,7 @@
         <invoker type="faas:formActions" 
                  action="init" caption="Assign Tracking Number"  
                  role="RECEIVER,RECEIVER_ADMIN" 
-                 visibleWhen="#{entity.trackingno == null &amp;&amp; entity.txntype.objid == 'ND'}"
+                 visibleWhen="#{entity.trackingno == null}"
                  refType="faas"
                  field="tdno"
                  index="10000"

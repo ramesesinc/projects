@@ -254,7 +254,6 @@ class FAASService
 		faas.backtaxes      = em_faas.getBackTaxes([faasid: faas.objid]).each{ it.taxable = util.toBoolean(it.taxable, true) }
 		faas.taxpayer.address = faas.taxpayer.address?.text 
 		faas.affectedrpus = em_faas_affectedrpu.find([faasid: faas.objid]).list()
-		faas.trackingno = em_faas_list.select('trackingno').find([objid: faas.objid]).first()?.trackingno
 		loadTaskInfo(faas)
 		loadSignatories(faas)
 		loadMessageList(faas)

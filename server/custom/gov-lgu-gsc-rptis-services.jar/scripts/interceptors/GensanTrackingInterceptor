@@ -44,13 +44,19 @@ class GensanTrackingInterceptor
 		}
 	}
 
+	@After(pattern='FAASService.openFaas', index=1000000)
+	public void openFaas(evt){
+		def faas = evt.result
+		def tracking = em_faas_list.find([objid: faas.objid]).first()
+		faas.trackingno = tracking?.trackingno 
+	}
 
 	@Before(pattern='FAASService.deleteFaas', index=1000000)
 	public void beforeDeleteFaas(evt){
 		def faas = evt.args[0]
 
 		em_faas_previous.find([faasid: faas.objid]).list().each {
-			em_tracking.find([ref_objid: it.prevfaasid]).update([newfaas_objid: null])	
+			em_tracking.find([ref_objid: it.prevfaasid]).update([newfaas_objid: null, refno: null])	
 		}
 	}
 
@@ -80,24 +86,11 @@ class GensanTrackingInterceptor
 	@Before(pattern='SubdivisionService.deleteSubdividedLand', index=1000000)
 	public void deleteSubdividedLand(evt){
 		def land = evt.args[0]
-		em_tracking.find([ref_objid: land.newfaasid]).delete()
+		em_tracking.find([newfaas_objid: land.newfaasid]).delete()
 	}
 	
 
 
-
-	@After(pattern='FAASService.openFaas', index=1000000)
-	public void openFaas(evt){
-		def faas = evt.result
-		def tracking = em_faas_list.select('trackingno').find([objid: faas.objid]).first()
-		faas.trackingno = tracking?.trackingno 
-	}
-
-	@Before(pattern='FAASService.deleteFaas', index=1000000)
-	public void deleteFaas(evt){
-		def faas = evt.args[0]
-		em_tracking.find([newfaas_objid: faas.objid]).update([newfaas_objid: null])
-	}
 
 	@After(pattern='SubdivisionService.open', index=1000000)
 	public void openSubdivision(evt){

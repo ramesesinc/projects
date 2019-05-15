@@ -57,7 +57,6 @@ class GensanAcknowledgementTask
 	}
 
 	void closeAcknowledgement(entity) {
-		println 'Closing Acknowledgement ' + entity.txnno 
 		em_acknowledgement.find([objid: entity.objid]).update([state: 'CLOSED'])
 	}
 

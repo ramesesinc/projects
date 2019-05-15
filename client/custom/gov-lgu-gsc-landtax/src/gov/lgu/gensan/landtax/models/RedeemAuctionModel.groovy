@@ -21,7 +21,9 @@ public class RedeemAuctionModel
     def redeem;
     
     void init() {
-        def ledger = [objid: entity.objid, tdno: entity.tdno];
+        def ledger = [objid: entity.objid];
+        ledger.tdno = entity.tdno;
+        ledger.prevtdno = entity.prevtdno;
         redeem = [ledger: ledger];
         redeem.objid = 'RA' + new java.rmi.server.UID();
     }

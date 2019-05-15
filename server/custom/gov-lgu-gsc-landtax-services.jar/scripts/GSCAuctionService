@@ -27,13 +27,21 @@ class GSCAuctionService {
 	@ProxyMethod
 	public def redeemAuction(redeem) {
 		def approver = getApprover(redeem)
-		redeem.tdno = redeem.ledger.tdno.replaceAll('F-', '')
+
 		redeem.createdby_name = env.FULLNAME
 		redeem.createdby_title = env.JOBTITLE
 		redeem.approvedby_name = approver.name 
 		redeem.approvedby_title = approver.title 
 		redeem.dtapproved = dtSvc.serverDate
+		redeem.tdno = redeem.ledger.tdno.replaceAll('F-', '')
 		em.insertRedeemedAuction(redeem)
+		
+		if (redeem.ledger.prevtdno) {
+			redeem.tdno = redeem.ledger.prevtdno.replaceAll('F-', '')
+			redeem.objid += '-' + redeem.tdno
+			em.insertRedeemedAuction(redeem)
+		}
+
 		log(redeem)
 		return redeem 
 	}

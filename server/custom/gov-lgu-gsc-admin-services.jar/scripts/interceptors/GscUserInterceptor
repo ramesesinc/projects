@@ -1,0 +1,25 @@
+import com.rameses.common.*
+import com.rameses.annotations.*
+
+class GscUserInterceptor {
+	@Service('GscUserService')
+	def svc 
+
+	@After(pattern='UserService.create', index=1000)
+	void afterCreate(ei) {
+		def entity = ei.result 
+		svc.save(entity)
+	}
+
+	@After(pattern='UserService.update', index=1000)
+	void afterUpdate(ei) {
+		def entity = ei.result 
+		svc.save(entity)
+	}
+
+	@After(pattern='UserService.open', index=1000)
+	void afterOpen(ei) {
+		def entity = ei.result 
+		svc.open(entity)
+	}
+}

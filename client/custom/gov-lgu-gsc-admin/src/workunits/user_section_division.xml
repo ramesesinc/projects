@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type="sys_user:sections" 
+                 caption="Division" 
+                 role="SYSADMIN"
+                 permission="division.view"/>
+    </invokers>
+    <code class="gov.gsc.admin.models.UserDivisionModel" />
+    <pages>
+        <page template="gov.gsc.admin.views.UserDivisionPage" />
+    </pages>
+</workunit>

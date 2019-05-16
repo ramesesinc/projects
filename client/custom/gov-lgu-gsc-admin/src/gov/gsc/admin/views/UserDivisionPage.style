@@ -1,0 +1,10 @@
+#--------------------------
+# comment ni
+#---------------------------
+"entity.*" [caller.initiator == 'open'] {
+    enabled:false;
+}
+
+"entity.*" [caller.initiator != 'open'] {
+    enabled:true;
+}

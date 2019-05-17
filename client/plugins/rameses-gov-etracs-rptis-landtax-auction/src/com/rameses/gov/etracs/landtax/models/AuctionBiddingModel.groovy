@@ -11,17 +11,27 @@ class AuctionBiddingModel extends CrudFormModel
     @Service('PropertyAuctionBiddingService')
     def svc;
 
-    def callformats = ['STANDARD', 'MODIFIED']
+    def callformats = ['STANDARD', 'MODIFIED'];
+    def selectedItem;
     
     
-    void startBidding() {
+    def startBidding() {
         if (MsgBox.confirm('Start bidding session?')) {
             entity.putAll(svc.startBidding(entity));
+            return continueBidding();
         }
     }
     
-    def bidding() {
-        
+    def continueBidding() {
+        def params = [:]
+        params.entity = entity;
+        params.onbid = {bid ->
+            entity.bidder = bid.bidder;
+            entity.bidamt = bid.amount;
+            reloadCalls();
+            binding.refresh('entity.bidder.*|entity.bidamt');
+        }
+        return Inv.lookupOpener('propertyauction_bidding:session', params);
     }
     
     def closeBidding() {
@@ -34,19 +44,23 @@ class AuctionBiddingModel extends CrudFormModel
     @PropertyChangeListener
     def listener = [
         'entity.callformat' : {
-            def p = [objid: entity.objid];
-            p.parent = entity.parent;
-            p.property = entity.property;
-            p.callformat = entity.callformat;
-            entity.calls = svc.getCalls(p);
-            listHandler.reloadAll();
+            reloadCalls();
         }
     ]
+    
+    void reloadCalls() {
+        def p = [objid: entity.objid];
+        p.parent = entity.parent;
+        p.property = entity.property;
+        p.callformat = entity.callformat;
+        entity.calls = svc.getCalls(p);
+        listHandler.reloadAll();
+    }
 
 
     def getLookupProperty() {
     	return Inv.lookupOpener('propertyauction_property:lookup', [
-    		state: 'FORSALE',
+    		state: 'FORAUCTION',
     		
     		onselect : {
     			entity.property = it;
@@ -68,17 +82,29 @@ class AuctionBiddingModel extends CrudFormModel
 
     def getColumnList() {
     	def cols = [];
-    	def col = [:]
-    	col.name = 'callno'
-    	col.caption =  'Bid Call No.'
-    	col.type = 'integer'
-    	cols << col 
+    	def col = [:];
+        
+        if (entity.callformat == 'STANDARD') {
+            col.name = 'callno';
+            col.caption =  'Bid Call No.';
+        } else {
+            col.name = 'rank';
+            col.caption =  'Bid Rank';
+        }
+    	col.type = 'integer';
+    	cols << col;
+        
+        if (entity.callformat == 'STANDARD') {
+            entity.bidders.each {
+                cols << createCol(it.bidderno, it.bidderno, 'decimal');
+            }
+        } else {
+            cols << createCol('bidder.bidderno', 'Bidder No.', 'text');
+            cols << createCol('bidder.entity.name', 'Bidder', 'text');
+            cols << createCol('amount', 'Amount', 'decimal');
+        }
 
-    	entity.bidders.each {
-    		cols << createCol(it.bidderno, it.bidderno, 'decimal')
-    	}
-
-    	return cols
+    	return cols;
     }
 
     def createCol(name, caption, type) {

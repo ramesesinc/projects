@@ -21,7 +21,7 @@ class AuctionPropertyModel extends CrudFormModel
     
     void submitForPayment(){
         if (MsgBox.confirm('Submit for Payment?')){
-            svc.submitSaleForPayment(entity);
+            svc.submitForPayment(entity);
             reload();
         }
     }

@@ -11,7 +11,7 @@
     <invokers>
         <invoker type="propertyauction:section" 
                  caption="Bidders" 
-                 index="4" />
+                 index="10" />
     </invokers>
     <code class="com.rameses.gov.etracs.landtax.models.AuctionSectionBidderModel" />
 </workunit>

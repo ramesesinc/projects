@@ -10,9 +10,10 @@
 		<field name="createdby_title" caption="Job Title"/>
 		<field name="bidder_objid" />
 		<field name="bidamt" caption="Bid Amount" />
+		<field name="lineno" type="integer" required="true" />
 
 	    <complex name="bidder" ref="propertyauction_bidder" jointype="many-to-one" required="false"
-	    	includefields="bidderno,entity.name">
+	    	includefields=".*,entity.name,entity.address.text">
 	    	<key field="bidder_objid" target="objid" /> 
 	    </complex>
 

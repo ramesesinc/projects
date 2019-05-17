@@ -6,13 +6,13 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 
-class AuctionSectionPropertyModel extends CrudListModel
+class AuctionSectionPropertyAuctionedModel extends CrudListModel
 {
     //auction entity
     def entity; 
     
     public def getCustomFilter(){
-        return ["parent.objid = :auctionid", [auctionid:entity.objid]]
+        return ["parent.objid = :auctionid and state <> :state", [auctionid:entity.objid, state: 'FORAUCTION']]
     }
     
     def showMenu(){
@@ -25,7 +25,7 @@ class AuctionSectionPropertyModel extends CrudListModel
     
     public def getColumnList(){
         def cols = super.getColumnList();
-        cols.find{it.name == 'soldto.name'}.caption = 'Bidder Name';
+        cols.find{it.name == 'bidder.entity.name'}.caption = 'Bidder Name';
         return cols 
     }
 }

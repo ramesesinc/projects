@@ -13,7 +13,7 @@
         <invoker type="formActions" 
             action="submitForPayment" 
             caption="Submit for Payment" 
-            visibleWhen="#{mode == 'read' &amp;&amp; entity.state =='FORSALE' &amp;&amp; entity.soldto.objid != null}"/>
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.state =='AUCTIONED' &amp;&amp; entity.bidder.objid != null}"/>
             
         <invoker type="formActions" 
             action="approveSale" 

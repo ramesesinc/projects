@@ -183,7 +183,7 @@
                             <StringItem index="0" value="entity.property"/>
                           </StringArray>
                         </Property>
-                        <Property name="expression" type="java.lang.String" value="#{entity.property.soldto.name}"/>
+                        <Property name="expression" type="java.lang.String" value="#{entity.property.bidder.entity.name}"/>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                             <LineBorder>
@@ -204,7 +204,7 @@
                             <StringItem index="0" value="entity.property"/>
                           </StringArray>
                         </Property>
-                        <Property name="expression" type="java.lang.String" value="#{entity.property.soldto.address.text}"/>
+                        <Property name="expression" type="java.lang.String" value="#{entity.property.bidder.entity.address.text}"/>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                             <LineBorder>
@@ -231,6 +231,11 @@
                     <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField1">
                       <Properties>
                         <Property name="caption" type="java.lang.String" value="Tax Due"/>
+                        <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                          <StringArray count="1">
+                            <StringItem index="0" value="entity.property"/>
+                          </StringArray>
+                        </Property>
                         <Property name="name" type="java.lang.String" value="entity.amount" noResource="true"/>
                         <Property name="disabledTextColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="0" green="0" red="0" type="rgb"/>

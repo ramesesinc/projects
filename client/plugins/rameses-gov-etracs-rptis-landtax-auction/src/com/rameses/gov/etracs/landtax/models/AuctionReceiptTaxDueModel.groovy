@@ -19,7 +19,7 @@ class AuctionReceiptTaxDueModel extends com.rameses.enterprise.treasury.cashrece
     
     void init(){
         super.init();
-        bill = billSvc.initBill(null);
+        bill = billSvc.initBill([:]);
         entity.billid = bill.objid; 
         entity.txntype = 'rptauction';
         calcReceiptAmount();
@@ -39,8 +39,8 @@ class AuctionReceiptTaxDueModel extends com.rameses.enterprise.treasury.cashrece
                 it.collectiontype = entity.collectiontype;
                 entity.property = it;
                 entity.payer = it.rptledger.taxpayer;
-                entity.paidby = it.soldto.name;
-                entity.paidbyaddress = it.soldto.address.text;
+                entity.paidby = it.bidder.entity.name;
+                entity.paidbyaddress = it.bidder.entity.address.text;
                 loadItemByLedger(it);
                 calcReceiptAmount();
             },
@@ -55,10 +55,6 @@ class AuctionReceiptTaxDueModel extends com.rameses.enterprise.treasury.cashrece
     }
     
     void calcReceiptAmount(){
-        entity.amount = 0.0;
-        if (entity.rptitems) {
-            entity.amount = entity.rptitems.amount.sum();
-        }
         updateBalances();
         binding?.refresh('entity.*')
     }    
@@ -66,9 +62,12 @@ class AuctionReceiptTaxDueModel extends com.rameses.enterprise.treasury.cashrece
     void loadItemByLedger(prop){
         def rptledger = prop.rptledger;
         buildBillParams(prop);
-        entity.rptitems = [];
-        entity.rptitems << svc.buildPaymentInfoByLedger(rptledger, bill);
-        calcReceiptAmount();
+        def ledger = svc.getItemsForPayment(bill)[0];
+        println 'ledger => ' + ledger.total 
+        entity.amount = ledger.total;
+        entity.sharing = ledger.shares;
+        entity.items = ledger.billitems; 
+        entity.ledgers = [ledger]
     }
 }
 

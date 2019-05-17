@@ -32,6 +32,11 @@ public class AuctionBiddingPage extends javax.swing.JPanel {
         xDecimalField4 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField7 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField8 = new com.rameses.rcp.control.XDecimalField();
+        xSeparator1 = new com.rameses.rcp.control.XSeparator();
+        xLabel19 = new com.rameses.rcp.control.XLabel();
+        xLabel17 = new com.rameses.rcp.control.XLabel();
+        xLabel18 = new com.rameses.rcp.control.XLabel();
+        xDecimalField10 = new com.rameses.rcp.control.XDecimalField();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xLabel11 = new com.rameses.rcp.control.XLabel();
         xLabel12 = new com.rameses.rcp.control.XLabel();
@@ -76,6 +81,50 @@ public class AuctionBiddingPage extends javax.swing.JPanel {
         xDecimalField8.setForeground(new java.awt.Color(255, 0, 0));
         xDecimalField8.setPreferredSize(new java.awt.Dimension(0, 22));
         xFormPanel1.add(xDecimalField8);
+
+        xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
+
+        javax.swing.GroupLayout xSeparator1Layout = new javax.swing.GroupLayout(xSeparator1);
+        xSeparator1.setLayout(xSeparator1Layout);
+        xSeparator1Layout.setHorizontalGroup(
+            xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 396, Short.MAX_VALUE)
+        );
+        xSeparator1Layout.setVerticalGroup(
+            xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
+
+        xFormPanel1.add(xSeparator1);
+
+        xLabel19.setCaption("Winning Bidder No.");
+        xLabel19.setExpression("#{entity.bidder.bidderno}");
+        xLabel19.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel19.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel19.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel1.add(xLabel19);
+
+        xLabel17.setCaption("Bidder Name");
+        xLabel17.setExpression("#{entity.bidder.entity.name}");
+        xLabel17.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel17.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel17.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel1.add(xLabel17);
+
+        xLabel18.setCaption("Address");
+        xLabel18.setExpression("#{entity.bidder.entity.address.text}");
+        xLabel18.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel18.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel18.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel1.add(xLabel18);
+
+        xDecimalField10.setCaption("Bid Amount");
+        xDecimalField10.setName("entity.bidamt"); // NOI18N
+        xDecimalField10.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField10.setEnabled(false);
+        xDecimalField10.setForeground(new java.awt.Color(255, 0, 0));
+        xDecimalField10.setPreferredSize(new java.awt.Dimension(0, 22));
+        xFormPanel1.add(xDecimalField10);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setPadding(new java.awt.Insets(25, 10, 10, 10));
@@ -156,6 +205,7 @@ public class AuctionBiddingPage extends javax.swing.JPanel {
         jPanel2.setBorder(xTitledBorder3);
 
         xDataTable2.setHandler("listHandler");
+        xDataTable2.setName("selectedItem"); // NOI18N
         xDataTable2.setId("itemHandlers.bidders");
 
         xFormPanel2.setCellpadding(new java.awt.Insets(5, 0, 0, 0));
@@ -186,7 +236,7 @@ public class AuctionBiddingPage extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -199,9 +249,9 @@ public class AuctionBiddingPage extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -221,6 +271,7 @@ public class AuctionBiddingPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
+    private com.rameses.rcp.control.XDecimalField xDecimalField10;
     private com.rameses.rcp.control.XDecimalField xDecimalField4;
     private com.rameses.rcp.control.XDecimalField xDecimalField6;
     private com.rameses.rcp.control.XDecimalField xDecimalField7;
@@ -235,5 +286,9 @@ public class AuctionBiddingPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel14;
     private com.rameses.rcp.control.XLabel xLabel15;
     private com.rameses.rcp.control.XLabel xLabel16;
+    private com.rameses.rcp.control.XLabel xLabel17;
+    private com.rameses.rcp.control.XLabel xLabel18;
+    private com.rameses.rcp.control.XLabel xLabel19;
+    private com.rameses.rcp.control.XSeparator xSeparator1;
     // End of variables declaration//GEN-END:variables
 }

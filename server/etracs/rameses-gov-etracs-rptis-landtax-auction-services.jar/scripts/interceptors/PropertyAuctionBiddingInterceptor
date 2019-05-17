@@ -32,7 +32,8 @@ class PropertyAuctionBiddingInterceptor
 		def arg = evt.args[0]
 		def result = evt.result
 		result << [state: 'DRAFT', title: 'DRAFT']
-		result << [state: 'BIDDING', title: 'BIDDING']
+		result << [state: 'ONGOING', title: 'ONGOING']
+		result << [state: 'AUCTIONED', title: 'AUCTIONED']
 		result << [state: 'CLOSED', title: 'CLOSED']
 	}
 

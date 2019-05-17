@@ -4,10 +4,10 @@
         <field name="state" required="true" caption="State" indexed="true" />
 		<field name="parent_objid" required="true" />
 		<field name="rptledger_objid"/>
-		<field name="soldto_objid" />
-		<field name="soldto_date" />
-		<field name="soldto_marriedto" />
-		<field name="soldto_marriedtoaddress" />
+		<field name="bidder_objid" />
+		<field name="bidder_dtbid" />
+		<field name="bidder_marriedto" />
+		<field name="bidder_marriedtoaddress" />
 		<field name="amtdue" required="true" type="decimal" />
 		<field name="costofsale" required="true" type="decimal" />
 		<field name="amtduepaid" required="true" type="decimal" />
@@ -38,9 +38,9 @@
 			<key field="objid" target="objid" />
 		</complex>
 
-		<complex name="soldto" ref="entity" jointype="many-to-one" required="false"
-			includefields="entityno,name,address_text">
-			<key field="soldto_objid" target="objid" />
+		<complex name="bidder" ref="propertyauction_bidder" jointype="many-to-one" required="false"
+			includefields="entity.entityno,entity.name,entity.address.text">
+			<key field="bidder_objid" target="objid" />
 		</complex>
 
 		<complex name="redeemedby" ref="entity" jointype="many-to-one" required="false"

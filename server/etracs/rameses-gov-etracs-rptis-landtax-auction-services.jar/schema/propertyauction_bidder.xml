@@ -8,7 +8,9 @@
 		<field name="bondamt" required="true" type="decimal" caption="Bond" defaultValue="0"/>
 		
 		<complex name="entity" ref="entity" 
-				jointype="many-to-one" required="false">
+				jointype="many-to-one" required="false"
+				includefields="name,address.text"
+		>
 			<key field="entity_objid" target="objid" />
 		</complex>
 

@@ -346,14 +346,16 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
         xFormPanel4.setCaptionWidth(120);
 
         xLabel10.setCaption("Name");
-        xLabel10.setExpression("#{entity.soldto.name}");
+        xLabel10.setExpression("#{entity.bidder.entity.name}");
         xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel10.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         xLabel10.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel4.add(xLabel10);
 
         xLabel8.setCaption("Address");
-        xLabel8.setExpression("#{entity.soldto.address.text}");
+        xLabel8.setExpression("#{entity.bidder.entity.address.text}");
         xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel8.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         xLabel8.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel4.add(xLabel8);
 
@@ -361,6 +363,7 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
         xDecimalField5.setName("entity.bidamt"); // NOI18N
         xDecimalField5.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField5.setEnabled(false);
+        xDecimalField5.setFont(new java.awt.Font("Monospaced", 1, 12)); // NOI18N
         xDecimalField5.setPreferredSize(new java.awt.Dimension(120, 20));
         xFormPanel4.add(xDecimalField5);
 
@@ -389,7 +392,7 @@ public class AuctionPropertyPage extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

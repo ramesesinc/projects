@@ -99,14 +99,14 @@ public class AuctionReceiptTaxDuePage extends javax.swing.JPanel {
 
         xLabel5.setCaption("Sold To");
         xLabel5.setDepends(new String[] {"entity.property"});
-        xLabel5.setExpression("#{entity.property.soldto.name}");
+        xLabel5.setExpression("#{entity.property.bidder.entity.name}");
         xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 22));
         xFormPanel2.add(xLabel5);
 
         xLabel6.setCaption("Address");
         xLabel6.setDepends(new String[] {"entity.property"});
-        xLabel6.setExpression("#{entity.property.soldto.address.text}");
+        xLabel6.setExpression("#{entity.property.bidder.entity.address.text}");
         xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel6.setPreferredSize(new java.awt.Dimension(0, 22));
         xFormPanel2.add(xLabel6);
@@ -115,6 +115,7 @@ public class AuctionReceiptTaxDuePage extends javax.swing.JPanel {
         xFormPanel2.add(xSeparator2);
 
         xDecimalField1.setCaption("Tax Due");
+        xDecimalField1.setDepends(new String[] {"entity.property"});
         xDecimalField1.setName("entity.amount"); // NOI18N
         xDecimalField1.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField1.setEnabled(false);

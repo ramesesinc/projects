@@ -48,7 +48,7 @@ class PropertyAuctionRuleService
 
     @ProxyMethod
     public def getBidItems( prop ) {
-        def request = [items: []]
+        def request = [items: [], charges: []]
         request.actions = buildActions(request)
         request.facts = buildFacts()
 

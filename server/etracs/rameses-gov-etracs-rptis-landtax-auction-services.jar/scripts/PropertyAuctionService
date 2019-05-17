@@ -161,7 +161,7 @@ class PropertyAuctionService
         list.each{
             def p = [:]
             p.objid = it.objid 
-            p.state = 'FORSALE'
+            p.state = 'FORAUCTION'
             p.parent = entity
             p.rptledger = it.rptledger
             p.soldto = [:]

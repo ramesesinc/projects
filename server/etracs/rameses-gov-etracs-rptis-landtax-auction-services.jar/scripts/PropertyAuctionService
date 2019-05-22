@@ -164,7 +164,7 @@ class PropertyAuctionService
             p.state = 'FORAUCTION'
             p.parent = entity
             p.rptledger = it.rptledger
-            p.soldto = [:]
+            p.bidder = [:]
             p.amtdue = it.amtdue 
             p.costofsale = it.costofsale
             p.amtduepaid = 0.0 
@@ -199,7 +199,6 @@ class PropertyAuctionService
                         .list()
 
         unsolvedprops.each{
-            it.soldto = entity.bidder 
             it.bidamt = it.amtdue 
             em_propertyauction_property.update(it)
         }

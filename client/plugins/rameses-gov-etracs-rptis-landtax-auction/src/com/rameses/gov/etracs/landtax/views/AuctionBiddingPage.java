@@ -201,7 +201,7 @@ public class AuctionBiddingPage extends javax.swing.JPanel {
         xFormPanel3.add(jPanel1);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder3.setTitle("Bidding Call Details");
+        xTitledBorder3.setTitle("Bidding Calls");
         jPanel2.setBorder(xTitledBorder3);
 
         xDataTable2.setHandler("listHandler");

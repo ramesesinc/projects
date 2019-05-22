@@ -71,5 +71,43 @@ class PropertyAuctionPropertyInterceptor
 		svc.postVoidRedeemPayment(receipt)
 	}
 
+
+
+	/*==================================================================
+	*
+	* LEDGER INTERCEPTS
+	*
+	===================================================================*/
+	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname=='rptledger'}", index=1000)
+	public afterOpenLedger(evt) {
+		def ledger = evt.result
+
+		def info = svc.getAuctionInfo(ledger)
+		if (info) {
+			ledger._messagelist = []
+	        def msg = 'Property is currently under auction.'
+	        msg += ' Auction No.: '  + info.auctionno 
+
+	        if (info.period) {
+	            msg += ' Period Covered: ' + info.period
+	        }
+
+	        ledger._messagelist << msg 
+	        ledger._auctioned = true 
+		}
+	}
+
+	@Before(pattern='RPTBillingService.generateBill', index=100)
+	public void beforeLedgerBill(evt) {
+		def bill = evt.args[0]
+		
+		bill.ledgers.each{
+			def info = svc.getAuctionInfo(it)
+			if (info) {
+				throw new Exception('Ledger is currently under auction. Billing is not allowed')
+			}
+		}
+	}
+
 }	
 

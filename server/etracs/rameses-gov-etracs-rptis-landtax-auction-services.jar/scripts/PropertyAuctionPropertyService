@@ -21,14 +21,17 @@ class PropertyAuctionPropertyService
     @DataContext('propertyauction')
     def em_auction
 
+    @DataContext('propertyauction_notice')
+    def em_notice
+
     @DataContext('propertyauction_property')
-    def em_auction_property 
+    def em_property 
 
     @DataContext('propertyauction_property_charge')
-    def em_auction_property_charge 
+    def em_charge 
 
     @DataContext('propertyauction_property_credit')
-    def em_auction_property_credit 
+    def em_credit 
 
     @DataContext('collectiontype_account')
     def em_collectiontype_account 
@@ -39,9 +42,12 @@ class PropertyAuctionPropertyService
     @DataContext('vw_property_bidder')
     def em_bidder 
 
+    def STATE_FORAUCTION = 'FORAUCTION'
+    def STATE_AUCTIONED = 'AUCTIONED'
     def STATE_FORPAYMENT = 'FORPAYMENT'
     def STATE_FORREDEMPTION = 'FORREDEMPTION'
     def STATE_REDEMPTIONFORPAYMENT = 'REDEMPTIONFORPAYMENT'
+    def STATE_REDEEMED = 'REDEEMED'
 
 
     @ProxyMethod
@@ -77,20 +83,20 @@ class PropertyAuctionPropertyService
 
         prop.state = STATE_FORPAYMENT
         prop.balance = prop.bidamt
-        em_auction_property.update(prop)
+        em_property.update(prop)
         return prop 
     }
 
     @ProxyMethod
     public def postAuctionTaxDue(receipt) {
-        def prop = em_auction_property.find([objid: receipt.property.objid]).first()
+        def prop = em_property.find([objid: receipt.property.objid]).first()
         if (!prop) throw new Exception('Property does not exist or has been deleted.')
         if (prop.balance == 0) throw new Exception('Property has already been paid.')
         if (prop.balance < receipt.amount) throw new Exception('Property balance is less than receipt amount.\nVerify payment history.')
 
         //update auction_property balance
         prop.balance -= receipt.amount
-        em_auction_property.find([objid: prop.objid]).update([amtduepaid: receipt.amount, balance: prop.balance])
+        em_property.find([objid: prop.objid]).update([amtduepaid: receipt.amount, balance: prop.balance])
 
         receipt.remarks = 'Tax Due Payment for Auction property ' + prop.rptledger.tdno 
         postCredit(receipt)
@@ -98,21 +104,21 @@ class PropertyAuctionPropertyService
 
     @ProxyMethod
     public void postVoidAuctionTaxDue(receipt) {
-        def credit = em_auction_property_credit.find([refid: receipt.objid]).first()
+        def credit = em_credit.find([refid: receipt.objid]).first()
         if (credit) {
-            def prop = em_auction_property.find([objid: credit.parent.objid]).first()
+            def prop = em_property.find([objid: credit.parent.objid]).first()
             prop.state = STATE_FORPAYMENT
             prop.balance += credit.amount 
             prop.amtduepaid = 0.0
-            em_auction_property.update(prop)
-            em_auction_property_credit.find([objid: credit.objid]).delete()
+            em_property.update(prop)
+            em_credit.find([objid: credit.objid]).delete()
         }
     }
     
 
     @ProxyMethod
     public def getBidItemsForPayment(prop) {
-        prop = em_auction_property.find([objid:prop.objid]).first()
+        prop = em_property.find([objid:prop.objid]).first()
         if (!prop) throw new Exception('Auctioned Property does not exist or has been deleted.')
 
         // make sure the taxdue is paid first, since there is a possibility
@@ -129,7 +135,7 @@ class PropertyAuctionPropertyService
 
     @ProxyMethod
     public def postAuctionBid(receipt) {
-        def prop = em_auction_property.find([objid: receipt.property.objid]).first()
+        def prop = em_property.find([objid: receipt.property.objid]).first()
         if (!prop) throw new Exception('Property does not exist or has been deleted.')
         if (prop.balance == 0) throw new Exception('Property has already been paid.')
         if (prop.balance < receipt.amount) throw new Exception('Property balance is less than receipt amount.\nVerify payment history.')
@@ -139,7 +145,7 @@ class PropertyAuctionPropertyService
         if (prop.balance <= 0) {
             prop.state = STATE_FORREDEMPTION
         }
-        em_auction_property.find([objid: prop.objid]).update([balance: prop.balance, state: prop.state])
+        em_property.find([objid: prop.objid]).update([balance: prop.balance, state: prop.state])
 
         receipt.remarks = 'Bid amount payment of Auction property ' + prop.rptledger.tdno 
         postCredit(receipt)
@@ -147,14 +153,14 @@ class PropertyAuctionPropertyService
 
     @ProxyMethod
     public void postVoidAuctionBid(receipt) {
-        def credit = em_auction_property_credit.find([refid: receipt.objid]).first()
+        def credit = em_credit.find([refid: receipt.objid]).first()
         if (credit) {
             //revert bid amount payment
-            def prop = em_auction_property.find([objid: credit.parent.objid]).first()
+            def prop = em_property.find([objid: credit.parent.objid]).first()
             prop.balance += credit.amount 
             prop.state = STATE_FORPAYMENT
-            em_auction_property.update(prop)
-            em_auction_property_credit.find([objid: credit.objid]).delete()
+            em_property.update(prop)
+            em_credit.find([objid: credit.objid]).delete()
         }
     }
 
@@ -167,14 +173,14 @@ class PropertyAuctionPropertyService
         }
         
         prop.state = STATE_FORREDEMPTION
-        em_auction_property.update(prop)
+        em_property.update(prop)
         return prop 
     }
 
 
     @ProxyMethod
     public def generateRedemptionCharges(prop){
-        prop = em_auction_property.find([objid:prop.objid]).first()
+        prop = em_property.find([objid:prop.objid]).first()
         if (!prop) throw new Exception('Auctioned Property does not exist or has already been deleted.')
         def res = ruleSvc.getRedemptionCharges(prop)
         res.charges.each{ it.type = 'REDEMPTION' }
@@ -186,12 +192,12 @@ class PropertyAuctionPropertyService
     public def redeemSale( prop ) {
         validate(prop, 'for redemption')
 
-        if (prop.soldto.objid == prop.redeemedby.objid){
+        if (prop.redeemedby.objid == prop.bidder.entity.objid){
             throw new Exception('Redeemer should not be the same with the Bidder.')
         }
 
         prop.state = STATE_REDEMPTIONFORPAYMENT
-        em_auction_property.update(prop)
+        em_property.update(prop)
         return prop 
     }
 
@@ -200,7 +206,7 @@ class PropertyAuctionPropertyService
     //     validate(prop, 'redemption paid')
 
     //     //check if all fees are collected 
-    //     def unpaiditems = em_auction_property_charge.select('amount')
+    //     def unpaiditems = em_charge.select('amount')
     //                             .where('parent.objid = :objid and receipt.receiptno is null', [objid:prop.objid])
     //                             .list()
     //     if (unpaiditems) {
@@ -208,7 +214,7 @@ class PropertyAuctionPropertyService
     //     }
 
     //     prop.state = 'REDEEMED'
-    //     em_auction_property.update(prop)
+    //     em_property.update(prop)
     //     return prop 
     // }
 
@@ -223,23 +229,63 @@ class PropertyAuctionPropertyService
 
         def prop = receipt.property
         prop.charges.each{
-            em_auction_property_charge.find([objid:it.objid]).update(info)
+            em_charge.find([objid:it.objid]).update(info)
         }
 
         receipt.remarks = 'Redemption Payment of Ledger ' + prop.rptledger.tdno 
         postCredit(receipt)
 
-        em_auction_property.find([objid:receipt.property.objid]).update([state:'REDEEMED'])
+        em_property.find([objid:receipt.property.objid]).update([state:'REDEEMED'])
     }
 
     @ProxyMethod
     public void postVoidRedeemPayment(receipt) {
-        em_auction_property_charge
+        em_charge
                 .where('receipt.objid = :receiptid', [receiptid:receipt.objid])
                 .update([receipt:null])
 
-        em_auction_property.find([objid:receipt.property.objid]).update([state: STATE_REDEMPTIONFORPAYMENT])
-        em_auction_property_credit.find([refid: receipt.objid]).delete()
+        em_property.find([objid:receipt.property.objid]).update([state: STATE_REDEMPTIONFORPAYMENT])
+        em_credit.find([refid: receipt.objid]).delete()
+    }
+
+
+    @ProxyMethod
+    public void buildLedgerAuctionInfo(ledger) {
+        ledger._messagelist = []
+
+        def prop = em_property.find([rptledger_objid: ledger.objid]).first()
+        if (!prop) return
+        if (prop.state.matches(STATE_FORAUCTION)) return 
+        if (prop.state.matches(STATE_REDEEMED)) return 
+
+        def msg = 'Property is currently under auction.'
+        msg += ' Auction No.: '  + prop.parent.txnno 
+
+        def notice = em_notice.find([objid: prop.objid]).first()
+        if (notice) {
+            msg += ' Period Covered: ' + notice.period
+        }
+
+        ledger._messagelist << msg 
+        ledger._auctioned = true 
+    }
+
+    @ProxyMethod
+    public def getAuctionInfo(ledger) {
+        def info = null
+
+        def prop = em_property.find([rptledger_objid: ledger.objid]).first()
+        if (!prop) return info
+        if (prop.state.matches(STATE_FORAUCTION)) return info 
+        if (prop.state.matches(STATE_REDEEMED)) return info 
+
+        def notice = em_notice.find([objid: prop.objid]).first()
+
+        info = [:]
+        info.auctionno = prop.parent.txnno 
+        info.auctiondate = prop.parent.txndate 
+        info.period = notice?.period 
+        return info 
     }
 
 
@@ -254,13 +300,13 @@ class PropertyAuctionPropertyService
         credit.refdate = receipt.receiptdate
         credit.amount = receipt.amount 
         credit.particulars = receipt.remarks
-        em_auction_property_credit.create(credit)
+        em_credit.create(credit)
     }
 
 
     void validate(prop, state){
         def currstate = state.replaceAll(' ', '')
-        def old = em_auction_property.select('state').find([objid:prop.objid]).first()
+        def old = em_property.select('state').find([objid:prop.objid]).first()
         if (!old) throw new Exception('Auctioned Property does not exist or has already been deleted.')
         if (!currstate.equalsIgnoreCase(old.state)) throw new Exception('Unable to process action.\nOnly ' + state + ' state is allowed.')
     }

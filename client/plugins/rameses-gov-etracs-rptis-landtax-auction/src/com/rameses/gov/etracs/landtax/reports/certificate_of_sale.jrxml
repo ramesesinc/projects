@@ -76,7 +76,7 @@
 	<field name="rptledger.barangay.name" class="java.lang.String"/>
 	<field name="taxdue" class="java.lang.Number"/>
 	<field name="interest" class="java.lang.Number"/>
-	<field name="parent.costofsale" class="java.lang.Number"/>
+	<field name="costofsale" class="java.lang.Number"/>
 	<field name="strbidamt" class="java.lang.String"/>
 
 		<background>
@@ -281,7 +281,7 @@
 					<textElement>
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[          "I HEREBY CERTIFY THAT after having been advertised for sale in accordance with Section 260 of R.A. 7160 (Local Government Code of 1991) and subject to the conditions set forth therein, the delinquent " + $F{kind} + " real property described as follows:"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["I HEREBY CERTIFY THAT after having been advertised for sale in accordance with Section 260 of R.A. 7160 (Local Government Code of 1991) and subject to the conditions set forth therein, the delinquent " + $F{kind} + " real property described as follows:"]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -618,7 +618,7 @@
 					</textElement>
 				<text><![CDATA[]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="79"
 						y="663"
@@ -632,7 +632,7 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PROVINCIALTREASURERNAME}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="79"
 						y="680"
@@ -755,7 +755,7 @@
 					<textElement verticalAlignment="Middle">
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{parent.costofsale}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{costofsale}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

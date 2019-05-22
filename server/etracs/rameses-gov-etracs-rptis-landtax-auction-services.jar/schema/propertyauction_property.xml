@@ -29,7 +29,7 @@
 		</complex>
 
 		<complex name="parent" ref="propertyauction" jointype="many-to-one" 
-			includefields="txndate,auctiondate,location,costofsale,publicationdate1">
+			includefields="txnno,txndate,auctiondate,location,costofsale,publicationdate1">
 			<key field="parent_objid" target="objid" />
 		</complex>
 

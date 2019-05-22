@@ -8,9 +8,6 @@ import com.rameses.osiris2.reports.*;
 
 class AuctionReportCertificateOfSaleModel extends ReportController
 {
-    @Caller
-    def caller;
-    
     @Service('PropertyAuctionReportCertificateOfSaleService')
     def svc;
     

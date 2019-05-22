@@ -53,5 +53,23 @@ class AuctionPropertyModel extends CrudFormModel
     def bidderListHandler = [
         fetchList : { bidders }
     ] as BasicListModel
+    
+    
+    
+    def sections;
+    
+    def getSections() {
+        if (sections == null) {
+            sections = Inv.lookupOpeners('propertyauction_property:sections', [caller: this, entity: entity]);
+        }
+        return sections;
+    }
+    
+    
+    def sectionHandler = [
+        getOpeners: { 
+            return getSections();
+        }
+    ] as TabbedPaneModel;
         
 }

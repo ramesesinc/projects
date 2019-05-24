@@ -187,7 +187,8 @@ select
     sum(case when cra.revperiod='current' and revtype='basic' then cra.discount else 0.0 end )as basiccurrentdiscamt,     
     sum(case when cra.revperiod = 'current' and revtype ='basicint' then cra.amount else 0.0 end) as basiccurrentintamt,
     sum(case when cra.revperiod in ('previous', 'prior') and revtype ='basic' then cra.amount else 0.0 end) as basicprevamt,    
-    sum(case when cra.revperiod in ('previous', 'prior') and revtype ='basicint' then cra.amount else 0.0 end) as basicprevintamt   
+    sum(case when cra.revperiod in ('previous', 'prior') and revtype ='basicint' then cra.amount else 0.0 end) as basicprevintamt,
+    sum(case when revtype like 'basic%' then cra.amount else 0.0 end) as total
 from remittance rem 
     inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
     inner join cashreceipt cr on cr.remittanceid = rem.objid 
@@ -198,6 +199,7 @@ from remittance rem
 where ${filter} 
     and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
     and cra.sharetype ='barangay'
+    and cra.revperiod <> 'advance'
 group by b.name
 
 
@@ -217,5 +219,6 @@ from cashreceipt cr
 where cr.receiptdate >= $P{fromdate} and cr.receiptdate < $P{todate}
     and cra.sharetype ='barangay'
      and cv.objid is null  
+     and cra.revperiod = 'advance'
 group by b.objid  
 

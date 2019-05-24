@@ -458,15 +458,23 @@ public class RPTBillingService
 		item.originalav = first.rptledgerfaas.assessedvalue 
 		item.taxdifference = 0
 		item.period = buildPeriod(bill, bill.items, minyear)
-		item.total = 0.0 
+		item.total = 0.0
 		bill.items.each{
-			item[it.revtype] = numSvc.round(it.amtdue)
-			item[it.revtype+'int'] = numSvc.round(it.interest)
-			item[it.revtype+'disc'] = numSvc.round(it.discount)
-			item[it.revtype+'net'] = numSvc.round(it.amtdue - it.discount + it.interest)
-			item[it.revtype+'dp'] = numSvc.round(it.interest - it.discount)
-			item.total = numSvc.round(item.total + item[it.revtype+'net'])
-			calcBillTotals(it.revtype, bill, item)
+			if (item[it.revtype] == null) {
+				item[it.revtype] = 0.0
+				item[it.revtype+'int'] = 0.0
+				item[it.revtype+'disc'] = 0.0
+				item[it.revtype+'net'] = 0.0
+				item[it.revtype+'dp'] = 0.0
+			}
+			item[it.revtype] += numSvc.round(it.amtdue)
+			item[it.revtype+'int'] += numSvc.round(it.interest)
+			item[it.revtype+'disc'] += numSvc.round(it.discount)
+			item[it.revtype+'net'] += numSvc.round(it.amtdue - it.discount + it.interest)
+			item[it.revtype+'dp'] += numSvc.round(it.interest - it.discount)
+			item.subtotal = numSvc.round(it.amtdue - it.discount + it.interest)
+			item.total += item.subtotal
+			calcAnnualBillTotals(it.revtype, bill, item)
 		}
 		items << item
 		return items
@@ -528,6 +536,23 @@ public class RPTBillingService
 		bill.totals.total += item[revtype+'net']
 	}
 
+	void calcAnnualBillTotals(revtype, bill, item){
+		def keys = [revtype]
+		keys << revtype + 'int'
+		keys << revtype + 'disc'
+		keys << revtype + 'net'
+		keys << revtype + 'dp'
 
+		if (!bill.totals[revtype]){
+			keys.each{
+				bill.totals[it] = 0.0
+			}
+		}
+
+		keys.each{
+			bill.totals[it] += item[it]
+		}
+		bill.totals.total += item.subtotal 
+	}
 	
 }

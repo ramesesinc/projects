@@ -493,10 +493,6 @@ class RPTLedgerService
 
         difference.rptledgerfaas = rptledgerfaas
 
-        if (difference.year < rptledgerfaas.fromyear) {
-            throw new Exception('Difference year must be greater than or equal to ' + rptledgerfaas.fromyear + '.')
-        }
-
         if (difference.av <= 0){
             throw new Exception('Assessed value difference must be greater than zero.')
         }

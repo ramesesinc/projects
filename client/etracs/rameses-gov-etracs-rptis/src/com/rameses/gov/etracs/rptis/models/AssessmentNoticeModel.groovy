@@ -40,7 +40,7 @@ public class AssessmentNoticeModel extends CrudFormModel
     
     def save() {
         if (MsgBox.confirm('Save notice?')) {
-            entity.items = entity.items.findAll{it.included == true}
+            entity.items = listHandler.selectedValue
             entity.putAll(svc.create(entity));
             open();
             listHandler.reload();
@@ -54,6 +54,7 @@ public class AssessmentNoticeModel extends CrudFormModel
                     entity.taxpayer = [objid:it.objid, name:it.name, address:it.address.text];
                     entity.taxpayeraddress = it.address.text
                     loadProperties();
+                    binding.refresh('lookup');
                 },
                 onempty : {
                     entity.taxpayer = null;
@@ -72,12 +73,14 @@ public class AssessmentNoticeModel extends CrudFormModel
                     
                 if (! entity.items.find{it.faasid == faas.objid}) {
                     faas.faasid = faas.objid;
-                    faas.barangay = faas.barangay.name 
+                    faas.barangay = faas.barangay.name;
                     faas.objid = 'ANI' + new java.rmi.server.UID();
                     faas.assessmentnoticeid = entity.objid;
                     faas.included = true; 
                     entity.items.add(faas);
                     listHandler.load();
+                    selectAll();
+                    binding.focus('lookup');
                 }
             },
         ])
@@ -95,31 +98,27 @@ public class AssessmentNoticeModel extends CrudFormModel
             entity.items = svc.getApprovedFaasList(entity.taxpayer.objid)
             entity.items.each{
                 it.assessmentnoticeid = entity.objid;
-                it.included = true;
             }
             listHandler.load();
+            selectAll();
         }
     }
     
     
     
     void selectAll(){
-        entity.items.each{
-            it.included = true;
-        }
-        listHandler.load();
+        listHandler.selectAll();
     }
     
     void deselectAll(){
-        entity.items.each{
-            it.included = false;
-        }
-        listHandler.load();
+        listHandler.deselectAll();
     }
     
     
     def listHandler = [
-        fetchList : { return entity.items },
+        isMultiSelect : { entity.state ? false : true },
+        isAllowAdd : { false },
+        fetchList : { entity.items },
     ] as EditorListModel
 
 

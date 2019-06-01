@@ -5,5 +5,5 @@
                  action="init"  role="REPORT" /> 
     </invokers> 
     
-    <code class="com.rameses.gov.etracs.waterworks.report.models.WaterworksReportMeterConnectionStatusModel"/>
+    <code class="com.rameses.gov.etracs.waterworks.report.models.WaterworksReportConnectionByMeterStatusModel"/>
 </workunit>

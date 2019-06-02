@@ -23,6 +23,9 @@ public class PlantTreeRYSettingService
     @DataContext('rysetting_lgu')
     def em_rysettinglgu     
 
+    @DataContext('propertyclassification')
+    def em_classification
+
     @Service('RPTUtil')
     def util 
 
@@ -59,6 +62,7 @@ public class PlantTreeRYSettingService
             throw new Exception('A Revision Year setting has already been created.\nUse copy or revise setting instead.')
 
         em_planttree.create(entity )
+        insertDefaultAssessLevel(entity)
         return open(entity)
     }
     
@@ -328,6 +332,26 @@ public class PlantTreeRYSettingService
                 saveUnitValue(it)
             }
         }
+    }
+
+
+    void insertDefaultAssessLevel(entity) {
+        def agrclass = em_classification.find([name: 'AGRICULTURAL']).first()
+        if (!agrclass) {
+            agrclass = [code: 'AA', name: 'AGRICULTURAL']
+        }
+
+        def al = [:]
+        al.objid = 'AL' + new java.rmi.server.UID()
+        al.planttreerysettingid = entity.objid 
+        al.classification = agrclass
+        al.code = agrclass.code 
+        al.name = agrclass.name 
+        al.fixrate = true 
+        al.rate = 0.0 
+        al.previd = null 
+
+        em_assesslevel.create(al)
     }
 
 }

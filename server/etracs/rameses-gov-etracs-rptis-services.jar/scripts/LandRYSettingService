@@ -87,6 +87,7 @@ public class LandRYSettingService
             saveAssessLevel(al)
         }
         initStandardAdjustments(entity)
+        initStandardStripping(entity)
         return open(entity)
     }
 
@@ -644,6 +645,30 @@ public class LandRYSettingService
             classification_objid: appliedto.objid,
             landrysettingid: entity.objid 
         ])
+    }
+
+    void initStandardStripping(entity) {
+        def residential = em_classification.find([name: 'RESIDENTIAL']).first()
+        if (residential) {
+            createStrippings(entity, residential)
+        }
+
+        def commercial = em_classification.find([name: 'COMMERCIAL']).first()
+        if (commercial) {
+            createStrippings(entity, commercial)
+        }
+    }
+
+    def createStrippings(entity, classification) {
+        for (int i = 1; i <= 4; i++) {
+            def strip = [:]
+            strip.objid = 'ST' + new java.rmi.server.UID()
+            strip.landrysettingid = entity.objid 
+            strip.classification = classification
+            strip.striplevel = i
+            strip.rate = 100 - (i - 1) * 20 
+            em_stripping.create(strip)
+        }
     }
 
 }

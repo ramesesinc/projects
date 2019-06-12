@@ -59,19 +59,19 @@ public class RPTSubLedgerPage extends javax.swing.JPanel {
         xFormPanel1.add(xTextField1);
 
         xLookupField1.setCaption("Owner");
-        xLookupField1.setExpression("#{entity.taxpayer.name}");
+        xLookupField1.setExpression("#{entity.beneficiary.name}");
         xLookupField1.setHandler("entity:lookup");
-        xLookupField1.setName("entity.taxpayer"); // NOI18N
+        xLookupField1.setName("entity.beneficiary"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField1.setRequired(true);
         xFormPanel1.add(xLookupField1);
 
+        xLabel2.setCaption("Address");
+        xLabel2.setDepends(new String[] {"entity.beneficiary"});
+        xLabel2.setExpression("#{entity.beneficiary.address.text}");
         com.rameses.rcp.control.border.XLineBorder xLineBorder1 = new com.rameses.rcp.control.border.XLineBorder();
         xLineBorder1.setLineColor(new java.awt.Color(153, 153, 153));
         xLabel2.setBorder(xLineBorder1);
-        xLabel2.setCaption("Address");
-        xLabel2.setDepends(new String[] {"entity.taxpayer"});
-        xLabel2.setExpression("#{entity.taxpayer.address.text}");
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 21));
         xFormPanel1.add(xLabel2);
 

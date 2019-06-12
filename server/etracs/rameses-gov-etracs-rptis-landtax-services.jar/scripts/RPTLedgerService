@@ -111,6 +111,7 @@ class RPTLedgerService
         ledger.subledger = em_rptledger_subledger.find([objid:ledger.objid]).first()
         ledger.subacctno = ledger.subledger?.subacctno
         ledger.parent = ledger.subledger?.parent
+        buildMessageList(ledger)
         return ledger 
     }        
 
@@ -421,6 +422,7 @@ class RPTLedgerService
     public def createSubLedger( subledger ) {
         create(subledger);
         em_rptledger_subledger.create(subledger)
+        return subledger
     }
 
     @ProxyMethod
@@ -1135,6 +1137,18 @@ class RPTLedgerService
     def checkHasPayment(ledger) {
         def pmt = em_rptpayment.find([refid: ledger.objid]).first()
         return pmt != null 
+    }
+
+    @ProxyMethod
+    public void buildMessageList(ledger) {
+        def subledger = em_rptledger_subledger.find([objid:ledger.objid]).first()
+        if (subledger) {
+            def parent = em_rptledger.select('tdno').find([objid: subledger.parent.objid]).first()
+            ledger._messagelist = []
+            if (ledger.beneficiary && ledger.beneficiary.objid ) {
+                ledger._messagelist << 'Subledger of TD No. ' + parent.tdno + '.'
+            }
+        }
     }
 
 }

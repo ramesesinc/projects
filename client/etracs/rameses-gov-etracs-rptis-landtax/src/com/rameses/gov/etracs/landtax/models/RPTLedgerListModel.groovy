@@ -18,6 +18,15 @@ class RPTLedgerListModel extends CrudListModel
             [id:'APPROVED', title:'APPROVED'],
             [id:'CANCELLED', title:'CANCELLED'],
         ]
+    }
+
+    public def getColumnList() {
+        def cols = super.getColumnList();
+        def beneficiarycol = cols.find{ it.extname == 'beneficiary_name'}
+        if (beneficiarycol) {
+            beneficiarycol.caption = 'Beneficiary'
+        }
+        return cols 
     }   
     
     boolean isCreateAllowed() {

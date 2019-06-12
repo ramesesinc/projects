@@ -65,7 +65,7 @@ SELECT
 FROM rptledger rl 
   INNER JOIN barangay b ON rl.barangayid = b.objid 
   INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
-WHERE rl.taxpayer_objid = $P{taxpayerid}
+WHERE (rl.taxpayer_objid = $P{taxpayerid} or rl.beneficiary_objid = $P{taxpayerid})
  and rl.objid like $P{rptledgerid}
  AND rl.state = 'APPROVED'
  and rl.totalav > 0 
@@ -98,7 +98,7 @@ FROM rptledger rl
   INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
   INNER JOIN propertypayer_item ppi ON ppi.rptledger_objid = rl.objid 
   INNER JOIN propertypayer pp on ppi.parentid = pp.objid 
-WHERE rl.taxpayer_objid = $P{taxpayerid}
+WHERE pp.taxpayer_objid = $P{taxpayerid}
  and rl.objid like $P{rptledgerid}
  AND rl.state = 'APPROVED'
  and rl.totalav > 0 

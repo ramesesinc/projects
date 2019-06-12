@@ -9,7 +9,6 @@ import com.rameses.osiris2.reports.*;
 import com.rameses.gov.etracs.rptis.util.*;
 
 
-//class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.AbstractCashReceipt implements ViewHandler
 class CashReceiptModel extends com.rameses.enterprise.treasury.models.AbstractCashReceipt implements ViewHandler
 {
     @Binding
@@ -67,23 +66,108 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.models.AbstractCa
      * INIT PAGE SUPPORT
      *
      -----------------------------------------------------------------*/
-    
-    def process(){
-        RPTUtil.required("Payer", entity.payer);
+     @PropertyChangeListener
+     def listener = [
+        'bill.(billtoyear|billtoqtr)' : {
+            loadItemsForSelection();
+        }
+     ]
+
+    def itemsforselection = [];
+    def selectedLedger;
+    def ledgertopay;
+
+    public def payerChanged( o ) {
+        loadItemsForSelection();
+    }
+
+    def getLookupLedgerInit() {
+        return InvokerUtil.lookupOpener('rptledger:lookup',[
+            onselect : {ledger ->
+                if (ledger.state != 'APPROVED') {
+                    throw new Exception('Only approve ledger is allowed.')
+                }
+                if (itemsforselection.find{it.objid == ledger.objid}) {
+                    return 
+                }
+                def b = [:];
+                b.putAll(bill);
+                b.taxpayer = null;
+                b.rptledgerid = ledger.objid;
+                def ledgers = svc.getLedgersForPayment(b);    
+                if (!ledgers) {
+                    throw new Exception('Ledger does not exist or has already been fully paid for the billing period specified.')
+                }
+                if (!itemsforselection) {
+                    itemsforselection = [];
+                }
+                itemsforselection += ledgers;
+                selectionListHandler.reloadAll();
+                selectAllInit();
+                binding.focus('ledgertopay');
+                binding.refresh('selectionCount|selectedCount');
+            },
+        ])
+    }
+
+    void loadItemsForSelection() {
         bill.taxpayer = entity.payer;
         bill.payoption = payoption;
         bill._forpayment = true;
         entity.billid = bill.objid; 
-        billedLedgers = [];
-        if (payoption != PAY_OPTION_BYLEDGER){
-            loadItemsForPaymentAsync()
-            return 'default';
-        } else {
-            listHandler?.load();
-            mode = MODE_CREATE;
-            return 'main'
+        itemsforselection = svc.getLedgersForPayment(bill);    
+        selectionListHandler.reload();
+        selectionListHandler.selectAll();
+        binding.refresh('selectAllInit|deselectAllInit|selectionCount|selectedCount');
+    }
+
+     def selectionListHandler = [
+        fetchList: { itemsforselection },
+        afterSelectionChange: {o-> binding.refresh('selectedCount')},
+        isMultiSelect: { true }
+     ] as EditorListModel 
+    
+    def process(){
+        billedLedgers = selectionListHandler.selectedValue 
+        if (!billedLedgers) {
+            throw new Exception ('At least one property for payment is selected.')
         }
+        loadItemsForPaymentAsync();
+        mode = MODE_CREATE;
+        return 'default';
     }    
+
+    void selectAllInit() {
+        selectionListHandler.selectAll();
+    }
+
+    void deselectAllInit() {
+        selectionListHandler.deselectAll();
+    }
+
+    void clearItems() {
+        if (itemsforselection && MsgBox.confirm('Clear all items for payment?')) {
+            itemsforselection = [];
+            selectionListHandler.reloadAll();
+        }
+    }
+
+    void reloadItems() {
+        if (MsgBox.confirm('Reload ledgers for this payer?')) {
+            loadItemsForSelection();
+        }
+    }
+
+    def getSelectionCount() {
+        if (itemsforselection) {
+            return itemsforselection.size();
+        }
+        return 0;
+    }
+
+    def getSelectedCount() {
+        selectionListHandler.selectedValue?.size();
+    }
 
     /*===================================
     *
@@ -102,10 +186,6 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.models.AbstractCa
 
     def loadLedgerTask = {
         run: {
-            if (!billedLedgers) {
-                billedLedgers = svc.getLedgersForPayment(bill);    
-            }
-            
             if (payoption == 'bycount') {
                 if (!bill.itemcount) bill.itemcount = 5; 
                 if (billedLedgers.size() > bill.itemcount) {

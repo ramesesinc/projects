@@ -29,7 +29,7 @@ class RPTLedgerLookupService
         }
 
         def filters = [
-            ' AND rl.tdno = $P{tdno}',
+            ' AND rl.tdno LIKE $P{tdno}',
             ' AND e.entityname LIKE $P{searchtext}',
             ' AND rl.administrator_name LIKE $P{searchtext}',
             ' AND rl.fullpin LIKE $P{searchtext}',

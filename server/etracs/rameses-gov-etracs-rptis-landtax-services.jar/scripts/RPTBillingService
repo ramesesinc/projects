@@ -202,10 +202,11 @@ public class RPTBillingService
 
 	@ProxyMethod
 	public def getOpenLedgers(bill){
-		if (!bill.taxpayer) throw new Exception('Taxpayer must be specified.')
+		if (!bill.taxpayer && !bill.rptledgerid) throw new Exception('Taxpayer must be specified.')
 		if (!bill.billtoyear) throw new Exception('Bill to year must be specified.')
 		if (!bill.billtoqtr) throw new Exception('Bill to quarter must be specified.')
-		bill.taxpayerid = bill.taxpayer.objid 
+		bill.taxpayerid = bill.taxpayer?.objid 
+		bill.taxpayerid = (bill.taxpayerid ? bill.taxpayerid : '%')
 		bill.rptledgerid = (bill.rptledgerid ? bill.rptledgerid : '%')
 		bill.barangayid = (bill.barangay ? bill.barangay.objid : '%')
 		bill.rputype = (bill.rputype ? bill.rputype : '%')

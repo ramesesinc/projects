@@ -47,67 +47,71 @@ AND (
 
 
 [getBilledLedgers]
-SELECT 
-  rl.objid,
-  rl.lastyearpaid,
-  rl.lastqtrpaid,
-  rl.tdno,
-  rl.titleno,
-  rl.rputype,
-  rl.fullpin,
-  rl.totalareaha,
-  rl.totalareaha * 10000 AS totalareasqm,
-  rl.totalav,
-  rl.owner_name, 
-  b.name AS barangay,
-  rl.cadastrallotno,
-  rl.classcode
-FROM rptledger rl 
-  INNER JOIN barangay b ON rl.barangayid = b.objid 
-  INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
-WHERE (rl.taxpayer_objid = $P{taxpayerid} or rl.beneficiary_objid = $P{taxpayerid})
- and rl.objid like $P{rptledgerid}
- AND rl.state = 'APPROVED'
- and rl.totalav > 0 
- and rl.rputype like $P{rputype}
- and rl.barangayid like $P{barangayid}
- AND (rl.lastyearpaid < $P{billtoyear}
-      OR ( rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr})
-      or (exists(select * from rptledger_item where parentid = rl.objid))
- )
+SELECT x.*
+FROM (
+  SELECT 
+    rl.objid,
+    rl.lastyearpaid,
+    rl.lastqtrpaid,
+    rl.tdno,
+    rl.titleno,
+    rl.rputype,
+    rl.fullpin,
+    rl.totalareaha,
+    rl.totalareaha * 10000 AS totalareasqm,
+    rl.totalav,
+    rl.owner_name, 
+    b.name AS barangay,
+    rl.cadastrallotno,
+    rl.classcode
+  FROM rptledger rl 
+    INNER JOIN barangay b ON rl.barangayid = b.objid 
+    INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
+  WHERE (rl.taxpayer_objid like $P{taxpayerid} or rl.beneficiary_objid like $P{taxpayerid})
+   and rl.objid like $P{rptledgerid}
+   AND rl.state = 'APPROVED'
+   and rl.totalav > 0 
+   and rl.rputype like $P{rputype}
+   and rl.barangayid like $P{barangayid}
+   AND (rl.lastyearpaid < $P{billtoyear}
+        OR ( rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr})
+        or (exists(select * from rptledger_item where parentid = rl.objid  and year <= $P{billtoyear}))
+   )
 
-UNION
+  UNION
 
-SELECT 
-  rl.objid,
-  rl.lastyearpaid,
-  rl.lastqtrpaid,
-  rl.tdno,
-  rl.titleno,
-  rl.rputype,
-  rl.fullpin,
-  rl.totalareaha,
-  rl.totalareaha * 10000 AS totalareasqm,
-  rl.totalav,
-  rl.owner_name, 
-  b.name AS barangay,
-  rl.cadastrallotno,
-  rl.classcode
-FROM rptledger rl 
-  INNER JOIN barangay b ON rl.barangayid = b.objid 
-  INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
-  INNER JOIN propertypayer_item ppi ON ppi.rptledger_objid = rl.objid 
-  INNER JOIN propertypayer pp on ppi.parentid = pp.objid 
-WHERE pp.taxpayer_objid = $P{taxpayerid}
- and rl.objid like $P{rptledgerid}
- AND rl.state = 'APPROVED'
- and rl.totalav > 0 
- and rl.rputype like $P{rputype}
- and rl.barangayid like $P{barangayid}
- AND (rl.lastyearpaid < $P{billtoyear}
-      OR ( rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr})
-      or (exists(select * from rptledger_item where parentid = rl.objid))
- )
+  SELECT 
+    rl.objid,
+    rl.lastyearpaid,
+    rl.lastqtrpaid,
+    rl.tdno,
+    rl.titleno,
+    rl.rputype,
+    rl.fullpin,
+    rl.totalareaha,
+    rl.totalareaha * 10000 AS totalareasqm,
+    rl.totalav,
+    rl.owner_name, 
+    b.name AS barangay,
+    rl.cadastrallotno,
+    rl.classcode
+  FROM rptledger rl 
+    INNER JOIN barangay b ON rl.barangayid = b.objid 
+    INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
+    INNER JOIN propertypayer_item ppi ON ppi.rptledger_objid = rl.objid 
+    INNER JOIN propertypayer pp on ppi.parentid = pp.objid 
+  WHERE pp.taxpayer_objid like $P{taxpayerid}
+   and rl.objid like $P{rptledgerid}
+   AND rl.state = 'APPROVED'
+   and rl.totalav > 0 
+   and rl.rputype like $P{rputype}
+   and rl.barangayid like $P{barangayid}
+   AND (rl.lastyearpaid < $P{billtoyear}
+        OR ( rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr})
+        or (exists(select * from rptledger_item where parentid = rl.objid and year <= $P{billtoyear}))
+   )
+) x
+ORDER BY x.tdno 
 
 
 

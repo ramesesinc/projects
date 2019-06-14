@@ -30,7 +30,7 @@ public class RPTCompromiseCapturePaymentController
     def unpaidItems 
     
     def init() {
-        unpaidItems = receiptSvc.getUnpaidInstallments( entity.objid ) 
+        unpaidItems = receiptSvc.getUnpaidInstallments( entity ) 
         if( ! unpaidItems ) throw new Exception('Compromise has already been fully paid.')
         
         unpaidItems.each{ it.pay = false  }

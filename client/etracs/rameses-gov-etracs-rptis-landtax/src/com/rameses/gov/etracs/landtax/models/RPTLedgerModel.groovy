@@ -15,9 +15,11 @@ class RPTLedgerModel extends CrudFormModel
     boolean showConfirm = false;
 
     @FormId
+    @FormTitle
     public String getFormId(){
         return 'Realty Tax Ledger : ' + entity.tdno 
     }
+
 
     public String getTitle(){
         return 'Realty Tax Ledger (' + entity.state + ')'

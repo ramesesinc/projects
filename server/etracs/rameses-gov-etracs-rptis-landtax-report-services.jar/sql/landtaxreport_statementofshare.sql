@@ -22,7 +22,7 @@ select
     sum(0.0) as provpenaltyshare,
     sum(case when cra.revperiod <> 'advance' and  cra.revtype in ('basicidle','basicidleint') and cra.sharetype = 'province' then cra.amount else 0 end) as provsharetotal
 from remittance rem 
-    inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+    inner join collectionvoucher cv on cv.objid = rem.collectionvoucherid 
     inner join cashreceipt cr on cr.remittanceid = rem.objid 
     inner join rptpayment rp on cr.objid = rp.receiptid 
     inner join rptpayment_share cra on rp.objid = cra.parentid
@@ -47,7 +47,7 @@ select
     sum(0.0) as provpenaltyshare,
     sum(case when cra.revperiod <> 'advance' and  cra.revtype = 'basicidle' and cra.sharetype = 'province' then cra.amount else 0 end) as provsharetotal
 from remittance rem 
-    inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+    inner join collectionvoucher cv on cv.objid = rem.collectionvoucherid 
     inner join cashreceipt cr on cr.remittanceid = rem.objid 
     inner join rptpayment rp on cr.objid = rp.receiptid 
     inner join rptpayment_share cra on rp.objid = cra.parentid
@@ -71,7 +71,7 @@ select
     sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basic' and cra.sharetype in ('province', 'municipality') then cra.amount else 0 end) as provmuniprevshare,
     sum(case when cra.revtype = 'basicint' and cra.sharetype in ('province', 'municipality') then cra.amount else 0 end) as provmunipenaltyshare
 from remittance rem 
-    inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+    inner join collectionvoucher cv on cv.objid = rem.collectionvoucherid 
     inner join cashreceipt cr on cr.remittanceid = rem.objid 
     inner join rptpayment rp on cr.objid = rp.receiptid 
     inner join rptpayment_share cra on rp.objid = cra.parentid
@@ -112,7 +112,7 @@ from (
         case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basic' and cra.sharetype = 'province' then cra.amount else 0 end as provprevshare,
         case when cra.revtype = 'basicint' and cra.sharetype = 'province' then cra.amount else 0 end as provpenaltyshare
     from remittance rem 
-        inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+        inner join collectionvoucher cv on cv.objid = rem.collectionvoucherid 
         inner join cashreceipt cr on cr.remittanceid = rem.objid 
         inner join rptpayment rp on cr.objid = rp.receiptid 
         inner join rptpayment_share cra on rp.objid = cra.parentid
@@ -147,7 +147,7 @@ from (
         sum(case when cra.revtype = 'basicint' and cra.sharetype = 'province' then cra.amount else 0 end) as  provpenaltyshare,
         sum(case when cra.sharetype = 'province' then cra.amount else 0 end) as  provtotalshare 
     from remittance rem 
-        inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+        inner join collectionvoucher cv on cv.objid = rem.collectionvoucherid 
         inner join cashreceipt cr on cr.remittanceid = rem.objid 
         inner join rptpayment rp on cr.objid = rp.receiptid 
         inner join rptpayment_share cra on rp.objid = cra.parentid
@@ -170,7 +170,7 @@ select
     sum(case when cra.revtype = 'sefint' and cra.sharetype = 'province' then cra.amount else 0 end) as provpenaltyshare,
     sum(case when cra.revtype in ('sef', 'sefint') and cra.sharetype = 'province' then cra.amount else 0 end) as provsharetotal
 from remittance rem 
-    inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+    inner join collectionvoucher cv on cv.objid = rem.collectionvoucherid 
     inner join cashreceipt cr on cr.remittanceid = rem.objid 
     inner join rptpayment rp on cr.objid = rp.receiptid 
     inner join rptpayment_share cra on rp.objid = cra.parentid
@@ -190,7 +190,7 @@ select
     sum(case when cra.revperiod in ('previous', 'prior') and revtype ='basicint' then cra.amount else 0.0 end) as basicprevintamt,
     sum(case when revtype like 'basic%' then cra.amount else 0.0 end) as total
 from remittance rem 
-    inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
+    inner join collectionvoucher cv on cv.objid = rem.collectionvoucherid 
     inner join cashreceipt cr on cr.remittanceid = rem.objid 
     inner join rptpayment rp on cr.objid = rp.receiptid 
     inner join rptpayment_share cra on rp.objid = cra.parentid

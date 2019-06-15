@@ -3,6 +3,10 @@
         <invoker folderid="/explorer/report/waterworks" 
                  caption="No. of Connections by Water Consumption" 
                  action="init"  role="REPORT" /> 
+        
+        <invoker folderid="/menucategory/waterworks/report" 
+                 caption="Connections by Water Consumption" 
+                 action="init"  role="REPORT" /> 
     </invokers> 
     
     <code class="com.rameses.gov.etracs.waterworks.report.models.WaterworksReportConnectionByConsumptionModel"/>

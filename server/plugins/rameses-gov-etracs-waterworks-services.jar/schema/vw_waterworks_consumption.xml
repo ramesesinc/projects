@@ -9,8 +9,6 @@
 		<field name="rate" /> 
 		<field name="amount" /> 
 		<field name="amtpaid" /> 
-		<field name="discount" /> 
-		<field name="balance"/>
 		<field name="batchid" /> 
 		<field name="state" /> 
 		<field name="meterid" /> 
@@ -40,5 +38,6 @@
 		<field name="bill_credits" /> 
 		<field name="bill_surcharge" /> 
 		<field name="bill_interest" /> 
+		<field name="discount" /> 
 	</element>
 </schema>

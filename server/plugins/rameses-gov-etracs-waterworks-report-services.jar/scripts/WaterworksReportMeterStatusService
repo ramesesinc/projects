@@ -1,6 +1,6 @@
 import com.rameses.annotations.*; 
 
-class WaterworksReportMeterConnectionStatusService {
+class WaterworksReportMeterStatusService {
 	
 	@DataContext('barangay')
 	def brgy_db; 

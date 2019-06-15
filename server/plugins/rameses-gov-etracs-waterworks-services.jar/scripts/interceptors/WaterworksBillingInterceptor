@@ -22,9 +22,6 @@ class WaterworksBillingInterceptor {
 	@DataContext("waterworks_otherfee")
 	def wotherEm;
 
-	@Service('NumberService') 
-	def numSvc;
-
     @After(pattern="BillingInfoHandler.getHeaderInfo",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
 	public void loadHeaderInfo( evt ) {
 		def obj = evt.args[0];
@@ -62,9 +59,9 @@ class WaterworksBillingInterceptor {
 		} 
 
 		def wheres = []; 
-		wheres.addAll( arr ); 
-		wheres << " state = :state "; 
-		wheres << " (amount - amtpaid - discount) > 0 "; 
+		wheres.addAll( arr );  
+		wheres << " state = :state ";  
+		wheres << "amount - amtpaid - discount > 0"; 
 
 		def select = "hold,year,month,volume,amount:{amount-amtpaid-discount},principal:{amount},amtpaid,refid:{objid},reftype:{'waterworks_consumption'},duedate,discdate,fromdate:{fromperiod},todate:{toperiod}"; 
 		def conList = wcEm.find([acctid: bill.acctid]).select(select).where(wheres.join(" AND "), wp).orderBy("year,month").list();
@@ -126,6 +123,7 @@ class WaterworksBillingInterceptor {
 			throw new com.rameses.util.Warning( errmsg ); 
 		} 
 
+ 
 		def cre = p.params.billitems.find{( it.reftype == 'waterworks_credit' )} 
 		if ( cre && con ) throw new Exception('Please have the ledger fix first. Arrears and Credits must not appear at the same time.'); 
 	} 
@@ -203,10 +201,7 @@ class WaterworksBillingInterceptor {
 		result.parentid = bill.acctid; 
 		result.rootid = bill.acctid; 
 		result.items = bill.billitems; 
-		result.items.each{ 
-			it.acctid = bill.acctid; 
-			//it.amount = numSvc.format( it.amount ); 
-		} 
+		result.items.each{ it.acctid = bill.acctid } 
 		result._schemaname = 'waterworks_payment'; 
 		result.creditschemaname = 'waterworks_credit'; 
 		result.parentschemaname = "waterworks_account"; 

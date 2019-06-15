@@ -1,7 +1,7 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_consumption">
 		<field name="objid" primary="true"  prefix="WAC"/>
-		<field name="state" caption="State"/>
+		<field name="state" caption="State"/> 
 
 		<!-- BEGIN_BALANCE,CAPTURE,ONLINE-->
 		<field name="txnmode" />
@@ -25,7 +25,6 @@
 
 		<field name="amount" type="decimal" caption="Amount" defaultValue="0"/>
 		<field name="amtpaid" type="decimal" caption="AmtPaid" defaultValue="0"/>
-		<!--field name="credits" type="decimal" caption="Credits" defaultValue="0"/-->
 		<field name="discount" type="decimal" caption="Discount" defaultValue="0"/>
 		<field name="balance" expr="amount-amtpaid-discount" type="decimal" caption="Balance"/>
 

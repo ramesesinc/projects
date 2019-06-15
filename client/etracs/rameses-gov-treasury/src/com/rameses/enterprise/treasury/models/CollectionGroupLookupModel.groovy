@@ -81,6 +81,22 @@ class CollectionGroupLookupModel extends CrudLookupModel {
                 it.amount = NumberUtil.round( sharing_amount * (it.defaultvalue ? it.defaultvalue : 0.0));
             }           
         }
+        else { 
+            def fxunits = items.findAll{( it.valuetype == 'FIXEDUNIT' )}
+            if ( fxunits ) {
+                def sqty = MsgBox.prompt("Enter qty");
+                if( !sqty || sqty == "null" ) throw new Exception("Please provide qty"); 
+                if( !sqty.isInteger() ) throw new Exception("Qty must be numeric"); 
+                
+                def nqty = Integer.parseInt( sqty ); 
+                if ( nqty <= 0 ) throw new Exception("Qty must be greater than zero"); 
+
+                fxunits.each{ fxu-> 
+                    fxu.amount = (fxu.defaultvalue ? fxu.defaultvalue : 0.0) * nqty; 
+                    fxu.remarks = "qty@"+ nqty;
+                } 
+            }
+        }
 
         def newitems = []; 
         items.each{ 
@@ -97,10 +113,11 @@ class CollectionGroupLookupModel extends CrudLookupModel {
                 fund  : it.fund, 
                 valuetype : it.valuetype, 
                 defaultvalue : it.defaultvalue 
-            ];                  
-            if ( it.valuetype == 'FIXEDUNIT' ) {
-                rci.remarks = "qty@1"; 
-            } 
+            ];          
+
+            if ( it.remarks ) rci.remarks = it.remarks; 
+            else if ( it.valuetype == 'FIXEDUNIT' ) rci.remarks = "qty@1"; 
+
             newitems << rci; 
         }
         receipt.items.addAll( newitems ); 

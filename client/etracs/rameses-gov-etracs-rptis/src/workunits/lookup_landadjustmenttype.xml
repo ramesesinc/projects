@@ -24,7 +24,6 @@ class LandAdjustmentTypeLookupController extends com.rameses.gov.etracs.rptis.mo
         return [
             new Column(name:"code", caption:"Code", width:80),
             new Column(name:"name", caption:"Name", width:250),
-            new Column(name:"expr", caption:"Computation Formula", width:250),
         ]
     }
     

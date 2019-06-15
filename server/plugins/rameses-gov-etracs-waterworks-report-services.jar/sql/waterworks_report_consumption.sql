@@ -45,10 +45,11 @@ from (
 		case when a.classificationid='GOVERNMENT' and c.volume between 41 and 50 then 1 else 0 end as gov_range5, 
 		case when a.classificationid='GOVERNMENT' and c.volume > 50 then 1 else 0 end as gov_range6 
 	from waterworks_billing_schedule bs 
-		inner join waterworks_consumption c on (c.scheduleid = bs.objid and c.state='POSTED')
+		inner join waterworks_consumption c on (c.scheduleid = bs.objid and c.state='POSTED' and c.hold=0)
 		inner join waterworks_account a on a.objid = c.acctid 
 		inner join waterworks_stubout_node sn on sn.objid = a.stuboutnodeid  
 		inner join waterworks_stubout so on so.objid = sn.stuboutid 
+		inner join waterworks_zone z on z.objid = so.zoneid 
 	where bs.year = $P{year} ${filters} 
 )t1 
 group by barangay_objid, barangay_name 

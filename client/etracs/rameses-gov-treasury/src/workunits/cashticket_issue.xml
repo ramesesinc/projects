@@ -29,11 +29,11 @@
             <transition to="initial" />
         </start>
         <page name="initial" title="Select Type of Collection">
-            <transition to="entry" caption="Next" action="initNew"/>
+            <transition to="entry" caption="Next" action="initNew" mnemonic="n"/>
         </page>
         <page name="entry" title="Enter Cash Ticket Details">
-            <transition to="initial" caption="Back" action="cleanUp"/>
-            <transition to="initial" caption="Save" action="save" />
+            <transition to="initial" caption="Back" action="cleanUp" mnemonic="b"/>
+            <transition to="initial" caption="Save" action="save" mnemonic="s"/>
         </page>
         <end/>
     </pageflow>

@@ -8,7 +8,7 @@
 		<field name="basevalue" required="true" type="decimal" />
 		<field name="minbasevalue" required="true" type="decimal" />
 		<field name="maxbasevalue" required="true" type="decimal" />
-		<field name="gapvalue"  required="true" type="integer"/>
+		<field name="gapvalue"  required="true" type="decimal"/>
 		<field name="minarea" required="true" type="decimal" />
 		<field name="maxarea" required="true" type="decimal" />
 		<field name="bldgclass" />

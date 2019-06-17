@@ -30,7 +30,7 @@ public class LandRYSettingService
     @DataContext('rysetting_land_stripping')
     def em_stripping 
 
-	@DataContext('rysetting_land_adjustmenttype')
+    @DataContext('rysetting_land_adjustmenttype')
     def em_adjustmenttype 
 
 
@@ -53,11 +53,11 @@ public class LandRYSettingService
 
     @ProxyMethod
     public def getList( params ) {
-    	def list = []
+        def list = []
         if (params.searchtext) 
             list = em_land.orderBy('ry').find([ry:params.searchtext]).list()
         else 
-        	list = em_land.where('1=1').orderBy('ry').list()
+            list = em_land.where('1=1').orderBy('ry').list()
         return list 
     }
 
@@ -70,21 +70,21 @@ public class LandRYSettingService
 
         def exist = em_land.where('1=1').first()
         if (exist) 
-        	throw new Exception('A Revision Year setting has already been created.\nUse copy or revise setting instead.')
+            throw new Exception('A Revision Year setting has already been created.\nUse copy or revise setting instead.')
 
         em_land.create(entity )
 
         //load initial assessment levels
         getPropertyClassifications().each{pc->
-        	def al = [:]
-        	al.objid = 'AL' + new java.rmi.server.UID()
-			al.landrysettingid = entity.objid 
-			al.classification = pc 
-			al.code = 'A' + pc.code 
-			al.name = pc.name 
-			al.fixrate = true 
-			al.rate = 0.0 
-			saveAssessLevel(al)
+            def al = [:]
+            al.objid = 'AL' + new java.rmi.server.UID()
+            al.landrysettingid = entity.objid 
+            al.classification = pc 
+            al.code = 'A' + pc.code 
+            al.name = pc.name 
+            al.fixrate = true 
+            al.rate = 0.0 
+            saveAssessLevel(al)
         }
         initStandardAdjustments(entity)
         initStandardStripping(entity)
@@ -137,10 +137,10 @@ public class LandRYSettingService
     -------------------------------------------------------------------*/
     @ProxyMethod
     public def getAssessLevels(entity){
-    	return em_assesslevel.find([landrysettingid:entity.objid])
-    			.orderBy('classification.orderno, code')
-    			.list()
-    			.each{ it.fixrate = util.toBoolean(it.fixrate, true)}
+        return em_assesslevel.find([landrysettingid:entity.objid])
+                .orderBy('classification.orderno, code')
+                .list()
+                .each{ it.fixrate = util.toBoolean(it.fixrate, true)}
     }
 
     @ProxyMethod
@@ -148,47 +148,47 @@ public class LandRYSettingService
         if (util.isTrue(al.fixrate)){
             em_assesslevelrange.find([landassesslevelid:al.objid]).delete()
         }
-    	return em_assesslevel.save(al)
+        return em_assesslevel.save(al)
     }
 
 
     @ProxyMethod
     public void removeAssessLevel(al) {
-    	em_assesslevelrange.find([landassesslevelid:al.objid]).delete()
+        em_assesslevelrange.find([landassesslevelid:al.objid]).delete()
         em_assesslevel.delete(al)
     }
 
     @ProxyMethod
     public def getRanges(al){
-    	return em_assesslevelrange
-    				.find([landassesslevelid:al.objid])
-    				.orderBy('mvfrom')
-    				.list()
+        return em_assesslevelrange
+                    .find([landassesslevelid:al.objid])
+                    .orderBy('mvfrom')
+                    .list()
     }
 
     @ProxyMethod
     public def saveRange( range ){
-    	return em_assesslevelrange.save(range)
+        return em_assesslevelrange.save(range)
     }
 
     @ProxyMethod
     public void deleteRange( range ){
-    	em_assesslevelrange.delete(range)
+        em_assesslevelrange.delete(range)
     }
 
 
-	/*----------------------------------------------------------
+    /*----------------------------------------------------------
     * LandAdjustmentTypes Support
     -----------------------------------------------------------*/
     @ProxyMethod
     public List getAdjustmentTypes( setting )  {
-    	return em_adjustmenttype.find([landrysettingid:setting.objid]).orderBy('idx,code').list()
+        return em_adjustmenttype.find([landrysettingid:setting.objid]).orderBy('idx,code').list()
     }
 
 
     @ProxyMethod
     public void saveAdjustmentType( adjtype) {
-    	em_adjustmenttype.save(adjtype)
+        em_adjustmenttype.save(adjtype)
         deleteAdjustmentTypeClassifications(adjtype)
         adjtype.classifications.each{
             insertAdjustmentTypeClassification(adjtype, it.classification)
@@ -198,9 +198,9 @@ public class LandRYSettingService
 
     @ProxyMethod
     public def openAdjustmentType( adjtype  ) {
-    	adjtype = em_adjustmenttype.read(adjtype)
-    	if (!adjtype) throw new Exception('Adjustment Type does not exist or has already been deleted.')
-    	adjtype.classifications = getAdjustmentClassifications( adjtype )
+        adjtype = em_adjustmenttype.read(adjtype)
+        if (!adjtype) throw new Exception('Adjustment Type does not exist or has already been deleted.')
+        adjtype.classifications = getAdjustmentClassifications( adjtype )
         return adjtype 
     }
 
@@ -232,26 +232,26 @@ public class LandRYSettingService
 
     @ProxyMethod
     public def getVariableList(){
-    	return paramSvc.getVariableList()
+        return paramSvc.getVariableList()
     }
 
 
 
-	/*----------------------------------------------------------
+    /*----------------------------------------------------------
     * Specific Class Support
     -----------------------------------------------------------*/
     @ProxyMethod
     public def getPropertyClassifications(){
-    	return em_classification.where("state='APPROVED'").orderBy('orderno').list()
+        return em_classification.where("state='APPROVED'").orderBy('orderno').list()
     }
 
 
     @ProxyMethod
     public def getSpecificClasses(entity, classification){
-    	def filter = [:]
-    	filter.landrysettingid = entity.objid
-    	filter.classificationid = (classification ? classification.objid : '%')
-    	return em_specificclass
+        def filter = [:]
+        filter.landrysettingid = entity.objid
+        filter.classificationid = (classification ? classification.objid : '%')
+        return em_specificclass
                     .where('landrysettingid = :landrysettingid and classification_objid like :classificationid', filter)
                     .orderBy('landspecificclass.code')
                     .list()
@@ -260,58 +260,58 @@ public class LandRYSettingService
 
     @ProxyMethod
     public def saveSpecificClass( sc ){
-    	return em_specificclass.save(sc)
+        return em_specificclass.save(sc)
     }
 
 
     @ProxyMethod
     public void deleteSpecificClass( sc){
-    	em_subclass.find([specificclass_objid:sc.objid]).delete()
-    	em_specificclass.delete(sc)
+        em_subclass.find([specificclass_objid:sc.objid]).delete()
+        em_specificclass.delete(sc)
     }
 
 
 
-	/*----------------------------------------------------------
+    /*----------------------------------------------------------
     * SubClass Support
     -----------------------------------------------------------*/
     @ProxyMethod
     public def getSubClasses( specificclass){
-    	return em_subclass.find([specificclass_objid:specificclass.objid]).orderBy('code').list()
+        return em_subclass.find([specificclass_objid:specificclass.objid]).orderBy('code').list()
     }
 
     @ProxyMethod
     public def saveSubClass( subclass ){
-    	return em_subclass.save(subclass)
+        return em_subclass.save(subclass)
     }
 
     @ProxyMethod
     public void deleteSubClass( subclass ){
-    	em_subclass.delete(subclass)
+        em_subclass.delete(subclass)
     }
 
 
 
-	/*----------------------------------------------------------
+    /*----------------------------------------------------------
     * Stripping Support
     -----------------------------------------------------------*/
     @ProxyMethod
     public def getStrippings(entity, classification) {
-    	def filter = [:]
-    	filter.landrysettingid = entity.objid 
-    	filter.classificationid = (classification ? classification.objid : '%')
+        def filter = [:]
+        filter.landrysettingid = entity.objid 
+        filter.classificationid = (classification ? classification.objid : '%')
         def whereclause = 'landrysettingid = :landrysettingid and classification_objid like :classificationid'
-    	return em_stripping.where(whereclause, filter).orderBy('striplevel').list()
+        return em_stripping.where(whereclause, filter).orderBy('striplevel').list()
     }
 
     @ProxyMethod
     public def saveStripping(stripping){
-    	return em_stripping.save(stripping)
+        return em_stripping.save(stripping)
     }
 
     @ProxyMethod
     public void deleteStripping( stripping ){
-    	em_stripping.delete(stripping)
+        em_stripping.delete(stripping)
     }
 
 
@@ -335,8 +335,8 @@ public class LandRYSettingService
 
     @ProxyMethod
     public void revise( oldsetting, params ) {
-    	if (params.ry <= oldsetting.ry) 
-    		throw new Exception('New Revision Year must be greater than ' + oldsetting.ry + '.')
+        if (params.ry <= oldsetting.ry) 
+            throw new Exception('New Revision Year must be greater than ' + oldsetting.ry + '.')
 
         def settings = em_land.find([ry:oldsetting.ry]).list() 
         if( !settings ) throw new Exception('Revision Year ' + oldsetting.ry  + ' settings are not defined.')
@@ -358,7 +358,7 @@ public class LandRYSettingService
     void copyAssessLevels( newsetting, setting, updateprevid ) {
         def assesslevels = getAssessLevels( setting )
         assesslevels.each { al ->
-        	def ranges = getRanges(al)
+            def ranges = getRanges(al)
             al.previd = (updateprevid ? al.objid : null)
             al.objid = util.generateId('AL')
             al.landrysettingid = newsetting.objid 
@@ -380,7 +380,7 @@ public class LandRYSettingService
         getPropertyClassifications().each{ pc ->
             def specificclasses = getSpecificClasses(setting, pc)
             specificclasses.each { sc ->
-            	def subclasses = getSubClasses(sc)
+                def subclasses = getSubClasses(sc)
                 sc.previd = (updateprevid ? sc.objid : null)
                 sc.objid = util.generateId('SC')
                 sc.landrysettingid = newsetting.objid 
@@ -409,7 +409,7 @@ public class LandRYSettingService
     void copyLandAdjustmentTypes( newsetting, setting, updateprevid ) {
         def landadjustments = getAdjustmentTypes(setting);
         landadjustments.each { la ->
-        	def adjclassifications = getAdjustmentClassifications(la)
+            def adjclassifications = getAdjustmentClassifications(la)
 
             la.previd = (updateprevid ? la.objid : null)
             la.objid =  util.generateId('LA') 
@@ -425,12 +425,12 @@ public class LandRYSettingService
     }
 
     void copyLgus(newsetting, setting){
-    	def lgus = em_rysettinglgu.find([rysettingid:setting.objid]).list()
-    	lgus.each{
-    		it.objid = 'RL' + new java.rmi.server.UID()
-    		it.rysettingid = newsetting.objid 
-    		em_rysettinglgu.create(it)
-    	}
+        def lgus = em_rysettinglgu.find([rysettingid:setting.objid]).list()
+        lgus.each{
+            it.objid = 'RL' + new java.rmi.server.UID()
+            it.rysettingid = newsetting.objid 
+            em_rysettinglgu.create(it)
+        }
     }
 
 
@@ -461,7 +461,7 @@ public class LandRYSettingService
     @Async
     @ProxyMethod
     public def importData(setting) {
-    	if (setting.type != 'land')
+        if (setting.type != 'land')
             throw new Exception('Invalid data. Imported data is for ' + setting.type.toUpperCase() + ' setting.')
             
         em_land.save(setting)
@@ -573,7 +573,7 @@ public class LandRYSettingService
                 }
             }
             msg.data.lgus?.each{
-            	em_rysettinglgu.save(it)
+                em_rysettinglgu.save(it)
             }
         }
         else if (msg.msgtype == 'landassesslevels'){
@@ -645,6 +645,30 @@ public class LandRYSettingService
             classification_objid: appliedto.objid,
             landrysettingid: entity.objid 
         ])
+    }
+
+    void initStandardStripping(entity) {
+        def residential = em_classification.find([name: 'RESIDENTIAL']).first()
+        if (residential) {
+            createStrippings(entity, residential)
+        }
+
+        def commercial = em_classification.find([name: 'COMMERCIAL']).first()
+        if (commercial) {
+            createStrippings(entity, commercial)
+        }
+    }
+
+    def createStrippings(entity, classification) {
+        for (int i = 1; i <= 4; i++) {
+            def strip = [:]
+            strip.objid = 'ST' + new java.rmi.server.UID()
+            strip.landrysettingid = entity.objid 
+            strip.classification = classification
+            strip.striplevel = i
+            strip.rate = 100 - (i - 1) * 20 
+            em_stripping.create(strip)
+        }
     }
 
 }

@@ -16,26 +16,22 @@
         </start>
         
         <page name="initial" title="Real Property Tax Collection: Initial Information">
-            <transition caption="Cancel" confirm="Cancel transaction?" to="end" />
+            <transition caption="Cancel"  action="doCancel" mnemonic="c" to="end"  />
             <transition caption="Next"  to="select" action="initItems" mnemonic="n"  />
         </page>
         
         <page name="select" title="Real Property Tax Collection: Setup Payable">
-            <transition caption="Cancel" confirm="Cancel transaction?" to="initial" action="doCancel" />
             <transition caption="Back" to="initial" action="init" mnemonic="b" visibleWhen="#{processing==false}"/>
             <transition caption="Next"  to="payment" action="initPayment" mnemonic="n"   visibleWhen="#{processing==false}"/>
         </page>
         
         <page name="payment" title="Real Property Tax Collection: Payment">
-            <transition caption="Cancel" confirm="Cancel transaction?" to="end" />
             <transition caption="Back" to="select" action="backToSelect" mnemonic="b" />           
             <transition name="done" to="completed" visibleWhen="#{false}" />           
         </page>
         
         <page name="completed" title="Real Property Tax Collection: Completed">
-            <!-- 
             <transition caption="Close" action="doClose" to="end" />
-        -->
         </page>
         
         

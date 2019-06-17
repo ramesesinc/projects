@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="subdivision:info" 
+            action="init" caption="Attachments" 
+            folderFieldName="txnno"
+            index="1010" />
+
+        <invoker type="consolidation:info" 
+            action="init" caption="Attachments" 
+            folderFieldName="txnno"
+            index="1010" />
+        
+        <invoker type="attachment:view" 
+            action="init" caption="Attachments" />
+        
+                 
+   </invokers>
+   <code class="com.rameses.gov.etracs.rptis.models.AttachmentModel">
+   </code>
+    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rptis.views.AttachmentPage"/>
+    </pages>
+</workunit>
+
+

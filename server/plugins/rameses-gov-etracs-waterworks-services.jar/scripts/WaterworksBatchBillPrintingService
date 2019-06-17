@@ -62,7 +62,6 @@ class WaterworksBatchBillPrintingService {
 		wheres << " hold=0 and meterstate <> 'DISCONNECTED' and acctstate = 'ACTIVE' "; 
 		def wherestr = wheres.join(" AND "); 
 		
-		vwbillEm.debug = true;
 		def blist = vwbillEm.find([ batchid: param.batchid ]).where( wherestr ).orderBy("billno").list(0,10);
 		if ( !blist ) return []; 
 

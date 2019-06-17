@@ -61,7 +61,8 @@ class AFTxnHandlerPurchaseReceiptBegin extends AFTxnHandler {
     }
     
     public def getInfo() {
-        return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/views/AFTxnViewPurchaseReceiptBegin.gtpl", [entity:entity] );
+        def allowEdit = (invoker.properties.tag == 'AFO'); 
+        return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/views/AFTxnViewPurchaseReceiptBegin.gtpl", [entity:entity, allowEdit: allowEdit] );
     }
     
     def addBatch( def o ) {

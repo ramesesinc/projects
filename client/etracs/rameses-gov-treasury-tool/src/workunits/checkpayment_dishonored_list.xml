@@ -1,0 +1,12 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="checkpayment_dishonored" allowCreate="false" allowDelete="false">
+    <invokers>
+        <invoker folderid="menucategory/treasury/mgmt" action="init" 
+                 caption="Dishonored Check Payments" target="window" index="10" 
+                 cols="checkpayment.refno,checkpayment.refdate,checkpayment.receivedfrom,checkpayment.bank.name,checkpayment.amount,dtfiled,filedby.name">
+            <action role="ADMIN" permission="checkpayment_dishonored.view" allowCreate="true"/>
+            <action role="CASHIER" permission="checkpayment_dishonored.view" allowCreate="true" />
+            <action role="SHARED" permission="checkpayment_dishonored.view"/>
+        </invoker> 
+    </invokers>
+</workunit>

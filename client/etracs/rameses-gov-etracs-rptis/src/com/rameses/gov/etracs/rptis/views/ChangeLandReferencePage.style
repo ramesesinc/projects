@@ -1,0 +1,17 @@
+"improvfaas" [entity == null] {
+    enabled:true;
+    required:true;
+}
+
+"improvfaas" [entity != null] {
+    enabled:false;
+}
+
+"landfaas" [improvfaas == null] {
+    enabled:false;
+}
+
+"landfaas" [improvfaas != null] {
+    enabled:true;
+    required:true;
+}

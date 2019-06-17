@@ -21,6 +21,9 @@ class NoticeOfDelinquencyModel
     @Service('DateService')
     def dtSvc;
 
+    @Service('LogService')
+    def logSvc;
+
     def taxpayer;
     def address;
     def entity;
@@ -62,6 +65,7 @@ class NoticeOfDelinquencyModel
     void printNotice() {
         buildReportInfo()
         ReportUtil.print( report.report, true )
+        logPrint();
     }
     
     def previewNotice() {
@@ -80,8 +84,13 @@ class NoticeOfDelinquencyModel
             ] as SubReport[]
         },
         getReportData : { data },
-        getParameters : { reportSvc.getStandardParameter() }
+        getParameters : { reportSvc.getStandardParameter() },
+        afterPrint: { logPrint() },
     ] as ReportModel
+
+    void logPrint() {
+        logSvc.log('printnod', 'rptledger', entity.objid);
+    }
     
 
 }

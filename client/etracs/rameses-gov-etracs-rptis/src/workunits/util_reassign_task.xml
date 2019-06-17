@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="/menucategory/rpt/util" 
+            action="init" 
+            caption="Reassign Task"
+            role="ADMIN"
+            target="popup" />
+   </invokers>
+   <code class="com.rameses.gov.etracs.rptis.models.ReassignTaskModel" >
+    </code>   
+  <pages>
+    <page name="reassign" template="com.rameses.gov.etracs.rptis.views.ReassignTaskPage" />
+  </pages>
+</workunit>
+
+

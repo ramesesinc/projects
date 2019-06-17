@@ -173,12 +173,26 @@ class TDReportService
 		td.objid = td.faasid 
 		faasSvc.loadSignatories(td)
 
+		if (isRecommenderAuthorized(td)){
+			td.authorized = true
+		}		
+
 		td.signatories = [:]
 		def retval = sigSvc.decodeSignatories(adb.getSignatories(td))
 		td.signatories = retval.signatories 
 		td.signaturetampered = retval.tampered
 		td.tamperedsigmsg = retval.tamperedsigmsg
 	}	
+
+	def isRecommenderAuthorized(td){
+		if (td.recommender && td.recommender.name && 
+			   td.recommender.name.equalsIgnoreCase(td.approver?.name)){
+			td.recommender = [name:null, dtsigned:null]
+			return true 
+		}
+		return false 
+	}
+
 
 	void buildContactInfo(td){
 		def contact = adb.findEntityContactInfo(td.taxpayer)
@@ -233,6 +247,14 @@ class TDReportService
 			td.specificlands.each{ it.mixedarea = 0 }
 			td.mixedarea  = 0
 		}
+
+		padExtraItems(td.lands, 4)
+		td.lands.each{
+			if (!it.areatype) {
+				 it.areatype = 'sqm'
+				 it.taxable = 1
+			}
+		}
 	}
 
 	void buildBldgRpuAssessment(td){
@@ -262,6 +284,8 @@ class TDReportService
 			td.fullpin += '\nPartially erected on lands: ' + landpins
 		}
 
+		padExtraItems(td.buildings, 4)
+
 
 	}
 
@@ -278,12 +302,15 @@ class TDReportService
 		else 
 			td.machines = em.sqlContext.createNamedQuery('tdreport:getMachineAssessment')
 							.setParameter('faasid', td.faasid).resultList
+
+		padExtraItems(td.machines, 4)
 	}
 
 	void buildPlantTreeRpuAssessment(td){
 		if (td.rputype != 'planttree') return 
 		td.plants = em.sqlContext.createNamedQuery('tdreport:getPlantTreeAssessment')
 							.setParameter('faasid', td.faasid).resultList
+		padExtraItems(td.plants, 4)
 	}
 
 	void buildMiscRpuAssessment(td){
@@ -294,6 +321,8 @@ class TDReportService
 
 		td.miscitems = em.sqlContext.createNamedQuery('tdreport:getMiscAssessment')
 							.setParameter('faasid', td.faasid).resultList
+
+		padExtraItems(td.miscitems, 4)
 	}
 
 	void clearRealPropertyInfo( td ) {
@@ -390,4 +419,15 @@ class TDReportService
 		}
 
 	}
+
+	void padExtraItems(list, size) {
+		def pad = util.toBoolean(var.getProperty('td_report_pad_items', 0), false)
+		if (pad) {
+			for (int i = list.size(); i < size; i++) {
+				list << [:]
+			}
+		}
+	}
+
+	
 }

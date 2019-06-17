@@ -57,6 +57,13 @@
 	<field name="dtassessed" class="java.lang.String"/>
 	<field name="assessmentyear" class="java.lang.Integer"/>
 	<field name="deliverytype.objid" class="java.lang.String"/>
+	<field name="signatories" class="java.lang.Object"/>
+	<field name="authorized" class="java.lang.Boolean"/>
+	<field name="approver.name" class="java.lang.String"/>
+	<field name="assessor.title" class="java.lang.String"/>
+	<field name="assessor.name" class="java.lang.String"/>
+	<field name="approver.title" class="java.lang.String"/>
+	<field name="approver.dtsigned" class="java.util.Date"/>
 
 
 		<group  name="TAXPAYER" >
@@ -258,12 +265,12 @@
 		<group  name="INFO" >
 			<groupExpression><![CDATA[]]></groupExpression>
 			<groupHeader>
-			<band height="86"  isSplitAllowed="true" >
+			<band height="77"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="35"
+						y="28"
 						width="114"
 						height="12"
 						forecolor="#000000"
@@ -284,7 +291,7 @@
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="60"
+						y="53"
 						width="720"
 						height="24"
 						forecolor="#000000"
@@ -574,11 +581,11 @@
 			</band>
 		</lastPageFooter>
 		<summary>
-			<band height="189"  isSplitAllowed="true" >
+			<band height="215"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						x="250"
-						y="162"
+						y="188"
 						width="26"
 						height="12"
 						key="staticText-81">
@@ -598,7 +605,7 @@
 				<staticText>
 					<reportElement
 						x="250"
-						y="145"
+						y="171"
 						width="26"
 						height="12"
 						key="staticText-80">
@@ -618,7 +625,7 @@
 				<staticText>
 					<reportElement
 						x="44"
-						y="162"
+						y="188"
 						width="26"
 						height="12"
 						key="staticText-79">
@@ -638,7 +645,7 @@
 				<staticText>
 					<reportElement
 						x="44"
-						y="145"
+						y="171"
 						width="26"
 						height="12"
 						key="staticText-78">
@@ -655,51 +662,11 @@
 					</textElement>
 				<text><![CDATA[X]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Transparent"
-						x="473"
-						y="27"
-						width="223"
-						height="11"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="textField-25"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{ASSESSORNAME}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Transparent"
-						x="473"
-						y="38"
-						width="223"
-						height="10"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="textField-26"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{ASSESSORTITLE}]]></textFieldExpression>
-				</textField>
 				<staticText>
 					<reportElement
 						mode="Transparent"
 						x="70"
-						y="60"
+						y="86"
 						width="36"
 						height="11"
 						forecolor="#000000"
@@ -719,7 +686,7 @@
 					<reportElement
 						mode="Transparent"
 						x="112"
-						y="60"
+						y="86"
 						width="525"
 						height="55"
 						forecolor="#000000"
@@ -741,7 +708,7 @@
 					<reportElement
 						mode="Transparent"
 						x="8"
-						y="81"
+						y="107"
 						width="49"
 						height="11"
 						forecolor="#000000"
@@ -762,7 +729,7 @@
 					<reportElement
 						mode="Transparent"
 						x="8"
-						y="103"
+						y="129"
 						width="85"
 						height="11"
 						forecolor="#000000"
@@ -783,7 +750,7 @@
 					<reportElement
 						mode="Transparent"
 						x="57"
-						y="122"
+						y="148"
 						width="235"
 						height="11"
 						forecolor="#000000"
@@ -804,7 +771,7 @@
 					<reportElement
 						mode="Transparent"
 						x="292"
-						y="122"
+						y="148"
 						width="109"
 						height="11"
 						forecolor="#000000"
@@ -825,7 +792,7 @@
 					<reportElement
 						mode="Transparent"
 						x="401"
-						y="122"
+						y="148"
 						width="19"
 						height="11"
 						forecolor="#000000"
@@ -846,7 +813,7 @@
 					<reportElement
 						mode="Transparent"
 						x="75"
-						y="146"
+						y="172"
 						width="158"
 						height="11"
 						forecolor="#000000"
@@ -867,7 +834,7 @@
 					<reportElement
 						mode="Transparent"
 						x="74"
-						y="163"
+						y="189"
 						width="158"
 						height="11"
 						forecolor="#000000"
@@ -888,7 +855,7 @@
 					<reportElement
 						mode="Transparent"
 						x="281"
-						y="146"
+						y="172"
 						width="71"
 						height="11"
 						forecolor="#000000"
@@ -909,7 +876,7 @@
 					<reportElement
 						mode="Transparent"
 						x="280"
-						y="163"
+						y="189"
 						width="71"
 						height="11"
 						forecolor="#000000"
@@ -930,7 +897,7 @@
 					<reportElement
 						mode="Transparent"
 						x="292"
-						y="132"
+						y="158"
 						width="108"
 						height="11"
 						forecolor="#000000"
@@ -950,7 +917,7 @@
 				<line direction="TopDown">
 					<reportElement
 						x="492"
-						y="175"
+						y="198"
 						width="203"
 						height="0"
 						key="line-1"/>
@@ -960,7 +927,7 @@
 					<reportElement
 						mode="Transparent"
 						x="492"
-						y="176"
+						y="199"
 						width="203"
 						height="11"
 						forecolor="#000000"
@@ -981,7 +948,7 @@
 					<reportElement
 						mode="Transparent"
 						x="419"
-						y="122"
+						y="148"
 						width="217"
 						height="11"
 						forecolor="#000000"
@@ -1001,8 +968,8 @@
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="226"
-						y="26"
+						x="218"
+						y="51"
 						width="211"
 						height="11"
 						forecolor="#000000"
@@ -1021,8 +988,8 @@
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="226"
-						y="37"
+						x="218"
+						y="62"
 						width="211"
 						height="10"
 						forecolor="#000000"
@@ -1041,8 +1008,8 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="226"
-						y="7"
+						x="218"
+						y="32"
 						width="49"
 						height="11"
 						forecolor="#000000"
@@ -1059,6 +1026,148 @@
 					</textElement>
 				<text><![CDATA[By:]]></text>
 				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="489"
+						y="54"
+						width="198"
+						height="14"
+						key="textField-42"
+						positionType="Float">
+							<printWhenExpression><![CDATA[$F{authorized}]]></printWhenExpression>
+						</reportElement>
+					<box>					<pen lineWidth="0.0" lineColor="#000000"/>
+					<topPen lineWidth="0.0" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{assessor.name}]]></textFieldExpression>
+				</textField>
+				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="507"
+						y="4"
+						width="125"
+						height="41"
+						key="image-2"
+						positionType="Float">
+							<printWhenExpression><![CDATA[$F{signatories}.source.approver != null && $F{signatories}.source.approver.signatureis != null && $F{authorized}]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.io.InputStream"><![CDATA[$F{signatories}.source.approver.signatureis]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="489"
+						y="54"
+						width="199"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-43">
+							<printWhenExpression><![CDATA[!$F{authorized}]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{approver.name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="489"
+						y="67"
+						width="199"
+						height="12"
+						key="textField-44"
+						positionType="Float">
+							<printWhenExpression><![CDATA[$F{authorized}]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{assessor.title}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="489"
+						y="67"
+						width="199"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-45">
+							<printWhenExpression><![CDATA[!$F{authorized}]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{approver.title}]]></textFieldExpression>
+				</textField>
+				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="509"
+						y="8"
+						width="161"
+						height="48"
+						key="image-3"
+						positionType="Float">
+							<printWhenExpression><![CDATA[!$F{authorized}]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.io.InputStream"><![CDATA[$F{signatories}.source.approver.signatureis]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="489"
+						y="38"
+						width="198"
+						height="9"
+						key="textField-46"
+						positionType="Float">
+							<printWhenExpression><![CDATA[$F{authorized}]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["for: " + $F{approver.name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="489"
+						y="45"
+						width="198"
+						height="9"
+						key="textField-47"
+						positionType="Float">
+							<printWhenExpression><![CDATA[$F{authorized}]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["     ": $F{approver.title}]]></textFieldExpression>
+				</textField>
 			</band>
 		</summary>
 </jasperReport>

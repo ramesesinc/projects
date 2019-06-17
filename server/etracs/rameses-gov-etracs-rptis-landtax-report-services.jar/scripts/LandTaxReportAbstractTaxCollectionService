@@ -87,6 +87,32 @@ class LandTaxReportAbstractTaxCollectionService {
     }
 
 
+    @ProxyMethod 
+    def generateAbstractOfRPTCollectionSummary(entity) {
+        def remyr = dtsvc.getYear(entity.dtposted)
+
+        def params = [remittanceid:entity.objid]
+        def items = em.getAbstractOfRPTCollectionSummary(params)
+
+        if(! items ) throw new Exception('No records found.     ')
+        def header = [:]
+        header.TITLE = 'ABSTRACT OF REAL PROPERTY TAX COLLECTION SUMMARY'
+        header.PERIOD = ''
+        header.REMITTANCENO = entity.controlno; 
+        header.dtposted = dtsvc.format('MMMMM dd, yyyy', entity.controldate )
+        header.REMITTANCEDATE = header.dtposted;
+        header.REMITTANCEAMOUNT = entity.amount
+        header.COLLECTORNAME = entity.collector.name
+        header.COLLECTORTITLE = entity.collector.title
+        header.LIQUIDATINGOFFICER = entity.liquidatingofficer.name
+        header.LIQUIDATINGOFFICERTITLE = entity.liquidatingofficer.title
+        header.DATEPOSTED =  entity.controldate ;
+        header.AMTINWORDS = numSvc.convertDouble( entity.amount )
+
+        return  [ header:header, items:items]
+    }
+
+
     @ProxyMethod
     def generateAbstractOfRPTCollection( params ){ 
         String period;
@@ -143,29 +169,29 @@ class LandTaxReportAbstractTaxCollectionService {
             else if (item.minyear == item.maxyear && item.minqtr == item.maxqtr)
                 item.period = 'Partial ' + item.minqtr + 'Q, ' + item.maxyear
             else if (item.minyear == item.maxyear)
-                item.period = 'FULL ' + item.minqtr + '' + (item.maxqtr - 1) + 'Q,' + item.maxyear + ' (Partial ' + item.maxqtr + 'Q,' + item.maxyear + ')' 
+                item.period = item.minqtr + '' + (item.maxqtr - 1) + 'Q,' + item.maxyear + ' (Partial ' + item.maxqtr + 'Q,' + item.maxyear + ')' 
             else if (item.minqtr == 1 && item.maxqtr == 4)
-                item.period = 'FULL ' + item.minyear + '-' + (item.maxyear - 1) + '(Partial ' + item.maxyear + ')'
+                item.period = item.minyear + '-' + (item.maxyear - 1) + '(Partial ' + item.maxyear + ')'
             else if (item.minqtr == 1 && item.maxqtr != 4)
-                item.period = 'FULL ' + item.minyear + '-' + (item.maxqtr - 1) + 'Q,' + item.maxyear + ' (Partial ' + item.maxqtr + 'Q,' + item.maxyear + ')'
+                item.period = item.minyear + '-' + (item.maxqtr - 1) + 'Q,' + item.maxyear + ' (Partial ' + item.maxqtr + 'Q,' + item.maxyear + ')'
             else if (item.minqtr != 1 && item.maxqtr == 4)
-                item.period = 'FULL ' + item.minqtr + 'Q,' + item.minyear + ' (Partial ' + item.maxyear + ')'
+                item.period = item.minqtr + 'Q,' + item.minyear + ' (Partial ' + item.maxyear + ')'
             else if (item.maxqtr == 1)
-                item.period = 'FULL ' + item.minqtr + 'Q,' + item.minyear + '-' + (item.maxyear - 1) + '  (Partial 1Q,' + item.maxyear + ')'
+                item.period = item.minqtr + 'Q,' + item.minyear + '-' + (item.maxyear - 1) + '  (Partial 1Q,' + item.maxyear + ')'
             else if (item.maxqtr != 4)
-                item.period = 'FULL ' + item.minqtr + 'Q,' + item.minyear + '-' + (item.maxqtr - 1) + 'Q,' + (item.maxyear - 1) + '  (Partial ' + item.maxqtr + 'Q,' + item.maxyear + ')'
+                item.period = item.minqtr + 'Q,' + item.minyear + '-' + (item.maxqtr - 1) + 'Q,' + (item.maxyear - 1) + '  (Partial ' + item.maxqtr + 'Q,' + item.maxyear + ')'
             else 
                 item.period = 'Partial (' + item.minqtr + 'Q,' + item.minyear + '-' + item.maxqtr + 'Q,' + item.maxyear + ')'
         }
         else {
             if (item.minyear == item.maxyear && item.minqtr == 1 && item.maxqtr == 4)
-                item.period = 'FULL ' + item.maxyear
+                item.period = item.maxyear
             else if (item.minyear == item.maxyear && item.minqtr == item.maxqtr)
                 item.period = item.minqtr + 'Q, ' + item.maxyear
             else if (item.minyear == item.maxyear)
                 item.period = item.minqtr + '' + item.maxqtr + 'Q, ' + item.maxyear 
             else if (item.minqtr == 1 && item.maxqtr == 4)
-                item.period = 'FULL ' + item.minyear + '-' + item.maxyear 
+                item.period = item.minyear + '-' + item.maxyear 
             else if (item.minqtr == 1 && item.maxqtr != 4)
                 item.period = item.minyear + '-' + item.maxqtr + 'Q,' + item.maxyear 
             else if (item.minqtr != 1 && item.maxqtr == 4)

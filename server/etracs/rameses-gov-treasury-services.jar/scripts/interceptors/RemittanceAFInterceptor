@@ -40,7 +40,7 @@ class RemittanceAFInterceptor {
 		} 
 
 		remaf_em.getCancelledSeries( p ).groupBy{ it.controlid }.each{ k,v-> 
-			def afc = afs.find{( it.controlid == o.controlid )} 
+			def afc = afs.find{( it.controlid == k )} 
 			if ( afc ) { 
 				afc.qtycancelled = v.size(); 
 				afc.cancelledseries = v; 

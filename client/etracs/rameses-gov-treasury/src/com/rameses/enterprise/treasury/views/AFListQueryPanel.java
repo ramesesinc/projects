@@ -27,27 +27,24 @@ public class AFListQueryPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
         aFDropdownList1 = new com.rameses.enterprise.treasury.components.AFDropdownList();
 
-        setLayout(new java.awt.BorderLayout());
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        setLayout(new com.rameses.rcp.control.layout.XLayout());
 
-        xFormPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-        xFormPanel1.setCaptionWidth(50);
-        xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel1.setPadding(new java.awt.Insets(4, 0, 0, 0));
+        xLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 5, 2, 5));
+        xLabel1.setText("AF :");
+        add(xLabel1);
 
         aFDropdownList1.setCaption("AF");
         aFDropdownList1.setName("query.af"); // NOI18N
-        xFormPanel1.add(aFDropdownList1);
-
-        add(xFormPanel1, java.awt.BorderLayout.CENTER);
+        add(aFDropdownList1);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.enterprise.treasury.components.AFDropdownList aFDropdownList1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XLabel xLabel1;
     // End of variables declaration//GEN-END:variables
 }

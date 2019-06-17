@@ -23,6 +23,7 @@ public class ChangeAppraisalInfoController extends FAASModel
     
     void init(){
         super.init();
+        entity._modify_ = true;
         def previnfo = [isprevious:true];
         previnfo.putAll(entity.rpu);
         changeinfo = [

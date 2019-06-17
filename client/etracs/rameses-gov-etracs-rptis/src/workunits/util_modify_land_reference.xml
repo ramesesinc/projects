@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="/menucategory/rpt/util" 
+            action="init" 
+            caption="Change Land Reference" 
+            target="popup" index="501"
+            role="ADMIN" permission="util.changelandreference" />
+
+        <invoker type="faas:formActions" 
+            action="init"
+            caption="Change Land Reference" 
+            target="popup"
+            index="1001" 
+            role="TAXMAPPER"
+            visibleWhen="#{entity.state=='INTERIM' &amp;&amp; entity.taskstate == 'taxmapper' &amp;&amp; entity.rpu.rputype != 'land'}" /> 
+        
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.rptis.models.ChangeLandReferenceModel">
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.views.ChangeLandReferencePage" />
+    </pages>
+</workunit>
+

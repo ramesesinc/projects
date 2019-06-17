@@ -16,6 +16,9 @@ class RealPropertyService
 	@DataContext('rysetting_land')
 	def em_landsetting 	
 
+	@DataContext('faas_list')
+	def em_faas_list
+
     def SECTION_NEW_MAX  	= 3
 	def PARCEL_NEW_MAX  	= 2
 	def SECTION_OLD_MAX  	= 2
@@ -155,11 +158,31 @@ class RealPropertyService
 
     	def rp = em_realproperty.find([pin:params.pin, ry:params.ry]).first()
     	if (!rp) {
-    		return
+    		rp = em_realproperty.find([pin:params.pin.replaceAll('-',''), ry:params.ry]).first()
+    		if (!rp) {
+    			return
+    		}
     	}
     	if (params.claimno && rp.claimno != params.claimno){
     		return
     	}
+
+
+    	//check reuse pin option 
+    	def reusepin = util.toBoolean(var.get('assessor_reuse_cancelled_pin'), false)
+    	if (reusepin){
+	    	def currentpins = em_faas_list.select('tdno').find([realpropertyid: rp.objid, state: 'CURRENT', rputype: 'land']).list()
+	    	if (!currentpins) {
+	    		return 
+	    	} else {
+	    		def msg = 'PIN ' + params.pin + ' is currently referenced by '
+	    		msg += 'TD No(s). ' + currentpins.tdno.join(', ') + '.\n\n'
+	    		msg += 'Revise the PIN of these properties before reusing the new PIN'
+	    		throw new Exception(msg)
+	    	}
+    	}
+
+
     	throw new Exception('PIN No. ' + params.pin + ' already exist.')
     }
 
@@ -198,12 +221,7 @@ class RealPropertyService
 
 	@ProxyMethod
 	public void updateBoundaries( entity ) {
-		def params = [:]
-		params.north = entity.north
-		params.east = entity.east
-		params.west = entity.west
-		params.south = entity.south
-		em_realproperty.find([objid:entity.objid]).update(params)
+		em_realproperty.update(entity)
 	}
 
 	@ProxyMethod 

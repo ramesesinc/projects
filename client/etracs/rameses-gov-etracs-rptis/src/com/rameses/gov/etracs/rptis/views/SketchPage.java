@@ -31,80 +31,117 @@ public class SketchPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
-        xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
-        xTextField12 = new com.rameses.rcp.control.XTextField();
-        xTextField30 = new com.rameses.rcp.control.XTextField();
-        xFormPanel6 = new com.rameses.rcp.control.XFormPanel();
-        xTextField14 = new com.rameses.rcp.control.XTextField();
-        xTextField31 = new com.rameses.rcp.control.XTextField();
         drawComponent1 = new com.rameses.rcp.draw.components.DrawComponent();
+        xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
+        xFormPanel6 = new com.rameses.rcp.control.XFormPanel();
+        xTextField10 = new com.rameses.rcp.control.XTextField();
+        xTextField13 = new com.rameses.rcp.control.XTextField();
+        xTextField17 = new com.rameses.rcp.control.XTextField();
+        xFormPanel7 = new com.rameses.rcp.control.XFormPanel();
+        xTextField16 = new com.rameses.rcp.control.XTextField();
+        xTextField33 = new com.rameses.rcp.control.XTextField();
+        xTextField15 = new com.rameses.rcp.control.XTextField();
+        xTextField32 = new com.rameses.rcp.control.XTextField();
+        xTextField18 = new com.rameses.rcp.control.XTextField();
+        xTextField34 = new com.rameses.rcp.control.XTextField();
+
+        drawComponent1.setHandler("handler");
+        drawComponent1.setName("editor"); // NOI18N
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setPadding(new java.awt.Insets(20, 10, 10, 10));
         xTitledBorder1.setTitle("Boundary Details");
-        xFormPanel3.setBorder(xTitledBorder1);
-        xFormPanel3.setCaptionPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel3.setPadding(new java.awt.Insets(0, 5, 2, 5));
-
-        xFormPanel5.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel5.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel5.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.setShowCaption(false);
-
-        xTextField12.setCaption("North");
-        xTextField12.setName("entity.rp.north"); // NOI18N
-        xTextField12.setStretchWidth(50);
-        xFormPanel5.add(xTextField12);
-
-        xTextField30.setCaption("East");
-        xTextField30.setCaptionWidth(70);
-        xTextField30.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
-        xTextField30.setName("entity.rp.east"); // NOI18N
-        xTextField30.setStretchWidth(50);
-        xFormPanel5.add(xTextField30);
-
-        xFormPanel3.add(xFormPanel5);
+        xFormPanel5.setBorder(xTitledBorder1);
+        xFormPanel5.setCaptionPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel5.setPadding(new java.awt.Insets(0, 5, 2, 5));
 
         xFormPanel6.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel6.setPadding(new java.awt.Insets(0, 0, 0, 0));
         xFormPanel6.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel6.setShowCaption(false);
 
-        xTextField14.setCaption("South");
-        xTextField14.setName("entity.rp.south"); // NOI18N
-        xTextField14.setStretchWidth(50);
-        xFormPanel6.add(xTextField14);
+        xTextField10.setCaption("Survey No.");
+        xTextField10.setName("entity.rp.surveyno"); // NOI18N
+        xTextField10.setPreferredSize(new java.awt.Dimension(250, 20));
+        xFormPanel6.add(xTextField10);
 
-        xTextField31.setCaption("West");
-        xTextField31.setCaptionWidth(70);
-        xTextField31.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
-        xTextField31.setName("entity.rp.west"); // NOI18N
-        xTextField31.setStretchWidth(50);
-        xFormPanel6.add(xTextField31);
+        xTextField13.setCaption("Lot No.");
+        xTextField13.setName("entity.rp.cadastrallotno"); // NOI18N
+        xTextField13.setCaptionWidth(70);
+        xTextField13.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
+        xTextField13.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField13.setStretchWidth(70);
+        xFormPanel6.add(xTextField13);
 
-        xFormPanel3.add(xFormPanel6);
+        xTextField17.setCaption("Block No.");
+        xTextField17.setName("entity.rp.blockno"); // NOI18N
+        xTextField17.setCaptionWidth(75);
+        xTextField17.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
+        xTextField17.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField17.setStretchWidth(30);
+        xFormPanel6.add(xTextField17);
 
-        drawComponent1.setHandler("handler");
-        drawComponent1.setName("editor"); // NOI18N
+        xFormPanel5.add(xFormPanel6);
+
+        xFormPanel7.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel7.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel7.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel7.setShowCaption(false);
+
+        xTextField16.setCaption("Street");
+        xTextField16.setName("entity.rp.street"); // NOI18N
+        xTextField16.setPreferredSize(new java.awt.Dimension(250, 20));
+        xFormPanel7.add(xTextField16);
+
+        xTextField33.setCaption("Purok");
+        xTextField33.setName("entity.rp.purok"); // NOI18N
+        xTextField33.setCaptionWidth(70);
+        xTextField33.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
+        xTextField33.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField33.setStretchWidth(50);
+        xFormPanel7.add(xTextField33);
+
+        xFormPanel5.add(xFormPanel7);
+
+        xTextField15.setCaption("North");
+        xTextField15.setName("entity.rp.north"); // NOI18N
+        xTextField15.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField15.setStretchWidth(100);
+        xFormPanel5.add(xTextField15);
+
+        xTextField32.setCaption("East");
+        xTextField32.setName("entity.rp.east"); // NOI18N
+        xTextField32.setStretchWidth(100);
+        xFormPanel5.add(xTextField32);
+
+        xTextField18.setCaption("South");
+        xTextField18.setName("entity.rp.south"); // NOI18N
+        xTextField18.setStretchWidth(100);
+        xFormPanel5.add(xTextField18);
+
+        xTextField34.setCaption("West");
+        xTextField34.setName("entity.rp.west"); // NOI18N
+        xTextField34.setStretchWidth(100);
+        xFormPanel5.add(xTextField34);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(drawComponent1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 783, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(drawComponent1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 783, Short.MAX_VALUE)
+                    .addComponent(xFormPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 783, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(drawComponent1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                .addComponent(drawComponent1, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -113,12 +150,20 @@ public class SketchPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.draw.components.DrawComponent drawComponent1;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XFormPanel xFormPanel6;
-    private com.rameses.rcp.control.XTextField xTextField12;
-    private com.rameses.rcp.control.XTextField xTextField14;
-    private com.rameses.rcp.control.XTextField xTextField30;
-    private com.rameses.rcp.control.XTextField xTextField31;
+    private com.rameses.rcp.control.XFormPanel xFormPanel7;
+    private com.rameses.rcp.control.XTextField xTextField10;
+    private com.rameses.rcp.control.XTextField xTextField13;
+    private com.rameses.rcp.control.XTextField xTextField15;
+    private com.rameses.rcp.control.XTextField xTextField16;
+    private com.rameses.rcp.control.XTextField xTextField17;
+    private com.rameses.rcp.control.XTextField xTextField18;
+    private com.rameses.rcp.control.XTextField xTextField32;
+    private com.rameses.rcp.control.XTextField xTextField33;
+    private com.rameses.rcp.control.XTextField xTextField34;
+    private com.rameses.rcp.control.XTextField xTextField9;
     // End of variables declaration//GEN-END:variables
     
 }

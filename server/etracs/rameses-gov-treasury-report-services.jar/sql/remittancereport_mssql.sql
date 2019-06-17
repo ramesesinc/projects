@@ -140,73 +140,56 @@ select
   case when t2.voided=0 then t2.item_title else '***VOIDED***' END AS particulars,
   case when t2.voided=0 then c.paidbyaddress else '' END AS payeraddress,
   case when t2.voided=0 then t2.amount else 0.0 END AS amount, 
-  case when t2.voided=0 then t2.remarks else null end AS itemremarks 
+  case when t2.voided=0 then t2.remarks else null end AS itemremarks  
 from ( 
 
   select 
-    t1.objid, t1.fundid, t1.item_objid, t1.item_code, t1.item_title, 
-    t1.voided, t1.remarks, sum( t1.amount - t1.share ) as amount  
+    t1.fundid, t1.receiptid, t1.item_objid, t1.item_code, t1.item_title, 
+    t1.voided, sum(t1.amount) as amount, min(t1.remarks) as remarks  
   from ( 
     select 
-      objid, fundid, item_objid, item_code, item_title, sum(amount) as amount, 0.0 as share, voided, remarks 
-    from ( 
-      select distinct 
-        c.objid, cri.item_fund_objid as fundid, cri.item_objid, cri.item_code, cri.item_title, 
-        case when v.objid is null then cri.amount else 0.0 end as amount, 
-        case when v.objid is null then 0 else 1 end as voided, cri.remarks 
-      from cashreceipt c 
-        inner join cashreceiptitem cri on cri.receiptid = c.objid 
-        left join cashreceipt_void v on v.receiptid = c.objid 
-      where c.remittanceid = $P{remittanceid} 
-    )tt1 
-    group by objid, fundid, item_objid, item_code, item_title, voided, remarks
-
-    union all 
-
+      ci.item_fund_objid as fundid, ci.receiptid, 
+      ci.item_objid, ci.item_code, ci.item_title, 
+      case when v.objid is null then ci.amount else 0.0 end as amount, 
+      case when v.objid is null then 0 else 1 end as voided, 
+      ci.remarks 
+    from remittance r 
+      inner join cashreceipt c on c.remittanceid = r.objid 
+      inner join cashreceiptitem ci on ci.receiptid = c.objid 
+      inner join fund on fund.objid = ci.item_fund_objid 
+      left join cashreceipt_void v on v.receiptid = c.objid 
+    where r.objid = $P{remittanceid} 
+    union all  
     select 
-      tt2.objid, tt2.fundid, tt2.item_objid, tt2.item_code, tt2.item_title, 
-      0.0 as amount, sum(case when tt2.voided=0 then cs.amount else 0.0 end) as share, 
-      tt2.voided, tt2.remarks 
-    from ( 
-      select 
-        tt1.objid, tt1.fundid, tt1.item_objid, tt1.item_code, tt1.item_title, tt1.voided, tt1.remarks, count(*) as icount  
-      from ( 
-        select 
-          c.objid, cri.item_fund_objid as fundid, cri.item_objid, cri.item_code, cri.item_title, 
-          case when v.objid is null then 0 else 1 end as voided, cri.remarks 
-        from cashreceipt c 
-          inner join cashreceiptitem cri on cri.receiptid = c.objid 
-          left join cashreceipt_void v on v.receiptid = c.objid 
-        where c.remittanceid = $P{remittanceid} 
-      )tt1 
-      group by tt1.objid, tt1.fundid, tt1.item_objid, tt1.item_code, tt1.item_title, tt1.voided, tt1.remarks 
-    )tt2, cashreceipt_share cs 
-    where cs.receiptid = tt2.objid 
-      and cs.refitem_objid = tt2.item_objid 
-    group by tt2.objid, tt2.fundid, tt2.item_objid, tt2.item_code, tt2.item_title, tt2.voided, tt2.remarks 
-
+      ia.fund_objid as fundid, cs.receiptid, 
+      cs.refitem_objid as item_objid, ia.code as item_code, ia.title as item_title, 
+      case when v.objid is null then -cs.amount else 0.0 end as amount, 
+      case when v.objid is null then 0 else 1 end as voided, 
+      null as remarks 
+    from remittance r 
+      inner join cashreceipt c on c.remittanceid = r.objid 
+      inner join cashreceipt_share cs on cs.receiptid = c.objid 
+      inner join itemaccount ia on ia.objid = cs.refitem_objid 
+      left join cashreceipt_void v on v.receiptid = c.objid 
+    where r.objid = $P{remittanceid}  
     union all 
-
     select 
-      tt1.objid, tt1.fundid, tt1.item_objid, tt1.item_code, tt1.item_title, 
-      sum(tt1.amount) as amount, sum(tt1.share) as share, tt1.voided, tt1.remarks 
-    from ( 
-      select 
-        c.objid, ia.fund_objid as fundid, ia.objid as item_objid, ia.code as item_code, ia.title as item_title, 
-        case when v.objid is null then cs.amount else 0.0 end as amount, 0.0 as share, 
-        case when v.objid is null then 0 else 1 end as voided, null as remarks 
-      from cashreceipt c 
-        inner join cashreceipt_share cs on cs.receiptid = c.objid 
-        inner join itemaccount ia on ia.objid = cs.payableitem_objid 
-        left join cashreceipt_void v on v.receiptid = c.objid 
-      where c.remittanceid = $P{remittanceid} 
-    )tt1 
-    group by tt1.objid, tt1.fundid, tt1.item_objid, tt1.item_code, tt1.item_title, tt1.voided, tt1.remarks  
+      ia.fund_objid as fundid, cs.receiptid, 
+      cs.payableitem_objid as item_objid, ia.code as item_code, ia.title as item_title, 
+      case when v.objid is null then cs.amount else 0.0 end as amount, 
+      case when v.objid is null then 0 else 1 end as voided, 
+    null as remarks
+    from remittance r 
+      inner join cashreceipt c on c.remittanceid = r.objid 
+      inner join cashreceipt_share cs on cs.receiptid = c.objid 
+      inner join itemaccount ia on ia.objid = cs.payableitem_objid 
+      left join cashreceipt_void v on v.receiptid = c.objid 
+    where r.objid = $P{remittanceid}  
   )t1 
-  group by t1.objid, t1.fundid, t1.item_objid, t1.item_code, t1.item_title, t1.voided, t1.remarks
+  group by t1.fundid, t1.receiptid, t1.item_objid, t1.item_code, t1.item_title, t1.voided 
 
 )t2, cashreceipt c, fund 
-where c.objid = t2.objid 
+where c.objid = t2.receiptid 
   and fund.objid = t2.fundid 
   ${fundfilter} 
 order by c.formno, c.receiptno, c.paidby 

@@ -28,22 +28,26 @@ public class PlantTreeUnitValueInfoPage extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel7 = new javax.swing.JPanel();
-        jSplitPane1 = new javax.swing.JSplitPane();
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xActionTextField1 = new com.rameses.rcp.control.XActionTextField();
         xDataTable3 = new com.rameses.rcp.control.XDataTable();
         jPanel3 = new javax.swing.JPanel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xActionTextField1 = new com.rameses.rcp.control.XActionTextField();
 
         setLayout(new java.awt.BorderLayout());
 
-        jSplitPane1.setDividerLocation(300);
+        xActionTextField1.setActionCommand("search");
+        xActionTextField1.setCaption("Search");
+        xActionTextField1.setCaptionWidth(60);
+        xActionTextField1.setHint("Search");
+        xActionTextField1.setName("searchtext"); // NOI18N
+        xActionTextField1.setPreferredSize(new java.awt.Dimension(120, 20));
+        xFormPanel1.add(xActionTextField1);
 
         xDataTable3.setHandler("planttreeListHandler");
-        xDataTable3.setImmediate(true);
         xDataTable3.setName("selectedPlantTree"); // NOI18N
-        jSplitPane1.setLeftComponent(xDataTable3);
+        xDataTable3.setImmediate(true);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Plant/Tree Unit Values");
@@ -55,8 +59,8 @@ public class PlantTreeUnitValueInfoPage extends javax.swing.JPanel {
 
         xDataTable2.setDepends(new String[] {"selectedPlantTree"});
         xDataTable2.setHandler("unitvalueListHandler");
-        xDataTable2.setImmediate(true);
         xDataTable2.setName("selectedValue"); // NOI18N
+        xDataTable2.setImmediate(true);
 
         org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -65,7 +69,7 @@ public class PlantTreeUnitValueInfoPage extends javax.swing.JPanel {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, xDataTable2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, xDataTable2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, xLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -74,19 +78,9 @@ public class PlantTreeUnitValueInfoPage extends javax.swing.JPanel {
             .add(jPanel3Layout.createSequentialGroup()
                 .add(xLabel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xDataTable2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                .add(xDataTable2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
                 .addContainerGap())
         );
-
-        jSplitPane1.setRightComponent(jPanel3);
-
-        xActionTextField1.setActionCommand("search");
-        xActionTextField1.setCaption("Search");
-        xActionTextField1.setCaptionWidth(60);
-        xActionTextField1.setHint("Search");
-        xActionTextField1.setName("searchtext"); // NOI18N
-        xActionTextField1.setPreferredSize(new java.awt.Dimension(120, 20));
-        xFormPanel1.add(xActionTextField1);
 
         org.jdesktop.layout.GroupLayout jPanel7Layout = new org.jdesktop.layout.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -95,7 +89,10 @@ public class PlantTreeUnitValueInfoPage extends javax.swing.JPanel {
             .add(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 601, Short.MAX_VALUE)
+                    .add(jPanel7Layout.createSequentialGroup()
+                        .add(xDataTable3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 317, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -105,7 +102,9 @@ public class PlantTreeUnitValueInfoPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)
+                .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(xDataTable3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -116,7 +115,6 @@ public class PlantTreeUnitValueInfoPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JSplitPane jSplitPane1;
     private com.rameses.rcp.control.XActionTextField xActionTextField1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XDataTable xDataTable3;

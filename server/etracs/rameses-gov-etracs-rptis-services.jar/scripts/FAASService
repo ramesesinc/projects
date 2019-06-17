@@ -90,14 +90,14 @@ class FAASService
 	@Service('SequenceService')
 	def seqSvc
 
-	@Service('RPTTrackingService')
-    def trackingSvc 
-
 	@Service('TxnRefService')
 	def txnRef
 
 	@Service('RPTUtil')
 	def util
+
+	@Service('ReportParameterService')
+	def paramSvc 
 
 	
 	def STATE_INTERIM = 'INTERIM'
@@ -166,6 +166,7 @@ class FAASService
 		faas.datacapture = false
 		faas.prevtdno = 'NEW'
 		faas.prevpin = ''
+		faas.effectivityyear = dtSvc.serverYear + 1
 		if(info.state) faas.state = info.state 
         createFaas(faas)
         return faas
@@ -198,7 +199,6 @@ class FAASService
 		savePreviousFaases(faas)
 		saveBackTaxes(faas)
 		insertTxnReference(faas)
-		assignTrackingNo(faas)
 		return faas
 	}	
 
@@ -286,7 +286,6 @@ class FAASService
 				throw new Exception('FAAS has already been cancelled.')
 		}
 
-		trackingSvc.delete(faas) 
 		txnRef.delete(faas.objid)
 		em_faas_signatory.delete(faas)
 		em_faas_task.find([refid:faas.objid]).delete()
@@ -544,8 +543,13 @@ class FAASService
 
     @ProxyMethod
     public void saveSignatory( signatory ) {
-    	if (signatory)
+    	if (signatory) {
+    		if (!signatory.assessor) {
+	    		def param = paramSvc.getStandardParameter()
+	    		signatory.assessor = [name: param?.ASSESSORNAME, title: param?.ASSESSORTITLE]
+    		}
     		em_faas_signatory.save(signatory)
+    	}
     }
 
 
@@ -585,7 +589,7 @@ class FAASService
         }
 
         //annotations
-        def annotations = em_faas_annotation.find([faasid:faas.objid]).list()
+        def annotations = em_faas_annotation.where(" faasid = :objid and state = 'APPROVED' ", faas).list()
         if(annotations){
         	msgs << 'FAAS has active Annotation # ' + annotations.fileno.join(',')
         }
@@ -596,7 +600,7 @@ class FAASService
     public void updateSignatoryInfo(task) {
         if (task.state.matches('assign.*') || env.action?.matches('return.*'))
             return 
-        if (!task.state.matches('taxmapper|taxmapper_chief|appraiser|appraiser_chief|provrecommender|recommender|approver|provtaxmapper|provtaxmapperchief|provappraiser|provappraiserchief'))
+        if (!task.state.matches('taxmapper|taxmapper_chief|appraiser|appraiser_chief|provrecommender|recommender|approver|provtaxmapper|provtaxmapperchief|provappraiser|provappraiserchief|reviewer'))
             return
 
         def state = task.state.replaceAll('_', '') 
@@ -672,7 +676,14 @@ class FAASService
         def lguindex = em_faas.findLguIndexInfo([barangayid:faas.rp.barangay.objid])
 		def seqcount = util.toInteger2( var.td_autonumber_sequence_count, 5 )
 		
-        def values = [P:lguindex.provcityindex, C:lguindex.provcityindex, M:lguindex.munidistrictindex, D:lguindex.munidistrictindex, B:lguindex.barangayindex]
+        def values = [
+        	P: lguindex.provcityindex, 
+        	C: lguindex.provcityindex, 
+        	M: lguindex.munidistrictindex, 
+        	D: lguindex.munidistrictindex, 
+        	B: lguindex.barangayindex,
+        	R: 'F',
+    	]
         def tdno   = var.td_format 
         if (!tdno) tdno = 'YY-M-B'
 
@@ -1182,7 +1193,7 @@ class FAASService
 	public void checkLandTxnReference(rp){
 		if (rp._checklandreference == null || rp._checklandreference == true){
 			def land = em_faas.findLandFaasUnderTransaction(rp)
-			if (land)
+			if (land && land.state == 'CURRENT')
 				throw new Exception('Land FAAS is currently under processing and referenced by FAAS No. ' + (land.tdno ? land.tdno : land.utdno) + '.')
 		}
 	}
@@ -1295,13 +1306,6 @@ class FAASService
     	info.taskstate = null
     	info.assignee = null
     	em_faas_list.find([objid: entity.objid]).update(info)
-    }
-
-
-    void assignTrackingNo(faas) {
-    	if (!util.isTrue(faas.datacapture)) {
-    		trackingSvc.assignTrackingNo(faas, 'faas', '')
-    	}
     }
 }
 

@@ -111,6 +111,7 @@ class RPTLedgerService
         ledger.subledger = em_rptledger_subledger.find([objid:ledger.objid]).first()
         ledger.subacctno = ledger.subledger?.subacctno
         ledger.parent = ledger.subledger?.parent
+        buildMessageList(ledger)
         return ledger 
     }        
 
@@ -384,7 +385,7 @@ class RPTLedgerService
     }    
 
     @ProxyMethod
-    public void postPayment( payment ) {
+    public def postPayment( payment ) {
         payment.dtposted = dtSvc.serverDate 
         payment.postedby = env.NAME
         payment.postedbytitle = env.JOBTITLE
@@ -394,6 +395,7 @@ class RPTLedgerService
         postPaymentItems(payment)
         updatePaidLedgerItems(payment)
         em_rptledger.find([objid:payment.refid]).update([lastyearpaid:payment.toyear, lastqtrpaid:payment.toqtr])
+        return payment
     }
 
     @ProxyMethod
@@ -421,6 +423,7 @@ class RPTLedgerService
     public def createSubLedger( subledger ) {
         create(subledger);
         em_rptledger_subledger.create(subledger)
+        return subledger
     }
 
     @ProxyMethod
@@ -437,6 +440,7 @@ class RPTLedgerService
         em_rptledger_faas.find([rptledgerid:subledger.objid]).delete()
         em_rptledger.update(subledger)
         em_rptledger_subledger.update(subledger)
+        return subledger
     }  
 
     @ProxyMethod
@@ -492,10 +496,6 @@ class RPTLedgerService
         }
 
         difference.rptledgerfaas = rptledgerfaas
-
-        if (difference.year < rptledgerfaas.fromyear) {
-            throw new Exception('Difference year must be greater than or equal to ' + rptledgerfaas.fromyear + '.')
-        }
 
         if (difference.av <= 0){
             throw new Exception('Assessed value difference must be greater than zero.')
@@ -656,6 +656,22 @@ class RPTLedgerService
             else{
                 em_rptledger_item.create(it)
             }
+        }
+        updateLastYearPaidItem(ledger)
+    }
+
+    void updateLastYearPaidItem(ledger) {
+        if (ledger.lastqtrpaid == 4) {
+            return
+        }
+
+        def items = em_rptledger_item.select('objid,amount,amtpaid')
+                    .find([parentid: ledger.objid, year: ledger.lastyearpaid, amtpaid: 0])
+                    .list()
+        items.each{
+            def qtrlyamt = numSvc.round(it.amount / 4);
+            def amtpaid = numSvc.round(qtrlyamt * ledger.lastqtrpaid)
+            em_rptledger_item.find([objid: it.objid]).update([amtpaid: amtpaid])
         }
     }
 
@@ -1139,6 +1155,18 @@ class RPTLedgerService
     def checkHasPayment(ledger) {
         def pmt = em_rptpayment.find([refid: ledger.objid]).first()
         return pmt != null 
+    }
+
+    @ProxyMethod
+    public void buildMessageList(ledger) {
+        def subledger = em_rptledger_subledger.find([objid:ledger.objid]).first()
+        if (subledger) {
+            def parent = em_rptledger.select('tdno').find([objid: subledger.parent.objid]).first()
+            ledger._messagelist = []
+            if (ledger.beneficiary && ledger.beneficiary.objid ) {
+                ledger._messagelist << 'Subledger of TD No. ' + parent.tdno + '.'
+            }
+        }
     }
 
 }

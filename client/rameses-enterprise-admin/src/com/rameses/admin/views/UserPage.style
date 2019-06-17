@@ -1,0 +1,9 @@
+"entity.*" [initiator == 'edit'] {
+    enabled: true; 
+}
+"entity.*" [initiator != 'edit'] {
+    enabled: false; 
+} 
+"entity.username" [1==1] {
+    enabled: false; 
+} 

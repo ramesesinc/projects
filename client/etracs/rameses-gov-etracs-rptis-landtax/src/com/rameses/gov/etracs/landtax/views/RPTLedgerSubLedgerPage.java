@@ -36,6 +36,8 @@ public class RPTLedgerSubLedgerPage extends javax.swing.JPanel {
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
 
+        xDataTable1.setHandler("listHandler");
+        xDataTable1.setName("selectedItem"); // NOI18N
         xDataTable1.setAutoResize(false);
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
@@ -69,7 +71,7 @@ public class RPTLedgerSubLedgerPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "rptledger.taxpayer.name"}
+                new Object[]{"name", "rptledger.beneficiary.name"}
                 , new Object[]{"caption", "Beneficial Owner"}
                 , new Object[]{"width", 250}
                 , new Object[]{"minWidth", 0}
@@ -144,8 +146,6 @@ public class RPTLedgerSubLedgerPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             })
         });
-        xDataTable1.setHandler("listHandler");
-        xDataTable1.setName("selectedItem"); // NOI18N
 
         xButton1.setMnemonic('a');
         xButton1.setName("addSubLedger"); // NOI18N

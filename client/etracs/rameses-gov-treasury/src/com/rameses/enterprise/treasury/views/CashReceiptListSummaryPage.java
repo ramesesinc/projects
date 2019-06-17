@@ -31,15 +31,22 @@ public class CashReceiptListSummaryPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        xLabel1 = new com.rameses.rcp.control.XLabel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         jPanel1 = new javax.swing.JPanel();
+        xButton1 = new com.rameses.rcp.control.XButton();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
-        xButton1 = new com.rameses.rcp.control.XButton();
-        jPanel2 = new javax.swing.JPanel();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
 
+        setPreferredSize(new java.awt.Dimension(400, 300));
         setLayout(new java.awt.BorderLayout());
+
+        xLabel1.setExpression("#{title}");
+        xLabel1.setBackground(new java.awt.Color(255, 255, 255));
+        xLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        xLabel1.setFontStyle("font-size:16; font-weight: bold;");
+        xLabel1.setOpaque(true);
+        add(xLabel1, java.awt.BorderLayout.NORTH);
 
         xDataTable1.setHandler("listHandler");
         xDataTable1.setName("selectedItem"); // NOI18N
@@ -77,7 +84,17 @@ public class CashReceiptListSummaryPage extends javax.swing.JPanel {
         });
         add(xDataTable1, java.awt.BorderLayout.CENTER);
 
-        jPanel1.setPreferredSize(new java.awt.Dimension(0, 40));
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 10, 5));
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        xButton1.setMnemonic('v');
+        xButton1.setName("viewReceipts"); // NOI18N
+        xButton1.setText("View Receipts");
+        jPanel1.add(xButton1, java.awt.BorderLayout.WEST);
+
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel1.setPreferredSize(new java.awt.Dimension(200, 20));
 
         xDecimalField1.setCaption("Total");
         xDecimalField1.setDisableWhen("#{ true }");
@@ -85,61 +102,14 @@ public class CashReceiptListSummaryPage extends javax.swing.JPanel {
         xDecimalField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xDecimalField1);
 
-        xButton1.setName("viewReceipts"); // NOI18N
-        xButton1.setText("View Receipts");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        jPanel1.add(xFormPanel1, java.awt.BorderLayout.EAST);
 
         add(jPanel1, java.awt.BorderLayout.PAGE_END);
-
-        jPanel2.setPreferredSize(new java.awt.Dimension(400, 50));
-
-        xLabel1.setExpression("#{ title }");
-        xLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
-        );
-
-        add(jPanel2, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;

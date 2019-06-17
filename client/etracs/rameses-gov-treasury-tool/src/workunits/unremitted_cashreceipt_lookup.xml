@@ -1,0 +1,21 @@
+<workunit extends="wtemplates/LookupController.xml">
+    
+    <invokers>
+        <invoker type="unremitted_cashreceipt:lookup" caption="Cash Receipt Lookup" width="1024"/>
+    </invokers>
+   
+    <code>
+    <![CDATA[
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+
+class CashReceiptLookupController extends BasicLookupController {
+    String serviceName = "UnremittedCashReceiptQueryService";
+    String entityName = "unremitted_cashreceipt";
+    String title = "Cash Receipt Lookup";
+}      
+    ]]>
+    </code>
+</workunit>

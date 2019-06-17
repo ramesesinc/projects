@@ -1,7 +1,8 @@
 <workunit>
     <invokers>
         <invoker type="userinfo:option" caption="General"/>
-        <invoker type="formActions" caption="Edit" action="edit"/>
+        
+        <invoker type="formActions" caption="Edit" action="edit" mnemonic="e" />
     </invokers>
    
     <code>

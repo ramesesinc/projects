@@ -8,8 +8,8 @@
         <invoker type="cancelledfaas:open" 
             action="open" caption="Cancelled FAAS (Manual)" target="window"  />
             
-        <invoker folderid="/menucateogry/rpt/manual" 
-            action="init"  caption="Manually Cancel FAAS" index="5" 
+        <invoker folderid="/menucategory/rpt/manual" 
+            action="init"  caption="Cancel FAAS" index="5" 
             role="RECORD,APPRAISER" permission="cancelfaas.create"/>
    </invokers>
    <code>       

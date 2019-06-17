@@ -1,6 +1,6 @@
 <schema adapter="main">
 	<element name="cancelledfaas" tablename="cancelledfaas">
-		<field name="objid" primary="true"/>
+		<field name="objid" primary="true" prefix="CTD" />
 		<field name="state" required="true"/>
 		<field name="txnno" />
 		<field name="txndate" required="true" />

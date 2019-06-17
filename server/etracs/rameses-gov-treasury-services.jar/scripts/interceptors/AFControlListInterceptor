@@ -9,11 +9,11 @@ class AFControlListInterceptor {
 	public void getNodes( evt ) { 
 		def x = evt.args[0];
 		def result = evt.result;
-		if( x._tag == "AFO" ) {
+		if( x._tag.toString().matches("AFO|SHARED")) {
 			result << [  title: 'Open', state:'OPEN' ];
 			result << [  title: 'Issued', state:'ISSUED' ];
 			result << [  title: 'Sold', state:'SOLD' ];
-			result << [  title: 'Consumed', state:'CLOSED' ];
+			result << [  title: 'Consumed', state:'CONSUMED' ];
 			result << [  title: 'Cancelled', state:'CANCELLED' ];
 			result << [  title: 'Processing', state:'PROCESSING' ];
 			result << [  title: 'On Hold', state:'HOLD' ];
@@ -48,7 +48,7 @@ class AFControlListInterceptor {
 			str.append( " state='ISSUED' AND currentseries <= endseries " );
 		}
 		else if( o.node.state == 'CONSUMED' ) {
-			str.append(" currentseries > endseries ");
+			str.append(" state='ISSUED' AND currentseries > endseries ");
 		}
 		else if ( o.node.state ) { 
 			str.append(" state = :state ");

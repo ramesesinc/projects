@@ -1,23 +1,11 @@
-<!--
-CREATE VIEW vw_income_ledger AS
-SELECT MONTH(jev.jevdate) AS month, YEAR(jev.jevdate) AS year, jev.fundid, il.itemacctid, cr AS amount
-FROM income_ledger il
-INNER JOIN jev ON jev.objid = il.jevid
-UNION 
-SELECT MONTH(jev.jevdate) AS month, YEAR(jev.jevdate) AS year, jev.fundid, pl.refitemacctid, (pl.cr - pl.dr) AS amount
-FROM payable_ledger pl
-INNER JOIN jev ON jev.objid = pl.jevid
--->
 <schema>
-	<element tablename="income_ledger">
-		<field name="objid" primary="true" prefix="INCSUMM"/>
+	<element tablename="vw_income_ledger">
+		<field name="objid" primary="true"/>
 		<field name="jevid" required="true" />
 		<field name="itemacctid" required="true" />
-		<field name="dr" required="true" />
-		<field name="cr" required="true" />
-
-		<complex name="jev" ref="jev" jointype="many-to-one" includefields="jevno,jevdate,fund.*"  required="false">
-			<key field="jevid" target="objid"/>
-		</complex>	
+		<field name="fundid" required="true" />
+		<field name="amount" required="true" />
+		<field name="year" required="true" />
+		<field name="month" required="true" />
 	</element>
 </schema>

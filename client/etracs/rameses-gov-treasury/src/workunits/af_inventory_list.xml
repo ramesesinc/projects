@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" 
-        allowCreate="false" allowUpdate="false" allowDelete="false"
+        allowCreate="false" allowUpdate="false" allowDelete="false" allowOpen="false" 
         schemaName="vw_af_inventory_summary">
    <invokers>
          <invoker folderid="/menucategory/treasury/af" 

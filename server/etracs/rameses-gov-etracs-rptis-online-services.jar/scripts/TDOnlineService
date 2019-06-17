@@ -15,47 +15,85 @@ class TDOnlineService {
 	@DataContext('faas')
 	def em_faas
 
+	@DataContext('faas_list')
+	def em_faaslist
+
+	@DataContext('realproperty')
+	def em_realproperty
+
+	@DataContext('rptledger')
+	def em_rptledger
+
 	@DataContext('rptpayment')
 	def em_rptpayment
-	
 
 	@ProxyMethod
 	public def verifyTaxDec(params) {
 		params.tdno = params.refno 
-		def bill = billSvc.generateBillByTdNo(params)
-        def rptledger = getLedger(bill)
-        def lastpayment = getLastPayment(rptledger)
+		def faas = em_faaslist.find([tdno: params.tdno]).first()
+		if (!faas) throw new Exception('TD No. does not exist.')
+
+		def rp = em_realproperty.find([objid: faas.realpropertyid]).first()
+		def boundary = [
+			north : rp?.north,
+			east : rp?.east,
+			south : rp?.south,
+			west : rp?.west,
+		]
+
+		def rptledger = getLedger(params)
+		def bill = getBill(rptledger)
+		def lastpayment = getLastPayment(rptledger)
 
         return [
-            tdno: rptledger.tdno,
-            pin: rptledger.fullpin,
-            titleno: rptledger.titleno,
-            cadastrallotno: rptledger.cadastrallotno,
-            classcode: rptledger.classcode,
-            owner: rptledger.taxpayer,
-            administrator: rptledger.administrator,
-            areaha: rptledger.totalareaha,
-            areasqm: rptledger.totalareasqm,
-            totalmv: rptledger.totalmv,
-            totalav: rptledger.totalav,
-            bill: [
-                lastyearpaid: rptledger.lastyearpaid, 
-                lastqtrpaid: rptledger.lastqtrpaid,
-                amtdue: bill.totals.total,
-                period: rptledger.period,
-            ],
+            tdno: faas.tdno,
+            pin: faas.displaypin,
+            titleno: faas.titleno,
+            cadastrallotno: faas.cadastrallotno,
+            blockno: faas.blockno,
+            surveyno: faas.surveyno,
+            classcode: faas.classcode,
+            owner: faas.owner,
+            administrator: faas.administrator,
+            barangay: faas.barangay,
+            areaha: faas.totalareaha,
+            areasqm: faas.totalareasqm,
+            totalmv: faas.totalmv,
+            totalav: faas.totalav,
+            bill: bill,
             lastpayment: lastpayment,
+            boundary: boundary,
         ]
 	}
 
-	def getLedger(bill) {
-		def rptledger = bill.ledgers.first()
-		def faas = em_faas.select('titleno').find([objid: rptledger.faasid]).first()
-		if (faas) {
-			rptledger.putAll(faas)
+	def getLedger(params) {
+		def rptledger = em_rptledger
+						.select('objid,tdno,lastyearpaid,lastqtrpaid')
+						.find([tdno: params.tdno])
+						.first()
+		if (!rptledger) {
+			rptledger = [tdno: params.tdno]
 		}
-		rptledger.period = buildPeriodCovered(rptledger) 
-		return rptledger 
+		return rptledger
+
+	}
+
+	def getBill(rptledger) {
+		def bill = [
+			lastyearpaid: rptledger.lastyearpaid, 
+	        lastqtrpaid: rptledger.lastqtrpaid,
+	        period: '',
+			amtdue: 0.0,
+		]
+
+		try {
+			def b = billSvc.generateBillByTdNo(rptledger)
+			bill.amtdue = b.totals.total 
+			bill.period = buildPeriodCovered(b.ledgers[0])
+		} catch(e) {
+			println '[ERROR] ' + e.message
+		}
+		return bill
 	}
 
 	def buildPeriodCovered(rptledger) {

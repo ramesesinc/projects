@@ -4,7 +4,7 @@ import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
-import com.rameses.seti2.models.*;
+import com.rameses.seti2.models.CrudFormModel;
 
 class AFRequestModel extends CrudFormModel {
 
@@ -12,9 +12,14 @@ class AFRequestModel extends CrudFormModel {
     def invoker;
     
     def selectedItem;
-    
+
     String printFormName = "afris";
     
+    public void beforeSave( mode ) {
+        if ( !entity.items ) 
+            throw new Exception('Please specify at least one item'); 
+    } 
+
     void afterCreate() {
         entity.state = 'DRAFT';
         entity.reqtype = invoker.properties.reqtype;
@@ -29,17 +34,37 @@ class AFRequestModel extends CrudFormModel {
             ];
         }
     }
-    
-    public boolean isEditAllowed() { 
-        if( entity.state == 'CLOSED') return false;
-        return super.isEditAllowed();
-    }
-    
+        
     public void afterColumnUpdate(String name, def o, String colName ) {
         if( colName == "item" )  {
             o.item.objid = o.item.itemid
             o.unit = o.item.unit;
         }        
+    }
+
+    public void approve() {
+        boolean b = MsgBox.confirm('You about to approve this transaction. Proceed?'); 
+        if ( !b ) return; 
+
+        def m = [_schemaname: 'afrequest', _action:'approve'];  
+        m.findBy = [ objid: entity.objid ]; 
+        m.objid = entity.objid;
+        m.state = 'OPEN'; // a mark ready for issuance 
+        persistenceService.update( m ); 
+        entity.state = m.state;  
+    } 
+
+    public void disapprove() {
+        boolean b = MsgBox.confirm('You about to disapprove this transaction. Proceed?'); 
+        if ( !b ) return; 
+
+        def m = [_schemaname: 'afrequest', _action:'disapprove'];  
+        m.findBy = [ objid: entity.objid ]; 
+        m.objid = entity.objid; 
+        m.state = 'CANCELLED'; // a mark for cancelled trxns
+        m.remarks = 'Disapproved RIS'; 
+        persistenceService.update( m ); 
+        entity.state = m.state;  
     }
     
     def getPrintFormData() { 

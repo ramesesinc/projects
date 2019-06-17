@@ -296,6 +296,13 @@ class RPTReceiptService
 	}
 
 	@ProxyMethod
+	public def buildShares(bill) {
+		def rptledger = bill.rptledger
+		rptledger.shares = billSvc.getShares(bill)
+		return rptledger 
+	}
+
+	@ProxyMethod
 	public void formatReceiptForPrinting(receipt){
 		receipt._items = em.getItemsForPrinting(receipt)
 		util.buildPeriodCovered(receipt._items)

@@ -9,7 +9,7 @@ class RPTCertificationInterceptor
 	@After(pattern="RPTCertificationService.createCertification.*") 
 	public void logCreate( evt ) {
 		def cert = evt.result 
-		logSvc.log( 'create', 'RPTCertification:' + cert.opener, cert.objid)
+		logSvc.log( 'issue', cert.opener, cert.objid)
 	}
 }
 

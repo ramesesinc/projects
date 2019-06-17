@@ -41,7 +41,7 @@ public class FAASPage extends javax.swing.JPanel {
         xFormPanel12 = new com.rameses.rcp.control.XFormPanel();
         xTextField15 = new com.rameses.rcp.control.XTextField();
         xLabel3 = new com.rameses.rcp.control.XLabel();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
         xTextField12 = new com.rameses.rcp.control.XTextField();
         xTextField13 = new com.rameses.rcp.control.XTextField();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
@@ -80,9 +80,9 @@ public class FAASPage extends javax.swing.JPanel {
         xFormPanel7.setStretchWidth(100);
 
         xTextField3.setCaption("ARP/TD No.");
+        xTextField3.setName("entity.tdno"); // NOI18N
         xTextField3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         xTextField3.setIndex(-100);
-        xTextField3.setName("entity.tdno"); // NOI18N
         xTextField3.setPreferredSize(new java.awt.Dimension(300, 20));
         xFormPanel7.add(xTextField3);
 
@@ -97,8 +97,8 @@ public class FAASPage extends javax.swing.JPanel {
         xFormPanel8.add(xTextField8);
 
         xDateField2.setCaption("Title Date");
-        xDateField2.setCaptionWidth(60);
         xDateField2.setName("entity.titledate"); // NOI18N
+        xDateField2.setCaptionWidth(70);
         xDateField2.setPreferredSize(new java.awt.Dimension(80, 20));
         xFormPanel8.add(xDateField2);
 
@@ -127,24 +127,23 @@ public class FAASPage extends javax.swing.JPanel {
         xTextField15.setStretchWidth(100);
         xFormPanel12.add(xTextField15);
 
-        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel3.setCaption("Txn");
+        xLabel3.setExpression("#{entity.txntype.objid}");
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel3.setCaptionWidth(35);
         xLabel3.setCellPadding(new java.awt.Insets(0, 2, 0, 0));
-        xLabel3.setExpression("#{entity.txntype.objid}");
         xLabel3.setFontStyle("font-weight:bold;font-size:12;");
         xLabel3.setPreferredSize(new java.awt.Dimension(54, 19));
         xFormPanel12.add(xLabel3);
 
-        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel2.setCellPadding(new java.awt.Insets(0, 2, 0, 0));
-        xLabel2.setExpression("#{'ANNOTATED'}");
-        xLabel2.setFontStyle("font-weight:bold;font-size:12;");
-        xLabel2.setForeground(new java.awt.Color(204, 0, 0));
-        xLabel2.setName("entity.annotated"); // NOI18N
-        xLabel2.setPreferredSize(new java.awt.Dimension(100, 20));
-        xLabel2.setShowCaption(false);
-        xFormPanel12.add(xLabel2);
+        xLabel4.setExpression("#{entity.trackingno}");
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel4.setCaptionWidth(35);
+        xLabel4.setCellPadding(new java.awt.Insets(0, 2, 0, 0));
+        xLabel4.setFontStyle("font-weight:bold;font-size:12;");
+        xLabel4.setPreferredSize(new java.awt.Dimension(100, 19));
+        xLabel4.setShowCaption(false);
+        xFormPanel12.add(xLabel4);
 
         xFormPanel11.add(xFormPanel12);
 
@@ -201,8 +200,8 @@ public class FAASPage extends javax.swing.JPanel {
         xFormPanel6.setShowCaption(false);
 
         xTextField10.setCaption("Declared Owner");
-        xTextField10.setCellPadding(new java.awt.Insets(0, 0, 0, 3));
         xTextField10.setName("entity.owner.name"); // NOI18N
+        xTextField10.setCellPadding(new java.awt.Insets(0, 0, 0, 3));
         xTextField10.setStretchWidth(100);
         xFormPanel6.add(xTextField10);
 
@@ -223,8 +222,8 @@ public class FAASPage extends javax.swing.JPanel {
         xFormPanel15.setShowCaption(false);
 
         xTextField26.setCaption("Administrator");
-        xTextField26.setCellPadding(new java.awt.Insets(0, 0, 0, 3));
         xTextField26.setName("entity.administrator.name"); // NOI18N
+        xTextField26.setCellPadding(new java.awt.Insets(0, 0, 0, 3));
         xTextField26.setStretchWidth(100);
         xFormPanel15.add(xTextField26);
 
@@ -250,7 +249,7 @@ public class FAASPage extends javax.swing.JPanel {
         xSubFormPanel1.setLayout(xSubFormPanel1Layout);
         xSubFormPanel1Layout.setHorizontalGroup(
             xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 784, Short.MAX_VALUE)
+            .addGap(0, 852, Short.MAX_VALUE)
         );
         xSubFormPanel1Layout.setVerticalGroup(
             xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -378,8 +377,8 @@ public class FAASPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XIntegerField xIntegerField3;
     private com.rameses.rcp.control.XIntegerField xIntegerField4;
     private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XSubFormPanel xSubFormPanel1;
     private com.rameses.rcp.control.XTextArea xTextArea2;

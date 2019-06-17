@@ -9,7 +9,16 @@
         <invoker type="faas:modifypin"
             action="create" 
             caption="Modify PIN" target="popup" index="500"
-            role="RECOMMENDER,APPROVER,APPRAISER,ENCODER" permission="util.modifypin" />
+            role="TAXMAPPER,ENCODER" permission="util.modifypin" />
+
+        <invoker type="faas:formActions" 
+            action="create"
+            caption="Modify PIN" 
+            target="popup"
+            index="1000" 
+            role="TAXMAPPER"
+            icon="no-icon"
+            visibleWhen="#{entity.state=='INTERIM' &amp;&amp; entity.taskstate == 'taxmapper' &amp;&amp; entity.rpu.rputype == 'land'}" />            
         
     </invokers>
     

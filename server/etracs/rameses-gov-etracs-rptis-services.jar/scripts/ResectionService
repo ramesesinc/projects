@@ -214,8 +214,8 @@ class ResectionService
     	if (item.faas.rputype == 'land') {
     		faas.rp.objid = 'RP' + new java.rmi.server.UID()
     		faas.rp.pin = item.newfaas.fullpin 
-    		faas.rp.section = item.newfaas.section.toString()
-    		faas.rp.parel = item.newfaas.parel.toString()
+    		faas.rp.section = item.newfaas.ssection
+    		faas.rp.parcel = item.newfaas.sparcel
     	} else {
     		faas.rp = rpSvc.open([objid:item.newfaas.rpid])
     	}
@@ -252,7 +252,7 @@ class ResectionService
     @ProxyMethod
     public def assignNewTdNos(entity){
     	entity.items.each{
-    		if (it.newfaas.objid) {
+    		if (it.newfaas.objid && !it.newfaas.tdno) {
 				assignFaasNewTdNo(it)
     		}
     	}
@@ -309,7 +309,7 @@ class ResectionService
 
 
     void assignFaasNewTdNo(item){
-    	def faas = faasSvc.openFaas(item.newfaas)
+    	def faas = em_resection.findFaasInfo(item.newfaas)
     	if (!faas) {
             throw new Exception('FAAS ' + item.newfaas.objid + ' does not exist or has been deleted.')
         }

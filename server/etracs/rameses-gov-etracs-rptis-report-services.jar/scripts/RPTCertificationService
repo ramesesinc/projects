@@ -46,7 +46,7 @@ class RPTCertificationService
 		if (!cert.objid)
 			cert.objid = 'C' + new java.rmi.server.UID()
 		if (!cert.txnno){
-			cert.txnno = seqSvc.getNextFormattedSeries('RPTCERTIFICATION')
+			cert.txnno = env.ORGCODE.replaceAll('-', '') + seqSvc.getNextFormattedSeries('RPTCERTIFICATION')
 		}
 		cert.txndate = dtSvc.serverDate
 		cert.createdbyid = env.USERID
@@ -93,11 +93,16 @@ class RPTCertificationService
 
 	@ProxyMethod
 	public void makeHtmlSafe(cert){
-		cert.owner?.name = cert.owner?.name?.replaceAll('&', '&amp;')
-		cert.taxpayer?.name = cert.taxpayer?.name?.replaceAll('&', '&amp;')
-		cert.requestedby = cert.requestedby?.replaceAll('&', '&amp;')
-		cert.purpose = cert.purpose?.replaceAll('&', '&amp;')
-		cert.addlinfo = cert.addlinfo?.replaceAll('&', '&amp;')
+		if (cert.owner?.name) {
+			cert.owner.name = htmlSafe(cert.owner.name)
+		}
+		if (cert.taxpayer?.name) {
+			cert.taxpayer.name = htmlSafe(cert.taxpayer.name)
+		}
+		
+		cert.requestedby = htmlSafe(cert.requestedby)
+		cert.purpose = htmlSafe(cert.purpose)
+		cert.addlinfo = htmlSafe(cert.addlinfo)
 	}
 
 	@ProxyMethod
@@ -174,5 +179,22 @@ class RPTCertificationService
 			it.footno = ++i + '';
 		}
 			
+	}
+
+	def htmlMapping = [
+		'&' : '&amp;',
+		'<' : '&lt;',
+		'>' : '&gt;',
+	]
+
+	def htmlSafe(val) {
+		if (!val) return val 
+
+		htmlMapping.each{k, v ->
+			if (val.indexOf(v) < 0) {
+				val = val.replaceAll(k, v)
+			}
+		}
+		return val
 	}
 }

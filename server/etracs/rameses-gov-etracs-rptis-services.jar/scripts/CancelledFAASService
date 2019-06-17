@@ -4,7 +4,7 @@ import com.rameses.services.extended.*;
 
 class CancelledFAASService
 {
-	@ActiveDB('cancelledfaas')
+	@DataContext('cancelledfaas')
     def em
     
 	@Env
@@ -42,6 +42,12 @@ class CancelledFAASService
 
     @DataContext('cancelledfaas_signatory')
     def em_signatory
+
+    @Service('ReportParameterService')
+    def paramSvc 
+
+    @Service('SignatureService')
+    def sigSvc 
 
 
     def STATE_DRAFT 		= 'DRAFT'
@@ -82,10 +88,11 @@ class CancelledFAASService
             entity.txnno = getNextSeries(entity)
         if (!entity.txndate)
             entity.txndate = dateSvc.serverDate
-        txnRef.insertRef( entity.faas.objid, entity.objid, 'FAAS is currently referenced by Cancellation No. ' + entity.txnno + '.')
-        if (!entity.state ) 
+        if (!entity.state ) {
             entity.state = STATE_DRAFT
+        }
         em.create(entity)
+        txnRef.insertRef( entity.faas.objid, entity.objid, 'FAAS is currently referenced by Cancellation No. ' + entity.txnno + '.')
         saveSignatory(entity)
         return entity
     }
@@ -139,9 +146,9 @@ class CancelledFAASService
 
     @ProxyMethod
     public def approve( entity ) {
-        entity = open(entity)
         entity.state = STATE_APPROVED
-        update(entity) 
+        em.update(entity)
+
         cancelFaas(entity)
         postLedgerCancellation(entity)
         txnRef.delete(entity.objid)
@@ -163,7 +170,7 @@ class CancelledFAASService
     public void updateSignatoryInfo(task) {
         if (task.state.matches('assign.*') || env.action?.matches('return.*'))
             return 
-        if (!task.state.matches('taxmapper|taxmapper_chief|appraiser|appraiser_chief|provrecommender|recommender|approver|provtaxmapper|provtaxmapperchief|provappraiser|provappraiserchief'))
+        if (!task.state.matches('taxmapper|taxmapper_chief|appraiser|appraiser_chief|provrecommender|recommender|approver|provtaxmapper|provtaxmapperchief|provappraiser|provappraiserchief|reviewer'))
             return
 
         def state = task.state.replaceAll('_', '') 
@@ -189,15 +196,20 @@ class CancelledFAASService
 
     @ProxyMethod
     public void saveSignatory( signatory ) {
-        if (signatory)
-            em.save(signatory, SCHEMA_SIGNATORY)
+        if (signatory) {
+            if (!signatory.assessor) {
+                def param = paramSvc.getStandardParameter()
+                signatory.assessor = [name: param?.ASSESSORNAME, title: param?.ASSESSORTITLE]
+            }
+            em_signatory.save(signatory)
+        }
     }
 
 
     @ProxyMethod
     public def buildReportData(entity){
         entity = open(entity)
-        def signatory = em.read(entity, SCHEMA_SIGNATORY)
+        def signatory = em_signatory.read(entity)
         if (signatory){
             entity.putAll(signatory)
         }
@@ -222,11 +234,25 @@ class CancelledFAASService
             }
         }
 
-        if (!entity.approver || !entity.approver.dtsigned){
-            entity.approver = [dtsigned:entity.txndate]
-        }
+        if (isRecommenderAuthorized(entity)){
+            entity.authorized = true
+        }   
 
+        entity.signatories = [:]
+        def retval = sigSvc.decodeSignatories(em.getSignatories(entity))
+        entity.signatories = retval.signatories 
+        entity.signaturetampered = retval.tampered
+        entity.tamperedsigmsg = retval.tamperedsigmsg
         return entity 
+    }
+
+    def isRecommenderAuthorized(entity){
+        if (entity.recommender && entity.recommender.name && 
+               entity.recommender.name.equalsIgnoreCase(entity.approver?.name)){
+            entity.recommender = [name:null, dtsigned:null]
+            return true 
+        }
+        return false 
     }
 
 

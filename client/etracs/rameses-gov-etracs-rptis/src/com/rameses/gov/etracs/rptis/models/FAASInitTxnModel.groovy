@@ -19,7 +19,7 @@ class FAASInitTxnModel
     
     @Service('Var')
     def var; 
-    
+
     def entity = [:]
     def txntitle;
     def showCapture = false;
@@ -56,7 +56,7 @@ class FAASInitTxnModel
                     throw new Exception('Cannot process record. The FAAS is not yet current.')
                     
                  entity.faas = it;
-                 afterLookupFaas()
+                 afterLookupFaas();
             },
             
             enempty :{ entity.faas = null; }
@@ -77,5 +77,4 @@ class FAASInitTxnModel
         fetchList : { return attributes },
         isMultiSelect: { true },
     ] as BasicListModel;
-        
 }

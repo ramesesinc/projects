@@ -81,7 +81,7 @@ class EntityInterceptorIndividualEntity  {
 	public void loadPhoto( evt ) {
 		def params = evt.args[0];
 		def nfo = em.findPhoto( params ); 
-		if ( nfo.photo ) { 
+		if ( nfo?.photo ) { 
 			evt.result.photo = nfo.photo; 
 		} 
 	}

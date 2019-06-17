@@ -7,14 +7,14 @@
 		<field name="txnmode" caption="Txn Mode" indexed="true"/> 
 		<field name="assignee_objid"  /> 
 		<field name="assignee_name"  caption="Assignee" searchable="true" indexed="true"/> 
-		<field name="startseries" required="true" caption="Start Series" type="integer" searchable="true" indexed="true"/> 
-		<field name="currentseries" required="true" caption="Current Series" type="integer" searchable="true"/> 
-		<field name="endseries" required="true" caption="End Series" type="integer"/> 
+		<field name="startseries" required="true" caption="StartSeries" type="integer" searchable="true" indexed="true"/> 
+		<field name="currentseries" required="true" caption="CurrentSeries" type="integer" searchable="true"/> 
+		<field name="endseries" required="true" caption="EndSeries" type="integer"/> 
 		<field name="active" required="true" caption="Active" type="integer" indexed="true" datatype="checkbox" checkValue="1" uncheckValue="0" /> 
 		<field name="ukey" />
 		<field name="fund_objid"  /> 
 		<field name="fund_title"  caption="Fund Title" /> 
-		<field name="stubno" required="true" caption="Stub No" /> 
+		<field name="stubno" required="true" caption="StubNo" /> 
 		<field name="unit" caption="Unit" required="true" /> 
 		<field name="owner_objid" /> 
 		<field name="owner_name" caption="Issued To" searchable="true" indexed="true"/> 
@@ -24,15 +24,15 @@
 		<field name="currentindexno" required="true" type="integer"/>
 
 		<field name="batchref" />
-		<field name="batchno" indexed="true" caption="Batch No"/> 
+		<field name="batchno" indexed="true" caption="BatchNo"/> 
 
-		<field name="qtybalance" expr="endseries-currentseries+1" caption="Qty Balance" type="integer"/>
-		<field name="qtyissued" expr="currentseries-startseries" caption="Qty Issued" type="integer"/>
+		<field name="qtybalance" expr="endseries-currentseries+1" caption="QtyBalance" type="integer"/>
+		<field name="qtyissued" expr="currentseries-startseries" caption="QtyIssued" type="integer"/>
 
 		<field name="lockid" /> 
 		
 		<field name="respcenter_objid" /> 
-		<field name="respcenter_name" indexed="true"/> 
+		<field name="respcenter_name" indexed="true" caption="RespCenter"/> 
 		<field name="cost" /> 
 
 		<complex name="af" ref="af" jointype="many-to-one" includefields="objid,title,formtype,serieslength" required="false">

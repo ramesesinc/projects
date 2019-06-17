@@ -62,7 +62,7 @@ class AFTxnHandlerTransferReturnCancel extends AFTxnHandler {
             m.where = [ list.join(" AND "), p ];
             m.orderBy = "stubno";
             //m.debug = true;
-            return queryService.getList( m );    
+            return queryService.getList( m ); 
         }
     ] as BasicListModel;
 

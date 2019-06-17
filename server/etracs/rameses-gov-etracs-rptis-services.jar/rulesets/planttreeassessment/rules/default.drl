@@ -91,7 +91,7 @@ rule "initial-assess-value"
 
 		Map map = new HashMap();
 		map.put("planttreedetail", PTD);
-		map.put( "expr", (new ActionExpression("@ROUNDTOTEN( MV * AL / 100.0 )", bindings)) );
+		map.put( "expr", (new ActionExpression("@ROUND( MV * AL / 100.0 )", bindings)) );
 		action.execute( "calc-planttree-av", map, drools );
 end
 

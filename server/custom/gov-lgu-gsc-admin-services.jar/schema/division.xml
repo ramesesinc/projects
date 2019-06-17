@@ -1,0 +1,9 @@
+<schema>
+	<element tablename="gsc_division">
+		<field name="objid" primary="true" prefix="D" />
+		<field name="parent_objid" required="true" />
+		<field name="code" required="true" searchable="true" />
+		<field name="name" required="true" searchable="true" />
+		<field name="respcode" required="true" searchable="true" />
+	</element>
+</schema>

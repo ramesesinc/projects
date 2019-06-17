@@ -72,12 +72,13 @@ class LandTaxReportTaxClearanceService
             } else if (rct.void?.objid) {
                 throw new Exception('O.R. No. ' + entity.orno + ' has already been voided.')
             }
+            
+            def dup = em.findPaidClearance(entity)
+            if (dup) {
+                throw new Exception('O.R. No. ' + entity.orno + ' is already referenced by Clearance No. ' + dup.txnno + '.')
+            }
         }
 
-        def dup = em.findPaidClearance(entity)
-        if (dup) {
-            throw new Exception('O.R. No. ' + entity.orno + ' is already referenced by Clearance No. ' + dup.txnno + '.')
-        }
 
     }
 

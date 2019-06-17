@@ -2,10 +2,16 @@
 <workunit schemaName="aftxn">
     <invokers>
         <invoker folderid="menucategory/treasury/af"
-                 caption="New AF Transaction" formTitle="New AF Transaction" action="startCreate" role="AFO"/>
+                 formTitle="New AF Transaction" 
+                 caption="New AF Transaction" 
+                 action="startCreate" 
+                 role="AFO" index="10"/> 
         
         <invoker type="aftxn:create" 
-                 caption="New AF Transaction" formTitle="New AF Transaction" action="startCreate" role="AFO"/>
+                 formTitle="New AF Transaction" 
+                 caption="New AF Transaction" 
+                 action="startCreate" 
+                 role="AFO"/> 
         
         <invoker type="aftxn:open"
                  formTitle="#{ entity.controlno }"
@@ -13,8 +19,8 @@
                  caption="AF Transaction" 
                  action="startOpen" />
 
-        <invoker type="formActions" caption="Preview" action="preview" 
-                 visibleWhen="#{entity.state == 'POSTED'}"/>
+        <invoker type="formActions" caption="Preview" action="preview" mnemonic="v" 
+                 visibleWhen="#{entity.state=='POSTED' &amp;&amp; entity.txntype.toString().matches('ISSUE|PURCHASE_RECEIPT')}"/>
     </invokers>
     
     <code class="com.rameses.enterprise.treasury.models.AFTxnModel" />

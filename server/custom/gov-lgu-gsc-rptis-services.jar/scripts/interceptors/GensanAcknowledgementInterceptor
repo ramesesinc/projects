@@ -1,0 +1,91 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class GensanAcknowledgementInterceptor
+{
+	@Service('GensanAcknowledgementService')
+	def svc
+
+	@DataContext('faas_list')
+	def em_faaslist
+
+	@Service('DateService')
+	def dtSvc
+
+	@Service('SequenceService')
+	def seqSvc
+
+	@Service('OrgService')
+	def orgSvc 
+
+
+	@Before(pattern='PersistenceService.create', eval="#{args[0]._schemaname=='rptacknowledgement'}")
+	public void beforeCreate(evt){
+		def entity = evt.args[0]
+
+		def serverDate = dtSvc.serverDate 
+		if ( dtSvc.parse('yyyy-MM-dd', entity.releasedate) < serverDate ){
+			throw new Exception('Release Date should not be greater than current date');
+		}
+		
+		entity.state = 'DRAFT'
+		entity.txnno = svc.getNextAcknowledgementSeries()
+		entity.txndate = dtSvc.serverDate 
+	}
+
+	@Before(pattern='PersistenceService.update', eval="#{args[0]._schemaname=='rptacknowledgement' && args[0].state == 'APPROVED'}")
+	public void beforeApprove(evt){
+		def entity = evt.args[0]
+
+		entity.items.each{
+			if (!it.trackingno) {
+				it.trackingno = svc.getNextTrackingSeries()
+			}
+		}
+	}
+
+	@After(pattern='PersistenceService.read', eval="#{args[0]._schemaname=='rptacknowledgement'}")
+	public void afterRead(evt){
+		def entity = evt.result
+		entity.items.each{
+			if (it.ref) {
+				def faas = em_faaslist.select('rputype').find([objid: it.ref.objid]).first()
+				if (faas) {
+					it.ref.putAll(faas)
+				}
+			}
+		}
+	}
+
+
+	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname=='rptacknowledgement'}") 
+	public void getNodeList( evt ) {
+		def arg = evt.args[0]
+		def result = evt.result
+		result << [state: 'DRAFT', title: 'DRAFT']
+		result << [state: 'APPROVED', title: 'APPROVED']
+		result << [state: 'CLOSED', title: 'CLOSED']
+		result << [state: 'ALL', title: 'ALL']
+	}
+
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'rptacknowledgement' }")
+	public void loadList(def evt) {
+		def o = evt.args[0];
+		if( !o.node?.state || o.node?.state == 'ALL') return;
+
+		def m   = [state: o.node.state];
+		def str = " state = :state "
+
+		//add to first position of where
+		if( o.where ) {
+			o.where[0] = str + " AND " + o.where[0];	
+			o.where[1].putAll( m );
+		}
+		else {
+			o.where = [str, m];
+		}
+	}	
+
+}
+

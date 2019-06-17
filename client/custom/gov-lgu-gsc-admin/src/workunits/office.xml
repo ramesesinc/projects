@@ -1,0 +1,30 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" 
+    schemaName="office" 
+    allowEdit="#{entity.state=='DRAFT'}"
+    allowDelete="#{entity.state=='DRAFT'}"
+>
+<invokers>
+    <invoker type="office:create"
+            action="create"
+            caption="Office (New)" 
+            target="popup" 
+            role="SYSADMIN" permission="office.create" />
+    
+    <invoker type="office:open"
+            action="open"
+            caption="Office" 
+            target="popup" 
+            role="SYSADMIN" permission="office.read" />
+    
+    <invoker type="formActions" 
+            action="changeState"
+            caption="Approve"
+            state="APPROVED"
+            visibleWhen="#{entity.state == 'DRAFT'}" 
+            role="SYSADMIN" permission="office.approve" />
+</invokers>
+<code class="gov.gsc.admin.models.OfficeModel" />
+<pages>
+    <page template="gov.gsc.admin.views.OfficePage" />
+</pages>
+</workunit>

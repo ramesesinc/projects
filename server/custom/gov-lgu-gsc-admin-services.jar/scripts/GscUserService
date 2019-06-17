@@ -1,0 +1,27 @@
+import com.rameses.common.*
+import com.rameses.annotations.*
+import com.rameses.services.extended.*
+
+class GscUserService {
+	@DataContext('user_division')
+	def em 
+
+	@ProxyMethod
+	public def save(entity) {
+		if (entity.division && entity.division.objid) {
+			em.save(entity)
+		} else {
+			em.delete(entity)
+		}
+		return entity 
+	}
+
+	@ProxyMethod
+	public def open(entity) {
+		def userdiv = em.read(entity)
+		if (userdiv) {
+			entity.division = userdiv.division 
+		}
+		return entity 
+	}
+}

@@ -1,0 +1,47 @@
+import com.rameses.annotations.*; 
+
+class WaterworksReportAccountStatusService {
+	
+	@DataContext('barangay')
+	def brgy_db; 
+
+	@DataContext('waterworks_zone')
+	def zone_db; 
+
+	@ActiveDB(value='waterworks_report', em='waterworks')
+	def report_db; 
+
+	@ActiveDB(value='waterworks_report_account_status', em='waterworks')
+	def mainreport_db; 
+
+	@Service('DateService')
+	def dateSvc;
+
+	@ProxyMethod 
+	public def initReport( param ) {
+		def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
+		def serverdate = YMD.format( dateSvc.getBasicServerDate());
+
+		def res = [:]; 
+		res.serverdate = serverdate; 
+		res.barangays = report_db.getBarangays(); 
+		return res; 
+	}
+
+	@ProxyMethod 
+	public def getReport( param ) {
+		def serverdate = dateSvc.getBasicServerDate();
+
+		def filters = []; 
+		param.barangayid = param.barangay?.objid; 		
+		if ( !param.barangayid ) param.barangayid = '%';  
+
+		filters << ''' barangay_objid LIKE $P{barangayid} '''; 
+		param.filters = ' AND '+ filters.join(' AND '); 
+		
+		def res = [:]; 
+		res.header = [serverdate: serverdate]; 
+		res.items = mainreport_db.getReport( param ); 
+		return res; 
+	} 
+}

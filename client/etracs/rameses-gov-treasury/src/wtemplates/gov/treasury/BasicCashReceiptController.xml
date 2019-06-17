@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
         <invoker type="formActions" action="doClose" caption="Back" 
-                 visibleWhen="#{!completed}" immediate="true" mnemonic="c" 
+                 visibleWhen="#{!completed}" immediate="true" mnemonic="b" 
                  icon="images/toolbars/arrow_left.png" />
         
         <invoker type="formActions" action="post" caption="Save" 

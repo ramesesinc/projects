@@ -1,0 +1,36 @@
+<workunit schemaName="cashbook_revolving_fund"
+          allowCreate="false" allowEdit="false">
+    
+    <invokers>
+        <invoker type="cashbook_revolving_fund:create" 
+                 caption="Accountable Form" action="create" 
+                 role="COLLECTOR" target="popup" 
+                 allowCreate="true" />
+         
+        <invoker type="cashbook_revolving_fund:open" 
+                 caption="Accountable Form" action="open" 
+                 target="popup" >
+            <action role="COLLECTOR" allowCreate="true" />
+            <action role="SHARED" allowCreate="false"/>
+        </invoker>
+        
+        <invoker type="formActions" 
+                 caption="Move to Cancelled" action="moveToCancelled" 
+                 role="COLLECTOR" mnemonic="m" 
+                 icon="images/toolbars/trash.png" 
+                 visibleWhen="#{allowMove == true}" />
+
+        <invoker type="formActions" 
+                 caption="Revert" action="revert" 
+                 role="COLLECTOR" mnemonic="r" 
+                 icon="images/toolbars/undo.png" 
+                 visibleWhen="#{allowRevert == true}" />
+    </invokers>
+   
+    <code class="com.rameses.gov.treasury.report.models.CashbookRevolvingFundModel" />
+   
+    <pages>
+        <page template="com.rameses.gov.treasury.report.views.CashbookRevolvingFundPage" />
+    </pages>
+   
+</workunit>

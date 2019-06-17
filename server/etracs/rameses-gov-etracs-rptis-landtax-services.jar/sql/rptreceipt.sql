@@ -66,7 +66,7 @@ select
 	sum(case when rpi.revtype = 'sh' then rpi.discount else 0 end) as shdisc,
 	sum(case when rpi.revtype = 'sh' then rpi.interest - rpi.discount else 0 end) as shdp,
 	sum(rpi.amount + rpi.interest - rpi.discount) as amount,
-	sum(rpi.partialled) as partialled 
+	max(rpi.partialled) as partialled 
 FROM rptpayment rp 
 	INNER JOIN rptpayment_item rpi ON rp.objid = rpi.parentid
 	INNER JOIN rptledger rl ON rp.refid = rl.objid 

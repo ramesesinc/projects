@@ -51,3 +51,13 @@ from resection_item ri
 	inner join faas f on ri.newfaas_objid = f.objid 
 where ri.parent_objid = $P{objid}
 and f.state = 'PENDING'
+
+
+[findFaasInfo]
+select 
+  f.*,
+  rp.barangayid as rp_barangay_objid,
+  rp.ry as rpu_ry 
+from faas f 
+inner join realproperty rp on f.realpropertyid = rp.objid 
+where f.objid = $P{objid}

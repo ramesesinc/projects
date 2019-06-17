@@ -111,9 +111,27 @@ public class DBImageUtil {
         return System.getProperty("user.dir") + File.separatorChar + "cache";
     }
 
+    String getCacheDirectory(String parentFolder) {
+        String path = System.getProperty("user.dir") + File.separatorChar + "cache";
+        if (parentFolder != null) {
+            path += File.separatorChar + parentFolder;
+        }
+        return path;
+    }
+
     String getFullFileName(Object objid) {
+        // String safeid = makeSafeId(objid);
+        // return getCacheDirectory() + File.separatorChar + safeid;
+        return getFullFileName(null, objid);
+    }
+
+    String getFullFileName(String parentFolder, Object objid) {
         String safeid = makeSafeId(objid);
-        return getCacheDirectory() + File.separatorChar + safeid;
+        String path = getCacheDirectory() + File.separatorChar;
+        if (parentFolder != null) {
+            path += parentFolder + File.separatorChar;
+        }
+        return path + safeid;
     }
 
     String makeSafeId(Object objid) {
@@ -140,8 +158,22 @@ public class DBImageUtil {
     }
 
     public File getImage2(Object objid) throws Exception {
-        clearCacheDir(getCacheDirectory());
-        String filename = getFullFileName(objid);
+        return getImage2(null, objid);
+        // clearCacheDir(getCacheDirectory());
+        // String filename = getFullFileName(objid);
+
+        // File file = new File(filename);
+        // if (!file.exists()) {
+        //     System.out.println("Saving " + filename + " ");
+        //     saveToFile(objid, filename);
+        //     file = new File(filename);
+        // }
+        // return file;
+    }
+
+    public File getImage2(String parentFolder, Object objid) throws Exception {
+        clearCacheDir(getCacheDirectory(parentFolder));
+        String filename = getFullFileName(parentFolder, objid);
 
         File file = new File(filename);
         if (!file.exists()) {

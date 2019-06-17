@@ -232,15 +232,16 @@ class AFTxnService  {
 		def p = [:];
         p.afid = afi.afid;
         p.unit = afi.unit;
-		sbuff.append( "state = 'OPEN' AND afid =:afid AND unit =:unit" );
-		if( alloc ) {
+		sbuff.append(" state = 'OPEN' AND afid = :afid AND unit = :unit ");
+		sbuff.append(" AND currentdetail.txntype NOT IN ('RETURN') "); 
+		if ( alloc ) {
 			sbuff.append(  " AND allocid =:allocid " );
 			p.allocid = alloc.objid;
-		}
+		} 
 
 		def list = afControl.select('objid,startseries,currentseries,endseries,prevdetailid').where( sbuff.toString(), p ).orderBy('dtfiled,startseries,stubno').limit( qty ).list();
 		if ( !list ) throw new Exception("No available stock for " + p.afid + " " + p.unit);	
-		if( list.size() != qty )
+		if ( list.size() != qty )
 			throw new Exception("Not enough stock to issue");
 
 		list.each { itm-> 

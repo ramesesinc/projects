@@ -138,6 +138,7 @@ class AFTxnMainModel extends CrudPageFlowModel {
     //for printing purposes
     def preview() {
         buildCompatibility( entity ); 
+
         def path = 'com/rameses/gov/treasury/ris/report/';
         def mainreport = path + 'ris.jasper';
         def subreports = new SubReport[1]; 

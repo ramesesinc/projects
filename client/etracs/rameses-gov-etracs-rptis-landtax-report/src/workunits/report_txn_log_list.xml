@@ -1,0 +1,11 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/landtax" 
+                 action="init" 
+                 caption="Transaction Log Listing" 
+                 target="window" 
+                role="REPORT" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.report.models.TxnLogReportModel">
+    </code>
+</workunit>

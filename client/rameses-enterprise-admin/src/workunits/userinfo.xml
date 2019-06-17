@@ -2,10 +2,26 @@
     <invokers>
         <invoker type="sys_user:open" action="open" caption="User"  target="popup"/>
         
-        <invoker type="formActions" action="_exit" caption="Close"/>
-        <invoker type="formActions" caption="Edit" action="edit"/>
-        <invoker type="formActions" caption="Reset Password" action="resetPassword" 
-                 mnemonic="r" visibleWhen="#{initiator != 'create'}"/>
+        <invoker type="formActions" 
+                 caption="Close" action="_exit" mnemonic="c" 
+                 visibleWhen="#{initiator == 'open'}"/>
+        
+        <invoker type="formActions" 
+                 caption="Edit" action="edit" mnemonic="e" 
+                 visibleWhen="#{initiator == 'open'}"/> 
+        
+        <invoker type="formActions" 
+                 caption="Reset Password" action="resetPassword" 
+                 mnemonic="r" visibleWhen="#{initiator == 'open'}"/> 
+        
+        <invoker type="formActions" 
+                 caption="Cancel" action="cancelEdit" mnemonic="c" 
+                 visibleWhen="#{initiator == 'edit'}" 
+                 icon="images/toolbars/cancel-edit.png" />
+        <invoker type="formActions" 
+                 caption="Save" action="save" mnemonic="s" 
+                 visibleWhen="#{initiator == 'edit'}" 
+                 icon="images/toolbars/save.png" />
     </invokers>
     
     <code class="com.rameses.admin.models.UserModel" />

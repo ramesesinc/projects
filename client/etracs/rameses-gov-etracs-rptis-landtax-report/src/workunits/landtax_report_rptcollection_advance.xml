@@ -58,13 +58,10 @@ class RPTCollectionAdvanceReportController extends com.rameses.gov.etracs.rpt.re
         def outcome = super.initReport();         
         entity.period = periods[0]; 
         months = dtSvc.getMonths(); 
-        entity.advanceyear = entity.year + 1;
         return outcome; 
     } 
     
     void buildReportData(entity, asyncHandler){
-        if (entity.advanceyear <= entity.year) 
-            throw new Exception('Advance Year must be greater than ' + entity.year + '.');
         entity.reporttype = 'advance';
         svc.generateRPTCollectionReport(entity, asyncHandler);
     } 
@@ -74,6 +71,6 @@ class RPTCollectionAdvanceReportController extends com.rameses.gov.etracs.rpt.re
     </code>
     
     <pages>
-        <page template="com.rameses.gov.etracs.landtax.report.collection.ReportInitPage"/>
+        <page template="com.rameses.gov.etracs.landtax.report.views.ReportInitPage"/>
     </pages>     
 </workunit>

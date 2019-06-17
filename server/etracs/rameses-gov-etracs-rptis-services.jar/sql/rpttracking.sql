@@ -1,18 +1,47 @@
-[insertTracking]
-INSERT INTO rpttracking (
-  objid, filetype, trackingno, msg
-)
-VALUES(
-  $P{objid}, $P{filetype}, $P{trackingno}, $P{msg}
-)
+[getLogs]
+select *
+from (
+	select 
+		startdate, 
+		state,
+		assignee_name
+	from faas_task
+	where refid = $P{objid}
 
-[deleteTracking]
-DELETE FROM rpttracking WHERE objid = $P{objid}
+	union 
 
+	select 
+		startdate, 
+		state,
+		assignee_name
+	from subdivision_task
+	where refid = $P{objid}
 
-[updateMsg]
-UPDATE rpttracking SET msg = $P{msg} WHERE objid = $P{objid}
+	union 
 
-[findById]
-SELECT * FROM rpttracking WHERE objid = $P{objid}
+	select 
+		startdate, 
+		state,
+		assignee_name
+	from consolidation_task
+	where refid = $P{objid}
 
+	union 
+
+	select 
+		startdate, 
+		state,
+		assignee_name
+	from cancelledfaas_task
+	where refid = $P{objid}
+
+	union 
+
+	select 
+		startdate, 
+		state,
+		assignee_name
+	from resection_task
+	where refid = $P{objid}
+)x
+order by x.startdate

@@ -15,6 +15,9 @@ class RPTBillingModel
     
     @Service('RPTBillingService')
     def svc;
+
+    @Service('LogService')
+    def logSvc;
     
     @Service("ReportParameterService")
     def reportSvc;
@@ -27,11 +30,12 @@ class RPTBillingModel
     def showBack = false;
     
     
-        
+    
     void init() {
         mode = 'init';
         showBack = true;
         bill = svc.initBill();
+        bill.reportformat = reportFormats[0];
     }
     
     def back() {
@@ -49,17 +53,23 @@ class RPTBillingModel
      * REPORT SUPPORT 
      * 
     =============================================================*/
+    def reportFormats  = [
+        [code: 'STANDARD', title: 'STANDARD', reportname: 'rptbilling.jasper'],
+        [code: 'SUMMARY', title: 'SUMMARY', reportname: 'rptbilling_summary.jasper'],
+        
+    ]
     
     def reportpath = 'com/rameses/gov/etracs/landtax/reports/'
             
     def report = [
-        getReportName : { return reportpath + 'rptbilling.jasper' },
+        getReportName : { return reportpath + bill.reportformat.reportname },
         getReportData : { return bill },
         getParameters : {
             def params = reportSvc.getStandardParameter()
             params.RPUCOUNT = bill.ledgers.size() 
             return params 
         },
+        afterPrint: { logPrint() }
     ] as ReportModel
     
     
@@ -81,12 +91,16 @@ class RPTBillingModel
     def print(){
         buildBill();
         ReportUtil.print( report.report, true );
+        logPrint();
         return '_close';
     }
         
     void buildBill(){
         bill.totals = [:];
         bill.putAll(svc.generateBill(bill));
+        if (!bill.reportformat) {
+            bill.reportformat = reportFormats[0];
+        }
         report.viewReport();
     }     
     
@@ -110,6 +124,7 @@ class RPTBillingModel
         } else {
             mode = 'init';
             ReportUtil.print( report.report, true );
+            logPrint();
         }
         binding.refresh();
     }
@@ -273,5 +288,9 @@ class RPTBillingModel
     
     List getBarangays(){
         return lguSvc.lookupBarangays([:])
+    }
+
+    void logPrint() {
+        logSvc.log('printbill', 'rptledger', bill.taxpayer.objid)
     }
 } 

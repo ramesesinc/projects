@@ -49,11 +49,11 @@ public class ModifyPinPage extends javax.swing.JPanel {
         formPanel1.setCaptionWidth(105);
 
         xLookupField1.setCaption("TD No.");
-        xLookupField1.setCaptionWidth(120);
-        xLookupField1.setExpression("#{faas.tdno}");
+        xLookupField1.setExpression("#{faas.tdno ? faas.tdno : faas.prevtdno}");
         xLookupField1.setHandler("lookupFaas");
-        xLookupField1.setIndex(-100);
         xLookupField1.setName("faas"); // NOI18N
+        xLookupField1.setCaptionWidth(120);
+        xLookupField1.setIndex(-100);
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel1.add(xLookupField1);
 
@@ -93,12 +93,12 @@ public class ModifyPinPage extends javax.swing.JPanel {
         formPanel2.setCaptionWidth(105);
 
         xLookupField2.setCaption("Land TD No.");
-        xLookupField2.setCaptionWidth(120);
         xLookupField2.setDepends(new String[] {"faas"});
-        xLookupField2.setExpression("#{landfaas.tdno}");
+        xLookupField2.setExpression("#{landfaas.tdno ? landfaas.tdno : landfaas.prevtdno}");
         xLookupField2.setHandler("lookupLandFaas");
-        xLookupField2.setIndex(-1);
         xLookupField2.setName("landfaas"); // NOI18N
+        xLookupField2.setCaptionWidth(120);
+        xLookupField2.setIndex(-1);
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel2.add(xLookupField2);
 
@@ -205,8 +205,8 @@ public class ModifyPinPage extends javax.swing.JPanel {
         formPanel2.add(xLabel4);
 
         xButton1.setMnemonic('c');
-        xButton1.setImmediate(true);
         xButton1.setName("_close"); // NOI18N
+        xButton1.setImmediate(true);
         xButton1.setText("Cancel");
 
         xButton2.setMnemonic('u');

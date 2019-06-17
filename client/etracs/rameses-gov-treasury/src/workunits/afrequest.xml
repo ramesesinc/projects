@@ -1,22 +1,37 @@
 <!-- REQUISITION ISSUE SLIP -->
-<workunit schemaName="afrequest" allowCreate="false" allowDelete="false">
-    
+<workunit schemaName="afrequest" allowCreate="false" allowDelete="false" 
+          allowViewReport="#{entity?.state.toString().matches('FOR_APPROVAL|OPEN|CLOSED')}" 
+          allowEdit="#{entity?.state.toString() == 'FOR_APPROVAL'}">
+
     <invokers>
         <invoker type="afrequest:open" 
-                formTitle="Request Accountable Form - #{entity.reqno}"
-                role="AFO,COLLECTOR"
-                target="popup" index="-10000" action="open"/>  
+                 formTitle="Request Accountable Form - #{entity.reqno}"
+                 action="open" target="popup" index="-10000">
+            <action role="COLLECTOR" /> 
+            <action role="AFO" /> 
+            <action role="RIS_APPROVER" allowCreate="false" allowEdit="#{entity?.state.toString() == 'FOR_APPROVAL'}" /> 
+            <action role="SHARED" allowEdit="false" allowCreate="false" /> 
+        </invoker> 
         
         <invoker folderid="menucategory/treasury/af" 
+                 formTitle="Request  Accountable Form (Purchase)"
                  caption="Request Accountable Form (Purchase)" 
-                formTitle="Request  Accountable Form (Purchase)"
-                role="AFO" action="create" target="window" index="10" reqtype="PURCHASE"/>
+                 action="create" role="AFO" index="20" 
+                 target="window" reqtype="PURCHASE"/>
         
         <!-- Menu category -->
         <invoker folderid="menucategory/treasury/collection" 
+                 formTitle="Request Accountable Form" 
                  caption="Request Accountable Form" 
-                formTitle="Request Accountable Form"
-                role="COLLECTOR" action="create" target="window" index="100" reqtype="COLLECTION"/>  
+                 action="create" role="COLLECTOR" index="100" 
+                 target="window" reqtype="COLLECTION"/>
+
+        <invoker type="formActions" caption="Approve" 
+                 action="approve" role="RIS_APPROVER" 
+                 visibleWhen="#{entity.state == 'FOR_APPROVAL' &amp;&amp; mode == 'read'}"/> 
+        <invoker type="formActions" caption="Disapprove" 
+                 action="disapprove" role="RIS_APPROVER" 
+                 visibleWhen="#{entity.state == 'FOR_APPROVAL' &amp;&amp; mode == 'read'}"/> 
     </invokers>
     
     <code class="com.rameses.enterprise.treasury.models.AFRequestModel" />

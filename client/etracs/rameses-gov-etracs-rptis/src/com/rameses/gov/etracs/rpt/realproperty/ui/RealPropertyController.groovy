@@ -20,7 +20,10 @@ public class RealPropertyController
     def lguSvc;
 
     @Service('Var')
-    def var 
+    def var;
+
+    @Service('QueryService')
+    def querySvc;
     
     String getTitle(){
         return 'Real Property'
@@ -28,6 +31,7 @@ public class RealPropertyController
     
     def entity;
     def barangayid;
+    def lands;
     
     def oncreate; //handler 
     
@@ -49,6 +53,9 @@ public class RealPropertyController
         entity.iparcel = null;
         entity.ry = ryList.find{it == entity.ry}
         entity.rp = [:];
+        if (lands) {
+            updateRealPropertyInfo(entity);
+        }
         sketchOpener = Inv.lookupOpener('sketch:rp', [entity: entity]);
     }
         
@@ -83,6 +90,16 @@ public class RealPropertyController
     
     def getPinTypes(){
         return ['new','old'];
+    }
+
+    void updateRealPropertyInfo(entity) {
+        def land = lands.last();
+        if (land.newrpid) {
+            def param = [_schemaname: 'realproperty'];
+            param.findBy = [objid: land.newrpid];
+            def rp = querySvc.findFirst(param)
+            entity.rp.surveyno = rp.surveyno 
+        }
     }
             
 }

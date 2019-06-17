@@ -151,6 +151,7 @@ public class CollectionVoucherInitialPage extends javax.swing.JPanel {
 
         xButton2.setDepends(new String[] {"controldate", "selectedRemittance"});
         xButton2.setDisableWhen("#{selectedRemittance == null}");
+        xButton2.setMnemonic('v');
         xButton2.setName("viewRemittance"); // NOI18N
         xButton2.setText("View");
         jPanel2.add(xButton2, java.awt.BorderLayout.WEST);
@@ -195,7 +196,7 @@ public class CollectionVoucherInitialPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 777, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(67, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

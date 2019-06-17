@@ -63,7 +63,7 @@ class SubCollectorRemittanceService  {
 
 	@ProxyMethod 
 	public def getCheckPaymentsBySubcollector(params ) {
-		params.subcollectorid = env.USERID 
+		params.subcollectorid = env.USERID; 
 		return em.getCheckPaymentBySubcollector( params )
 	}
 

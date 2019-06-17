@@ -1,0 +1,36 @@
+"xentity.*" [ mode=='processing' ] {
+    enabled: false; 
+} 
+"xentity.*" [ !(mode=='processing') ] {
+    enabled: true; 
+}
+"entity.(period|year)" [ 1==1 ] {
+    visible: true; 
+}
+"entity.(qtr|month|advanceyear)" [ 1==1 ] {
+    visible: false; 
+}
+"entity.qtr" [ entity.period?.code=='quarterly' ] {
+    visible: true; 
+} 
+"entity.month" [ entity.period?.code=='monthly' ] {
+    visible: true; 
+} 
+
+"entity.postingtype"[1==1]{
+    visible:true;
+}
+
+"entity.postingtype"[showPostingType == null || showPostingType == false]{
+    visible:false;
+}
+
+
+"entity.advanceyear"[isadvance == true]{
+    visible:true;
+}
+
+"entity.reportformat" [isadvance == true] {
+    visible:false;
+    required:false;
+}

@@ -118,8 +118,13 @@ class AFControlModel extends CrudFormModel {
         if(caller) caller.reloadEntity();
     }
     
-    def cancelSeries() {
-         Modal.show("af_control:cancelseries", [entity: entity] );
+    void cancelSeries() { 
+        def m = [ entity: entity ]; 
+        m.handler = {
+            reloadEntity(); 
+            if (caller) caller.reloadEntity(); 
+        }
+        Modal.show("af_control:cancelseries", m);
     }
     
     //second page

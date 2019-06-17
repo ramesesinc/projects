@@ -11,7 +11,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-66,0,0,3,16"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-66,0,0,3,84"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -59,11 +59,11 @@
                 <Component class="com.rameses.rcp.control.XTextField" name="xTextField3">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="ARP/TD No."/>
+                    <Property name="name" type="java.lang.String" value="entity.tdno" noResource="true"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Tahoma" size="14" style="1"/>
                     </Property>
                     <Property name="index" type="int" value="-100"/>
-                    <Property name="name" type="java.lang.String" value="entity.tdno" noResource="true"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[300, 20]"/>
                     </Property>
@@ -89,8 +89,8 @@
                     <Component class="com.rameses.rcp.control.XDateField" name="xDateField2">
                       <Properties>
                         <Property name="caption" type="java.lang.String" value="Title Date"/>
-                        <Property name="captionWidth" type="int" value="60"/>
                         <Property name="name" type="java.lang.String" value="entity.titledate" noResource="true"/>
+                        <Property name="captionWidth" type="int" value="70"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[80, 20]"/>
                         </Property>
@@ -148,6 +148,8 @@
                     </Component>
                     <Component class="com.rameses.rcp.control.XLabel" name="xLabel3">
                       <Properties>
+                        <Property name="caption" type="java.lang.String" value="Txn"/>
+                        <Property name="expression" type="java.lang.String" value="#{entity.txntype.objid}"/>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                             <LineBorder>
@@ -155,20 +157,19 @@
                             </LineBorder>
                           </Border>
                         </Property>
-                        <Property name="caption" type="java.lang.String" value="Txn"/>
                         <Property name="captionWidth" type="int" value="35"/>
                         <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                           <Insets value="[0, 2, 0, 0]"/>
                         </Property>
-                        <Property name="expression" type="java.lang.String" value="#{entity.txntype.objid}"/>
                         <Property name="fontStyle" type="java.lang.String" value="font-weight:bold;font-size:12;"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[54, 19]"/>
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="com.rameses.rcp.control.XLabel" name="xLabel2">
+                    <Component class="com.rameses.rcp.control.XLabel" name="xLabel4">
                       <Properties>
+                        <Property name="expression" type="java.lang.String" value="#{entity.trackingno}"/>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                             <LineBorder>
@@ -176,17 +177,13 @@
                             </LineBorder>
                           </Border>
                         </Property>
+                        <Property name="captionWidth" type="int" value="35"/>
                         <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                           <Insets value="[0, 2, 0, 0]"/>
                         </Property>
-                        <Property name="expression" type="java.lang.String" value="#{&apos;ANNOTATED&apos;}"/>
                         <Property name="fontStyle" type="java.lang.String" value="font-weight:bold;font-size:12;"/>
-                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="0" green="0" red="cc" type="rgb"/>
-                        </Property>
-                        <Property name="name" type="java.lang.String" value="entity.annotated" noResource="true"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[100, 20]"/>
+                          <Dimension value="[100, 19]"/>
                         </Property>
                         <Property name="showCaption" type="boolean" value="false"/>
                       </Properties>
@@ -294,10 +291,10 @@
                 <Component class="com.rameses.rcp.control.XTextField" name="xTextField10">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Declared Owner"/>
+                    <Property name="name" type="java.lang.String" value="entity.owner.name" noResource="true"/>
                     <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                       <Insets value="[0, 0, 0, 3]"/>
                     </Property>
-                    <Property name="name" type="java.lang.String" value="entity.owner.name" noResource="true"/>
                     <Property name="stretchWidth" type="int" value="100"/>
                   </Properties>
                 </Component>
@@ -329,10 +326,10 @@
                 <Component class="com.rameses.rcp.control.XTextField" name="xTextField26">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Administrator"/>
+                    <Property name="name" type="java.lang.String" value="entity.administrator.name" noResource="true"/>
                     <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                       <Insets value="[0, 0, 0, 3]"/>
                     </Property>
-                    <Property name="name" type="java.lang.String" value="entity.administrator.name" noResource="true"/>
                     <Property name="stretchWidth" type="int" value="100"/>
                   </Properties>
                 </Component>
@@ -369,7 +366,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="784" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="852" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">

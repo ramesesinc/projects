@@ -161,7 +161,7 @@ public class FAASAnnotationController extends PageFlowController
     def addImage(){
         return InvokerUtil.lookupOpener('upload:image', [
                 entity : entity,
-                    
+                parentid : entity.objid,
                 afterupload: {
                     loadImages();
                 }

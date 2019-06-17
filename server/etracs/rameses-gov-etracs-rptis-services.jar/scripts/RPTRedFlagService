@@ -129,7 +129,7 @@ public class RPTRedFlagService
 	}
 
 	void readInfo(entity){
-		if (!entity.info || entity.info instanceof String)
+		if (!entity.info)
 			entity.info = [:]
 		else
 			entity.info = em.serializer.read(entity.info)

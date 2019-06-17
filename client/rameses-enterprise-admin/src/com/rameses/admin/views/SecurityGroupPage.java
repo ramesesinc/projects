@@ -43,8 +43,11 @@ public class SecurityGroupPage extends javax.swing.JPanel {
         xList1 = new com.rameses.rcp.control.XList();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
 
+        setPreferredSize(new java.awt.Dimension(675, 372));
+
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(120);
+        xFormPanel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
 
         xTextField1.setCaption("Security Group Name");
         xTextField1.setName("entity.name"); // NOI18N
@@ -56,6 +59,7 @@ public class SecurityGroupPage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("Object Permissions");
         jPanel1.setBorder(xTitledBorder1);
 
+        jSplitPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         jSplitPane1.setDividerLocation(150);
 
         xList1.setExpression("#{item.name}");
@@ -65,6 +69,9 @@ public class SecurityGroupPage extends javax.swing.JPanel {
 
         jSplitPane1.setLeftComponent(jScrollPane2);
 
+        xDataTable1.setDepends(new String[] {"selectedObject"});
+        xDataTable1.setHandler("permissionListModel");
+        xDataTable1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "selected"}
@@ -98,9 +105,7 @@ public class SecurityGroupPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable1.setDepends(new String[] {"selectedObject"});
         xDataTable1.setDynamic(true);
-        xDataTable1.setHandler("permissionListModel");
         xDataTable1.setImmediate(true);
         jSplitPane1.setRightComponent(xDataTable1);
 
@@ -110,14 +115,14 @@ public class SecurityGroupPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 431, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 631, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -129,7 +134,7 @@ public class SecurityGroupPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE))
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(

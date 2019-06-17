@@ -105,7 +105,7 @@ public class RPTRequirementTypeDefaultHandler
     def addImage(){
         return InvokerUtil.lookupOpener('upload:image', [
                 entity : entity,
-                    
+                parentid : entity.refid, 
                 afterupload: {
                     loadImages();
                 }

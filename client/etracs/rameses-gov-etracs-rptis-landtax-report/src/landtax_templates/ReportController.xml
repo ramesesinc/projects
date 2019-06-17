@@ -15,6 +15,6 @@
     </invokers>
     <pages>
         <page template="com.rameses.gov.etracs.landtax.report.ReportInitPage" />
-        <page name="preview" template="com.rameses.gov.treasury.report.PreviewPage" />
+        <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage" />
     </pages>
 </workunit>

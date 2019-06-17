@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+          <invoker type="rptledger:form:formActions" 
+                action="init" caption="Update Redeemed Information" 
+                role="ADMIN,CHIEF" 
+                visibleWhen="#{entity.state=='APPROVED' &amp;&amp; entity._auctioned == true}" 
+                target="popup" index="10000"/>
+
+    </invokers>
+    <code class="gov.lgu.gensan.landtax.models.RedeemAuctionModel"/>
+    <pages>
+        <page template="gov.lgu.gensan.landtax.views.RedeemAuctionPage"/>
+    </pages>
+</workunit>

@@ -1,64 +1,65 @@
 <workunit>
     
-   <invokers>
+    <invokers>
          <invoker type="af_control:cancelseries" caption="Cancel Series" action="init" />
-   </invokers>
+    </invokers>
+
+    <code>
+    <![CDATA[
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.util.*;
+
+class AFControlCancelSeriesController {
+
+    @Binding
+    def binding;
+
+    @Caller
+    def caller;
+
+    @Service("AFCancelSeriesService")
+    def service;
+    
+    def entity = [:]
+    def receipt = [:];
+    def handler;
+    
+    void init() { 
+        receipt = [:]; 
+        receipt.formno = entity.afid;
+        receipt.controlid = entity.objid;
+        receipt = service.init( receipt ); 
+
+        receipt.receiptno = (entity.prefix ? entity.prefix : '') + entity.currentseries.toString() + (entity.suffix ? entity.suffix : '');
+        receipt.series = entity.currentseries;
+        receipt.stub = entity.stubno;
+        receipt.formtype = 'serial';
+    }
+    
+    def doOk() {
+        if( MsgBox.confirm( "You are about to cancel series no ${entity.currentseries}. Continue?")) {
+        
+            service.post( receipt );
+            MsgBox.confirm("Receipt No ${receipt.receiptno} successfully cancelled.          ")
+            
+            if ( handler ) handler( receipt ); 
+
+            return "_close";
+        } 
+    } 
+    
+    def doCancel() {
+        return "_close";
+    } 
+} 
+    ]]>
+    </code>
    
-   <code>
-       <![CDATA[
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.util.*;
-        
-        class AFControlCancelSeriesController {
-        
-            @Binding
-            def binding;
-        
-            @Caller
-            def caller;
-        
-            @Service("AFCancelSeriesService")
-            def service;
-            
-            def entity = [:]
-            def receipt = [:];
-            def handler;
-            
-            void init() {
-                receipt = [:]
-                receipt.formno = entity.afid
-                receipt = service.init(receipt);
-                receipt.controlid = entity.objid
-                receipt.receiptno = ((entity.prefix)?entity.prefix:'') + entity.currentseries.toString() + ((entity.suffix)?entity.suffix:'');
-                receipt.series = entity.currentseries
-                receipt.stub = entity.stubno
-                receipt.formtype = 'serial'
-            }
-            
-            def doOk() {
-                if( MsgBox.confirm( "You are about to cancel series no ${entity.currentseries}. Continue?")) {
-                
-                    service.post( receipt );
-                    MsgBox.confirm("Receipt No ${receipt.receiptno} successfully cancelled.          ")
-                    
-                    handler( receipt ) ;
-                    return "_close";
-                }
-            }
-            
-            def doCancel() {
-                return "_close";
-            }
-            
-        }      
-       ]]>
-   </code>
-   
-   <pages>
+    <pages>
         <page template="com.rameses.gov.treasury.cashreceipt.CashReceiptCancelSeriesPage"/>
-   </pages>
-   
+    </pages>
+
 </workunit>

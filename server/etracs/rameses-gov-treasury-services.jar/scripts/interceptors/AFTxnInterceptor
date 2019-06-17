@@ -92,20 +92,21 @@ class AFTxnInterceptor {
 	public void beforeRemoveEntity( evt ) { 
 		def param = evt.args[0]; 
 		if ( !param?.objid ) return; 
+
 		def cnt = afcd.find([ aftxnid: param.objid ]).select("cnt:{COUNT(*)}").val();
-		if( cnt > 0 )
+		if ( cnt > 0 )
 			throw new Exception("Cannot remove this transaction. Please revert the accountable forms issued first");
 
-		//this should not matter anymore.	
-		/*
-		def m = [_schemaname: 'af_control_detail'];
-		afcd.find([ aftxnid: param.objid ]).select('objid').list().each{
-			m.putAll( it ); 
-			persistSvc.removeEntity( m ); 
-		} 
-		*/
+		param.request = aftxn.find([ objid: param.objid ]).first()?.request; 
 	} 
 
+	@After(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'aftxn' }")
+	public void afterRemoveEntity( evt ) { 
+		def param = evt.args[0]; 
+		if ( param.request?.objid ) {
+			afReq.find([ objid: param.request.objid ]).update([ state: 'OPEN' ]); 
+		}
+	} 
 
 	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'aftxn' && args[0].txntype=='FORWARD' }")
 	public void afterCreateForward( evt ) { 

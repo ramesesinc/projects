@@ -1,0 +1,20 @@
+<workunit>
+    <invokers>
+        <invoker folderid="menucategory/treasury/tool" 
+                 caption="Convert Cash To Check" action="init" 
+                 role="COLLECTOR,SUBCOLLECTOR" permission="cashreceipt.convertCashToCheck" />
+        
+        <invoker type="formActions" caption="Cancel" action="doCancel" visibleWhen="#{mode=='init'}" mnemonic="C" immediate="true"/>
+        <invoker type="formActions" caption="Post" action="doPost" visibleWhen="#{mode=='init'}"  mnemonic="P"/>
+
+        <invoker type="formActions" caption="Close" action="_close" visibleWhen="#{mode=='finish'}"  mnemonic="C" immediate="true"/>
+        <invoker type="formActions" caption="New" action="doNew" visibleWhen="#{mode=='finish'}"  mnemonic="N" immediate="true"/>
+    </invokers>
+   
+    <code class="com.rameses.gov.treasury.tool.models.CashReceiptConvertCashToCheckModel"/>      
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.tool.views.CashReceiptConvertCashToCheckPageInit"/>
+        <page name="finish" template="com.rameses.gov.treasury.tool.views.CashReceiptConvertCashToCheckPageFinish"/>
+    </pages> 
+</workunit>

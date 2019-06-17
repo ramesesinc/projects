@@ -1,0 +1,81 @@
+import com.rameses.annotations.*; 
+
+class WaterworksReportNewAccountService {
+	
+	@DataContext('barangay')
+	def brgy_db; 
+
+	@DataContext('waterworks_zone')
+	def zone_db; 
+
+	@ActiveDB(value='waterworks_report', em='waterworks')
+	def report_db; 
+
+	@ActiveDB(value='waterworks_report_new_account', em='waterworks')
+	def mainreport_db; 
+
+	@Service('DateService')
+	def dateSvc;
+
+	@ProxyMethod 
+	public def initReport( param ) {
+		def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
+		def serverdate = YMD.format( dateSvc.getBasicServerDate());
+
+		def res = [:]; 
+		res.serverdate = serverdate; 
+		res.barangays = report_db.getBarangays(); 
+		return res; 
+	}
+
+	@ProxyMethod 
+	public def getReport( param ) {
+		def serverdate = dateSvc.getBasicServerDate(); 
+		param.serverdate = serverdate;
+		buildParams( param );
+
+		def filters = []; 
+		param.barangayid = param.barangay?.objid; 		
+		if ( !param.barangayid ) param.barangayid = '%';  
+
+		filters << ''' so.barangay_objid LIKE $P{barangayid} '''; 
+		if ( filters ) {
+			param.filters = ' AND '+ filters.join(' AND '); 
+		} else {
+			param.filters = ''; 
+		} 
+		
+		def res = [:]; 
+		res.items = mainreport_db.getReport( param ); 
+		if ( !res.items ) throw new Exception('No available record(s) that matches your criteria'); 
+
+		res.header = [serverdate: serverdate, PERIOD: param.period.description]; 
+		return res; 
+	} 
+
+	private void buildParams( param ) {
+		if ( param.period?.type == 'yearly') { 
+			if ( !param.year ) throw new Exception('year parameter is required'); 
+
+			def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
+			param.startdate = new java.sql.Date( YMD.parse(''+ param.year +'-01-01').time );
+			param.enddate   = new java.sql.Date( dateSvc.add( param.serverdate, '1d').time );
+			param.period.description = 'FOR THE YEAR '+ param.year; 
+		}
+		else if ( param.period?.type == 'monthly') { 
+			if ( !param.year ) throw new Exception('year parameter is required'); 
+			if ( !param.month?.index ) throw new Exception('month.index parameter is required'); 
+
+			def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
+			def strdate = ''+ param.year +'-'+ param.month.index.toString().padLeft(2,'0') +'-01'; 
+			param.startdate = new java.sql.Date( YMD.parse( strdate ).time );
+			param.enddate   = new java.sql.Date( dateSvc.add( param.startdate, '1M').time );
+
+			YMD = new java.text.SimpleDateFormat('MMMMM yyyy'); 
+			param.period.description = 'FOR THE MONTH OF '+ YMD.format( param.startdate ).toUpperCase();   
+		} 
+		else {
+			throw new Exception(''+ param.period?.type +' period is not supported'); 
+		}
+	}
+}

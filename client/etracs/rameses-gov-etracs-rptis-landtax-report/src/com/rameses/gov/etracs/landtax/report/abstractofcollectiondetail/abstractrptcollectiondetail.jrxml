@@ -282,7 +282,7 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="0"
+						x="69"
 						y="0"
 						width="71"
 						height="14"
@@ -300,9 +300,9 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="71"
+						x="0"
 						y="0"
-						width="86"
+						width="69"
 						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -318,9 +318,9 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="157"
+						x="140"
 						y="0"
-						width="298"
+						width="315"
 						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -343,13 +343,13 @@
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="staticText-49"/>
-					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<text><![CDATA[Amount Paid]]></text>
+				<text><![CDATA[OR Amount]]></text>
 				</staticText>
 			</band>
 		</columnHeader>
@@ -358,7 +358,7 @@
 				<textField isStretchWithOverflow="false" pattern="MM/dd/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="0"
+						x="69"
 						y="0"
 						width="71"
 						height="14"
@@ -374,9 +374,9 @@
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="71"
+						x="0"
 						y="0"
-						width="86"
+						width="69"
 						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -390,9 +390,9 @@
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="157"
+						x="140"
 						y="0"
-						width="298"
+						width="315"
 						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -415,7 +415,7 @@
 						key="textField-62"/>
 					<box rightPadding="3"></box>
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{amount}]]></textFieldExpression>
 				</textField>

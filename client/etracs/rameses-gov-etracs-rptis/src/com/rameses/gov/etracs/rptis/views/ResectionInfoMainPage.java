@@ -150,7 +150,7 @@ public class ResectionInfoMainPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", "#{item.faas.rputype == 'land' && item.newfaas.newsection == null}"}
+                , new Object[]{"editableWhen", "#{item.faas.rputype == 'land' && item.newfaas.section == null}"}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}

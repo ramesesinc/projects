@@ -338,15 +338,15 @@ public class FAASModel
     def getFaasType(){
         def t = '';
         if (getEntity().rpu.rputype == 'land')
-            t += 'Land FAAS: ';
+            t += 'Land: ';
         else if (getEntity().rpu.rputype == 'bldg')
-            t += 'Building FAAS: ';
+            t += 'Building: ';
         else if (getEntity().rpu.rputype == 'mach')
-            t += 'Machine FAAS: ';
+            t += 'Machine: ';
         else if (getEntity().rpu.rputype == 'planttree')
-            t += 'Plant/Tree FAAS: ';
+            t += 'Plant/Tree: ';
         else
-            t += 'Miscellaneous FAAS: ';
+            t += 'Miscellaneous: ';
         t += ' ' + getEntity().fullpin;
         return t;
     }

@@ -326,7 +326,17 @@ class RPUService
     @ProxyMethod
     public void checkDuplicateFullPin( rpu ){
         if (! rpu.previd ) {
+            //check reuse pin option 
+            if (rpu.rputype == 'land') {
+                def reusepin = util.toBoolean(var.get('assessor_reuse_cancelled_pin'), false)
+                if (reusepin){
+                    return 
+                }
+            }
             def data = em.findDuplicateFullPin([objid:rpu.objid, ry:rpu.ry, fullpin:rpu.fullpin])
+            if (!data) {
+                data = em.findDuplicateFullPin([objid:rpu.objid, ry:rpu.ry, fullpin:rpu.fullpin.replaceAll('-','')])
+            }
             if (data){
                 throw new Exception('PIN ' + rpu.fullpin + ' already exist.' )
             }

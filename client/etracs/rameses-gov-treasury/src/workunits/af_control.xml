@@ -1,7 +1,13 @@
-<workunit schemaName="af_control" allowEdit="false" allowDelete="false">
+<workunit schemaName="af_control" 
+          allowCreate="false" allowEdit="false" 
+          allowDelete="false" allowViewReport="false">
      
     <invokers>
-        <invoker type="af_control:open" caption="AF Control" formTitle="AF Control" action="open" target="popup" />
+        <invoker type="af_control:open" 
+                 formTitle="AF Control" 
+                 caption="AF Control" 
+                 action="open" target="popup"/> 
+        
         <invoker type="formActions" caption="Action" action="showMenu" 
                  context="actions"  visibleWhen="#{entity.currentseries &lt;= entity.endseries }"/>
         
@@ -9,48 +15,60 @@
         
         <!-- control menu -->                  
         <invoker type="af_control:form:actions" caption="Activate" action="activate" target="process"
-                 visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp; context.entity.active ==0}" role="COLLECTOR,SUBCOLLECTOR"/>
+                 visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp; context.entity.active ==0}" 
+                 role="COLLECTOR,SUBCOLLECTOR"/>
                  
         <invoker type="af_control:form:actions" caption="Deactivate" action="deactivate" target="process"
-                 visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp;  entity.active !=0}" role="COLLECTOR,SUBCOLLECTOR"/>
+                 visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp;  entity.active !=0}" 
+                 role="COLLECTOR,SUBCOLLECTOR"/>
                  
         <invoker type="af_control:form:actions" caption="Assign To Subcollector" action="assignSubcollector" target="process"
-            visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp; entity.assignee?.objid==entity.owner?.objid }" role="COLLECTOR" />
+                 visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp; entity.assignee?.objid==entity.owner?.objid }" 
+                 role="COLLECTOR" />
         
         <invoker type="af_control:form:actions" caption="Unassign Subcollector" action="unassignSubcollector" target="process"  
-            visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp;  entity.assignee?.objid!=entity.owner?.objid}" role="COLLECTOR"/>        
+                 visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp;  entity.assignee?.objid!=entity.owner?.objid}" 
+                 role="COLLECTOR"/>        
         
         <invoker type="af_control:form:actions" caption="Assign Fund" action="assignFund"  target="process"
-            visibleWhen="#{context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp; entity.fund?.objid==null}" role="COLLECTOR"/>
+                 visibleWhen="#{context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp; entity.fund?.objid==null}" 
+                 role="COLLECTOR"/>
         
         <invoker type="af_control:form:actions" caption="Unassign Fund" action="unassignFund"  target="process"
-            visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp; entity.fund?.objid!=null}" role="COLLECTOR"/>
+                 visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp; entity.fund?.objid!=null}" 
+                 role="COLLECTOR"/>
             
         <invoker type="af_control:form:actions" caption="Change Mode to ONLINE" action="changeModeOnline"  target="process"
-            visibleWhen="#{ context.showAction==true  &amp;&amp; entity.state =='ISSUED' &amp;&amp; entity.txnmode!='ONLINE' }" role="COLLECTOR,AFO"/>
+                 visibleWhen="#{ context.showAction==true  &amp;&amp; entity.state =='ISSUED' &amp;&amp; entity.txnmode!='ONLINE' }" 
+                 role="COLLECTOR,AFO"/>
 
         <invoker type="af_control:form:actions" caption="Change Mode to OFFLINE" action="changeModeOffline"  target="process"
-            visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp; entity.txnmode!='OFFLINE' }" role="COLLECTOR,AFO"/>
+                 visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp; entity.txnmode!='OFFLINE' }" 
+                 role="COLLECTOR,AFO"/>
          
         <invoker type="af_control:form:actions" caption="Change Mode to CAPTURE" action="changeModeCapture"  target="process"
-            visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp; entity.txnmode!='CAPTURE' }" role="COLLECTOR,AFO"/>
+                 visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp; entity.txnmode!='CAPTURE' }" 
+                 role="COLLECTOR,AFO"/>
             
         <invoker type="af_control:form:actions" caption="Change Responsibility Center" action="changeRespCenter"  target="process"
-            visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp; entity.respcenter?.objid==null }" role="COLLECTOR,AFO"/>  
+                 visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp; entity.respcenter?.objid==null }" 
+                 role="COLLECTOR,AFO"/>  
             
         <invoker type="af_control:form:actions" caption="Remove Responsibility Center" action="removeRespCenter"  target="process"
-            visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp; entity.respcenter?.objid!=null }" role="COLLECTOR,AFO"/>    
+                 visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp; entity.respcenter?.objid!=null }" 
+                 role="COLLECTOR,AFO"/>    
                 
         <invoker type="af_control:form:actions" caption="Cancel Series" action="cancelSeries"  target="process"
-            visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='ISSUED' &amp;&amp; entity.respcenter?.objid!=null }" role="COLLECTOR"/>    
-                
+                 visibleWhen="#{ context.showAction==true &amp;&amp; entity.state == 'ISSUED' }" 
+                 role="COLLECTOR"/> 
                 
         <invoker type="af_control:form:actions" caption="Hold" action="hold"  target="process"
-            visibleWhen="#{ context.showAction==true &amp;&amp; entity.state == 'OPEN' }" role="COLLECTOR"/>    
+                 visibleWhen="#{ context.showAction==true &amp;&amp; entity.state == 'OPEN' }" 
+                 role="COLLECTOR"/> 
 
         <invoker type="af_control:form:actions" caption="Reopen" action="reopen"  target="process"
-            visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='HOLD' }" role="COLLECTOR"/>    
-
+                 visibleWhen="#{ context.showAction==true &amp;&amp; entity.state =='HOLD' }" 
+                 role="COLLECTOR"/> 
     </invokers>
    
     <code class="com.rameses.enterprise.treasury.models.AFControlModel" />

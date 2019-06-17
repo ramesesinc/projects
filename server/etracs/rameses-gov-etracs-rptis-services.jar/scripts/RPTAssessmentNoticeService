@@ -101,7 +101,7 @@ class RPTAssessmentNoticeService
 
 	@ProxyMethod 
 	public def loadNotice(notice, faas){
-		def noticeitem = em_item.find([faasid:faas.objid]).first()
+		def noticeitem = findNoticeItem(faas)
 		if (!noticeitem) {
 			faas = em_faas.select('objid,taxpayer.objid, taxpayer.name,taxpayer.address.text,effectivityyear')
 								.find([objid: faas.objid]).first()
@@ -185,6 +185,10 @@ class RPTAssessmentNoticeService
 		def td = [objid:entity.items[0].faasid ]
 		faasSvc.loadSignatories(td)
 
+		if (isRecommenderAuthorized(td)){
+			td.authorized = true
+		}		
+
 		td.signatories = [:]
 		def retval = sigSvc.decodeSignatories(em.getSignatories(td))
 		td.signatories = retval.signatories 
@@ -201,5 +205,27 @@ class RPTAssessmentNoticeService
 		entity.putAll(td)
 		entity.objid = objid 
 	}	
+
+	def isRecommenderAuthorized(td){
+		if (td.recommender && td.recommender.name && 
+			   td.recommender.name.equalsIgnoreCase(td.approver?.name)){
+			td.recommender = [name:null, dtsigned:null]
+			return true 
+		}
+		return false 
+	}
+
+    def findNoticeItem(faas) {
+        def item = em_item.find([faasid:faas.objid]).first()
+        if (!item) return null 
+
+        def notice = em.find([objid: item.assessmentnoticeid]).first()
+        if ('OPEN' != notice.state) return null
+
+        def items = getItems(notice)
+        if (items.size() > 1) return null
+
+        return item
+    }
 
 }

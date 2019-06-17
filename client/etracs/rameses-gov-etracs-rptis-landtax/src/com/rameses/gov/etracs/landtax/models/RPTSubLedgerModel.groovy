@@ -71,7 +71,7 @@ class RPTSubLedgerModel
         entity.parent = [objid:ledger.objid];
         entity.rptledger = ledger;
         entity.state = 'PENDING';
-        entity.taxpayer = null;
+        entity.beneficiary = null;
         entity.totalav = 0.0;
         entity.totalareasqm = ledger.totalareasqm - totalSubledgerAreaSqm;
         entity.totalareaha = entity.totalareasqm / 10000.0;
@@ -94,6 +94,7 @@ class RPTSubLedgerModel
     void open(){
         entity.state = entity.rptledger.state;
         entity.taxpayer = entity.rptledger.taxpayer;
+        entity.beneficiary = entity.rptledger.beneficiary;
         entity.totalav = entity.rptledger.totalav
         entity.totalmv = entity.rptledger.totalmv
         entity.totalareaha = entity.rptledger.totalareaha
@@ -129,7 +130,6 @@ class RPTSubLedgerModel
     void updateSubLedgerInfo(){
         entity.tdno = ledger.tdno + ' (' + entity.subacctno + ')';
         entity.fullpin = ledger.fullpin
-        entity.owner = [name: entity.taxpayer?.name]
         entity.faases = [];
         entity.faases << createLedgerFaas();
     }

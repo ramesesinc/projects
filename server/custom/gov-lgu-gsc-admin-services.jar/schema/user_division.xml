@@ -1,0 +1,9 @@
+<schema>
+	<element tablename="gsc_user_division">
+		<field name="objid" primary="true" prefix="OF" />
+		<field name="division_objid" />
+		<complex name="division" ref="division" jointype="many-to-one">
+			<key field="division_objid" target="objid" />
+		</complex>
+	</element>
+</schema>

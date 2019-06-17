@@ -1,47 +1,23 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
-    schemaName="entityjuridical" allowDelete="false"> 
+          schemaName="entityjuridical" 
+          allowDelete="false" 
+          surroundSearch="false"> 
     
     <invokers>
-        <invoker folderid="/explorer/master/entity" caption="Juridical"  
-                 action="init" role="MASTER" permission="entityjuridical.view"  
+        <invoker folderid="/explorer/master/entity" 
+                 caption="Juridical" action="init" 
+                 role="MASTER" permission="entityjuridical.view"  
                  cols="entityno,name,entityname,address.text,orgtype" 
                  orderBy="entityname"/>  
         
-        <invoker folderid="/home/entity" caption="Juridical"  
-                 action="init" role="MASTER" permission="entityjuridical.view"  
+        <invoker folderid="/home/entity" 
+                 caption="Juridical" action="init" 
+                 role="MASTER" permission="entityjuridical.view"  
                  cols="entityno,name,entityname,address.text,orgtype" 
                  orderBy="entityname" 
                  icon="home/icons/entityjuridical.png"/>  
         
-   </invokers>
+    </invokers>
    
-    <code>
-    <![CDATA[ 
-class EntityJuridicalListModel extends com.rameses.seti2.models.CrudListModel {
-    
-    def confs = [
-        'entityno'     : [ width: 120 ],
-        'entityname'   : [ visible: false ], 
-        'name'         : [ width: 400 ], 
-        'address.text' : [ width: 400 ], 
-        'orgtype'      : [ width: 100 ]
-    ]; 
-    
-    boolean autoResize = false; 
-    
-    public void initColumn( def c ) { 
-        
-        def conf = confs.get( c.name ); 
-        if ( !conf ) return; 
-        
-        if ( conf.type != null ) c.type = conf.type;
-        if ( conf.width != null ) c.width = conf.width; 
-        if ( conf.minWidth != null ) c.minWidth = conf.minWidth; 
-        if ( conf.maxWidth != null ) c.maxWidth = conf.maxWidth; 
-        if ( conf.visible != null ) c.visible = conf.visible; 
-        if ( conf.caption != null ) c.caption = conf.caption; 
-    } 
-}    
-    ]]> 
-    </code> 
+    <code class="com.rameses.entity.models.EntityJuridicalListModel"/>      
 </workunit>

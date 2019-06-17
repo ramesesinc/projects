@@ -5,3 +5,8 @@
 "lookup" [addoption != 'bytd']{
     enabled:false;
 }
+
+
+"lookup" [entity.taxpayer == null] {
+    enabled: false;
+}

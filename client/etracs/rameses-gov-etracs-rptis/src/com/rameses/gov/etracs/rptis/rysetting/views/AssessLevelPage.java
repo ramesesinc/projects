@@ -31,17 +31,17 @@ public class AssessLevelPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jSplitPane1 = new javax.swing.JSplitPane();
         xDataTable4 = new com.rameses.rcp.control.XDataTable();
         xDataTable5 = new com.rameses.rcp.control.XDataTable();
 
-        jSplitPane1.setDividerLocation(500);
-
+        xDataTable4.setHandler("assessLevelListHandler");
+        xDataTable4.setName("selectedLevel"); // NOI18N
+        xDataTable4.setAutoResize(false);
         xDataTable4.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "code"}
                 , new Object[]{"caption", "Code"}
-                , new Object[]{"width", 60}
+                , new Object[]{"width", 70}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", true}
@@ -57,7 +57,7 @@ public class AssessLevelPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "name"}
                 , new Object[]{"caption", "Name"}
-                , new Object[]{"width", 100}
+                , new Object[]{"width", 170}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", true}
@@ -73,7 +73,7 @@ public class AssessLevelPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "fixrate"}
                 , new Object[]{"caption", "Fix?"}
-                , new Object[]{"width", 100}
+                , new Object[]{"width", 50}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", true}
@@ -89,7 +89,7 @@ public class AssessLevelPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "rate"}
                 , new Object[]{"caption", "Rate (%)"}
-                , new Object[]{"width", 100}
+                , new Object[]{"width", 70}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", true}
@@ -119,20 +119,16 @@ public class AssessLevelPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler("#{item.classification.code}", "propertyclassification:lookup")}
             })
         });
-        xDataTable4.setHandler("assessLevelListHandler");
         xDataTable4.setImmediate(true);
-        xDataTable4.setName("selectedLevel"); // NOI18N
-        jSplitPane1.setLeftComponent(xDataTable4);
 
+        xDataTable5.setDepends(new String[] {"selectedLevel"});
+        xDataTable5.setHandler("rangeLevelListHandler");
+        xDataTable5.setName("selectedRange"); // NOI18N
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("If not Special, the applicable Assessment Levels");
         xDataTable5.setBorder(xTitledBorder1);
-        xDataTable5.setDepends(new String[] {"selectedLevel"});
         xDataTable5.setDynamic(true);
-        xDataTable5.setHandler("rangeLevelListHandler");
         xDataTable5.setImmediate(true);
-        xDataTable5.setName("selectedRange"); // NOI18N
-        jSplitPane1.setRightComponent(xDataTable5);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -140,21 +136,24 @@ public class AssessLevelPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 703, Short.MAX_VALUE)
+                .add(xDataTable4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 482, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(xDataTable5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(xDataTable4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
+                    .add(xDataTable5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSplitPane jSplitPane1;
     private com.rameses.rcp.control.XDataTable xDataTable4;
     private com.rameses.rcp.control.XDataTable xDataTable5;
     // End of variables declaration//GEN-END:variables

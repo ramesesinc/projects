@@ -18,7 +18,7 @@
                  caption="Change To Subaccount" 
                  action="changeToSubAccount" 
                  role="ADMIN"  
-                 visibleWhen="#{ mode=='read' &amp;&amp; entity.parentid == null &amp;&amp; entity.state != 'ACTIVE' }"/> 
+                 visibleWhen="#{ mode=='read' &amp;&amp; entity.parentid == null &amp;&amp; entity.state != 'ACTIVE' &amp;&amp; entity.generic != 1 }"/> 
                  
         <invoker type="formActions" 
                  caption="Change Acct Type" 

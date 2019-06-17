@@ -49,8 +49,9 @@ class AFTxnHandlerIssue extends AFTxnHandler {
         o.linetotal = (o.qty ? o.qty : 0) * (o.cost ? o.cost : 0.0);
     }
     
-    public def getInfo() {
-        return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/views/AFTxnViewIssue.gtpl", [entity:entity] );
+    public def getInfo() { 
+        def allowedit = (invoker.properties.tag == 'AFO');
+        return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/views/AFTxnViewIssue.gtpl", [ entity: entity, allowEdit: allowedit ]);
     }
     
     def editBatch( def o ) {

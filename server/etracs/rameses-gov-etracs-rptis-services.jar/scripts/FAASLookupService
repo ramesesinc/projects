@@ -33,20 +33,26 @@ class FAASLookupService
 		if (params.searchtext){
 			params.orderby = ' order by tdno '
 			params.searchtext 	= (params.searchtext ? params.searchtext : '') + '%';
-			def filters = [
-				' and tdno LIKE $P{searchtext} ',
-				' and prevtdno LIKE $P{searchtext} ',
-				' and pin LIKE $P{searchtext} ',
-				' and owner_name LIKE $P{searchtext} ',
-				' and cadastrallotno LIKE $P{searchtext} ',
-				' and blockno LIKE $P{searchtext} ',
-				' and surveyno LIKE $P{searchtext} ',
-			]
-			return utilSvc.getListFromQuery('faas:getLookupFaas', filters, params, 'objid');
+
+			//proiritize tdno, prevtdno and pin looklup
+			params.filters = ' and tdno like $P{searchtext}  or prevtdno like $P{searchtext} or pin like $P{searchtext}'
+			def list = em.getLookupFaas(params)
+			if (list) return list
+
+			//search other keys
+			params.filters = '''
+				and (
+					utdno like $P{searchtext} or 
+					cadastrallotno like $P{searchtext} or 
+					blockno like $P{searchtext} or 
+					trackingno like $P{searchtext} or 
+					owner_name like $P{searchtext} or 
+					surveyno like $P{searchtext} or 
+					pin like $P{searchtext}
+				)
+			'''
 		}
-		else{
-			return em.getLookupFaas(params)
-		}
+		return em.getLookupFaas(params)
 	}
 
 }

@@ -30,19 +30,23 @@ public class CashReceiptPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xTextField1 = new com.rameses.rcp.control.XTextField();
-        xTextField4 = new com.rameses.rcp.control.XTextField();
-        xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
-        xLabel7 = new com.rameses.rcp.control.XLabel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
-        xTextField2 = new com.rameses.rcp.control.XTextField();
-        xDateField2 = new com.rameses.rcp.control.XDateField();
-        xTextField5 = new com.rameses.rcp.control.XTextField();
-        xTextField6 = new com.rameses.rcp.control.XTextField();
         xLabel3 = new com.rameses.rcp.control.XLabel();
+        xLabel5 = new com.rameses.rcp.control.XLabel();
         xLabel6 = new com.rameses.rcp.control.XLabel();
+        xLabel10 = new com.rameses.rcp.control.XLabel();
+        xLabel11 = new com.rameses.rcp.control.XLabel();
+        xLabel12 = new com.rameses.rcp.control.XLabel();
+        xLabel15 = new com.rameses.rcp.control.XLabel();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xLabel8 = new com.rameses.rcp.control.XLabel();
+        xLabel9 = new com.rameses.rcp.control.XLabel();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
+        xLabel17 = new com.rameses.rcp.control.XLabel();
+        xLabel13 = new com.rameses.rcp.control.XLabel();
+        xLabel14 = new com.rameses.rcp.control.XLabel();
+        xLabel16 = new com.rameses.rcp.control.XLabel();
+        xLabel7 = new com.rameses.rcp.control.XLabel();
         xTabbedPane1 = new com.rameses.rcp.control.XTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
@@ -51,80 +55,21 @@ public class CashReceiptPage extends javax.swing.JPanel {
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         jPanel2 = new javax.swing.JPanel();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
-        xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
+        jPanel5 = new javax.swing.JPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
         xDecimalField4 = new com.rameses.rcp.control.XDecimalField();
-        xFormPanel6 = new com.rameses.rcp.control.XFormPanel();
+        xLabel18 = new com.rameses.rcp.control.XLabel();
         xDecimalField6 = new com.rameses.rcp.control.XDecimalField();
         jPanel3 = new javax.swing.JPanel();
         xDataTable3 = new com.rameses.rcp.control.XDataTable();
 
-        setPreferredSize(new java.awt.Dimension(795, 516));
-
-        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-        xFormPanel2.setCaptionWidth(120);
-        xFormPanel2.setPadding(new java.awt.Insets(0, 15, 5, 5));
-
-        xTextField1.setCaption("Paid By");
-        xTextField1.setName("entity.paidby"); // NOI18N
-        xTextField1.setEnabled(false);
-        xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xTextField1);
-
-        xTextField4.setCaption("Paid By Address");
-        xTextField4.setName("entity.paidbyaddress"); // NOI18N
-        xTextField4.setEnabled(false);
-        xTextField4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xTextField4);
-
-        xDecimalField1.setCaption("Amount");
-        xDecimalField1.setName("entity.amount"); // NOI18N
-        xDecimalField1.setEnabled(false);
-        xDecimalField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xDecimalField1);
-
-        xLabel4.setCaption("State");
-        xLabel4.setExpression("#{entity.state}");
-        xLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel4.setPreferredSize(new java.awt.Dimension(0, 26));
-        xFormPanel2.add(xLabel4);
-
-        xLabel7.setCaption("");
-        xLabel7.setExpression("#{entity.voided == 0 ? '' : 'VOIDED'  }");
-        xLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        xLabel7.setFontStyle("font-size:14; font-weight:bold;");
-        xLabel7.setForeground(new java.awt.Color(255, 0, 0));
-        xLabel7.setPreferredSize(new java.awt.Dimension(0, 24));
-        xFormPanel2.add(xLabel7);
+        setPreferredSize(new java.awt.Dimension(821, 503));
 
         xFormPanel3.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-        xFormPanel3.setCaptionWidth(100);
-
-        xTextField2.setCaption("Form No");
-        xTextField2.setName("entity.formno"); // NOI18N
-        xTextField2.setEnabled(false);
-        xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel3.add(xTextField2);
-
-        xDateField2.setCaption("Receipt Date");
-        xDateField2.setName("entity.receiptdate"); // NOI18N
-        xDateField2.setEnabled(false);
-        xDateField2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel3.add(xDateField2);
-
-        xTextField5.setCaption("Collector");
-        xTextField5.setName("entity.collector.name"); // NOI18N
-        xTextField5.setEnabled(false);
-        xTextField5.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel3.add(xTextField5);
-
-        xTextField6.setCaption("Sub Collector");
-        xTextField6.setName("entity.subcollector.name"); // NOI18N
-        xTextField6.setVisibleWhen("#{ entity.subcollector.objid != null }");
-        xTextField6.setEnabled(false);
-        xTextField6.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel3.add(xTextField6);
+        xFormPanel3.setCaptionWidth(130);
+        xFormPanel3.setPadding(new java.awt.Insets(0, 5, 5, 0));
 
         xLabel3.setCaption("Receipt No");
         xLabel3.setExpression("#{entity.receiptno}");
@@ -134,27 +79,143 @@ public class CashReceiptPage extends javax.swing.JPanel {
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 26));
         xFormPanel3.add(xLabel3);
 
-        xLabel6.setCaption("Txn Mode");
-        xLabel6.setExpression("#{entity.txnmode}");
+        xLabel5.setCaption("Receipt Date");
+        xLabel5.setExpression("#{entity.receiptdate}");
+        xLabel5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel5.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel3.add(xLabel5);
+
+        xLabel6.setCaption("Form No.");
+        xLabel6.setExpression("#{entity.formno} (Stub No. #{entity.stub})");
         xLabel6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel6.setFontStyle("font-size:14; font-weight:bold;");
-        xLabel6.setForeground(new java.awt.Color(255, 0, 0));
-        xLabel6.setPreferredSize(new java.awt.Dimension(0, 24));
-        xLabel6.setStretchWidth(100);
+        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xLabel6);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        xLabel10.setCaption("Payer");
+        xLabel10.setExpression("#{entity.payer?.name}");
+        xLabel10.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel10.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel3.add(xLabel10);
+
+        xLabel11.setCaption("Paid By");
+        xLabel11.setExpression("#{entity.paidby}");
+        xLabel11.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel11.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel3.add(xLabel11);
+
+        xLabel12.setCaption("Paid By Address");
+        xLabel12.setExpression("#{entity.paidbyaddress}");
+        xLabel12.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel12.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel3.add(xLabel12);
+
+        xLabel15.setCaption("Collection Type");
+        xLabel15.setExpression("#{entity.collectiontype.name}");
+        xLabel15.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel15.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel3.add(xLabel15);
+
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel2.setCaptionWidth(120);
+        xFormPanel2.setPadding(new java.awt.Insets(0, 15, 0, 5));
+
+        xLabel8.setCaption("Txn Mode");
+        xLabel8.setExpression("#{entity.txnmode}");
+        xLabel8.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel8.setFontStyle("font-size:14; font-weight:bold;");
+        xLabel8.setForeground(new java.awt.Color(255, 0, 0));
+        xLabel8.setPreferredSize(new java.awt.Dimension(0, 26));
+        xLabel8.setStretchWidth(100);
+        xFormPanel2.add(xLabel8);
+
+        xLabel9.setCaption("Txn Date");
+        xLabel9.setExpression("#{entity.txndate}");
+        xLabel9.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel9.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        xLabel9.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel9);
+
+        xLabel4.setCaption("State");
+        xLabel4.setExpression("#{entity.state}");
+        xLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel4.setFontStyle("font-size:14;");
+        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel4);
+
+        xLabel17.setCaption("Amount");
+        xLabel17.setExpression("#{formattedAmount}");
+        xLabel17.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel17.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel17.setFontStyle("font-size:14;");
+        xLabel17.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel17);
+
+        xLabel13.setCaption("Collector");
+        xLabel13.setExpression("#{entity.collector.name}");
+        xLabel13.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel13.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel13);
+
+        xLabel14.setCaption("Sub-Collector");
+        xLabel14.setExpression("#{entity.subcollector.name}");
+        xLabel14.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel14.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel14);
+
+        xLabel16.setCaption("Org");
+        xLabel16.setExpression("#{entity.org.name}");
+        xLabel16.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel16.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel16);
+
+        xLabel7.setCaption("");
+        xLabel7.setExpression("#{entity.voided == 0 ? '' : 'VOIDED'  }");
+        xLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel7.setFontStyle("font-size:14; font-weight:bold;");
+        xLabel7.setForeground(new java.awt.Color(255, 0, 0));
+        xLabel7.setPreferredSize(new java.awt.Dimension(0, 24));
+        xFormPanel2.add(xLabel7);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         xDataTable1.setHandler("itemHandlers.items");
         xDataTable1.setName("selectedItem"); // NOI18N
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "item.code"}
+                , new Object[]{"caption", "Account Code"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 30}
+                , new Object[]{"maxWidth", 120}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"alignment", "CENTER"}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "item.title"}
                 , new Object[]{"caption", "Account Title"}
                 , new Object[]{"width", 200}
-                , new Object[]{"minWidth", 0}
+                , new Object[]{"minWidth", 30}
                 , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", true}
                 , new Object[]{"resizable", true}
@@ -167,27 +228,11 @@ public class CashReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "item.code"}
-                , new Object[]{"caption", "Account Code"}
-                , new Object[]{"width", 80}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", false}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"alignment", "CENTER"}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", null}
                 , new Object[]{"caption", "Fund"}
-                , new Object[]{"width", 120}
-                , new Object[]{"minWidth", 120}
-                , new Object[]{"maxWidth", 120}
+                , new Object[]{"width", 150}
+                , new Object[]{"minWidth", 30}
+                , new Object[]{"maxWidth", 200}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -202,13 +247,12 @@ public class CashReceiptPage extends javax.swing.JPanel {
                 new Object[]{"name", "amount"}
                 , new Object[]{"caption", "Amount"}
                 , new Object[]{"width", 120}
-                , new Object[]{"minWidth", 120}
+                , new Object[]{"minWidth", 30}
                 , new Object[]{"maxWidth", 120}
-                , new Object[]{"required", true}
-                , new Object[]{"resizable", false}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
+                , new Object[]{"editable", false}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
@@ -223,8 +267,7 @@ public class CashReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
+                , new Object[]{"editable", false}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
@@ -234,9 +277,10 @@ public class CashReceiptPage extends javax.swing.JPanel {
         xDataTable1.setIndex(10);
         jPanel1.add(xDataTable1, java.awt.BorderLayout.CENTER);
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 0, 0, 0));
         jPanel4.setLayout(new java.awt.BorderLayout());
 
+        xFormPanel4.setCaptionFontStyle("font-size:12;");
         xFormPanel4.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel4.setCaptionWidth(100);
         xFormPanel4.setPadding(new java.awt.Insets(0, 0, 0, 0));
@@ -245,8 +289,8 @@ public class CashReceiptPage extends javax.swing.JPanel {
         xDecimalField2.setName("entity.amount"); // NOI18N
         xDecimalField2.setCaptionFontStyle("font-size:12;");
         xDecimalField2.setEnabled(false);
-        xDecimalField2.setFontStyle("font-size:15;");
-        xDecimalField2.setPreferredSize(new java.awt.Dimension(150, 24));
+        xDecimalField2.setFontStyle("font-size:14;");
+        xDecimalField2.setPreferredSize(new java.awt.Dimension(150, 22));
         xFormPanel4.add(xDecimalField2);
 
         jPanel4.add(xFormPanel4, java.awt.BorderLayout.EAST);
@@ -254,6 +298,9 @@ public class CashReceiptPage extends javax.swing.JPanel {
         jPanel1.add(jPanel4, java.awt.BorderLayout.SOUTH);
 
         xTabbedPane1.addTab("  Items   ", jPanel1);
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        jPanel2.setLayout(new java.awt.BorderLayout());
 
         xDataTable2.setHandler("itemHandlers.paymentitems");
         xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
@@ -348,63 +395,55 @@ public class CashReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })
         });
+        jPanel2.add(xDataTable2, java.awt.BorderLayout.CENTER);
 
-        xFormPanel5.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-        xFormPanel5.setCaptionWidth(100);
+        jPanel5.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 0, 0, 0));
+        jPanel5.setLayout(new com.rameses.rcp.control.layout.XLayout());
+
+        xLabel1.setExpression("Cash Tendered : ");
+        xLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10));
+        xLabel1.setFontStyle("font-size:12;");
+        jPanel5.add(xLabel1);
 
         xDecimalField3.setCaption("Cash Tendered");
         xDecimalField3.setDisableWhen("#{ true }");
         xDecimalField3.setName("entity.totalcash"); // NOI18N
         xDecimalField3.setCaptionWidth(150);
         xDecimalField3.setEnabled(false);
-        xFormPanel5.add(xDecimalField3);
+        xDecimalField3.setPreferredSize(new java.awt.Dimension(150, 22));
+        jPanel5.add(xDecimalField3);
+
+        xLabel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 20, 0, 10));
+        xLabel2.setFontStyle("font-size:12;");
+        xLabel2.setText("Change : ");
+        jPanel5.add(xLabel2);
 
         xDecimalField4.setCaption("Change");
         xDecimalField4.setDisableWhen("#{ true }");
         xDecimalField4.setName("entity.cashchange"); // NOI18N
         xDecimalField4.setCaptionWidth(150);
         xDecimalField4.setEnabled(false);
-        xFormPanel5.add(xDecimalField4);
+        xDecimalField4.setPreferredSize(new java.awt.Dimension(150, 22));
+        jPanel5.add(xDecimalField4);
 
-        xFormPanel6.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-        xFormPanel6.setCaptionWidth(100);
+        xLabel18.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 20, 0, 10));
+        xLabel18.setFontStyle("font-size:12;");
+        xLabel18.setText("Total Non Cash : ");
+        jPanel5.add(xLabel18);
 
         xDecimalField6.setCaption("Total Non Cash");
         xDecimalField6.setDisableWhen("#{ true }");
         xDecimalField6.setName("entity.totalnoncash"); // NOI18N
         xDecimalField6.setCaptionWidth(150);
         xDecimalField6.setEnabled(false);
-        xFormPanel6.add(xDecimalField6);
+        xDecimalField6.setPreferredSize(new java.awt.Dimension(150, 22));
+        jPanel5.add(xDecimalField6);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 749, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
-                        .addComponent(xFormPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(xFormPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xFormPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        jPanel2.add(jPanel5, java.awt.BorderLayout.SOUTH);
 
         xTabbedPane1.addTab("  Payments   ", jPanel2);
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         jPanel3.setLayout(new java.awt.BorderLayout());
 
         xDataTable3.setHandler("itemHandlers.sharing");
@@ -480,13 +519,12 @@ public class CashReceiptPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -497,7 +535,7 @@ public class CashReceiptPage extends javax.swing.JPanel {
                     .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -506,11 +544,10 @@ public class CashReceiptPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XDataTable xDataTable3;
-    private com.rameses.rcp.control.XDateField xDateField2;
-    private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XDecimalField xDecimalField4;
@@ -518,17 +555,24 @@ public class CashReceiptPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
-    private com.rameses.rcp.control.XFormPanel xFormPanel5;
-    private com.rameses.rcp.control.XFormPanel xFormPanel6;
+    private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel10;
+    private com.rameses.rcp.control.XLabel xLabel11;
+    private com.rameses.rcp.control.XLabel xLabel12;
+    private com.rameses.rcp.control.XLabel xLabel13;
+    private com.rameses.rcp.control.XLabel xLabel14;
+    private com.rameses.rcp.control.XLabel xLabel15;
+    private com.rameses.rcp.control.XLabel xLabel16;
+    private com.rameses.rcp.control.XLabel xLabel17;
+    private com.rameses.rcp.control.XLabel xLabel18;
+    private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
+    private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
+    private com.rameses.rcp.control.XLabel xLabel8;
+    private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
-    private com.rameses.rcp.control.XTextField xTextField1;
-    private com.rameses.rcp.control.XTextField xTextField2;
-    private com.rameses.rcp.control.XTextField xTextField4;
-    private com.rameses.rcp.control.XTextField xTextField5;
-    private com.rameses.rcp.control.XTextField xTextField6;
     // End of variables declaration//GEN-END:variables
 }

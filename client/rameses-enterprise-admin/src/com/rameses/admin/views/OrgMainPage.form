@@ -36,6 +36,7 @@
         <Property name="cellSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[75, 80]"/>
         </Property>
+        <Property name="dynamic" type="boolean" value="true"/>
         <Property name="name" type="java.lang.String" value="orgModel" noResource="true"/>
         <Property name="opaque" type="boolean" value="false"/>
         <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">

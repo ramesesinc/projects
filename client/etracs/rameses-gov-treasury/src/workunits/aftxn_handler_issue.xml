@@ -3,15 +3,22 @@
     <invokers>
         <invoker type="aftxn:handler" name="ISSUE" caption="ISSUE" index="2"/>
  
-        <invoker type="aftxn:handler:issue" action="init" caption="Issue"/>
+        <invoker type="aftxn:handler:issue" action="init" caption="Issue">
+            <action role="AFO" tag="AFO" /> 
+            <action role="SHARED" tag="SHARED" /> 
+        </invoker>
         
         <!-- actions -->
-        <invoker type="formActions" action="close" caption="Back" immediate="true" visibleWhen="#{ mode == 'create' }"/>
-        <invoker type="formActions" action="saveCreate" caption="Next"  visibleWhen="#{ mode == 'create' }" />
+        <invoker type="formActions" action="close" caption="Back" 
+                 visibleWhen="#{ mode == 'create' }" mnemonic="B" immediate="true" />
+        <invoker type="formActions" action="saveCreate" caption="Next"  
+                 visibleWhen="#{ mode == 'create' }" mnemonic="N" />
         
         <!-- when in open mode -->
-        <invoker type="formActions" action="exit" caption="Close" immediate="true" visibleWhen="#{ mode == 'open' }"/>
-        <invoker type="formActions" action="post" caption="Post" visibleWhen="#{ mode == 'open' }"/>
+        <invoker type="formActions" action="exit" caption="Close" 
+                 visibleWhen="#{ mode == 'open' }" immediate="true" mnemonic="C" />
+        <invoker type="formActions" action="post" caption="Post" 
+                 role="AFO" visibleWhen="#{ mode == 'open' }" mnemonic="P" />
         
     </invokers>
     <code class="com.rameses.enterprise.treasury.models.AFTxnHandlerIssue" />

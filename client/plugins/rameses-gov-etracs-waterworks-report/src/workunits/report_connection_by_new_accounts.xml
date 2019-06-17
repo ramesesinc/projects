@@ -1,0 +1,13 @@
+<workunit extends="wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/waterworks" 
+                 caption="List of New Accounts" 
+                 action="init"  role="REPORT" /> 
+        
+        <invoker folderid="/menucategory/waterworks/report" 
+                 caption="List of New Accounts" 
+                 action="init"  role="REPORT" />         
+    </invokers> 
+    
+    <code class="com.rameses.gov.etracs.waterworks.report.models.WaterworksReportNewAccountListModel"/>
+</workunit>

@@ -183,11 +183,6 @@ class RemittanceService  {
 		}
 
 		remEm.insertRemittanceFund( remparam );
-		//update the remittancefundids
-		remEm.updateCashReceiptItemRemittanceFundId( remparam );
-		remEm.updateCashReceiptShareRemittanceFundId( remparam )
-		remEm.updateCashReceiptNonCashPaymentRemittanceFundId( remparam );
-
 
 		draftRemItem_db.find( remparam ).delete(); 
 		draftRem_db.find([ objid: m.objid ]).delete();  

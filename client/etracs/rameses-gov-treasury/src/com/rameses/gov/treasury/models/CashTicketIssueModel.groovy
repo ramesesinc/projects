@@ -92,7 +92,11 @@ class CashTicketIssueModel extends CashReceiptAbstractIssueModel  {
     def save() {
         if (!entity.items)
             throw new Exception("Please specify at least one item");
-        if (itemAmount != entity.amount)
+
+        def totalItemAmt = entity.items.sum{ it.amount }
+        if ( !totalItemAmt ) totalItemAmt = 0.0; 
+
+        if ( totalItemAmt != entity.amount)
             throw new Exception("Total of items must be equal to amount collected");
         if ( entity.qtyissued > entity.qtybalance ) 
             throw new Exception('Qty Issued must be less than or equal to the Qty Balance'); 

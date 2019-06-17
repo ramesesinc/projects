@@ -23,14 +23,6 @@ class RemittanceInterceptor {
 	@DataContext("af_control_detail")
 	def afd_db;
 
-	@DataContext("cashreceiptitem")
-	def cashreceiptItem_db;
-
-	@DataContext("cashreceipt_share")
-	def cashreceiptShare_db;
-
-	@DataContext("cashreceiptpayment_noncash")
-	def cashreceiptNoncash_db;
 	
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'remittance' }")
 	public void getNodes( evt ) { 
@@ -49,9 +41,9 @@ class RemittanceInterceptor {
 		if ( !o.node?.state ) return;
 
 		if ( o.node.state == 'POSTED' ) {
-			o.orderBy = ' controldate desc '; 
+			o.orderBy = ' controldate desc, dtposted desc '; 
 		} else {
-			o.orderBy = ' controldate '; 
+			o.orderBy = ' controldate, dtposted '; 
 		}
 
 		//o.debug = true;
@@ -114,15 +106,12 @@ class RemittanceInterceptor {
 		// 
 		rem_db.find( m ).update([ state: state ]); 
 
-		
-		//before deleting remittance fund, nullify remittanceid,remittancefundid in cashreceiptitem, share and noncash payment
+		//
+		// deletion process starts here...
+		// 
 		m = [ remittanceid: o.objid ];
 		cashreceipt_db.find( m ).update([ remittanceid: '{NULL}' ]);
-		cashreceiptItem_db.find(m).update([remittancefundid:'{NULL}', remittanceid:'{NULL}']);
-		cashreceiptShare_db.find(m).update([remittancefundid:'{NULL}', remittanceid:'{NULL}']);
-		cashreceiptNoncash_db.find(m).update([remittancefundid:'{NULL}', remittanceid:'{NULL}']);
-
-		// deletion process starts here...
+		
 		remf_db.find( m ).delete(); 
 		remaf_db.find( m ).delete(); 
 		
@@ -134,7 +123,6 @@ class RemittanceInterceptor {
 				afc_db.find([ objid: it.controlid ]).update([ currentdetailid: currentitem.objid ]); 
 			}
 		}
-
 	} 
 
 

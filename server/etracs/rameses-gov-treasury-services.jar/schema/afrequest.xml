@@ -18,5 +18,9 @@
 		<complex name="items" ref="afrequestitem" jointype="one-to-many">
 			<key field="objid" target="parentid" />
 		</complex> 
-	</element>
+
+		<field name="dtapproved"/> 
+		<field name="approvedby_objid"/> 
+		<field name="approvedby_name"/> 
+	</element> 
 </schema>

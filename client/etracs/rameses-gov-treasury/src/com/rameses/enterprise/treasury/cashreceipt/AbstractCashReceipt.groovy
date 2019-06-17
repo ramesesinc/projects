@@ -266,7 +266,7 @@ public abstract class AbstractCashReceipt {
         }
 
         if( mainProcessHandler ) {
-            mainProcessHandler.forward();
+            mainProcessHandler.forward( entity );
         }
         return null; 
     }
@@ -299,7 +299,7 @@ public abstract class AbstractCashReceipt {
         def op = findReportOpener( entity ); 
 
         def handlerName = "cashreceipt-form:" + entity.formno; 
-        def handle = findReportModel( op ); 
+        def handle = findReportModel( op );         
         if ( handle == null ) {
             MsgBox.alert("No available handler found for "+ handlerName); 
 

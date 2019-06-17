@@ -1,4 +1,6 @@
-<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="itemaccount" allowCreate="false" allowOpen="false">
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
+          schemaName="itemaccount" allowCreate="false" allowOpen="false" 
+          debug="true">
     <invokers>
        <!-- used in looking up in rules --> 
        <invoker type="itemaccount:lookup" caption="Lookup Item Account" action="init" target="popup"
@@ -45,7 +47,8 @@
                 action="init" target="popup" width="800" 
                 cols="code,title,fund.title,type" 
                 customFilter=" state='ACTIVE' AND generic=1 "
-                hiddenCols="fund.objid" />
+                hiddenCols="fund.objid" 
+                tag="GENERIC_ACCOUNT"/>
     </invokers> 
    
     <code class="com.rameses.enterprise.financial.models.ItemAccountLookupModel" />

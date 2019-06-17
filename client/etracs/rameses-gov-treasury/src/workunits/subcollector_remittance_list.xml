@@ -2,14 +2,20 @@
           serviceName="SubCollectorRemittanceListService" 
           entityName="subcollector_remittance">
     <invokers>
-        <invoker folderid="menucategory/treasury/subcollection" caption="View Remittances" action="doInit" 
-                 role="SUBCOLLECTOR" permission="subremittance.view" target="window" tag="subcollector"/>
+        <invoker folderid="menucategory/treasury/subcollection" 
+                 caption="View Remittances" action="doInit" 
+                 role="SUBCOLLECTOR" permission="subremittance.view" 
+                 target="window" index="-4" tag="subcollector"/>
 
-        <invoker folderid="menucategory/treasury/collection" caption="View Subcollector Remittances" action="doInit" 
-                 role="COLLECTOR" permission="subremittance.view" target="window" tag="collector" index="-4"/>
+        <invoker folderid="menucategory/treasury/collection" 
+                 caption="View Subcollector Remittances" action="doInit" 
+                 role="COLLECTOR" permission="subremittance.view" 
+                 target="window" tag="collector" index="-4"/>
 
-        <invoker folderid="menucategory/treasury/mgmt" caption="View Subcollector Remittances" action="doInit" 
-                 role="SHARED" permission="subremittance.view" target="window" tag="all" index="-1"/>
+        <invoker folderid="menucategory/treasury/mgmt" 
+                 caption="View Subcollector Remittances" action="doInit" 
+                 role="SHARED" permission="subremittance.view" 
+                 target="window" tag="all" index="-1"/>
     </invokers>
     
     <code> 

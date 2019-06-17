@@ -3,8 +3,8 @@
         <invoker folderid="/home/admin" caption="Organization" action="init" role="SYSADMIN" 
             permission="system" index="0" icon="home/icons/admin-org.png"/> 
         
-        <invoker type="formActions" caption="Manage Org Types" action="manageOrgTypes"/> 
-        <invoker type="formActions" caption="Reload" action="reloadOrgTypes"/> 
+        <invoker type="formActions" caption="Manage Org Types" action="manageOrgTypes" mnemonic="m"/> 
+        <invoker type="formActions" caption="Reload" action="reloadOrgTypes" mnemonic="r"/> 
     </invokers> 
     <code class="com.rameses.admin.models.OrgMainModel" />
     <pages>

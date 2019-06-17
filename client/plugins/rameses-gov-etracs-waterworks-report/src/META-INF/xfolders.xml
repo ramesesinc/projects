@@ -1,0 +1,12 @@
+<folders>
+    <folder id="explorer">
+        <folder id="report" caption="Reports">
+            <folder id="waterworks" caption="Waterworks" />
+        </folder>
+    </folder>    
+    <folder id="menucategory">
+        <folder id="waterworks" caption="Waterworks">
+            <folder id="report" caption="Reports" icon="home/icons/folder.png" index="9999"/>
+        </folder>            
+    </folder>    
+</folders>    

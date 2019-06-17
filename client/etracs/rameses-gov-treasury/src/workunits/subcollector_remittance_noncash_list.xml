@@ -1,42 +1,47 @@
 <workunit>
     <invokers>
-        <invoker type="subcollector_remittance:noncash" caption="Non-Cash Payments" action="viewReport" target="popup"/>
-        <invoker type="formActions" action="_close" caption="Close" icon="images/toolbars/cancel.png"/>
+        <invoker type="subcollector_remittance:noncash" 
+                 caption="Non-Cash Payments" action="viewReport" 
+                 target="popup"/>
+        
+        <invoker type="formActions" 
+                 caption="Close" action="_close" 
+                 icon="images/toolbars/cancel.png" 
+                 mnemonic="c" />
     </invokers>
     <code>
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.client.*;
+
+class NonCashListController {
         
-        class NonCashListController
-        {
-            @Service('SubCollectorRemittanceService')
-            def svc;
-            
-            String title = 'Non-Cash Payments'
-            
-            def remittanceid; 
-            def mode
-            def collectorid
-            def total 
-            
-            def list = []
-            def viewReport() {
-                if( mode == 'open') 
-                    list =  svc.getCheckPaymentsByRemittanceid([remittanceid: remittanceid])
-                else  
-                    list = svc.getCheckPaymentsBySubcollector([collectorid: collectorid])
-                total = 0.0 
-                if( list) total = list.amount.sum()
-            }
-            
-            
-            def listHandler = [
-                fetchList  : { return list },
-            ] as BasicListModel
-        }
-        
+    @Service('SubCollectorRemittanceService')
+    def svc;
+
+    String title = 'Non-Cash Payments'
+
+    def remittanceid; 
+    def mode
+    def collectorid
+    def total 
+
+    def list = []
+    def viewReport() {
+        if( mode.toString().matches('read|open')) 
+            list =  svc.getCheckPaymentsByRemittanceid([remittanceid: remittanceid])
+        else  
+            list = svc.getCheckPaymentsBySubcollector([collectorid: collectorid])
+        total = 0.0 
+        if( list) total = list.amount.sum()
+    }
+
+
+    def listHandler = [
+        fetchList  : { return list },
+    ] as BasicListModel
+}
     </code>
     <pages>
         <page template="com.rameses.enterprise.treasury.remittance.ViewChecksPage"/>

@@ -61,6 +61,9 @@ class AccountEditModel extends ChangeInfoModel {
         else if( tag == "remarks") {
             zfields << [name:"remarks", caption:"Remarks", datatype: "textarea", showCaption: false, preferredSize:"400,150"];             
         }
+        else if( tag == "dtstarted") {
+            zfields << [name:"dtstarted", caption:"Date Registered", datatype: "date", preferredSize:"100,20"];             
+        }
         else {
             return null;
         }

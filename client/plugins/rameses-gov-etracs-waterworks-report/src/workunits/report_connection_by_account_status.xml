@@ -1,0 +1,13 @@
+<workunit extends="wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/waterworks" 
+                 caption="No. of Connections by Account Status" 
+                 action="init"  role="REPORT" /> 
+        
+        <invoker folderid="/menucategory/waterworks/report" 
+                 caption="Connections by Account Status" 
+                 action="init"  role="REPORT" />         
+    </invokers> 
+    
+    <code class="com.rameses.gov.etracs.waterworks.report.models.WaterworksReportConnectionByAccountStatusModel"/>
+</workunit>

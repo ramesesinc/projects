@@ -64,27 +64,61 @@ from (
           
 
 [getCollectorFundList]
-select distinct 
-  rf.fund_objid as fundid, f.code, f.title 
-from remittance r 
-  inner join liquidation_remittance lrem on r.objid=lrem.objid 
-  inner join remittance_fund rf on rf.remittanceid = r.objid 
-  inner join fund f on f.objid = rf.fund_objid 
-where r.remittancedate between $P{fromdate} and $P{todate}
-  and r.collector_objid like $P{collectorid} 
+select distinct fundid, code, title 
+from ( 
+  select  
+    rf.fund_objid as fundid, f.code, f.title, count(*) as icount 
+  from remittance r 
+    inner join collectionvoucher cv on cv.objid = r.collectionvoucherid 
+    inner join remittance_fund rf on rf.remittanceid = r.objid
+    inner join fund f on f.objid = rf.fund_objid 
+  where 'BY_REMITTANCE_DATE' = $P{postingtypeid} 
+    and r.controldate >= $P{fromdate} 
+    and r.controldate <  $P{todate} 
+    and r.collector_objid like $P{collectorid} 
+  group by rf.fund_objid, f.code, f.title 
+  union 
+  select  
+    rf.fund_objid as fundid, f.code, f.title, count(*) as icount 
+  from collectionvoucher cv 
+    inner join remittance r on r.collectionvoucherid = cv.objid 
+    inner join remittance_fund rf on rf.remittanceid = r.objid
+    inner join fund f on f.objid = rf.fund_objid 
+  where 'BY_LIQUIDATION_DATE' = $P{postingtypeid} 
+    and cv.controldate >= $P{fromdate} 
+    and cv.controldate <  $P{todate} 
+    and r.collector_objid like $P{collectorid} 
+  group by rf.fund_objid, f.code, f.title 
+)t1 
+order by t1.code 
+
 
 [getCollectorDailyCollectionByFund]
-select 
-  t.xdate, ${sqlqry} 
+select t.xdate, ${sqlqry} 
 from (
   select 
-    day(r.remittancedate) as xdate, ${subqry} 
+    day(r.controldate) as xdate, ${subqry} 
   from remittance r 
-    inner join liquidation_remittance lrem on r.objid=lrem.objid 
+    inner join collectionvoucher cv on cv.objid = r.collectionvoucherid 
+    inner join remittance_fund rf on rf.remittanceid = r.objid 
+    inner join fund f on f.objid = rf.fund_objid 
+  where 'BY_REMITTANCE_DATE' = $P{postingtypeid} 
+    and r.controldate >= $P{fromdate} 
+    and r.controldate <  $P{todate} 
+    and r.collector_objid like $P{collectorid} 
+
+  union 
+
+  select  
+    day(r.controldate) as xdate, ${subqry} 
+  from collectionvoucher cv 
+    inner join remittance r on r.collectionvoucherid = cv.objid 
     inner join remittance_fund rf on rf.remittanceid = r.objid
-    inner join fund f on f.objid = rf.fund_objid
-  where r.remittancedate between $P{fromdate} and $P{todate} 
-    and r.collector_objid like  $P{collectorid} 
+    inner join fund f on f.objid = rf.fund_objid 
+  where 'BY_LIQUIDATION_DATE' = $P{postingtypeid} 
+    and cv.controldate >= $P{fromdate} 
+    and cv.controldate <  $P{todate} 
+    and r.collector_objid like $P{collectorid}     
 )t 
 group by t.xdate 
 order by t.xdate 

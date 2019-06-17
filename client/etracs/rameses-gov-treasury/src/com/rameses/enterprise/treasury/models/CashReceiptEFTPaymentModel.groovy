@@ -9,13 +9,23 @@ import java.rmi.server.*;
 
 class CashReceiptEFTPaymentModel  { 
 
+    @Service('QueryService')
+    def querySvc; 
+    
     def entity;
     def fundList;
     def saveHandler;
     def eft;
     
     void init() {
-        def fundids = fundList*.fund.objid;
+        def fundids = fundList?.collect{ it.fund?.objid }.findAll{( it )}.unique(); 
+        if ( !fundids ) throw new Exception('Please specify at least one fund'); 
+
+        def qparam = [_schemaname: 'fund', where: []]; 
+        qparam.select = 'objid,depositoryfundid'; 
+        qparam.where << "objid IN ('"+ fundids.join("','") +"')"; 
+        fundids = querySvc.getList( qparam ).collect{( it.depositoryfundid ? it.depositoryfundid : it.objid )}.unique(); 
+
         def h = { o->
             if(o.amount!=entity.amount ) {
                 throw new Exception("Amount to pay must match the EFT Amount");

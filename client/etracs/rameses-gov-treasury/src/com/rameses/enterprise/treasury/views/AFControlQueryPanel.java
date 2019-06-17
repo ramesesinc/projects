@@ -26,23 +26,27 @@ public class AFControlQueryPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
         aFDropdownList1 = new com.rameses.enterprise.treasury.components.AFDropdownList();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
 
-        setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        setLayout(new java.awt.BorderLayout());
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
+        setLayout(new com.rameses.rcp.control.layout.XLayout());
 
-        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-        xFormPanel1.setCaptionWidth(50);
-        xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel1.setShowCaption(false);
-        xFormPanel1.setLayout(new java.awt.BorderLayout());
+        xLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 5, 2, 5));
+        xLabel1.setText("AF : ");
+        add(xLabel1);
 
         aFDropdownList1.setCaption("AF");
         aFDropdownList1.setName("query.af"); // NOI18N
-        xFormPanel1.add(aFDropdownList1, java.awt.BorderLayout.CENTER);
+        aFDropdownList1.setPreferredSize(new java.awt.Dimension(60, 20));
+        add(aFDropdownList1);
+
+        xLabel2.setVisibleWhen("#{ showIssuedToFilter == true }");
+        xLabel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 20, 2, 5));
+        xLabel2.setText("Issued To : ");
+        add(xLabel2);
 
         xLookupField1.setCaption("Issued To");
         xLookupField1.setExpression("#{ query.issuedto.name }");
@@ -51,14 +55,13 @@ public class AFControlQueryPanel extends javax.swing.JPanel {
         xLookupField1.setVisibleWhen("#{ showIssuedToFilter == true }");
         xLookupField1.setCaptionWidth(100);
         xLookupField1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
-        xLookupField1.setPreferredSize(new java.awt.Dimension(150, 20));
-        xFormPanel1.add(xLookupField1, java.awt.BorderLayout.PAGE_START);
-
-        add(xFormPanel1, java.awt.BorderLayout.LINE_START);
+        xLookupField1.setPreferredSize(new java.awt.Dimension(250, 20));
+        add(xLookupField1);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.enterprise.treasury.components.AFDropdownList aFDropdownList1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     // End of variables declaration//GEN-END:variables
 }

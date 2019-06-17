@@ -76,10 +76,18 @@ class CollectorReportService {
 		def items = adb.getCollectorDailyCollectionByFund( params )
 		if( ! items) throw new Exception("No record(s) found.    ")
 		
-		header.REPORTTITLE = 'DAILY COLLECTION SUMMARY BY FUND'
-		header.PERIOD = 'FOR THE MONTH OF ' + params.month.title + ', ' + params.year 
-		header.COLLECTORNAME = env.NAME 
-		header.COLLECTORTITLE = env.JOBTITLE
+		header.REPORTTITLE = 'DAILY COLLECTION SUMMARY BY FUND';
+		header.PERIOD = 'FOR THE MONTH OF ' + params.month.title + ', ' + params.year;
+		header.POSTINGTYPE_FILTER = params.postingtype?.name;
+		if ( params.collectorid == '%' ) {
+			header.COLLECTOR_FILTER = 'ALL COLLECTORS'; 
+		} 
+		else if ( params.collector?.objid ) {
+			header.COLLECTOR_FILTER = params.collector.name; 
+		}
+
+		header.PREPAREDBY_NAME = env.NAME; 
+		header.PREPAREDBY_TITLE = env.JOBTITLE; 
 		return [ header: header,  items: items ]; 
 	}
 

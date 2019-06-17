@@ -1,0 +1,3 @@
+"entity.*" [ mode != 'create' ] {
+    enabled: false;
+}

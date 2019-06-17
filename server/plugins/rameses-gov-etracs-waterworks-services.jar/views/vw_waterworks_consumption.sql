@@ -2,7 +2,7 @@ drop view if exists vw_waterworks_consumption
 ;
 create view vw_waterworks_consumption as 
 select wc.*, 
-	(wc.amount - wc.amtpaid - wc.discount) as balance, 
+	convert(concat('',s.year,'-',s.month,'-01'), date) as scheduledate, 
 	s.year, s.month, s.fromperiod, s.toperiod, 
 	s.readingdate, s.readingduedate, s.billingduedate, 
 	s.discdate, s.duedate, sn.indexno, a.acctno, a.acctname, 

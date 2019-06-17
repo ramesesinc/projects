@@ -4,22 +4,22 @@
 		<field name="objid" primary="true" prefix="AFTXN"/>	
 		<field name="state" required="true"/>
 		<field name="request_objid" />
-		<field name="request_reqno" />
-		<field name="controlno" required="true"/>
-		<field name="txndate" required="true" type="timestamp"/>
-		<field name="dtfiled" required="true" type="date"/>
+		<field name="request_reqno" searchable="true" indexed="true" caption="ReqNo"/>
+		<field name="controlno" required="true" searchable="true" indexed="true" caption="ControlNo"/>
+		<field name="txndate" required="true" type="timestamp" indexed="true" caption="TxnDate"/>
+		<field name="dtfiled" required="true" type="date" indexed="true" caption="DateFiled"/>
 		<field name="user_objid" required="true"/>
-		<field name="user_name" required="true"/>
+		<field name="user_name" required="true" caption="User"/>
 		<field name="issuefrom_objid" />
-		<field name="issuefrom_name" />
+		<field name="issuefrom_name" searchable="true" indexed="true" caption="IssueFrom"/>
 		<field name="issuefrom_title" />	
 		<field name="issueto_objid" />
-		<field name="issueto_name" />
+		<field name="issueto_name" searchable="true" indexed="true" caption="IssueTo"/>
 		<field name="issueto_title" />	
 		<field name="particulars" />	
 		<field name="respcenter_objid" />	
-		<field name="respcenter_name" />	
-		<field name="txntype" required="true" />	
+		<field name="respcenter_name"  caption="RespCenter"/>	
+		<field name="txntype" required="true" indexed="true" caption="TxnType"/>	
 		<field name="cost" type="decimal"/>	
 
 		<complex name="items" ref="aftxnitem" jointype="one-to-many" required="false">

@@ -1,0 +1,13 @@
+<workunit extends="wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/waterworks" 
+                 caption="Summary of Billing" action="init"  
+                 role="REPORT" permission="waterworks_report.viewsummaryofbilling"/>
+
+        <invoker folderid="/menucategory/waterworks/report" 
+                 caption="Summary of Billing" action="init"  
+                 role="REPORT" permission="waterworks_report.viewsummaryofbilling"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.waterworks.report.models.WaterworksReportSummaryOfBillingModel"/>
+</workunit>

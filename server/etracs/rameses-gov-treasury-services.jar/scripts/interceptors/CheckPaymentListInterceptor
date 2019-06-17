@@ -32,12 +32,12 @@ class CheckPaymentListInterceptor {
 
 		//display only checks issued by this collector
 		if( o._tag == "COLLECTOR") {
-			qarr << "collector.objid = :collectorid";
-			m.collectorid = env.USERID;
+			m.userid = env.USERID;
+			qarr << "collector.objid = :userid";
 		}
 		else if( o._tag == "SUBCOLLECTOR") {
-			qarr << "subcollector.objid = :userid";
 			m.userid = env.USERID;
+			qarr << "subcollector.objid = :userid";
 		}
 
 		switch(o.node.id) {
@@ -74,6 +74,8 @@ class CheckPaymentListInterceptor {
 		else {
 			o.where = [str, m];
 		}
+
+		o.debug = true;
 	}	
 
 	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'checkpayment' }")

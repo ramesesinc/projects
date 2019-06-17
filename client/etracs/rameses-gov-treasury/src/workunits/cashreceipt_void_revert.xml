@@ -4,7 +4,7 @@
                  caption="Revert Void" action="init" 
                  role="ADMIN" permission="receipt.void" 
                  visibleWhen="#{allowRevertVoid==true}" 
-                 target="popup" /> 
+                 mnemonic="r" target="popup" /> 
     </invokers>
    
     <code>

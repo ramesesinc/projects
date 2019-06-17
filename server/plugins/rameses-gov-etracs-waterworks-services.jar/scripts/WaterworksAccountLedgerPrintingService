@@ -96,10 +96,10 @@ class WaterworksAccountLedgerPrintingService {
             if ( !a.amount ) a.amount = 0.0;
             if ( !a.amtpaid ) a.amtpaid = 0.0; 
 
-            if ( isDateBetween( a.readingdate, a.discdate, rundate )) {
-                def discamt = roundNearest10((a.amount * 0.05)); 
-                a.amount = a.amount - discamt; 
-            }
+            //if ( isDateBetween( a.readingdate, a.discdate, rundate )) {
+            //    def discamt = roundNearest10((a.amount * 0.05)); 
+            //    a.amount = a.amount - discamt; 
+            //}
 
             a.debit = a.amount + a.bill.surcharge; 
             a.credit = a.amtpaid; 
@@ -108,7 +108,7 @@ class WaterworksAccountLedgerPrintingService {
             }
 
             def newcredits = prevcredits; 
-            a.balance = a.debit - a.credit; 
+            a.balance = a.debit - a.credit - a.discount; 
             if ( a.balance < 0 ) {
                 newcredits += (a.balance * -1.0); 
                 a.balance = (newcredits * -1.0); 

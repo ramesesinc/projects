@@ -9,7 +9,10 @@
         
         <invoker type="waterworks_account:form:edit" caption="Change Acct Status" action="init"  
                  target="popup" index="9" tag="state"/>
-        
+
+        <invoker type="waterworks_account:form:edit" caption="Change Date Registered" action="init"  
+                 target="popup" index="9" tag="dtstarted"/>
+                
         <invoker type="waterworks_account:form:edit" caption="Change Owner" action="init"  
                  target="popup" index="10" tag="owner"/>   
 

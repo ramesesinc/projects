@@ -84,7 +84,6 @@ abstract class CashReceiptAbstractIssueModel extends PageFlowController  {
     
     //checks and loads the af here
     void createNew() {
-        
         //sprinkle the selected collection type if it has items
         collectionTypes.checkHasItems( collectionType );
         params = [:];

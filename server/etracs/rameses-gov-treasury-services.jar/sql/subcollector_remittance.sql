@@ -84,22 +84,28 @@ WHERE EXISTS (
 )
 
 [getCheckPaymentByRemittanceId]
-select ch.* from subcollector_remittance_cashreceipt rc 
-  inner join cashreceiptpayment_noncash ch on ch.receiptid = rc.objid 
-  left join cashreceipt_void cv on ch.receiptid = cv.receiptid 
-where rc.remittanceid=$P{remittanceid} 
+select 
+  rc.remittanceid, nc.refid, nc.refno, nc.refdate, nc.reftype, nc.particulars, 
+  sum(nc.amount) as amount 
+from subcollector_remittance_cashreceipt rc 
+  inner join cashreceiptpayment_noncash nc on nc.receiptid = rc.objid 
+  left join cashreceipt_void cv on cv.receiptid = nc.receiptid 
+where rc.remittanceid = $P{remittanceid} 
    and cv.objid is null 
+group by rc.remittanceid, nc.refid, nc.refno, nc.refdate, nc.reftype, nc.particulars 
 
 [getCheckPaymentBySubcollector]
-select  ch.* 
+select 
+  nc.refid, nc.refno, nc.refdate, nc.reftype, nc.particulars, 
+  sum(nc.amount) as amount 
 from cashreceipt c 
-  inner join cashreceiptpayment_noncash ch on ch.receiptid = c.objid 
- left join cashreceipt_void cv on ch.receiptid = cv.receiptid 
+  inner join cashreceiptpayment_noncash nc on nc.receiptid = c.objid 
+  left join cashreceipt_void cv on cv.receiptid = nc.receiptid 
 where c.state='DELEGATED' 
-   and c.collector_objid=$P{collectorid}
+   and c.collector_objid = $P{collectorid} 
    and c.subcollector_objid = $P{subcollectorid} 
     and cv.objid is null 
-
+group by nc.refid, nc.refno, nc.refdate, nc.reftype, nc.particulars  
 
 [getCollectionSummaries]    
 select 
@@ -131,9 +137,10 @@ order by formno, startseries
 
 [getRemittedChecks]
 select 
-   nc.refno, nc.particulars, nc.reftype, nc.amount 
+   nc.refid, nc.refno, nc.particulars, nc.reftype, sum(nc.amount) as amount  
 from subcollector_remittance rem 
   inner join subcollector_remittance_cashreceipt remc on rem.objid=remc.remittanceid 
   inner join cashreceiptpayment_noncash nc on remc.objid=nc.receiptid 
 where rem.objid=$P{remittanceid} 
   and remc.objid not in ( select receiptid from cashreceipt_void where receiptid=remc.objid ) 
+group by nc.refid, nc.refno, nc.particulars, nc.reftype 

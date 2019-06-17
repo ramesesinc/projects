@@ -1,13 +1,18 @@
 <workunit>
     <invokers>
-       <invoker type="subcollector-remittance:report" caption="Daily Collection Report" action="init" target="self" index="1"/>
+        <invoker type="subcollector-remittance:report" 
+                 caption="Daily Collection Report" action="init" 
+                 target="self" index="1"/>
        
-      <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+        <invoker type="formActions" 
+                 caption="Back" action="_close" 
+                 mnemonic="b" shortcut="ctrl B" 
+                 icon="images/toolbars/arrow_left.png"/>
     </invokers>
     
     <code class="com.rameses.gov.treasury.report.models.SubCollectorRemittanceReportModel"/>
     
-   <pages>
-       <page template="com.rameses.gov.treasury.report.views.PreviewPage" />
-   </pages>   
+    <pages>
+        <page template="com.rameses.gov.treasury.report.views.PreviewPage" />
+    </pages>   
 </workunit>

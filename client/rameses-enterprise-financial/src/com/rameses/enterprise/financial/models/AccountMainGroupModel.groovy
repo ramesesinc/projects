@@ -155,7 +155,7 @@ class AccountMainGroupModel extends CrudFormModel {
                 [id: it.objid, name: it.objid, caption: formatTitle( it ), item: it, folder: false ];
             }
         },
-        openFolder : { node->
+        openLeaf : { node->
             selectedItem = node;
             detailListModel.reloadTree();
         }
@@ -188,17 +188,19 @@ class AccountMainGroupModel extends CrudFormModel {
         },
         fetchNodes : { o->
             if( !selectedItem ) return [];
-            if(o.id!="root") return null;
-            def parentid = null;
+            if( o.id != "root") return null;
+            def parentid = selectedItem.id; 
             def m = [_schemaname: "account"];
             m.where = ["maingroupid = :mainid AND groupid = :groupid AND type='detail' ", [mainid:entity.objid, groupid:parentid]];
             m.orderBy = "code";
             return queryService.getList(m).collect {
-                [id: it.objid, name: it.objid, caption: formatTitle(it), item: it ];
+                [id: it.objid, name: it.objid, caption: formatTitle(it), item: it, folder: false ];
             }
         },
-        openFolder : { node->
+        openLeaf : { node->
             selectedDetail = node;
+            editNode( selectedDetail ); 
+            return null; 
         }
     ] as TreeNodeModel;
     

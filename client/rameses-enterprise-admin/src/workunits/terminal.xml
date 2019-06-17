@@ -1,8 +1,12 @@
 <workunit>
     <invokers>
-        <invoker type="terminal:formActions" caption="Generate Keys" target="popup" resizable="false"/>        
-        <invoker type="terminal:formActions" caption="Unassign" action="unassign" 
-            target="process" resizable="false" visibleWhen="#{selectedEntity != null &amp;&amp; selectedEntity.macaddress != null}"/>
+        <invoker type="terminal:formActions" 
+                 caption="Generate Keys" mnemonic="g" 
+                 target="popup" resizable="false"/>        
+        <invoker type="terminal:formActions" 
+                 caption="Unassign" action="unassign" 
+                 target="process" resizable="false"  mnemonic="u" 
+                 visibleWhen="#{selectedEntity != null &amp;&amp; selectedEntity.macaddress != null}"/>
     </invokers>
    
     <code>

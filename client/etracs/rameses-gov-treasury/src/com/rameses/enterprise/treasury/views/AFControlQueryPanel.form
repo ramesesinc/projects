@@ -4,7 +4,7 @@
   <Properties>
     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
       <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
-        <EmptyBorder/>
+        <EmptyBorder bottom="3" left="3" right="3" top="3"/>
       </Border>
     </Property>
   </Properties>
@@ -20,60 +20,139 @@
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
     <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,0,28,0,0,2,-24"/>
   </AuxValues>
-
-  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
   <SubComponents>
-    <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
+    <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
       <Properties>
-        <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
-        <Property name="captionWidth" type="int" value="50"/>
-        <Property name="orientation" type="java.lang.String" value="HORIZONTAL"/>
-        <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-          <Insets value="[0, 0, 0, 0]"/>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+            <EmptyBorder bottom="2" left="5" right="5" top="2"/>
+          </Border>
         </Property>
-        <Property name="showCaption" type="boolean" value="false"/>
+        <Property name="text" type="java.lang.String" value="AF : "/>
       </Properties>
-      <Constraints>
-        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-          <BorderConstraints direction="Before"/>
-        </Constraint>
-      </Constraints>
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
-      <SubComponents>
-        <Component class="com.rameses.enterprise.treasury.components.AFDropdownList" name="aFDropdownList1">
-          <Properties>
-            <Property name="caption" type="java.lang.String" value="AF"/>
-            <Property name="name" type="java.lang.String" value="query.af" noResource="true"/>
-          </Properties>
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-              <BorderConstraints direction="Center"/>
-            </Constraint>
-          </Constraints>
-        </Component>
-        <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">
-          <Properties>
-            <Property name="caption" type="java.lang.String" value="Issued To"/>
-            <Property name="expression" type="java.lang.String" value="#{ query.issuedto.name }"/>
-            <Property name="handler" type="java.lang.String" value="collector:lookup"/>
-            <Property name="name" type="java.lang.String" value="query.issuedto" noResource="true"/>
-            <Property name="visibleWhen" type="java.lang.String" value="#{ showIssuedToFilter == true }"/>
-            <Property name="captionWidth" type="int" value="100"/>
-            <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-              <Insets value="[0, 20, 0, 0]"/>
-            </Property>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[150, 20]"/>
-            </Property>
-          </Properties>
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-              <BorderConstraints direction="First"/>
-            </Constraint>
-          </Constraints>
-        </Component>
-      </SubComponents>
-    </Container>
+    </Component>
+    <Component class="com.rameses.enterprise.treasury.components.AFDropdownList" name="aFDropdownList1">
+      <Properties>
+        <Property name="caption" type="java.lang.String" value="AF"/>
+        <Property name="name" type="java.lang.String" value="query.af" noResource="true"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[60, 20]"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="com.rameses.rcp.control.XLabel" name="xLabel2">
+      <Properties>
+        <Property name="visibleWhen" type="java.lang.String" value="#{ showIssuedToFilter == true }"/>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+            <EmptyBorder bottom="2" left="20" right="5" top="2"/>
+          </Border>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Issued To : "/>
+      </Properties>
+    </Component>
+    <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">
+      <Properties>
+        <Property name="caption" type="java.lang.String" value="Issued To"/>
+        <Property name="expression" type="java.lang.String" value="#{ query.issuedto.name }"/>
+        <Property name="handler" type="java.lang.String" value="collector:lookup"/>
+        <Property name="name" type="java.lang.String" value="query.issuedto" noResource="true"/>
+        <Property name="visibleWhen" type="java.lang.String" value="#{ showIssuedToFilter == true }"/>
+        <Property name="captionWidth" type="int" value="100"/>
+        <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[0, 20, 0, 0]"/>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[250, 20]"/>
+        </Property>
+      </Properties>
+    </Component>
   </SubComponents>
+  <LayoutCode>
+    <CodeStatement>
+      <CodeExpression id="1">
+        <ExpressionOrigin>
+          <ExpressionProvider type="ComponentRef">
+            <ComponentRef name="."/>
+          </ExpressionProvider>
+        </ExpressionOrigin>
+      </CodeExpression>
+      <StatementProvider type="CodeMethod">
+        <CodeMethod name="setLayout" class="java.awt.Container" parameterTypes="java.awt.LayoutManager"/>
+      </StatementProvider>
+      <Parameters>
+        <CodeExpression id="2">
+          <ExpressionOrigin>
+            <ExpressionProvider type="CodeConstructor">
+              <CodeConstructor class="com.rameses.rcp.control.layout.XLayout" parameterTypes=""/>
+            </ExpressionProvider>
+          </ExpressionOrigin>
+        </CodeExpression>
+      </Parameters>
+    </CodeStatement>
+    <CodeStatement>
+      <CodeExpression id="1"/>
+      <StatementProvider type="CodeMethod">
+        <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
+      </StatementProvider>
+      <Parameters>
+        <CodeExpression id="3_xLabel1">
+          <CodeVariable name="xLabel1" type="8194" declaredType="com.rameses.rcp.control.XLabel"/>
+          <ExpressionOrigin>
+            <ExpressionProvider type="ComponentRef">
+              <ComponentRef name="xLabel1"/>
+            </ExpressionProvider>
+          </ExpressionOrigin>
+        </CodeExpression>
+      </Parameters>
+    </CodeStatement>
+    <CodeStatement>
+      <CodeExpression id="1"/>
+      <StatementProvider type="CodeMethod">
+        <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
+      </StatementProvider>
+      <Parameters>
+        <CodeExpression id="4_aFDropdownList1">
+          <CodeVariable name="aFDropdownList1" type="8194" declaredType="com.rameses.enterprise.treasury.components.AFDropdownList"/>
+          <ExpressionOrigin>
+            <ExpressionProvider type="ComponentRef">
+              <ComponentRef name="aFDropdownList1"/>
+            </ExpressionProvider>
+          </ExpressionOrigin>
+        </CodeExpression>
+      </Parameters>
+    </CodeStatement>
+    <CodeStatement>
+      <CodeExpression id="1"/>
+      <StatementProvider type="CodeMethod">
+        <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
+      </StatementProvider>
+      <Parameters>
+        <CodeExpression id="5_xLabel2">
+          <CodeVariable name="xLabel2" type="8194" declaredType="com.rameses.rcp.control.XLabel"/>
+          <ExpressionOrigin>
+            <ExpressionProvider type="ComponentRef">
+              <ComponentRef name="xLabel2"/>
+            </ExpressionProvider>
+          </ExpressionOrigin>
+        </CodeExpression>
+      </Parameters>
+    </CodeStatement>
+    <CodeStatement>
+      <CodeExpression id="1"/>
+      <StatementProvider type="CodeMethod">
+        <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
+      </StatementProvider>
+      <Parameters>
+        <CodeExpression id="6_xLookupField1">
+          <CodeVariable name="xLookupField1" type="8194" declaredType="com.rameses.rcp.control.XLookupField"/>
+          <ExpressionOrigin>
+            <ExpressionProvider type="ComponentRef">
+              <ComponentRef name="xLookupField1"/>
+            </ExpressionProvider>
+          </ExpressionOrigin>
+        </CodeExpression>
+      </Parameters>
+    </CodeStatement>
+  </LayoutCode>
 </Form>

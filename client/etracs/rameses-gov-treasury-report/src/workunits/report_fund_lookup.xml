@@ -1,0 +1,12 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="vw_fund">
+    <invokers>
+        <invoker type="report_fund:lookup" 
+                 caption="Lookup Fund" action="init" 
+                 cols="code,title,group.title" 
+                 hiddenCols="group.indexno"
+                 orderBy="group.indexno,code,title" 
+                 customFilter="state IN ('ACTIVE','INACTIVE') "
+                 target="popup" width="600"/>
+    </invokers>
+</workunit>
+

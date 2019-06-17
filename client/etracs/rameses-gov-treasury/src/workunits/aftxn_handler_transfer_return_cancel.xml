@@ -14,9 +14,12 @@
         <invoker type="aftxn:handler:manual_issue" action="init" caption="Manual Issue AF"/>
         
         <!-- actions -->
-        <invoker type="formActions" action="close" caption="Back" immediate="true" visibleWhen="#{ mode == 'create' }"/>
-        <invoker type="formActions" action="exit" caption="Close" immediate="true" visibleWhen="#{ mode == 'open' }"/>
-        <invoker type="formActions" action="save" caption="Next"  visibleWhen="#{ mode == 'create' }" />
+        <invoker type="formActions" action="exit" caption="Close" 
+                 visibleWhen="#{ mode == 'open' }" immediate="true" mnemonic="C" />
+        <invoker type="formActions" action="close" caption="Back" 
+                 visibleWhen="#{ mode == 'create' }" immediate="true" mnemonic="B" />
+        <invoker type="formActions" action="save" caption="Next"  
+                 visibleWhen="#{ mode == 'create' }" mnemonic="N" />
 
         
     </invokers>

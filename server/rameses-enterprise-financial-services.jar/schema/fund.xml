@@ -1,7 +1,7 @@
 <schema>
 
 	<element tablename="fund">
-		<field name="objid" primary="true"/>	
+		<field name="objid" primary="true" prefix="FUND"/>	
 		<field name="groupid" caption="Group" searchable="true"/>
 		<field name="state" required="true"/>
 		<field name="code" required="true" caption="Code" searchable="true"/>
@@ -11,8 +11,14 @@
 		<field name="system" type="boolean"/>
 
 		<field name="depositoryfundid"/>
-		<complex name="depositoryfund" ref="fund" jointype="many-to-one" includefields="code,title" required="false">
+
+		<complex name="depositoryfund" ref="fund" jointype="many-to-one" 
+				 includefields="code,title" required="false">
 			<key field="depositoryfundid" target="objid" />
+		</complex>	
+		<complex name="group" ref="fundgroup" jointype="many-to-one" 
+				 includefields="objid,title,indexno" required="false">
+			<key field="groupid" target="objid" />
 		</complex>	
 	</element>
 

@@ -9,8 +9,14 @@ class CollectionSummaryModel {
     @Binding
     def binding;
     
+    @Invoker 
+    def invoker;
+    
     @Service('CollectionSummaryService')
     def svc;
+    
+    @Service('DateService') 
+    def dateSvc; 
     
     def entity;
     
@@ -20,7 +26,10 @@ class CollectionSummaryModel {
     def change = 0.0;
     def items; 
     
-    String title = 'Collection Summary Information'
+    def query;
+    boolean multi_select; 
+    
+    String title = 'Collection Summary Information'; 
     
     @PropertyChangeListener
     def listener = [
@@ -28,23 +37,51 @@ class CollectionSummaryModel {
         'cashTendered' : { calcChange() },
     ] 
     
+    def init() { 
+        query = [ fromdate: dateSvc.getBasicServerDate() ];
+        query.todate = query.fromdate; 
+        
+        if (invoker?.properties?.tag) { 
+            multi_select = true;
+            return invoker.properties.tag; 
+        }
+        return 'default'; 
+    }
+    
+    def listHandler = [
+        isMultiSelect: { 
+            return multi_select; 
+        }, 
+        fetchList : { 
+            return items;  
+        },
+        afterSelectionChange: {
+            updateTotals( listHandler.selectedValue ); 
+            binding?.notifyDepends('totals'); 
+        }
+    ] as BasicListModel
+    
+    
+    void updateTotals( list ) {
+        totalCollection = 0.0; 
+        cashTendered = 0.0;
+        change = 0.0;
+        
+        if ( list ) { 
+            totalCollection = list.sum{( it.amount ? it.amount : 0.0 )}
+        }
+    }
     
     void getReceiptSummary(){
         if (receiptCount == null || receiptCount == 0){
             clearInfo();
         }
         else {
-            totalCollection = 0.0;
-            
-            items = svc.getCollectionsByCount(receiptCount)
-            
-            if( items )
-                totalCollection = items.amount.sum();
-                
-            cashTendered = 0.0;
-            change = 0.0;
+            items = svc.getCollectionsByCount(receiptCount); 
+            updateTotals( items ); 
+
             listHandler.load();
-            binding?.refresh();
+            binding?.notifyDepends('totals'); 
             binding?.focus('cashTendered');
         }
     }
@@ -65,9 +102,15 @@ class CollectionSummaryModel {
             change = cashTendered - totalCollection;
         binding?.refresh();
     }
+        
+    void search() {
+        items = svc.getCollections( query ); 
+        listHandler.load(); 
+    }
     
-    def listHandler = [
-        fetchList : { return items }
-    ] as BasicListModel
-
+    void clearSearch() { 
+        items?.clear(); 
+        query.clear(); 
+        listHandler.load(); 
+    }
 }

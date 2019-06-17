@@ -1,0 +1,7 @@
+<folders>
+    <folder id="menucategory">
+        <folder id="treasury" caption="Treasury">
+            <folder id="tool" caption="Tools" index="1000" icon="home/icons/postledger.png"/>
+        </folder>
+    </folder>
+</folders>

@@ -1,9 +1,15 @@
 <!-- REQUISITION ISSUE SLIP -->
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="aftxn">
     <invokers>
-        <invoker folderid="menucategory/treasury/af" caption="AF Transactions" 
-                 formTitle="AF Transactions" action="init" role="AFO"
+        <invoker folderid="menucategory/treasury/af" 
+                 formTitle="AF Transactions" 
+                 caption="View AF Transactions" 
+                 action="init" index="11" 
                  cols="controlno,dtfiled,issueto.name,txntype,respcenter.name" 
-                 orderBy="controlno"/>
+                 hiddenCols="txndate,request.reqno,issuefrom.name" 
+                 orderBy="controlno">
+			<action role="AFO" /> 
+            <action role="SHARED" allowCreate="false" allowDelete="false"/>             
+        </invoker>
     </invokers>
 </workunit> 

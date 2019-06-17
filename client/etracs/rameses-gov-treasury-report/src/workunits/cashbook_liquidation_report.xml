@@ -2,7 +2,6 @@
     <invokers>
         <invoker folderid="/explorer/report/treasury" caption="Cashbook Liquidation Report" target="window">
             <action name="doInit" role="REPORT" tag="SHARED"/> 
-            <action name="doInit" role="SHARED" tag="SHARED"/> 
             <action name="doInit" role="LIQUIDATING_OFFICER"/> 
         </invoker>
     </invokers>

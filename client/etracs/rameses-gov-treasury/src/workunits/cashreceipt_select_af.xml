@@ -6,13 +6,15 @@
                  cols="afid,stubno,currentseries,endseries,prefix,suffix,fund.title"
                  hiddenCols="fund.objid,owner.*,af.*"
                  orderBy="stubno,currentseries" 
-                 action="init" target="popup" />
+                 action="init" target="popup" 
+                 width="800"/>
         
         <invoker type="cashreceipt:select-af:subcollector" caption="Select Accountable Form" 
                  cols="afid,stubno,currentseries,endseries,owner.name,prefix,suffix,fund.title"
                  hiddenCols="fund.*,owner.objid,af.*"
                  orderBy="stubno,currentseries"
-                 action="init" target="popup"/>        
+                 action="init" target="popup" 
+                 width="800"/>        
     </invokers>
     <code class="com.rameses.enterprise.treasury.models.SelectAFModel" />
 </workunit>

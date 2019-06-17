@@ -56,12 +56,6 @@ class RPTLedgerInterceptor
     def STATE_APPROVED  = 'APPROVED'
 
 
-    @After(pattern="RPTLedgerService.(create|createSubLedger|update|updateSubLedger|approve|fixLedger|updateState|updateFaasReference)") 
-    public void logActions( evt ) {
-        def ledger = evt.result 
-        logSvc.logA( evt.methodName, 'RPTLEDGER', ledger.objid, ledger._remarks)
-    }
-
     @Before(pattern="PersistenceService.create", eval="args[0]._schemaname=='rptledger'") 
     public void createManualLedger( evt ) {
         def ledger = evt.args[0] 

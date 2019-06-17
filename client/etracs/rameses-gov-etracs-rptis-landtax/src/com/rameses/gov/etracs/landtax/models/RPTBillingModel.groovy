@@ -15,6 +15,9 @@ class RPTBillingModel
     
     @Service('RPTBillingService')
     def svc;
+
+    @Service('LogService')
+    def logSvc;
     
     @Service("ReportParameterService")
     def reportSvc;
@@ -66,6 +69,7 @@ class RPTBillingModel
             params.RPUCOUNT = bill.ledgers.size() 
             return params 
         },
+        afterPrint: { logPrint() }
     ] as ReportModel
     
     
@@ -87,6 +91,7 @@ class RPTBillingModel
     def print(){
         buildBill();
         ReportUtil.print( report.report, true );
+        logPrint();
         return '_close';
     }
         
@@ -119,6 +124,7 @@ class RPTBillingModel
         } else {
             mode = 'init';
             ReportUtil.print( report.report, true );
+            logPrint();
         }
         binding.refresh();
     }
@@ -282,5 +288,9 @@ class RPTBillingModel
     
     List getBarangays(){
         return lguSvc.lookupBarangays([:])
+    }
+
+    void logPrint() {
+        logSvc.log('printbill', 'rptledger', bill.taxpayer.objid)
     }
 } 

@@ -17,7 +17,12 @@ class TxnLogModel
     
     def listHandler = [
         fetchList : { 
-            return logSvc.getLogs(entity.objid);
+            def logs = logSvc.getLogs(entity.objid).sort{a,b -> 
+                if (a.txndate < b.txndate) return 1;
+                if (a.txndate == b.txndate) return 0;
+                return -1;
+            };
+            return logs;
         }        
     ] as BasicListModel;
     

@@ -120,6 +120,8 @@ public class CashReceiptPage extends javax.swing.JPanel {
 
         jPanel8.setLayout(new java.awt.BorderLayout());
 
+        xDataTable1.setHandler("listHandler");
+        xDataTable1.setName("selectedItem"); // NOI18N
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "pay"}
@@ -131,7 +133,7 @@ public class CashReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
+                , new Object[]{"editableWhen", "#{item.tdno != null}"}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
@@ -207,7 +209,7 @@ public class CashReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
+                , new Object[]{"editableWhen", "#{item.tdno != null}"}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
@@ -223,7 +225,7 @@ public class CashReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
+                , new Object[]{"editableWhen", "#{item.tdno != null}"}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
@@ -245,10 +247,8 @@ public class CashReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 0)}
             })
         });
-        xDataTable1.setHandler("listHandler");
         xDataTable1.setImmediate(true);
         xDataTable1.setIndex(-100);
-        xDataTable1.setName("selectedItem"); // NOI18N
         jPanel8.add(xDataTable1, java.awt.BorderLayout.CENTER);
 
         jPanel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));

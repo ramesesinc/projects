@@ -69,6 +69,9 @@ class RPTLedgerService
     @DataContext('rptpayment_item')
     def em_rptpayment_item
 
+    @DataContext('rptcompromise')
+    def em_rptcompromise
+
     @DataContext('vw_rptledger_avdifference')
     def vw_rptledger_avdifference
 
@@ -111,7 +114,7 @@ class RPTLedgerService
         ledger.subledger = em_rptledger_subledger.find([objid:ledger.objid]).first()
         ledger.subacctno = ledger.subledger?.subacctno
         ledger.parent = ledger.subledger?.parent
-        buildMessageList(ledger)
+        self.buildMessageList(ledger)
         return ledger 
     }        
 
@@ -1159,13 +1162,18 @@ class RPTLedgerService
 
     @ProxyMethod
     public void buildMessageList(ledger) {
+        ledger._messagelist = []
         def subledger = em_rptledger_subledger.find([objid:ledger.objid]).first()
         if (subledger) {
             def parent = em_rptledger.select('tdno').find([objid: subledger.parent.objid]).first()
-            ledger._messagelist = []
             if (ledger.beneficiary && ledger.beneficiary.objid ) {
                 ledger._messagelist << 'Subledger of TD No. ' + parent.tdno + '.'
             }
+        }
+
+        def compromise = em_rptcompromise.select('txnno').find([rptledgerid: ledger.objid, state: 'APPROVED']).first()
+        if (compromise) {
+            ledger._messagelist << 'Under Compromise #' + compromise.txnno + '.'
         }
     }
 

@@ -800,6 +800,7 @@ class RPTCompromiseService {
 			item.revtype = it.revtype 
 			item.revperiod = it.revperiod
 			item.year = it.year 
+			item.qtr = it.qtr
 			item.amount = it.amount 
 			item.amtpaid = 0.0 
 			item.interest = it.interest

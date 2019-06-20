@@ -48,8 +48,7 @@ insert into faas_list(
 	yearissued,
 	taskid,
 	taskstate,
-	assignee_objid,
-	trackingno
+	assignee_objid
 )
 select 
 	f.objid,
@@ -91,8 +90,7 @@ select
 	f.year as yearissued,
 	(select objid from faas_task where refid = f.objid and enddate is null) as taskid,
 	(select state from faas_task where refid = f.objid and enddate is null) as taskstate,
-	(select assignee_objid from faas_task where refid = f.objid and enddate is null) as assignee_objid,
-	(select trackingno from rpttracking where objid = f.objid) as trackingno
+	(select assignee_objid from faas_task where refid = f.objid and enddate is null) as assignee_objid
 from faas f 
 	inner join rpu r on f.rpuid = r.objid 
 	inner join realproperty rp on f.realpropertyid = rp.objid 

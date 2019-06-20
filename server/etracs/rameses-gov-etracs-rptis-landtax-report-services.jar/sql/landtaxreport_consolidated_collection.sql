@@ -11,15 +11,10 @@ select
   sum(ri.sefdisc) as sefdisc,
   sum(ri.basic + ri.basicint - ri.basicdisc + ri.sef + ri.sefint - ri.sefdisc) as total 
 from remittance rem 
-<<<<<<< HEAD
   inner join collectionvoucher cv on rem.collectionvoucherid = cv.objid 
   inner join cashreceipt cr on rem.objid = cr.remittanceid
-=======
-  inner join collectionvoucher liq on liq.objid = rem.collectionvoucherid 
-  inner join cashreceipt cr on cr.remittanceid = rem.objid 
->>>>>>> ef73a7e8d9e8568b802261829aeddd8dace49cae
   inner join rptpayment rp on cr.objid = rp.receiptid 
-  inner join vw_rptpayment_item ri on rp.objid = ri.parentid
+  inner join vw_rptpayment_item_detail ri on rp.objid = ri.parentid
   inner join rptledger rl ON rp.refid = rl.objid  
   inner join barangay b on rl.barangayid = b.objid 
 where ${filter} 

@@ -197,7 +197,6 @@ class TaxClearanceModel
     
     def getLookupLedger(){
         def query = [:]
-        query.taxpayer = entity.taxpayer;
         query.state = 'APPROVED';
         return InvokerUtil.lookupOpener('rptledger:lookup', [
             query: query,

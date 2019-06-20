@@ -700,7 +700,12 @@ class FAASService
         values.keySet().each {
             tdno = tdno.replace( it, values[it] )
         }
-        def ntdno = tdno + '-' + seqSvc.getNextFormattedSeriesA( tdno, seqcount )
+
+		def ntdno = tdno
+		if (tdno.indexOf('-') >= 0 ) {
+			ntdno += '-'
+		}
+        ntdno += seqSvc.getNextFormattedSeriesA( tdno, seqcount )
         return ntdno 
     }    	
 

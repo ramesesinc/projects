@@ -1,9 +1,10 @@
 package com.rameses.gov.etracs.rptis.models;
 
-import com.rameses.rcp.annotations.* 
-import com.rameses.rcp.common.* 
-import com.rameses.osiris2.client.* 
-import com.rameses.osiris2.common.* 
+import com.rameses.rcp.annotations.*; 
+import com.rameses.rcp.common.*; 
+import com.rameses.osiris2.client.*; 
+import com.rameses.osiris2.common.*; 
+import com.rameses.gov.etracs.rptis.util.*;
 import com.rameses.gov.etracs.rptis.interfaces.SubPage;
 
 public class RPUModel extends SubPageModel
@@ -42,13 +43,20 @@ public class RPUModel extends SubPageModel
     
     void calculateAssessment(){
         //TODO: 
-        if (entity._modify_ || (!entity.state.matches('CURRENT|CANCELLED') && entity.txntype.objid != 'TR')) {
+        if (isAllowModify()) {
             entity.rpu.txntype = entity.txntype;
             entity.rpu.effectivityyear = entity.effectivityyear;
             entity.rpu.putAll( rpuSvc.calculateAssessment(entity.rpu) )
             modeChanged(entity.state);
         }
     }
-    
+
+    def isAllowModify() {
+        if (entity.state.matches('CURRENT|CANCELLED')) return false;
+        if (RPTUtil.toBoolean(entity.datacapture, false) == true) return true;
+        if (!entity._modify_) return true;
+        if (entity.txntype.objid == 'TR') return false;
+        return true;
+    }
     
 }

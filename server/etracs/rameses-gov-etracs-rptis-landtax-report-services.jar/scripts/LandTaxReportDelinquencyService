@@ -45,7 +45,7 @@ class LandTaxReportDelinquencyService
 
 	@Async
 	@ProxyMethod
-	public def generateDelinquencyReport( params ) {
+	public def buildReport( params ) {
 
 		validate(params)
 

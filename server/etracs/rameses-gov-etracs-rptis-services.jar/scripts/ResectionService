@@ -327,7 +327,7 @@ class ResectionService
 	def validateAndLoadFaases(entity) {
 		//check duplicate 
 		def resection = em_resection.select('txnno')
-								    .where("objid <> :objid and section = :section and state <> 'APPROVED' ", entity)
+								    .where("objid <> :objid and section = :section and state <> 'APPROVED' and barangay_objid = :barangayid ", entity)
 								    .first()
 		if (resection)
 		throw new Exception('Duplicate resection with Txn No. ' + resection.txnno + ' is found.')

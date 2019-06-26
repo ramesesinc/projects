@@ -157,7 +157,9 @@ public class BatchGRService
 
     @ProxyMethod
     public def getCounts(entity){
-        em_batchgr.findCounts(entity)
+        def cnt = em_batchgr.findCounts(entity)
+        cnt.current = cnt.currentcnt
+        return cnt 
     }
 
 

@@ -265,7 +265,7 @@ public class CashReceiptPage extends javax.swing.JPanel {
         xLookupField1.setCaptionMnemonic('l');
         xLookupField1.setCaptionWidth(100);
         xLookupField1.setCellPadding(new java.awt.Insets(10, 5, 0, 0));
-        xLookupField1.setIndex(-500);
+        xLookupField1.setIndex(-1000);
         xLookupField1.setNullWhenEmpty(false);
         xLookupField1.setPreferredSize(new java.awt.Dimension(180, 19));
         formPanel6.add(xLookupField1);

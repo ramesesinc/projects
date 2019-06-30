@@ -267,7 +267,7 @@ public abstract class AbstractCashReceipt extends PageFlowController  {
         }
 
         if( mainProcessHandler ) {
-            mainProcessHandler.forward();
+            mainProcessHandler.forward(entity);
         }
         return null; 
     }

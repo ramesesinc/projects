@@ -17,7 +17,6 @@ class CashReceiptForm56 extends ReportModel {
     public Object getReportData() {
         def checks = [];
         def dates = [];
-        println '\n** payment items';
         reportData.paymentitems.each{ 
             checks << it.check?.bank?.code +' - '+ it.refno
             if( it.refdate instanceof String ) it.refdate = sdf.parse(it.refdate) 

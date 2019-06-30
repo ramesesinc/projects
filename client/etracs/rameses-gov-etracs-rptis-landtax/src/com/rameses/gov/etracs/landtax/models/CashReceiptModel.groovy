@@ -105,8 +105,8 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.models.AbstractCa
                 itemsforselection += ledgers;
                 selectionListHandler.reloadAll();
                 selectAllInit();
-                binding.focus('ledgertopay');
-                binding.refresh('selectionCount|selectedCount');
+                binding?.focus('ledgertopay');
+                binding?.refresh('selectionCount|selectedCount');
             },
         ])
     }
@@ -494,7 +494,7 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.models.AbstractCa
     }
     
     void afterRefresh(binding, pagename){
-        binding.requestFocus('ledger');
+        binding.focus('ledger');
     }
     
     def getRpuCount() {

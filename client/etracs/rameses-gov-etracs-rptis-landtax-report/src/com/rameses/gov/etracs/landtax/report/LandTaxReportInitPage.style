@@ -38,3 +38,13 @@
     visible:false;
 }
 
+
+"entity.reporttype" [reporttypes] {
+    visible:true;
+    enabled:true;
+    required:true;
+}
+
+"entity.reporttype" [reporttypes == null] {
+    visible:false;
+}

@@ -32,6 +32,7 @@ public class LandTaxReportInitPage extends javax.swing.JPanel {
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
+        xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
@@ -44,16 +45,25 @@ public class LandTaxReportInitPage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("Initial Information");
         xPanel1.setBorder(xTitledBorder1);
 
-        xFormPanel1.setCaptionWidth(100);
+        xFormPanel1.setCaptionWidth(110);
 
-        xComboBox4.setAllowNull(false);
         xComboBox4.setCaption("Posting Type");
         xComboBox4.setExpression("#{item.caption}");
         xComboBox4.setItems("postingtypes");
         xComboBox4.setName("entity.postingtype"); // NOI18N
+        xComboBox4.setAllowNull(false);
         xComboBox4.setPreferredSize(new java.awt.Dimension(0, 20));
         xComboBox4.setRequired(true);
         xFormPanel1.add(xComboBox4);
+
+        xComboBox5.setCaption("Report Type");
+        xComboBox5.setExpression("#{item.caption}");
+        xComboBox5.setItems("reporttypes");
+        xComboBox5.setName("entity.reporttype"); // NOI18N
+        xComboBox5.setAllowNull(false);
+        xComboBox5.setPreferredSize(new java.awt.Dimension(0, 20));
+        xComboBox5.setRequired(true);
+        xFormPanel1.add(xComboBox5);
 
         xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Period");
@@ -133,6 +143,7 @@ public class LandTaxReportInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox4;
+    private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDateField xDateField3;

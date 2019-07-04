@@ -5,10 +5,13 @@ import java.rmi.server.UID
 
 class LandTaxReportStatementOfShareService{
     @ActiveDB('landtaxreport_statementofshare')
-    def em;
+    def em
 
     @Service('DateService')
-    def dtsvc;
+    def dtsvc
+
+    @Service('NumberService')
+    def numSvc
 
     @ProxyMethod
     def generateIdleLandSharesAbstract(params){
@@ -105,8 +108,6 @@ class LandTaxReportStatementOfShareService{
             params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
         }
         
-        println 'params.filter -> ' + params.filter 
-        
         def shares = em.getBasicShares(params)
         if (!shares) 
             throw new Exception('Records not found.')
@@ -175,7 +176,7 @@ class LandTaxReportStatementOfShareService{
     }
 
     @ProxyMethod
-    public def getBarangaySharesStandard(params) {
+    public def getBarangayShares(params) {
         String idx = (params.month.index+'').padLeft(2, '0')
         params.fromdate = dtsvc.parse('yyyy-MM-dd', params.year+"-"+idx+"-01")
         params.todate = dtsvc.getMonthEndDate(dtsvc.parse("yyyy-MM-dd",params.fromdate))
@@ -186,14 +187,38 @@ class LandTaxReportStatementOfShareService{
         if (params.postingtype && params.postingtype.code == 'byrem'){
             params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
         }
+
+        def shares = []
+        if ('STANDARD' == params.reporttype.name) {
+            shares = em.getStandardBrgyShares( params) 
+        } else if ('ADVANCE' == params.reporttype.name) {
+            // if (params.year) {
+            //     params.filter += ' AND rpi.year = $P{year} '
+            // }
+            shares = em.getAdvanceBrgyShares( params) 
+            buildBarangayShares(shares)
+        }
         
-        def shares = em.getBrgySharesStandard( params) 
         if(! shares )  throw new Exception('Records not found.')
         
         return [
             params : [PERIOD : period],  
             shares : shares
         ]
+    }
+
+    void buildBarangayShares(shares) {
+        def rate = 0.25
+
+        shares.each {
+            it.brgybasic = numSvc.round( it.basic * rate)
+            it.brgydisc = numSvc.round( it.disc * rate)
+            it.brgyshare = it.brgybasic - it.brgydisc 
+
+            it.provmunibasic = it.basic - it.brgybasic 
+            it.provmunidisc = it.disc - it.brgydisc 
+            it.provmunishare = it.total - it.brgyshare
+        }
     }
 
    

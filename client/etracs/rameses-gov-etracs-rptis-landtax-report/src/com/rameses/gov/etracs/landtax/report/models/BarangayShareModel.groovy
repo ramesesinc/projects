@@ -14,17 +14,10 @@ class BarangayShareModel extends com.rameses.gov.etracs.landtax.report.LandTaxRe
     String title = 'Statement of Share Report - Barangay';
 
     def reportpath = 'com/rameses/gov/etracs/landtax/reports/'
+    String reportName = reportpath + 'statement_of_share_brgy.jasper';
     
     def data;
-    def reporttypes = [
-        [name: 'STANDARD', caption: 'STANDARD', report: 'statement_of_share_brgy.jasper'],
-        [name: 'ADVANCE', caption: 'ADVANCE', report: 'statement_of_share_brgy_advance.jasper'],
-    ]
-
-    String getReportName() {
-        return reportpath + entity.reporttype?.report;
-    }
-
+    
     public def getReportData(params){
         data = svc.getBarangayShares(params);
         return data.shares;

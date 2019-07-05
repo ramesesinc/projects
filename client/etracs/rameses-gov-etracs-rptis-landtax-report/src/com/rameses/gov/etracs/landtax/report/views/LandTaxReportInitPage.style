@@ -1,5 +1,6 @@
 "entity.date"[entity.period=='Daily']{
     visible:true;
+    required:true;
 } 
 
 "entity.date"[entity.period!='Daily']{
@@ -8,6 +9,7 @@
 
 "entity.month|entity.year"[entity.period=='Monthly']{
     visible:true;
+    required:true;
 } 
 
 "entity.month|entity.year"[entity.period!='Monthly']{
@@ -16,6 +18,7 @@
 
 "entity.startdate"[entity.period=='Range']{
     visible:true;
+    required:true;
 } 
 
 "entity.startdate"[entity.period!='Range']{
@@ -24,6 +27,7 @@
 
 "entity.enddate"[entity.period=='Range']{
     visible:true;
+    required:true;
 } 
 
 "entity.enddate"[entity.period!='Range']{

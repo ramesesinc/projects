@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.gov.etracs.landtax.report;
+package com.rameses.gov.etracs.landtax.report.views;
 
+import com.rameses.gov.etracs.landtax.report.*;
 import com.rameses.gov.etracs.landtax.report.abstractofcollection.*;
 import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
@@ -34,9 +35,9 @@ public class LandTaxReportInitPage extends javax.swing.JPanel {
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xNumberField1 = new com.rameses.rcp.control.XNumberField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
-        xNumberField1 = new com.rameses.rcp.control.XNumberField();
         xDateField2 = new com.rameses.rcp.control.XDateField();
         xDateField3 = new com.rameses.rcp.control.XDateField();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
@@ -65,16 +66,23 @@ public class LandTaxReportInitPage extends javax.swing.JPanel {
         xComboBox5.setRequired(true);
         xFormPanel1.add(xComboBox5);
 
-        xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Period");
         xComboBox1.setItems("periods");
         xComboBox1.setName("entity.period"); // NOI18N
+        xComboBox1.setAllowNull(false);
         xComboBox1.setPreferredSize(new java.awt.Dimension(125, 20));
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
 
+        xNumberField1.setCaption("Year");
+        xNumberField1.setName("entity.year"); // NOI18N
+        xNumberField1.setPattern("#0000");
+        xNumberField1.setPreferredSize(new java.awt.Dimension(125, 20));
+        xFormPanel1.add(xNumberField1);
+
         xDateField1.setCaption("Date");
         xDateField1.setName("entity.date"); // NOI18N
+        xDateField1.setPreferredSize(new java.awt.Dimension(125, 20));
         xFormPanel1.add(xDateField1);
 
         xComboBox2.setCaption("Month");
@@ -84,17 +92,14 @@ public class LandTaxReportInitPage extends javax.swing.JPanel {
         xComboBox2.setPreferredSize(new java.awt.Dimension(125, 20));
         xFormPanel1.add(xComboBox2);
 
-        xNumberField1.setCaption("Year");
-        xNumberField1.setName("entity.year"); // NOI18N
-        xNumberField1.setPattern("#0000");
-        xFormPanel1.add(xNumberField1);
-
         xDateField2.setCaption("From");
         xDateField2.setName("entity.startdate"); // NOI18N
+        xDateField2.setPreferredSize(new java.awt.Dimension(125, 20));
         xFormPanel1.add(xDateField2);
 
         xDateField3.setCaption("To");
         xDateField3.setName("entity.enddate"); // NOI18N
+        xDateField3.setPreferredSize(new java.awt.Dimension(125, 20));
         xFormPanel1.add(xDateField3);
 
         xComboBox3.setCaption("Collector");
@@ -117,7 +122,7 @@ public class LandTaxReportInitPage extends javax.swing.JPanel {
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addGap(8, 8, 8)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -135,7 +140,7 @@ public class LandTaxReportInitPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(119, Short.MAX_VALUE))
+                .addContainerGap(148, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

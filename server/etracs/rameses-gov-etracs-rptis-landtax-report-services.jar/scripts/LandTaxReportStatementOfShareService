@@ -141,7 +141,6 @@ class LandTaxReportStatementOfShareService{
         def shares = em.getBasicSharesSummary(params)
         if (!shares) 
             throw new Exception('Records not found.')
-            println 'shares -> ' + shares 
         return [
             params : [PERIOD : period],  
             shares : shares
@@ -188,21 +187,33 @@ class LandTaxReportStatementOfShareService{
             params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
         }
 
-        def shares = []
-        if ('STANDARD' == params.reporttype.name) {
-            shares = em.getStandardBrgyShares( params) 
-        } else if ('ADVANCE' == params.reporttype.name) {
-            // if (params.year) {
-            //     params.filter += ' AND rpi.year = $P{year} '
-            // }
-            shares = em.getAdvanceBrgyShares( params) 
-            buildBarangayShares(shares)
-        }
-        
+        def shares = em.getStandardBrgyShares( params) 
         if(! shares )  throw new Exception('Records not found.')
         
         return [
             params : [PERIOD : period],  
+            shares : shares
+        ]
+    }
+
+    @ProxyMethod
+    public def getBarangayAdvanceShares(params) {
+        params.filter = ' rpi.year = $P{advanceyear} '
+        
+        def shares = []
+
+        if ('QTRLY' == params.summarytype.name) {
+            shares = em.getAdvanceBrgySharesQtrly( params) 
+        } else {
+            shares = em.getAdvanceBrgySharesAnnual( params) 
+        }
+
+        if(! shares )  throw new Exception('Records not found.')
+        
+        buildBarangayShares(shares)
+
+        return [
+            params : [PERIOD : 'For the Year ' + params.advanceyear],  
             shares : shares
         ]
     }
@@ -220,6 +231,4 @@ class LandTaxReportStatementOfShareService{
             it.provmunishare = it.total - it.brgyshare
         }
     }
-
-   
 }

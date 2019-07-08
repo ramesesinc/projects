@@ -41,7 +41,7 @@ abstract class AsyncReportModel
     abstract void buildReportData(entity, asyncHandler);
     
     def getFormControl(){
-        return null;
+        return getStandardFormControls();
     }
     
     def getStandardFormControls(){

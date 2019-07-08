@@ -32,6 +32,11 @@
 	<parameter name="grandtotal" isForPrompting="false" class="java.lang.Integer"/>
 	<parameter name="selecteduser" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="selectedmonth" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="PERIOD" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="USERFULLNAME" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="JOBTITLE" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="ASSESSORNAME" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="ASSESSORTITLE" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="_items" class="java.lang.Object"/>
 	<field name="user" class="java.lang.String"/>
@@ -43,7 +48,7 @@
 			</band>
 		</background>
 		<title>
-			<band height="109"  isSplitAllowed="true" >
+			<band height="119"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						x="0"
@@ -99,7 +104,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="84"
+						y="82"
 						width="752"
 						height="17"
 						key="textField-3"/>
@@ -107,7 +112,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{selectedmonth}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PERIOD}]]></textFieldExpression>
 				</textField>
 				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -206,101 +211,7 @@
 			</band>
 		</pageFooter>
 		<summary>
-			<band height="73"  isSplitAllowed="true" >
-				<staticText>
-					<reportElement
-						x="2"
-						y="42"
-						width="71"
-						height="15"
-						key="staticText-4"
-						positionType="Float"/>
-					<box leftPadding="2"></box>
-					<textElement textAlignment="Left" verticalAlignment="Bottom">
-						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false"/>
-					</textElement>
-				<text><![CDATA[USER]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="2"
-						y="58"
-						width="71"
-						height="15"
-						key="staticText-5"
-						positionType="Float"/>
-					<box leftPadding="2"></box>
-					<textElement textAlignment="Left" verticalAlignment="Bottom">
-						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false"/>
-					</textElement>
-				<text><![CDATA[PRINT DATE]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="74"
-						y="42"
-						width="9"
-						height="15"
-						key="staticText-6"
-						positionType="Float"/>
-					<box leftPadding="2"></box>
-					<textElement textAlignment="Center" verticalAlignment="Bottom">
-						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false"/>
-					</textElement>
-				<text><![CDATA[:]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="74"
-						y="58"
-						width="9"
-						height="15"
-						key="staticText-7"
-						positionType="Float"/>
-					<box leftPadding="2"></box>
-					<textElement textAlignment="Center" verticalAlignment="Bottom">
-						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false"/>
-					</textElement>
-				<text><![CDATA[:]]></text>
-				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="84"
-						y="42"
-						width="181"
-						height="15"
-						key="textField-19"
-						positionType="Float"/>
-					<box leftPadding="2">					<pen lineWidth="0.25" lineStyle="Solid"/>
-					<topPen lineWidth="0.0" lineStyle="Solid"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{selecteduser}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="84"
-						y="58"
-						width="181"
-						height="15"
-						key="textField-20"
-						positionType="Float"/>
-					<box leftPadding="2">					<pen lineWidth="0.25" lineStyle="Solid"/>
-					<topPen lineWidth="0.0" lineStyle="Solid"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[new SimpleDateFormat("MMMM dd, yyyy").format($P{PRINTDATE})]]></textFieldExpression>
-				</textField>
+			<band height="128"  isSplitAllowed="true" >
 				<crosstab >
 					<reportElement
 						x="0"
@@ -438,7 +349,7 @@
 					<crosstabCell width="90" height="15">
 						<cellContents mode="Transparent">
 					<box></box>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
 						y="0"
@@ -459,7 +370,7 @@
 					<crosstabCell width="88" height="15" columnTotalGroup="action">
 						<cellContents mode="Transparent">
 					<box></box>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
 						y="0"
@@ -527,6 +438,90 @@
 					<box></box>
 						</cellContents>
 					</whenNoDataCell>					</crosstab>
+				<staticText>
+					<reportElement
+						x="74"
+						y="60"
+						width="181"
+						height="15"
+						key="staticText-8"
+						positionType="Float"/>
+					<box leftPadding="2"></box>
+					<textElement textAlignment="Left" verticalAlignment="Bottom">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Prepared By:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="74"
+						y="98"
+						width="181"
+						height="15"
+						key="textField-24"
+						positionType="Float"/>
+					<box leftPadding="2"></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{USERFULLNAME}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="74"
+						y="113"
+						width="181"
+						height="15"
+						key="textField-25"
+						positionType="Float"/>
+					<box leftPadding="2"></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{JOBTITLE}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="481"
+						y="60"
+						width="181"
+						height="15"
+						key="staticText-9"
+						positionType="Float"/>
+					<box leftPadding="2"></box>
+					<textElement textAlignment="Left" verticalAlignment="Bottom">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Certified Correct:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="481"
+						y="98"
+						width="181"
+						height="15"
+						key="textField-26"
+						positionType="Float"/>
+					<box leftPadding="2"></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{ASSESSORNAME}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="481"
+						y="113"
+						width="181"
+						height="15"
+						key="textField-27"
+						positionType="Float"/>
+					<box leftPadding="2"></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{ASSESSORTITLE}]]></textFieldExpression>
+				</textField>
 			</band>
 		</summary>
 </jasperReport>

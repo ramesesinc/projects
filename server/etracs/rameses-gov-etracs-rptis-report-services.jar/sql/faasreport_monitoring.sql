@@ -3,18 +3,19 @@ SELECT DISTINCT
 	action 
 FROM txnlog
 WHERE ref = 'FAAS'
+AND userid LIKE $P{userid}
+AND txndate >= $P{startdate} AND txndate < $P{enddate}
+ORDER BY username, action
 
 
-
-[findActionCountSummation]
+[findActionCount]
 SELECT 
 	count(distinct refid) as sum
 FROM txnlog
 WHERE ref = 'FAAS'
 AND action = $P{action}
-AND userid = $P{userid}
-AND txndate LIKE $P{date}
-
+AND userid LIKE $P{userid}
+AND txndate >= $P{startdate} AND txndate < $P{enddate}
 
 
 [getUsers]
@@ -23,14 +24,15 @@ SELECT DISTINCT
 FROM txnlog
 WHERE ref = 'FAAS'
 AND userid LIKE $P{userid}
-
+AND txndate >= $P{startdate} AND txndate < $P{enddate}
+ORDER BY username 
 
 [getData]
 SELECT 
-username AS USER, ACTION 
+username AS user, action  
 FROM txnlog 
 WHERE ref = 'FAAS'
 AND userid LIKE $P{userid}
-AND txndate LIKE $P{date}
-
+AND txndate >= $P{startdate} AND txndate < $P{enddate}
+ORDER BY username, action 
 

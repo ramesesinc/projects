@@ -3,6 +3,8 @@
 - BPLS 
 		
 - ASSESSOR	
+    - FAAS Encoding Monitoring update 
 
 - LANDTAX
+    - Barangay Advance Share Summary Report
 	

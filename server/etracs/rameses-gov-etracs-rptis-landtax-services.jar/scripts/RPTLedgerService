@@ -48,6 +48,9 @@ class RPTLedgerService
     @DataContext('rptledger_subledger')
     def em_rptledger_subledger
 
+    @DataContext('rptledger_tag')
+    def em_rptledger_tag
+
     @DataContext('rptledger_avdifference')
     def em_avdifference
 
@@ -1175,6 +1178,23 @@ class RPTLedgerService
         if (compromise) {
             ledger._messagelist << 'Under Compromise #' + compromise.txnno + '.'
         }
+    }
+
+    @ProxyMethod
+    public def getTags(ledger) {
+        return em_rptledger_tag.find([parent_objid: ledger.objid]).orderBy('tag').list()
+    }
+
+    @ProxyMethod
+    public def addTag(tag) {
+        em_rptledger_tag.create(tag)
+        return tag 
+    }
+
+    @ProxyMethod
+    public def removeTag(tag) {
+        em_rptledger_tag.delete(tag)
+        return tag
     }
 
 }

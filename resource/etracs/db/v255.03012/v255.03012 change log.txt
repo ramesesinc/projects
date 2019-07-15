@@ -8,4 +8,5 @@
 - LANDTAX
     - Barangay Advance Share Summary Report
     - Compromise Contract and Application updates
+    - Ledger Tag Support
 	

@@ -28,5 +28,12 @@ class LandTaxLogger
         logSvc.logA( action, 'subledger', ledger.objid, ledger._remarks)
     }
 
+    @After(pattern="RPTLedgerService.(addTag|removeTag)") 
+    public void logTagActions( evt ) {
+        def tag = evt.result 
+        def remarks = 'Tag: ' + tag.tag 
+        logSvc.logA( evt.methodName, 'rptledger', tag.parent.objid, remarks)
+    }
+
 }
 

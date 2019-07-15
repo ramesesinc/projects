@@ -98,6 +98,7 @@ public class RPTLedgerRuleService
 		}
 
 		buildIncentiveFacts(facts, ledgerfact)
+		buildTags(facts, ledger)
 
 		return facts
 	}
@@ -119,6 +120,13 @@ public class RPTLedgerRuleService
 		def incentives = em_incentive_item.find([rptledgerid:ledgerfact.objid]).list()
 		incentives.each{
 			facts << new RPTIncentive(ledgerfact, it)
+		}
+	}
+
+	void buildTags(facts, ledger) {
+		def tags = ledgerSvc.getTags(ledger)
+		tags.each {
+			facts << new RPTLedgerTag(it.tag)
 		}
 	}
 }

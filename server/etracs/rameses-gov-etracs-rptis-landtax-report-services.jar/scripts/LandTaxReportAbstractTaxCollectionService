@@ -145,9 +145,9 @@ class LandTaxReportAbstractTaxCollectionService {
             period += ' - ' + dtsvc.format('MMMMM dd, yyyy', todate);
         }
 
-        params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
+        params.filter = ' liq.controldate >= $P{fromdate} AND liq.controldate < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
+            params.filter = ' rem.controldate >= $P{fromdate} AND rem.controldate < $P{todate} '
         }
 
         def items = em.getAbstractOfRPTCollection(params).each{buildPeriod(it)};

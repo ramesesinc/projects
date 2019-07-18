@@ -22,9 +22,9 @@ class LandTaxReportConsolidatedCollectionService
         params.classid = params.classification.objid 
         util.buildStartEndDateFilter(params)
 
-        params.filter = ' cv.dtposted >= $P{startdate} AND cv.dtposted < $P{enddate} '
+        params.filter = ' cv.controldate >= $P{startdate} AND cv.controldate < $P{enddate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.dtposted >= $P{startdate} AND rem.dtposted < $P{enddate} '
+            params.filter = ' rem.controldate >= $P{startdate} AND rem.controldate < $P{enddate} '
         }
 
         def list = em.getConsolidatedCollections(params)

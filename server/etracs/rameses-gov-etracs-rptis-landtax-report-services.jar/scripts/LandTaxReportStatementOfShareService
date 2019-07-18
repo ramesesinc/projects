@@ -21,9 +21,9 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d");
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate);
-        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
+        params.filter = ' cv.controldate >= $P{fromdate} AND cv.controldate < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
+            params.filter = ' rem.controldate >= $P{fromdate} AND rem.controldate < $P{todate} '
         }
         
 
@@ -45,9 +45,9 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
-        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
+        params.filter = ' cv.controldate >= $P{fromdate} AND cv.controldate < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
+            params.filter = ' rem.controldate >= $P{fromdate} AND rem.controldate < $P{todate} '
         }
         
 
@@ -73,9 +73,9 @@ class LandTaxReportStatementOfShareService{
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
 
-        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
+        params.filter = ' cv.controldate >= $P{fromdate} AND cv.controldate < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
+            params.filter = ' rem.controldate >= $P{fromdate} AND rem.controldate < $P{todate} '
         }
 
         def shares = em.getBasicSharesAbstract(params)
@@ -103,9 +103,9 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
-        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
+        params.filter = ' cv.controldate >= $P{fromdate} AND cv.controldate < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
+            params.filter = ' rem.controldate >= $P{fromdate} AND rem.controldate < $P{todate} '
         }
         
         def shares = em.getBasicShares(params)
@@ -132,9 +132,9 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
-        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
+        params.filter = ' cv.controldate >= $P{fromdate} AND cv.controldate < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
+            params.filter = ' rem.controldate >= $P{fromdate} AND rem.controldate < $P{todate} '
         }
         
 
@@ -157,11 +157,10 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
-        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
+        params.filter = ' cv.controldate >= $P{fromdate} AND cv.controldate < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
+            params.filter = ' rem.controldate >= $P{fromdate} AND rem.controldate < $P{todate} '
         }
-        
         def shares = em.getSefShares(params)
         if (!shares) 
             throw new Exception('Records not found.')
@@ -182,9 +181,9 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
-        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
+        params.filter = ' cv.controldate >= $P{fromdate} AND cv.controldate < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
+            params.filter = ' rem.controldate >= $P{fromdate} AND rem.controldate < $P{todate} '
         }
 
         def shares = em.getStandardBrgyShares( params) 

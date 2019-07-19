@@ -406,7 +406,9 @@ class RPTLedgerService
 
     @ProxyMethod
     public def postLedgerFaas( ledgerfaas ) {
-        def ledgerfaases = em_rptledger_faas.find([rptledgerid:ledgerfaas.rptledgerid]).orderBy('fromyear desc, tdno desc')
+        def ledgerfaases = em_rptledger_faas.find([rptledgerid:ledgerfaas.rptledgerid, state: 'APPROVED'])
+                                            .orderBy('fromyear desc, tdno desc')
+                                            .list()
         def latestledgerfaas = ledgerfaases.first()
         if (latestledgerfaas) {
             if (latestledgerfaas.fromyear == ledgerfaas.fromyear && latestledgerfaas.fromqtr == ledgerfaas.fromqtr){

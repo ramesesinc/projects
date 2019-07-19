@@ -105,6 +105,12 @@ class LandRPUService
 
 	@ProxyMethod
 	public def deleteLandRpu(rpu){
+		deleteItems(rpu)
+		em.delete(rpu)
+	}
+
+	@ProxyMethod
+	public def deleteItems(rpu) {
 		rpu.planttrees.each{
 			ptem.delete(it, SCHEMA_PLANTTREE_DETAIL)
 		}
@@ -122,7 +128,6 @@ class LandRPUService
 		}
 		em.deleteAdjustmentParametersByRpu([ landrpuid: rpu.objid ]); 
 		em.deleteLandAdjustments(rpu)
-		em.delete(rpu)
 	}
 
 

@@ -117,13 +117,18 @@ class BldgRPUService
 
 	@ProxyMethod
 	public def deleteBldgRpu(rpu){
+		deleteItems(rpu)
+		em.delete(rpu)
+	}
+
+	@ProxyMethod
+	public def deleteItems(rpu) {
 		em.deleteAllParams(rpu)
 		em.deleteAllFloorAdditionals(rpu)
 		em.deleteAllFloors(rpu)
 		em.deleteAllUses(rpu)
 		em.deleteAllStructuralTypes(rpu)
 		em.deleteAllStructures(rpu)
-		em.delete(rpu)
 	}
 
 

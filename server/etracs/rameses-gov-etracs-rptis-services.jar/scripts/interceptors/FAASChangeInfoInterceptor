@@ -146,7 +146,9 @@ class FAASChangeInfoInterceptor
 	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_faas_appraisal'}")
 	public void updateAppraisalInfo(evt){
 		def changeinfo = evt.result
-		rpuSvc.updateRpu(changeinfo.newinfo);
+		def oldrpu = rpuSvc.openRpu(changeinfo.newinfo)
+		rpuSvc.deleteItems(oldrpu)
+		rpuSvc.updateRpu(changeinfo.newinfo)
 
 		//update faas_list info 
 		def flinfo = [:]

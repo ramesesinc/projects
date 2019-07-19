@@ -83,11 +83,16 @@ class MiscRPUService
 
     @ProxyMethod
     public def deleteMiscRpu(rpu){
-        removeDeletedItems(rpu)
-        em.deleteAllParams(rpu)
-        em.deleteAllMiscRpuItems(rpu)
+        deleteItems(rpu)
         em.delete(rpu)
     }
+
+    @ProxyMethod
+	public def deleteItems(rpu) {
+		removeDeletedItems(rpu)
+        em.deleteAllParams(rpu)
+        em.deleteAllMiscRpuItems(rpu)
+	}    
 
     @ProxyMethod
     public void generateNewIds( rpu ) {

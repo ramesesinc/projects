@@ -9,6 +9,9 @@ class LandtaxOnlinePaymentInterceptor
 	@Service('RPTBillingService')
     def billSvc
 
+    @Service('RPTReceiptService')
+    def receiptSvc
+
     @DataContext('entity')
     def em_entity 
 
@@ -81,7 +84,14 @@ class LandtaxOnlinePaymentInterceptor
 
         po.info = data 
     }
+    
 
+    @After(pattern="OnlinePaymentService.getReceipt", eval="#{args[0].txntype=='rptcol'}")
+    public void getReceipt( def evt ) { 
+        def eor = evt.result
+        eor.formno = '56'
+        receiptSvc.formatReceiptForPrinting(eor)
+    }
 
     @Before(pattern="EORService.post", eval="#{args[0].txntype=='rptcol'}")
     public void postPayment( evt ) { 
@@ -96,6 +106,7 @@ class LandtaxOnlinePaymentInterceptor
     public void afterPostPayment( def evt ) { 
         def eor = evt.args[0] 
         def res = evt.result 
+        eor.objid = res.objid 
         eor.receiptno = res.receiptno 
         eor.receiptdate = res.receiptdate
         postPaymentSvc.postPayment(eor) 

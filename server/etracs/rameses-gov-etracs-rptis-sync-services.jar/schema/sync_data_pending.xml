@@ -1,8 +1,8 @@
 <schema>
 	<element tablename="sync_data_pending">
 		<field name="objid" primary="true" />
-		<field name="error" />
-		<field name="expirydate" />
+		<field name="error" caption="Error" />
+		<field name="expirydate" caption="Expiry Date" />
 	</element>
 </schema>
 

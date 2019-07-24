@@ -3,16 +3,17 @@
 		<field name="objid" primary="true" prefix="MSG"/>
 		<field name="parentid" required="true" />
 		<field name="refid" required="true" />
-		<field name="reftype" required="true" />
+		<field name="reftype" required="true" caption="Ref Type" />
+		<field name="refno" caption="Ref No." />
 		<field name="orgid" />
 		<field name="remote_orgid" />
-		<field name="remote_orgcode" />
+		<field name="remote_orgcode" caption="Remote Org" />
 		<field name="remote_orgclass" />
-		<field name="action" required="true" />
-		<field name="dtfiled" required="true" />
-		<field name="idx" required="true" type="integer" />
+		<field name="action" required="true" caption="Action" />
+		<field name="dtfiled" required="true" caption="Date Filed" />
+		<field name="idx" required="true" type="integer" caption="Index" />
 		<field name="sender_objid" />
-		<field name="sender_name" />
+		<field name="sender_name" caption="Sender" />
 
 		<complex name="forprocess" ref="sync_data_forprocess" jointype="many-to-one" required="false">
 			<key field="objid" target="objid" />

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit schemaName="sync_data"
+          windowTitle="Data Synchronization Information"
+          allowDelete="false"
+          allowCreate="false"
+          allowEdit="false"
+>
+    <invokers>
+        <invoker type="sync_data:open"
+                 action="open" 
+                 caption="Data Synchronization Information"
+                 role="ADMIN" 
+                 target="popup" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.models.SyncDataModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.views.SyncDataPage"/>
+    </pages>
+</workunit>
+
+

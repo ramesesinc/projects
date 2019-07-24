@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
+    schemaName="sync_data"
+    windowTitle="Manage Data Synchronization"
+    allowDelete="false"
+    allowCreate="false"
+    cols="refid,reftype,remote.orgcode,action,dtfiled,idx,sender.name,pending.error"
+    orderBy="dtfiled,idx,refid"
+>
+    <invokers>
+        <invoker folderid="/menucategory/rpt/util" 
+                 action="init" 
+                 caption="Manage Data Synchronization"
+                 role="ADMIN" />
+    </invokers>
+</workunit>
+
+

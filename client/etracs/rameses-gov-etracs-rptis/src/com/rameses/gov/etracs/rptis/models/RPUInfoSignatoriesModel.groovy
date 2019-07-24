@@ -14,7 +14,11 @@ class RPUInfoSignatoriesModel extends SubPageModel
     
     @PropertyChangeListener
     def listener = [
-        'entity.*dtsigned':{caller.calculateAssessment()}
+        'entity.*dtsigned':{
+            if (caller) {
+                caller.calculateAssessment()
+            }
+        }
     ]
     
     /*===============================================

@@ -155,8 +155,8 @@ class PropertyAuctionNoticeService
         annotation.memoranda = 'WARRANT OF LEVY IS ISSUED PURSUANT TO SECTION 258 OF THE LOCAL GOVERNMENT CODE OF 1991, R.A. 7160 '
         annotation.memoranda += 'WITH THE TOTAL AMOUNT OF P' + numSvc.format('#,##0.00', entity.amtdue) + '  FROM'
         annotation.memoranda += ' TAX YEARS ' + entity.fromyear + ' TO ' + entity.toyear + '.'
-        annotationSvc.createAnnotation(annotation)
-        annotationSvc.approveAnnotation(annotation)
+        annotationSvc.create(annotation)
+        annotationSvc.approve(annotation)
     }
 
 

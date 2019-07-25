@@ -7,7 +7,7 @@
         <invoker type="propertyauction_step:open" 
                  action="open" caption="Auction Step" 
                  target="popup"
-                 role="AUCTION_ADMIN" />
+                 role="ADMIN" />
     </invokers>
     <pages>
         <page template="com.rameses.gov.etracs.landtax.views.AuctionStepPage"/>

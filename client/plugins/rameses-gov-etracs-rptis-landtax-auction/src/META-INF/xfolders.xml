@@ -2,7 +2,7 @@
 <folders>
     <folder id="menucategory">
         <folder id="landtax" caption="Land Tax">
-            <folder id="auction" caption="Auction" index="100" />
+            <folder id="auction" caption="Auction" index="100" icon="home/icons/auction.png" />
         </folder>
     </folder>
     <folder id="explorer">

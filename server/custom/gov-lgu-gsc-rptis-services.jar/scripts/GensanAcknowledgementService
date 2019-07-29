@@ -1,0 +1,76 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class GensanAcknowledgementService
+{
+	@Service('SequenceService')
+	def seqSvc
+
+	@Service('OrgService')
+	def orgSvc 	
+
+	@DataContext('rptacknowledgement_item')
+	def em_tracking
+
+	@DataContext('faas_list')
+	def em_faas_list
+
+
+	@ProxyMethod
+	public def getNextAcknowledgementSeries() {
+		def orgcode =  getRootCode() 
+		def key = 'RPTACKNOWLEDGEMENT-' + orgcode
+		return  'RA' + orgcode + seqSvc.getNextFormattedSeries(key)
+	}
+
+	@ProxyMethod
+	public def getNextTrackingSeries() {
+		def orgcode =  getRootCode() 
+		def key = 'RPTTRACKING-' + orgcode
+		return  'RT' + orgcode + seqSvc.getNextFormattedSeries(key)
+	}
+
+	@ProxyMethod
+	public def getRootCode() {
+		def org = orgSvc.getRoot()
+		return org.code.replaceAll('-','') 
+	}	
+
+	@ProxyMethod
+	public void addItems(entity) {
+		if (entity.count <= 0) return
+		for (int i = 0; i < entity.count; i++) {
+			def tracking = [:]
+			tracking.parent = entity
+			tracking.trackingno = getNextTrackingSeries()
+			tracking.reftype = 'faas'
+			em_tracking.create(tracking)
+		}
+	}
+
+	@ProxyMethod
+	public def assignTracking(param) {
+		def tracking = em_tracking.find([trackingno: param.trackingno]).first()
+		if (!tracking) {
+			throw new Exception('Tracking ' + param.trackingno + ' does not exist.')
+		}
+
+		tracking.ref = param.ref
+		tracking.reftype = param.reftype 
+		tracking.refno = param.refno 
+		em_tracking.update(tracking)
+		if (param.reftype == 'faas') {
+			def faaslist = em_faas_list.select('objid,tdno,displaypin').find([trackingno: tracking.trackingno]).first()
+			if (faaslist && faaslist.objid != tracking.newfaas.objid) {
+				throw new Exception('Tracking ' + param.trackingno + ' is already assigned to ' + (faaslist.tdno ? faaslist.tdno : faaslist.displaypin) + '.')
+			}
+			tracking.newfaas = tracking.ref 
+			em_tracking.update(tracking)
+			em_faas_list.find([objid: tracking.newfaas.objid]).update([trackingno: tracking.trackingno])
+		}
+		return tracking 
+	}
+	
+}
+

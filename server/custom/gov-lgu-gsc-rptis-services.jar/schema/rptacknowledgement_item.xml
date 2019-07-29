@@ -1,0 +1,16 @@
+<schema>
+	<element tablename="rptacknowledgement_item">
+		<field name="objid" primary="true" prefix="ATI"/>
+		<field name="parent_objid" required="true" />
+		<field name="trackingno" />
+		<field name="reftype" />
+		<field name="refno" />
+		<field name="ref_objid" />
+		<field name="newfaas_objid" />
+		<field name="remarks"  />
+		<complex name="newfaas" ref="faas" jointype="many-to-one" required="false"
+			includefields="state,tdno,fullpin">
+			<key field="newfaas_objid" target="objid" />
+		</complex>
+	</element>
+</schema>

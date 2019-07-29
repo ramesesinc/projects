@@ -36,7 +36,7 @@ where rp.barangayid = $P{_barangayid}
 select 
   sum(1) as count,
   sum(case when state = 'REVISED' then 1 else 0 end) as revised,
-  sum(case when state = 'CURRENT' then 1 else 0 end) as current,
+  sum(case when state = 'CURRENT' then 1 else 0 end) as currentcnt,
   sum(case when state = 'ERROR' then 1 else 0 end) as error
 from batchgr_item 
 where parent_objid = $P{objid}

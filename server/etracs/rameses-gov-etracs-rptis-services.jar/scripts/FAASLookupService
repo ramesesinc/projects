@@ -47,7 +47,8 @@ class FAASLookupService
 					blockno like $P{searchtext} or 
 					trackingno like $P{searchtext} or 
 					owner_name like $P{searchtext} or 
-					surveyno like $P{searchtext}
+					surveyno like $P{searchtext} or 
+					pin like $P{searchtext}
 				)
 			'''
 		}

@@ -1,8 +1,9 @@
 <workunit>
     <invokers>
-        <invoker folderid="/explorer/report/landtax" action="init" 
-                 caption="Statement of Share Report - Barangay" 
-                 target="window" role="REPORT"/>
+        <invoker type="statementofshare:report" action="init" 
+                 caption="Barangay Share" 
+                 role="REPORT"/>
+
         <invoker type="formActions"     action="_close" caption="Cancel" mnemonic="c"  icon="images/toolbars/cancel.png" immediate="true" visibleWhen="#{mode=='init'}"/>
         <invoker type="formActions"     action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/toolbars/print.png" visibleWhen="#{mode=='init'}"/>
         <invoker type="formActions"     action="preview" caption="Preview" mnemonic="v"  icon="images/doc-view.png" visibleWhen="#{mode=='init'}"/>
@@ -11,50 +12,11 @@
         <invoker type="formActions"     action="back" caption="Back" mnemonic="c"  icon="images/toolbars/back.png" immediate="true" visibleWhen="#{mode=='view'}"/>   
     </invokers>
     
-    <code>
-    
-<![CDATA[
-
-import com.rameses.rcp.common.*;
-import com.rameses.rcp.annotations.*;
-import com.rameses.osiris2.client.*;
-import com.rameses.osiris2.reports.*;
-import com.rameses.etracs.shared.*;
-
-class StatementOfShareReportController extends com.rameses.gov.etracs.landtax.report.LandTaxReportController
-{
-    @Service('LandTaxReportStatementOfShareService')
-    def svc; 
-
-    String title = 'Statement of Share Report - Barangay';
-
-    def reportpath = 'com/rameses/gov/etracs/landtax/report/statementofshares/'
-    String reportName = reportpath + 'statementofshare_brgy.jasper';
-    
-    def data;
-
-    public def getReportData(params){
-        data = svc.getBarangaySharesStandard(params);
-        return data.shares;
-    }
-    
-        
-    def getReportParameters(){
-        return data?.params;
-    }
-    
-    def getPeriods(){
-        return ["Monthly"];
-    }
-
-}
-
-]]>
-
+    <code class="com.rameses.gov.etracs.landtax.report.models.BarangayShareModel">
     </code>
     
     <pages>
-        <page template="com.rameses.gov.etracs.landtax.report.LandTaxReportInitPage"/>
+        <page template="com.rameses.gov.etracs.landtax.report.views.LandTaxReportInitPage"/>
         <page name="preview" template="com.rameses.gov.etracs.landtax.report.PreviewPage" />
     </pages>
 </workunit>

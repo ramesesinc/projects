@@ -1,0 +1,49 @@
+import com.rameses.common.*
+import com.rameses.annotations.*
+import com.rameses.services.extended.*
+
+class GSCRPTLedgerInterceptor {
+	@ActiveDB(value='gsc_lgrpts', em='lgrpts')
+	def em 
+
+	@DataContext('rptledger')
+	def em_ledger
+
+	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname=='rptledger'}", index=1000)
+	public afterOpen(evt) {
+		def ledger = evt.result
+		
+		ledger._messagelist = []
+
+		getAuctions(ledger).each{
+			def msg = 'Property is currently under auction.'
+			msg += ' Year/Batch: '  + it.yr + ' (' + it.batch + ')\n'
+			msg += ' Period Covered: ' + it.period 
+			ledger._messagelist << msg 
+			ledger._auctioned = true 
+		}
+	}
+
+	@Before(pattern='RPTBillingService.generateBill', index=100)
+	public void beforeBill(evt) {
+		def bill = evt.args[0]
+		
+		bill.ledgers.each{
+			def ledger = em_ledger.select('tdno,prevtdno').find([objid: it.objid]).first()
+			if (ledger) {
+				def auctions = getAuctions(ledger)
+				if (auctions) {
+					throw new Exception('Ledger is currently under auction. Billing is not allowed')
+				}
+			}
+		}
+	}
+
+	def getAuctions(ledger) {
+		def auctions = em.getAuctions([tdno: ledger.tdno.replace('F-', '')])
+		if (!auctions && ledger.prevtdno) {
+			auctions = em.getAuctions([tdno: ledger.prevtdno.replace('F-', '')])
+		}
+		return auctions 
+	}
+}

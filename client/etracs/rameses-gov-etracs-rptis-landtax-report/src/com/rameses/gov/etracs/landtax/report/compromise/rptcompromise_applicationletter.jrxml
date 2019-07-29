@@ -38,6 +38,7 @@
 	<parameter name="TREASURERNAME" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="TREASURERTITLE" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="PROVINCIALTREASURERTITLE" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="TREASUREROFFICENAME" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="txndate" class="java.util.Date"/>
 	<field name="taxpayer.name" class="java.lang.String"/>
@@ -70,17 +71,19 @@
 	<field name="secondpartyrepresentative" class="java.lang.String"/>
 	<field name="barangay" class="java.lang.String"/>
 	<field name="term" class="java.lang.Integer"/>
+	<field name="firstpartyname" class="java.lang.String"/>
+	<field name="firstpartytitle" class="java.lang.String"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
 			</band>
 		</background>
 		<title>
-			<band height="615"  isSplitAllowed="true" >
+			<band height="585"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						x="0"
-						y="455"
+						y="449"
 						width="128"
 						height="15"
 						key="staticText-1"/>
@@ -93,7 +96,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="469"
+						y="463"
 						width="128"
 						height="15"
 						key="staticText-2"/>
@@ -106,7 +109,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="483"
+						y="477"
 						width="128"
 						height="15"
 						key="staticText-3"/>
@@ -119,7 +122,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="497"
+						y="491"
 						width="128"
 						height="15"
 						key="staticText-4"/>
@@ -132,7 +135,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="511"
+						y="505"
 						width="128"
 						height="15"
 						key="staticText-5"/>
@@ -145,7 +148,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="525"
+						y="519"
 						width="128"
 						height="15"
 						key="staticText-6"/>
@@ -158,7 +161,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="539"
+						y="533"
 						width="128"
 						height="15"
 						key="staticText-7"/>
@@ -171,7 +174,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="553"
+						y="547"
 						width="128"
 						height="15"
 						key="staticText-8"/>
@@ -184,7 +187,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="567"
+						y="561"
 						width="128"
 						height="15"
 						key="staticText-9"/>
@@ -197,7 +200,7 @@
 				<staticText>
 					<reportElement
 						x="129"
-						y="455"
+						y="449"
 						width="9"
 						height="15"
 						key="staticText-10"/>
@@ -210,7 +213,7 @@
 				<staticText>
 					<reportElement
 						x="129"
-						y="469"
+						y="463"
 						width="9"
 						height="15"
 						key="staticText-11"/>
@@ -223,7 +226,7 @@
 				<staticText>
 					<reportElement
 						x="129"
-						y="483"
+						y="477"
 						width="9"
 						height="15"
 						key="staticText-12"/>
@@ -236,7 +239,7 @@
 				<staticText>
 					<reportElement
 						x="129"
-						y="497"
+						y="491"
 						width="9"
 						height="15"
 						key="staticText-13"/>
@@ -249,7 +252,7 @@
 				<staticText>
 					<reportElement
 						x="129"
-						y="511"
+						y="505"
 						width="9"
 						height="15"
 						key="staticText-14"/>
@@ -262,7 +265,7 @@
 				<staticText>
 					<reportElement
 						x="129"
-						y="525"
+						y="519"
 						width="9"
 						height="15"
 						key="staticText-15"/>
@@ -275,7 +278,7 @@
 				<staticText>
 					<reportElement
 						x="129"
-						y="539"
+						y="533"
 						width="9"
 						height="15"
 						key="staticText-16"/>
@@ -288,7 +291,7 @@
 				<staticText>
 					<reportElement
 						x="129"
-						y="553"
+						y="547"
 						width="9"
 						height="15"
 						key="staticText-17"/>
@@ -301,7 +304,7 @@
 				<staticText>
 					<reportElement
 						x="129"
-						y="567"
+						y="561"
 						width="9"
 						height="15"
 						key="staticText-18"/>
@@ -314,7 +317,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="141"
-						y="455"
+						y="449"
 						width="356"
 						height="15"
 						key="textField-1"/>
@@ -327,7 +330,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="141"
-						y="469"
+						y="463"
 						width="356"
 						height="15"
 						key="textField-2"/>
@@ -340,7 +343,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="141"
-						y="483"
+						y="477"
 						width="356"
 						height="15"
 						key="textField-3"/>
@@ -353,7 +356,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="141"
-						y="497"
+						y="491"
 						width="356"
 						height="15"
 						key="textField-4"/>
@@ -366,7 +369,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="141"
-						y="511"
+						y="505"
 						width="356"
 						height="15"
 						key="textField-5"/>
@@ -379,7 +382,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="141"
-						y="525"
+						y="519"
 						width="356"
 						height="15"
 						key="textField-6"/>
@@ -392,7 +395,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="141"
-						y="539"
+						y="533"
 						width="356"
 						height="15"
 						key="textField-7"/>
@@ -405,7 +408,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="141"
-						y="553"
+						y="547"
 						width="356"
 						height="15"
 						key="textField-8"/>
@@ -418,7 +421,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="141"
-						y="567"
+						y="561"
 						width="356"
 						height="15"
 						key="textField-9"/>
@@ -457,20 +460,20 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="86"
+						y="55"
 						width="498"
-						height="15"
+						height="12"
 						key="textField-14"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma"/>
+						<font fontName="Tahoma" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{LGUADDRESS}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
 						x="0"
-						y="107"
+						y="83"
 						width="498"
 						height="15"
 						key="staticText-23"/>
@@ -482,8 +485,8 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="-1"
-						y="121"
+						x="0"
+						y="97"
 						width="498"
 						height="15"
 						key="staticText-24"/>
@@ -493,49 +496,23 @@
 					</textElement>
 				<text><![CDATA[ON THE PAYMENT OF REAL PROPERTY TAX]]></text>
 				</staticText>
-				<staticText>
-					<reportElement
-						x="0"
-						y="34"
-						width="498"
-						height="15"
-						key="staticText-25"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" isBold="true"/>
-					</textElement>
-				<text><![CDATA[OFFICE OF THE PROVINCIAL TREASURER]]></text>
-				</staticText>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="-1"
-						y="49"
+						x="0"
+						y="38"
 						width="498"
 						height="15"
 						key="textField-15"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PROVINCIALTREASUREROFFICENAME}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PROVINCIALTREASUREROFFICENAME} ? $P{PROVINCIALTREASUREROFFICENAME} : $P{TREASUREROFFICENAME}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
-						x="0"
-						y="71"
-						width="498"
-						height="15"
-						key="staticText-26"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" isBold="true"/>
-					</textElement>
-				<text><![CDATA[OFFICE OF THE MUNICIPAL TREASURER]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
 						x="386"
-						y="160"
+						y="145"
 						width="111"
 						height="15"
 						key="staticText-27"/>
@@ -549,7 +526,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="386"
-						y="145"
+						y="130"
 						width="112"
 						height="15"
 						key="textField-16"/>
@@ -570,7 +547,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PROVINCIALTREASURERNAME}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PROVINCIALTREASURERNAME} ? $P{PROVINCIALTREASURERNAME} : $P{TREASURERNAME}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -583,25 +560,12 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica" isBold="false"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["PROVINCIAL TREASURER"]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="0"
-						y="217"
-						width="498"
-						height="15"
-						key="textField-19"/>
-					<box></box>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" isBold="false"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PROVINCIALTREASUREROFFICENAME}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PROVINCIALTREASURERTITLE} ? $P{PROVINCIALTREASURERTITLE} : $P{TREASURERTITLE}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
 						x="0"
-						y="253"
+						y="241"
 						width="498"
 						height="15"
 						key="staticText-28"/>
@@ -615,7 +579,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="285"
+						y="273"
 						width="498"
 						height="36"
 						key="textField-20"/>
@@ -628,7 +592,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="324"
+						y="312"
 						width="498"
 						height="37"
 						key="textField-21"/>
@@ -641,20 +605,20 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="360"
+						y="348"
 						width="498"
 						height="90"
 						key="textField-22"/>
 					<box></box>
-					<textElement textAlignment="Justified" verticalAlignment="Top" lineSpacing="1_1_2">
+					<textElement textAlignment="Left" verticalAlignment="Top" lineSpacing="1_1_2">
 						<font fontName="Tahoma" pdfFontName="Helvetica" isBold="false"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["      2. To pay under installment basis the unpaid balance of delinquency for a period of " + ($F{term}/12)+ ($F{term}/12 == 1 ? " year" : " years") + " without any further penalties within the period. In the event that I fail to pay the taxes due as computed by the Municipal/Provincial Treasurer's Office collector under the installment basis, the total balance of the delinquent of Real Property Tax as well as the entire amount of the penalties shall become automatically due and shall be subjected to collection and legal action in accordance with existing laws and regulations."]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["        2. To pay under installment basis the unpaid balance of delinquency for a period of " + ($F{term}/12)+ ($F{term}/12 == 1 ? " year" : " years") + " without any further penalties within the period. In the event that I fail to pay the taxes due as computed by the " + $P{TREASUREROFFICENAME} +" collector under the installment basis, the total balance of the delinquent of Real Property Tax as well as the entire amount of the penalties shall become automatically due and shall be subjected to collection and legal action in accordance with existing laws and regulations."]]></textFieldExpression>
 				</textField>
-				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
-						x="43"
+						x="13"
 						y="5"
 						width="65"
 						height="65"
@@ -663,18 +627,8 @@
 						key="image-1"/>
 					<box></box>
 					<graphicElement stretchType="NoStretch" fill="Solid" />
-					<imageExpression class="java.io.InputStream"><![CDATA[$P{LOGOLGU}]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA["classpath:///images/lgu-logo.png"]]></imageExpression>
 				</image>
-				<subreport  isUsingCache="true">
-					<reportElement
-						x="0"
-						y="589"
-						width="498"
-						height="21"
-						key="subreport-1"/>
-					<dataSourceExpression><![CDATA[$F{credits}]]></dataSourceExpression>
-					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{credits}]]></subreportExpression>
-				</subreport>
 			</band>
 		</title>
 		<pageHeader>
@@ -686,7 +640,17 @@
 			</band>
 		</columnHeader>
 		<detail>
-			<band height="0"  isSplitAllowed="true" >
+			<band height="21"  isSplitAllowed="true" >
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="0"
+						y="0"
+						width="498"
+						height="21"
+						key="subreport-1"/>
+					<dataSourceExpression><![CDATA[$F{credits}]]></dataSourceExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{credits}]]></subreportExpression>
+				</subreport>
 			</band>
 		</detail>
 		<columnFooter>
@@ -823,9 +787,11 @@
 					<reportElement
 						x="0"
 						y="104"
-						width="118"
+						width="197"
 						height="15"
-						key="staticText-40"/>
+						key="staticText-40">
+							<printWhenExpression><![CDATA[$P{PROVINCIALTREASURERNAME} != null]]></printWhenExpression>
+						</reportElement>
 					<box></box>
 					<textElement>
 						<font/>
@@ -839,7 +805,9 @@
 						width="198"
 						height="15"
 						key="textField-40"
-						positionType="Float"/>
+						positionType="Float">
+							<printWhenExpression><![CDATA[$P{PROVINCIALTREASURERNAME} != null]]></printWhenExpression>
+						</reportElement>
 					<box>					<pen lineWidth="0.25" lineStyle="Solid"/>
 					<topPen lineWidth="0.0" lineStyle="Solid"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid"/>
@@ -858,7 +826,9 @@
 						width="198"
 						height="15"
 						key="textField-41"
-						positionType="Float"/>
+						positionType="Float">
+							<printWhenExpression><![CDATA[$P{PROVINCIALTREASURERNAME} != null]]></printWhenExpression>
+						</reportElement>
 					<box>					<pen lineWidth="0.25" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid"/>
@@ -900,7 +870,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PROVINCIALTREASURERNAME}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PROVINCIALTREASURERNAME} ? $P{PROVINCIALTREASURERNAME} : $F{firstpartyname}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -919,7 +889,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PROVINCIALTREASURERTITLE}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PROVINCIALTREASURERTITLE} ? $P{PROVINCIALTREASURERTITLE} : $F{firstpartytitle}]]></textFieldExpression>
 				</textField>
 			</band>
 		</summary>

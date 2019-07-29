@@ -23,7 +23,7 @@ select
     rl.totalareaha,
     rl.totalareaha * 10000.0 as totalareasqm,
     rl.classcode
-from rptledger_compromise rc 
+from rptcompromise rc 
 inner join rptledger rl on rc.rptledgerid = rl.objid 
 inner join barangay b on rl.barangayid = b.objid 
 where rc.state = 'APPROVED'
@@ -31,6 +31,6 @@ and rl.barangayid like $P{barangayid}
 and b.parentid in (
     select objid from municipality where objid like $P{lguid}
     union all 
-    select d.objid from city c, district d where c.objid = d.parentid and c.objid = $P{lguid}
+    select d.objid from city c, district d where c.objid = d.parentid and c.objid like $P{lguid}
 )
 order by rc.txnno 

@@ -53,7 +53,7 @@ class RPTDelinquencyReportModel extends com.rameses.gov.etracs.rpt.report.AsyncR
             throw new Exception('From Year must be less than or equal to To Year.');
             
         entity.reporttype = 'listing';
-        svc.generateDelinquencyReport(entity, asyncHandler);
+        svc.buildReport(entity, asyncHandler);
     }
     
     Map getParameters(){

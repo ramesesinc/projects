@@ -85,11 +85,3 @@ class AttachmentModel
 
 }
 
-interface AttachmentAdapter {
-    public void loadFolders(files);
-    public void loadItems( info );
-}
-
-       
-
-       

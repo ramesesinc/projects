@@ -122,13 +122,16 @@ public class PlantTreeUnitValueInfoModel implements SubPage
     
     
     Map createUnitValue() {
+        def idx = unitValues.size() + 1
+        def code = selectedPlantTree.code + '' + idx
+        def name = RPTUtil.formalizeNumber(idx) + ' CLASS'
         return [
             objid                   : RPTUtil.generateId('BT'),
             planttreerysettingid    : entity.objid, 
             planttree_objid         : selectedPlantTree.objid,
             planttree               : selectedPlantTree,
-            code                    : null,
-            name                    : null,
+            code                    : code,
+            name                    : name,
             unitvalue               : 0.0,
         ]
     }    

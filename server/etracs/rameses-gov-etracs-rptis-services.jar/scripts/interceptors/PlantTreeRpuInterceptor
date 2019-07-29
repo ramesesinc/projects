@@ -50,6 +50,12 @@ class PlantTreeRpuInterceptor
 		svc.deletePlantTreeRpu(evt.args[0])
 	}
 
+	@Before(pattern="RPUService.deleteItems", eval="#{args[0].rputype == 'planttree'}") 
+	public void deleteRpuItems( evt ) {
+		def rpu = evt.args[0]
+		svc.deleteItems(rpu)
+	}	
+
 	@After(pattern="RPUService.reviseRpu", eval="#{result.rputype == 'planttree'}") 
 	public void reviseRpu( evt ) {
 		try {

@@ -166,6 +166,7 @@ class FAASService
 		faas.datacapture = false
 		faas.prevtdno = 'NEW'
 		faas.prevpin = ''
+		faas.effectivityyear = dtSvc.serverYear + 1
 		if(info.state) faas.state = info.state 
         createFaas(faas)
         return faas
@@ -699,7 +700,12 @@ class FAASService
         values.keySet().each {
             tdno = tdno.replace( it, values[it] )
         }
-        def ntdno = tdno + '-' + seqSvc.getNextFormattedSeriesA( tdno, seqcount )
+
+		def ntdno = tdno
+		if (tdno.indexOf('-') >= 0 ) {
+			ntdno += '-'
+		}
+        ntdno += seqSvc.getNextFormattedSeriesA( tdno, seqcount )
         return ntdno 
     }    	
 

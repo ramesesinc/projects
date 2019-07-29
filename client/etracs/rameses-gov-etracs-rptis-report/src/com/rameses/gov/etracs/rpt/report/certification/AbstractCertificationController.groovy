@@ -140,6 +140,7 @@ public abstract class AbstractCertificationController
                 }
                 entity.faasid = it.objid;
                 entity.tdno= it.tdno;
+                entity.trackingno = it.trackingno;
                 entity.taxpayer = it.taxpayer;
                 entity.requestedby = it.taxpayer.name;
                 entity.requestedbyaddress = it.taxpayer.address;

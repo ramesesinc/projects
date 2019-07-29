@@ -25,6 +25,8 @@ class RPTReceiptBatchModel extends PageFlowController
     
     @Service('QueryService')
     def qrySvc;
+
+    def mainProcessHandler;
     
     def MODE_INIT = 'init';
     def MODE_SELECT = 'select';
@@ -76,12 +78,18 @@ class RPTReceiptBatchModel extends PageFlowController
     }
 
     void loadItemsByTaxpayer(){
-        processing = true;
-        bill.taxpayer = entity.taxpayer;
-        entity.paidby = bill.taxpayer.name;
-        entity.paidbyaddress = bill.taxpayer.address.text;
-        loadItemsForPaymentAsync();
-        calcReceiptAmount();
+        if (mode == MODE_INIT || mode == MODE_SELECT) {
+            processing = true;
+            bill.taxpayer = entity.taxpayer;
+            entity.paidby = bill.taxpayer.name;
+            if (bill.taxpayer.address instanceof String) {
+                entity.paidbyaddress = bill.taxpayer.address;
+            } else {
+                entity.paidbyaddress = bill.taxpayer.address.text;
+            }
+            loadItemsForPaymentAsync();
+            calcReceiptAmount();
+        }
     }
 
     /*===================================
@@ -150,20 +158,20 @@ class RPTReceiptBatchModel extends PageFlowController
         entity.barcodeid = null;
         binding.refresh('entity.barcodeid');
     }
-    
-    @PropertyChangeListener
-    def listener = [
-        'bill.billtoyear|bill.billtoqtr' : {
-            try{
-                loadItemsByTaxpayer();
-            }
-            catch(e){
-                e.printStackTrace();
-                itemsforpayment = [];
-            }
-            listHandler.load();
+
+    void reloadProperties() {
+        try{
+            loadItemsByTaxpayer();
         }
-    ]
+        catch(e){
+            e.printStackTrace();
+            itemsforpayment = [];
+        }
+        processing = false;
+        listHandler.load();
+        mode = MODE_SELECT;
+        listHandler.load();
+    }
     
     def listHandler = [
         createItem : { return null },
@@ -232,11 +240,6 @@ class RPTReceiptBatchModel extends PageFlowController
             
     }
     
-    void doCancel(){
-        cancelled = true;
-        init();
-    }
-    
     void updateItemDue(item){
         def tmpbill = cloneBill();
         tmpbill.rptledgerid = item.objid;
@@ -245,7 +248,8 @@ class RPTReceiptBatchModel extends PageFlowController
         if (!ledger) throw new Exception('Expecting a ledger.')
         ledger.clear();
         ledger.putAll(ledgers.first());
-        bill.partial = [amount:0.0]
+        ledger.pay = true;
+        bill.partial = [amount:0.0];
         listHandler.load();
         calcReceiptAmount();
     }    
@@ -296,8 +300,6 @@ class RPTReceiptBatchModel extends PageFlowController
     def selectedItem;
     
     void initPayment(){
-        if (entity.amount <= 0.0)
-            throw new Exception('Amount must be greater than zero.')
         mode = MODE_PAYMENT;
     }
     
@@ -400,9 +402,18 @@ class RPTReceiptBatchModel extends PageFlowController
     }
 
     def doClose() {
-        return '_exit';
+        if( mainProcessHandler ) {
+            mainProcessHandler.back();
+        }
+        else {
+            return "_close";
+        }
     }
-    
+
+    def doCancel() {
+        return doClose();
+    }
+
     def createReceipt() {
         receipt  = [
             txnmode         : 'ONLINE', 

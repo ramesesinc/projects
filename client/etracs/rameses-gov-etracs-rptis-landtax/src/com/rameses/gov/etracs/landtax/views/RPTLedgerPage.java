@@ -35,8 +35,8 @@ public class RPTLedgerPage extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         formPanel6 = new com.rameses.rcp.util.FormPanel();
         xLabel10 = new com.rameses.rcp.control.XLabel();
-        xLabel11 = new com.rameses.rcp.control.XLabel();
         xLabel26 = new com.rameses.rcp.control.XLabel();
+        xLabel11 = new com.rameses.rcp.control.XLabel();
         xLabel21 = new com.rameses.rcp.control.XLabel();
         xLabel27 = new com.rameses.rcp.control.XLabel();
         xLabel31 = new com.rameses.rcp.control.XLabel();
@@ -76,44 +76,47 @@ public class RPTLedgerPage extends javax.swing.JPanel {
         formPanel6.setBorder(xTitledBorder1);
         formPanel6.setCaptionWidth(100);
 
-        xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel10.setCaption("Property Owner");
         xLabel10.setExpression("#{entity.taxpayer.name}");
+        xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel10.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel10.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel6.add(xLabel10);
 
-        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel11.setCaption("Address");
-        xLabel11.setExpression("#{entity.taxpayer.address.text}");
-        xLabel11.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
-        xLabel11.setPreferredSize(new java.awt.Dimension(0, 19));
-        formPanel6.add(xLabel11);
-
-        xLabel26.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel26.setCaption("Administrator");
         xLabel26.setExpression("#{entity.administrator.name}");
+        xLabel26.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel26.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel26.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel6.add(xLabel26);
 
-        xLabel21.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel11.setCaption("Beneficiary");
+        xLabel11.setExpression("#{entity.beneficiary.name}");
+        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel11.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        xLabel11.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel6.add(xLabel11);
+
         xLabel21.setCaption("TD No.");
         xLabel21.setExpression("#{entity.tdno}");
+        xLabel21.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel21.setCaptionWidth(100);
         xLabel21.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel21.setPreferredSize(new java.awt.Dimension(0, 19));
+        xLabel21.setStretchWidth(50);
         formPanel6.add(xLabel21);
 
-        xLabel27.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel27.setCaption("Prev. TD No.");
         xLabel27.setExpression("#{entity.prevtdno}");
+        xLabel27.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel27.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel27.setPreferredSize(new java.awt.Dimension(0, 19));
+        xLabel27.setStretchWidth(50);
         formPanel6.add(xLabel27);
 
-        xLabel31.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel31.setCaption("PIN ");
         xLabel31.setExpression("#{entity.fullpin}");
+        xLabel31.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel31.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel31.setPreferredSize(new java.awt.Dimension(0, 19));
         xLabel31.setStretchWidth(100);
@@ -297,10 +300,12 @@ public class RPTLedgerPage extends javax.swing.JPanel {
 
         jPanel3.add(jPanel4, java.awt.BorderLayout.EAST);
 
-        xTabbedPane1.setDynamic(true);
         xTabbedPane1.setItems("sections");
         xTabbedPane1.setName("section"); // NOI18N
+        xTabbedPane1.setDynamic(true);
 
+        xDataTable4.setHandler("itemHandlers.faases");
+        xDataTable4.setName("selectedItem"); // NOI18N
         xDataTable4.setAutoResize(false);
         xDataTable4.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
@@ -499,13 +504,11 @@ public class RPTLedgerPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 0)}
             })
         });
-        xDataTable4.setHandler("itemHandlers.faases");
         xDataTable4.setImmediate(true);
-        xDataTable4.setName("selectedItem"); // NOI18N
 
-        xActionBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xActionBar1.setDepends(new String[] {"selectedItem"});
         xActionBar1.setName("historyActions"); // NOI18N
+        xActionBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xActionBar1.setUseToolBar(false);
 
         org.jdesktop.layout.GroupLayout jPanel8Layout = new org.jdesktop.layout.GroupLayout(jPanel8);

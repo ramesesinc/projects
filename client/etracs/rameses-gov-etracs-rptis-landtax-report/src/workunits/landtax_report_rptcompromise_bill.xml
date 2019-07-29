@@ -46,7 +46,7 @@ class CompromiseBillReportController
     void buildReport(){
         params = svcParams.getStandardParameter();
         params.LOGOLGU = EtracsReportUtil.getInputStream("lgu-logo.png");
-        entity.unpaiditems = svc.getUnpaidInstallments(entity.objid);
+        entity.unpaiditems = svc.getUnpaidInstallments([objid: entity.objid]);
         report.viewReport();
     }
 

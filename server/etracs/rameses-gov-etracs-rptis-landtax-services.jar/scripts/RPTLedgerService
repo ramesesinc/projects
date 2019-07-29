@@ -48,6 +48,9 @@ class RPTLedgerService
     @DataContext('rptledger_subledger')
     def em_rptledger_subledger
 
+    @DataContext('rptledger_tag')
+    def em_rptledger_tag
+
     @DataContext('rptledger_avdifference')
     def em_avdifference
 
@@ -68,6 +71,9 @@ class RPTLedgerService
 
     @DataContext('rptpayment_item')
     def em_rptpayment_item
+
+    @DataContext('rptcompromise')
+    def em_rptcompromise
 
     @DataContext('vw_rptledger_avdifference')
     def vw_rptledger_avdifference
@@ -111,6 +117,7 @@ class RPTLedgerService
         ledger.subledger = em_rptledger_subledger.find([objid:ledger.objid]).first()
         ledger.subacctno = ledger.subledger?.subacctno
         ledger.parent = ledger.subledger?.parent
+        self.buildMessageList(ledger)
         return ledger 
     }        
 
@@ -384,7 +391,7 @@ class RPTLedgerService
     }    
 
     @ProxyMethod
-    public void postPayment( payment ) {
+    public def postPayment( payment ) {
         payment.dtposted = dtSvc.serverDate 
         payment.postedby = env.NAME
         payment.postedbytitle = env.JOBTITLE
@@ -394,11 +401,14 @@ class RPTLedgerService
         postPaymentItems(payment)
         updatePaidLedgerItems(payment)
         em_rptledger.find([objid:payment.refid]).update([lastyearpaid:payment.toyear, lastqtrpaid:payment.toqtr])
+        return payment
     }
 
     @ProxyMethod
     public def postLedgerFaas( ledgerfaas ) {
-        def ledgerfaases = em_rptledger_faas.find([rptledgerid:ledgerfaas.rptledgerid]).orderBy('fromyear desc, tdno desc')
+        def ledgerfaases = em_rptledger_faas.find([rptledgerid:ledgerfaas.rptledgerid, state: 'APPROVED'])
+                                            .orderBy('fromyear desc, tdno desc')
+                                            .list()
         def latestledgerfaas = ledgerfaases.first()
         if (latestledgerfaas) {
             if (latestledgerfaas.fromyear == ledgerfaas.fromyear && latestledgerfaas.fromqtr == ledgerfaas.fromqtr){
@@ -421,6 +431,7 @@ class RPTLedgerService
     public def createSubLedger( subledger ) {
         create(subledger);
         em_rptledger_subledger.create(subledger)
+        return subledger
     }
 
     @ProxyMethod
@@ -437,6 +448,7 @@ class RPTLedgerService
         em_rptledger_faas.find([rptledgerid:subledger.objid]).delete()
         em_rptledger.update(subledger)
         em_rptledger_subledger.update(subledger)
+        return subledger
     }  
 
     @ProxyMethod
@@ -492,10 +504,6 @@ class RPTLedgerService
         }
 
         difference.rptledgerfaas = rptledgerfaas
-
-        if (difference.year < rptledgerfaas.fromyear) {
-            throw new Exception('Difference year must be greater than or equal to ' + rptledgerfaas.fromyear + '.')
-        }
 
         if (difference.av <= 0){
             throw new Exception('Assessed value difference must be greater than zero.')
@@ -656,6 +664,22 @@ class RPTLedgerService
             else{
                 em_rptledger_item.create(it)
             }
+        }
+        updateLastYearPaidItem(ledger)
+    }
+
+    void updateLastYearPaidItem(ledger) {
+        if (ledger.lastqtrpaid == 4) {
+            return
+        }
+
+        def items = em_rptledger_item.select('objid,amount,amtpaid')
+                    .find([parentid: ledger.objid, year: ledger.lastyearpaid, amtpaid: 0])
+                    .list()
+        items.each{
+            def qtrlyamt = numSvc.round(it.amount / 4);
+            def amtpaid = numSvc.round(qtrlyamt * ledger.lastqtrpaid)
+            em_rptledger_item.find([objid: it.objid]).update([amtpaid: amtpaid])
         }
     }
 
@@ -1139,6 +1163,40 @@ class RPTLedgerService
     def checkHasPayment(ledger) {
         def pmt = em_rptpayment.find([refid: ledger.objid]).first()
         return pmt != null 
+    }
+
+    @ProxyMethod
+    public void buildMessageList(ledger) {
+        ledger._messagelist = []
+        def subledger = em_rptledger_subledger.find([objid:ledger.objid]).first()
+        if (subledger) {
+            def parent = em_rptledger.select('tdno').find([objid: subledger.parent.objid]).first()
+            if (ledger.beneficiary && ledger.beneficiary.objid ) {
+                ledger._messagelist << 'Subledger of TD No. ' + parent.tdno + '.'
+            }
+        }
+
+        def compromise = em_rptcompromise.select('txnno').find([rptledgerid: ledger.objid, state: 'APPROVED']).first()
+        if (compromise) {
+            ledger._messagelist << 'Under Compromise #' + compromise.txnno + '.'
+        }
+    }
+
+    @ProxyMethod
+    public def getTags(ledger) {
+        return em_rptledger_tag.find([parent_objid: ledger.objid]).orderBy('tag').list()
+    }
+
+    @ProxyMethod
+    public def addTag(tag) {
+        em_rptledger_tag.create(tag)
+        return tag 
+    }
+
+    @ProxyMethod
+    public def removeTag(tag) {
+        em_rptledger_tag.delete(tag)
+        return tag
     }
 
 }

@@ -51,6 +51,7 @@ public class MiscItemInfoModel implements SubPage
     
     def handle = { o-> 
         selectedMiscItem.expr = _expr;
+        service.saveMiscItemValue( selectedMiscItem )
         miscItemListHandler.refreshEditedCell()
     };
     

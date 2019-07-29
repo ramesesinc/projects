@@ -170,4 +170,13 @@ class RPTUtil
         }
         return len;
     }
+
+    public static def formalizeNumber( num ) {
+        def snum = format('#0', num )
+        if (snum.matches('11|12|13')) return snum + 'TH'
+        else if (snum[-1] == '1') return snum + 'ST'
+        else if (snum[-1] == '2') return snum + 'ND'
+        else if (snum[-1] == '3') return snum + 'RD'
+        else return snum + 'TH'
+    }
 }

@@ -19,7 +19,7 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jTabbedPane2" pref="516" max="32767" attributes="0"/>
+                  <Component id="jTabbedPane2" pref="774" max="32767" attributes="0"/>
                   <Component id="formPanel3" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -77,7 +77,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jSplitPane1" pref="491" max="32767" attributes="0"/>
+                      <Component id="jSplitPane1" pref="749" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -102,19 +102,19 @@
               <SubComponents>
                 <Component class="com.rameses.rcp.control.XDataTable" name="xDataTable7">
                   <Properties>
-                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                      <PropertyBean type="com.rameses.rcp.control.border.XTitledBorder">
-                        <Property name="title" type="java.lang.String" value="Specific Class"/>
-                      </PropertyBean>
-                    </Property>
                     <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
                       <StringArray count="1">
                         <StringItem index="0" value="classification"/>
                       </StringArray>
                     </Property>
                     <Property name="handler" type="java.lang.String" value="specificClassListHandler"/>
-                    <Property name="immediate" type="boolean" value="true"/>
                     <Property name="name" type="java.lang.String" value="selectedSpecificClass" noResource="true"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <PropertyBean type="com.rameses.rcp.control.border.XTitledBorder">
+                        <Property name="title" type="java.lang.String" value="Specific Class"/>
+                      </PropertyBean>
+                    </Property>
+                    <Property name="immediate" type="boolean" value="true"/>
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
@@ -163,7 +163,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="xDataTable9" min="-2" pref="304" max="-2" attributes="0"/>
-                      <EmptySpace pref="197" max="32767" attributes="0"/>
+                      <EmptySpace pref="455" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -180,14 +180,14 @@
           <SubComponents>
             <Component class="com.rameses.rcp.control.XDataTable" name="xDataTable9">
               <Properties>
+                <Property name="handler" type="java.lang.String" value="strippingListHandler"/>
+                <Property name="name" type="java.lang.String" value="selectedStripping" noResource="true"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <PropertyBean type="com.rameses.rcp.control.border.XTitledBorder">
                     <Property name="title" type="java.lang.String" value="Stripping"/>
                   </PropertyBean>
                 </Property>
-                <Property name="handler" type="java.lang.String" value="strippingListHandler"/>
                 <Property name="immediate" type="boolean" value="true"/>
-                <Property name="name" type="java.lang.String" value="selectedStripping" noResource="true"/>
               </Properties>
             </Component>
           </SubComponents>

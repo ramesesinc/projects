@@ -56,16 +56,16 @@ class RPTLedgerInterceptor
     def STATE_APPROVED  = 'APPROVED'
 
 
-    @After(pattern="RPTLedgerService.(create|createSubLedger|update|updateSubLedger|approve|fixLedger|updateState|updateFaasReference)") 
-    public void logActions( evt ) {
-        def ledger = evt.result 
-        logSvc.logA( evt.methodName, 'RPTLEDGER', ledger.objid, ledger._remarks)
-    }
-
     @Before(pattern="PersistenceService.create", eval="args[0]._schemaname=='rptledger'") 
     public void createManualLedger( evt ) {
         def ledger = evt.args[0] 
         svc.validateAndBuildManualLedger(ledger)
+    }
+
+    @After(pattern="PersistenceService.read", eval="args[0]._schemaname=='rptledger'") 
+    public void afterRead( evt ) {
+        def ledger = evt.result
+        svc.buildMessageList(ledger)
     }
 
     @Before(pattern="PersistenceService.removeEntity", eval="args[0]._schemaname=='rptledger'") 
@@ -127,12 +127,7 @@ class RPTLedgerInterceptor
     }
 
     def findManualLedger(faas){
-        def manualledger = em_ledger.find([tdno:faas.tdno]).first()
-
-        if (!manualledger){
-            manualledger = em_ledger.find([tdno:faas.prevtdno]).first()
-        }
-        return manualledger
+        return em_ledger.find([tdno:faas.tdno]).first()
     }
 
     void postNewLedger(faas){
@@ -140,9 +135,7 @@ class RPTLedgerInterceptor
         if (posttoledger){
             faas.txntype = em_faas_txntype.find([objid:faas.txntype.objid]).first()
             def manualledger = findManualLedger(faas)
-
-            if (util.isTrue(faas.txntype.reconcileledger) && manualledger){
-                manualledger.previousfaases = [[prevfaasid:faas.objid]]
+            if (manualledger){
                 svc.reconcileManualLedger(faas, manualledger)
             }
             else {

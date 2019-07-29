@@ -1,0 +1,16 @@
+<schema>
+	<element tablename="gsc_office">
+		<field name="objid" primary="true" prefix="OF" />
+		<field name="state" required="true" defaultValue="DRAFT" caption="State" indexed="true" />
+		<field name="code" required="true" searchable="true" caption="Office Code"  indexed="true" />
+		<field name="name" required="true" searchable="true" caption="Office Name"  indexed="true" />
+		<field name="budget" type="decimal" caption="Budget"  indexed="true" />
+		<complex name="divisions" ref="division" 
+			jointype="one-to-many" 
+			required="false"
+			orderBy="code"
+		>
+			<key field="objid" target="parent_objid" />
+		</complex>
+	</element>
+</schema>

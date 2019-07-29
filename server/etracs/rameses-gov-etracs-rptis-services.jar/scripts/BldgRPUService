@@ -16,6 +16,9 @@ class BldgRPUService
 	@DataContext('bldgrpu')
 	def em_bldgrpu
 
+	@DataContext('rpu')
+	def em_rpu
+
 	@DataContext('structure')
 	def em_structure
 
@@ -114,13 +117,18 @@ class BldgRPUService
 
 	@ProxyMethod
 	public def deleteBldgRpu(rpu){
+		deleteItems(rpu)
+		em.delete(rpu)
+	}
+
+	@ProxyMethod
+	public def deleteItems(rpu) {
 		em.deleteAllParams(rpu)
 		em.deleteAllFloorAdditionals(rpu)
 		em.deleteAllFloors(rpu)
 		em.deleteAllUses(rpu)
 		em.deleteAllStructuralTypes(rpu)
 		em.deleteAllStructures(rpu)
-		em.delete(rpu)
 	}
 
 
@@ -217,6 +225,8 @@ class BldgRPUService
 
 	@ProxyMethod
 	public def saveBldgLand(item){
+		def landrpu = em_rpu.select('rpumasterid').find([objid: item.landfaas.rpuid]).first()
+		item.landrpumaster = [objid: landrpu?.rpumasterid]
 		em_bldgrpu_land.save(item)
 		return item 
 	}

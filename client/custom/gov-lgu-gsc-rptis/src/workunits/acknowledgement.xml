@@ -1,0 +1,40 @@
+<workunit extends="com/rameses/seti2/templates/CrudModel.xml"
+  schemaName="rptacknowledgement"
+  allowEdit="#{entity.state != 'APPROVED'}"
+  allowDelete="#{entity.state != 'APPROVED'}"
+>
+    <invokers>
+        <invoker type="rptacknowledgement:create" 
+                 action="create" caption="Acknowledgement Receipt (New)"  
+                 role="RECEIVER,RECEIVER_ADMIN" 
+                 permission="rptacknowledgement.create" 
+                target="popup" />
+
+        <invoker type="quick_launcher"  code="AR01"
+                 action="create" caption="Acknowledgement Receipt (New)"  
+                 role="RECEIVER,RECEIVER_ADMIN" 
+                 permission="rptacknowledgement.create" 
+                target="popup" />
+        
+         <invoker type="rptacknowledgement:open" 
+                  action="open" caption="Acknowledgement Receipt"  
+                  role="RECEIVER,RECEIVER_ADMIN" 
+                  permission="rptacknowledgement.open" 
+                  target="popup" />
+
+          <invoker type="formActions" 
+                action="approve" caption="Approve" 
+                role="RECEIVER,RECEIVER_ADMIN" 
+                visibleWhen="#{mode=='read' &amp;&amp; entity.state == 'DRAFT'}" />
+                
+        <invoker type="formActions" 
+                action="addItems" caption="Add Tracking Items" 
+                role="RECEIVER,RECEIVER_ADMIN" 
+                visibleWhen="#{mode=='read' &amp;&amp; entity.state == 'APPROVED'}" />
+
+    </invokers>
+    <code class="gov.lgu.gensan.rptis.models.AcknowledgementModel"/>
+    <pages>
+        <page template="gov.lgu.gensan.rptis.views.AcknowledgementPage"/>
+    </pages>
+</workunit>

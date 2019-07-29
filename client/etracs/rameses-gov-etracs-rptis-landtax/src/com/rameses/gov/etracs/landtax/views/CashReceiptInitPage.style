@@ -18,11 +18,11 @@
 }
 
 
-"entity.(payer|paidby|paidbyaddress)|process|payoption|bill.(billtoyear|billtoqtr|itemcount)" [processing == true] {
+"entity.(payer|paidby|paidbyaddress)|process|payByLedger|payoption|bill.(billtoyear|billtoqtr|itemcount)" [processing == true] {
     enabled:false;
 }
 
 
-"entity.(paidby|paidbyaddress)|process|payoption|bill.(billtoyear|billtoqtr|itemcount)" [processing == false] {
+"entity.(paidby|paidbyaddress)|process|payByLedger|payoption|bill.(billtoyear|billtoqtr|itemcount)" [processing == false] {
     enabled:true;
 }

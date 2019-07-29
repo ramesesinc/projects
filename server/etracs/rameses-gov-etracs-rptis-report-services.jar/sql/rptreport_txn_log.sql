@@ -4,7 +4,7 @@ select distinct
 	u.name
 from txnlog l
 inner join sys_user u on l.userid = u.objid 
-where u.state = 'ACTIVE'
+where u.state = 'ACTIVE' or u.state is null 
 order by u.name 
 
 [getRefTypes]

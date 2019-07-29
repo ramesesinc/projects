@@ -29,9 +29,7 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel5 = new javax.swing.JPanel();
-        xPanel2 = new com.rameses.rcp.control.XPanel();
-        xLabel3 = new com.rameses.rcp.control.XLabel();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
+        jPanel6 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
@@ -40,6 +38,7 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xButton3 = new com.rameses.rcp.control.XButton();
         jPanel3 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         jPanel2 = new javax.swing.JPanel();
@@ -50,27 +49,13 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
         xButton1 = new com.rameses.rcp.control.XButton();
         xButton2 = new com.rameses.rcp.control.XButton();
         xButton4 = new com.rameses.rcp.control.XButton();
+        xPanel2 = new com.rameses.rcp.control.XPanel();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
 
         jPanel5.setLayout(new java.awt.BorderLayout());
 
-        xPanel2.setName("msgpnl"); // NOI18N
-        xPanel2.setVisibleWhen("#{processing == true || msg!=null}");
-        xPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 10, 0));
-        xPanel2.setLayout(new java.awt.BorderLayout());
-
-        xLabel3.setName("msg"); // NOI18N
-        xLabel3.setFontStyle("font-weight:bold;font-size:12;");
-        xLabel3.setForeground(new java.awt.Color(204, 0, 0));
-        xLabel3.setPadding(new java.awt.Insets(1, 10, 1, 1));
-        xLabel3.setPreferredSize(new java.awt.Dimension(150, 20));
-        xLabel3.setText("Processing request please wait...");
-        xPanel2.add(xLabel3, java.awt.BorderLayout.CENTER);
-
-        xLabel4.setIconResource("com/rameses/rcp/icons/loading16.gif");
-        xLabel4.setVisibleWhen("#{processing==true}");
-        xPanel2.add(xLabel4, java.awt.BorderLayout.WEST);
-
-        jPanel5.add(xPanel2, java.awt.BorderLayout.NORTH);
+        jPanel6.setLayout(new java.awt.BorderLayout());
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setPadding(new java.awt.Insets(30, 10, 10, 10));
@@ -95,7 +80,7 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
         xTextField2.setRequired(true);
         xFormPanel1.add(xTextField2);
 
-        jPanel5.add(xFormPanel1, java.awt.BorderLayout.CENTER);
+        jPanel6.add(xFormPanel1, java.awt.BorderLayout.NORTH);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("Properties for Payment");
@@ -119,6 +104,11 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
         xComboBox1.setRequired(true);
         xFormPanel3.add(xComboBox1);
 
+        xButton3.setName("reloadProperties"); // NOI18N
+        xButton3.setShowCaption(false);
+        xButton3.setText("Reload Properties");
+        xFormPanel3.add(xButton3);
+
         jPanel1.add(xFormPanel3, java.awt.BorderLayout.PAGE_START);
 
         xDataTable1.setHandler("listHandler");
@@ -134,7 +124,7 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
+                , new Object[]{"editableWhen", "#{item.objid != null}"}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
@@ -257,14 +247,14 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 942, Short.MAX_VALUE)
+                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 854, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -317,31 +307,44 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.SOUTH);
 
+        jPanel6.add(jPanel1, java.awt.BorderLayout.CENTER);
+
+        jPanel5.add(jPanel6, java.awt.BorderLayout.CENTER);
+
+        xPanel2.setName("msgpnl"); // NOI18N
+        xPanel2.setVisibleWhen("#{processing == true || msg!=null}");
+        xPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 10, 0));
+        xPanel2.setLayout(new java.awt.BorderLayout());
+
+        xLabel3.setName("msg"); // NOI18N
+        xLabel3.setFontStyle("font-weight:bold;font-size:12;");
+        xLabel3.setForeground(new java.awt.Color(204, 0, 0));
+        xLabel3.setPadding(new java.awt.Insets(1, 10, 1, 1));
+        xLabel3.setPreferredSize(new java.awt.Dimension(150, 20));
+        xLabel3.setText("Processing request please wait...");
+        xPanel2.add(xLabel3, java.awt.BorderLayout.CENTER);
+
+        xLabel4.setIconResource("com/rameses/rcp/icons/loading16.gif");
+        xLabel4.setVisibleWhen("#{processing==true}");
+        xPanel2.add(xLabel4, java.awt.BorderLayout.WEST);
+
+        jPanel5.add(xPanel2, java.awt.BorderLayout.NORTH);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 966, Short.MAX_VALUE)
-                    .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(149, 149, 149)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(229, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -350,8 +353,10 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
+    private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XButton xButton4;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;

@@ -32,7 +32,7 @@ from (
 	and rl.taxable = 1 
 	and rp.barangayid like $P{barangayid}
 	and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')
-
+	and not exists(select * from rptledger_subledger where objid = rl.objid)
 )x
 where x.totalav > 0
 order by x.pin, x.suffix 
@@ -67,6 +67,7 @@ from (
 	and rl.state = 'APPROVED' 
 	and rl.taxable = 1 
 	and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')
+	and not exists(select * from rptledger_subledger where objid = rl.objid)
 )x
 where x.totalav > 0
 group by x.pin, x.barangay 
@@ -101,6 +102,7 @@ from (
 	and rl.state = 'APPROVED' 
 	and rl.taxable = 1 
 	and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')
+	and not exists(select * from rptledger_subledger where objid = rl.objid)
 	and rp.voided = 0
 	and rpi.year = $P{year}
 )x

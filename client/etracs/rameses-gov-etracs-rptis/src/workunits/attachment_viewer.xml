@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="attachment:viewer" 
+        	action="init" caption="Attachment Viewer" 
+        	alwaysOnTop="true" target="popup" />
+
+    	<invoker type="faas:info" 
+            action="init" caption="Attachments" 
+            alwaysOnTop="true"
+            index="1010" />
+
+    	<invoker type="faaslist:formActions"
+                 action="init" caption="Attachments" 
+                 target="popup" 
+                 index="100000" 
+                 alwaysOnTop="true"
+                 visibleWhen="#{selectedEntity != null}" />
+   </invokers>
+   <code class="com.rameses.gov.etracs.rptis.models.AttachmentViewerModel" >
+   </code>
+    <pages> 
+        <page template="com.rameses.gov.etracs.rptis.views.AttachmentViewerPage"/>
+    </pages>
+</workunit>
+
+

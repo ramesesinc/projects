@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
+    schemaName="division" 
+    cols="code,name,respcode"
+    orderBy="code"
+>
+    <invokers>
+        <invoker type="division:lookup" caption="Division" action="init"  />
+    </invokers>
+</workunit>

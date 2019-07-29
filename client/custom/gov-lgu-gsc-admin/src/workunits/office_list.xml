@@ -1,0 +1,14 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="office" 
+          allowDelete="#{entity.state=='DRAFT'}"
+          windowTitle="Offices"
+          cols="state,code,name,budget" 
+          orderBy="code" >
+    <invokers>
+        <invoker folderid="/home/admin" 
+                 caption="Offices"  index="1000" 
+                 icon="home/icons/admin-office.png" 
+                 action="init"  
+                 role="SYSADMIN"/>
+    </invokers>
+</workunit>

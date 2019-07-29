@@ -64,6 +64,8 @@ FROM rptledger rl
 WHERE rl.state = 'APPROVED'
   AND rl.taxpayer_objid = $P{taxpayerid}
   AND ( rl.lastyearpaid > $P{year} OR (rl.lastyearpaid = $P{year} AND rl.lastqtrpaid >= $P{qtr}))
+  AND not exists(select * from rptledger_subledger where objid = rl.objid)
+  AND not exists(select * from rptcompromise where rptledgerid = rl.objid and state = 'APPROVED')
 
 
 

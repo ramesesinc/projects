@@ -65,6 +65,7 @@ FROM (
 	FROM vw_landtax_report_rptdelinquency r
 	WHERE barangayid LIKE $P{barangayid} 
 	AND NOT EXISTS(select * from faas_restriction where ledger_objid = r.rptledgerid and state='ACTIVE')
+	AND NOT EXISTS(select * from rptledger_subledger where objid = r.rptledgerid)
 	${filter} 
 	GROUP BY rptledgerid, year, case when year = $P{year} then 'A. CURRENT' else 'B. PREVIOUS' end
 )x 
@@ -141,11 +142,12 @@ FROM (
 		SUM(basic - basicdisc + basicint  + sef - sefdisc + sefint ) AS total, 
 		(select name from barangay where objid=rr.barangayid) as barangay_name, 
 		(select pin from barangay where objid=rr.barangayid) as barangay_pin 
-	FROM vw_landtax_report_rptdelinquency rr 
+	FROM vw_landtax_report_rptdelinquency_detail rr 
 	WHERE NOT EXISTS(select * from faas_restriction where ledger_objid = rr.rptledgerid and state='ACTIVE')
+	AND NOT EXISTS(select * from rptledger_subledger where objid = rr.rptledgerid)
+	${filter} 
 	GROUP BY barangayid, year  
 )x 
-WHERE 1=1 ${filter} 
 GROUP BY dtgenerated, barangayid, barangay_name, barangay_pin 
 ORDER BY barangay_pin  
 
@@ -166,12 +168,13 @@ FROM (
 		case when pc.special = 0 then pc.orderno else 1000 end as idx,
 		year, dtgenerated,
 		(basic - basicdisc + basicint  + sef - sefdisc + sefint) AS amount
-	FROM vw_landtax_report_rptdelinquency rr 
+	FROM vw_landtax_report_rptdelinquency_detail rr 
 		inner join rptledger rl on rr.rptledgerid = rl.objid 
 		inner join propertyclassification pc on rl.classification_objid = pc.objid 
 	where NOT EXISTS(select * from faas_restriction where ledger_objid = rr.rptledgerid and state='ACTIVE')
+	and  NOT EXISTS(select * from rptledger_subledger where objid = rr.rptledgerid )
+	${filter} 
 )x 
-WHERE 1=1 ${filter} 
 GROUP BY dtgenerated, barangayid, barangay_name, classification, idx 
 ORDER BY barangay_name, idx 
 
@@ -187,9 +190,9 @@ SELECT
 	sum(x.landav) as landav,
 	sum(x.improvav) as improvav,
 	sum(x.machav) as machav,
-	sum(basic) as basic, 
+	sum(basic - basicdisc) as basic, 
 	sum(basicint) as basicint, 
-	sum(sef) as sef, 
+	sum(sef - sefdisc) as sef, 
 	sum(sefint) as sefint
 FROM ( 
 	SELECT 
@@ -203,15 +206,18 @@ FROM (
 		case when rl.rputype not in ('land', 'mach') then rl.totalav else 0 end as improvav,
 		case when rl.rputype = 'mach' then rl.totalav else 0 end as machav,
 		rr.basic,
+		rr.basicdisc,
 		rr.basicint, 
 		rr.sef, 
+		rr.sefdisc,
 		rr.sefint
-	FROM vw_landtax_report_rptdelinquency rr 
+	FROM vw_landtax_report_rptdelinquency_detail rr 
 		inner join rptledger rl on rr.rptledgerid = rl.objid 
 		inner join barangay b on rl.barangayid = b.objid 
 		left join propertyclassification pc on rl.classification_objid = pc.objid 
 	where 1=1 ${filter}
 	and NOT EXISTS(select * from faas_restriction where ledger_objid = rr.rptledgerid and state='ACTIVE')
+	and NOT EXISTS(select * from rptledger_subledger where objid = rr.rptledgerid)
 )x 
 GROUP BY x.dtgenerated, x.classification, x.idx, x.barangayid, x.barangay_pin, x.barangay_name
 ORDER BY x.idx, x.barangay_pin
@@ -262,15 +268,16 @@ from (
 			sum(rpt.basic - rpt.basicdisc) as basic, sum(rpt.basicint) as basicint, sum(rpt.basic - rpt.basicdisc + rpt.basicint) as basictotal,
 			sum(rpt.sef - rpt.sefdisc) as sef, sum(rpt.sefint) as sefint, sum(rpt.sef - rpt.sefdisc + rpt.sefint) as seftotal,  
 			sum(rpt.basic - rpt.basicdisc + rpt.basicint + rpt.sef - rpt.sefdisc + rpt.sefint) as grandtotal 
-		from vw_landtax_report_rptdelinquency rpt 
+		from vw_landtax_report_rptdelinquency_detail rpt 
 		where 1=1 ${filter} 
+		and NOT EXISTS(select * from faas_restriction where ledger_objid = rpt.rptledgerid and state='ACTIVE')
+		and NOT EXISTS(select * from rptledger_subledger where objid = rpt.rptledgerid)
 		group by rpt.dtgenerated, rpt.barangayid, rpt.rptledgerid 
 	)xx 
 		inner join rptledger rl on xx.rptledgerid=rl.objid 
 		inner join barangay brgy on xx.barangayid=brgy.objid 
-		inner join faas on rl.faasid=faas.objid 
-		inner join propertyclassification pc on rl.classification_objid=pc.objid 
-	where rl.state='APPROVED' and faas.state='CURRENT' 
+		left join propertyclassification pc on rl.classification_objid=pc.objid 
+	where rl.state='APPROVED' 
 )xx 
 group by dtgenerated, classid, classname, special, classindexno, barangayid, barangayname, barangayindexno 
 order by special, classindexno, classname, barangayindexno 

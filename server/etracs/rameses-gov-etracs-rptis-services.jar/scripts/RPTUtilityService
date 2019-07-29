@@ -105,6 +105,7 @@ class RPTUtilityService
 		rp.barangay = info.barangay
 		rp.barangayid = info.barangay.objid 
 		rp.parcel = info.sparcel 
+		rp.claimno = info.claimno
 		rpSvc.update( rp )
 		info.realpropertyid = rp.objid 
 		info.barangayid = info.barangay.objid

@@ -41,6 +41,7 @@ public class FAASPage extends javax.swing.JPanel {
         xFormPanel12 = new com.rameses.rcp.control.XFormPanel();
         xTextField15 = new com.rameses.rcp.control.XTextField();
         xLabel3 = new com.rameses.rcp.control.XLabel();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
         xTextField12 = new com.rameses.rcp.control.XTextField();
         xTextField13 = new com.rameses.rcp.control.XTextField();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
@@ -126,14 +127,23 @@ public class FAASPage extends javax.swing.JPanel {
         xTextField15.setStretchWidth(100);
         xFormPanel12.add(xTextField15);
 
-        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel3.setCaption("Txn");
+        xLabel3.setExpression("#{entity.txntype.objid}");
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel3.setCaptionWidth(35);
         xLabel3.setCellPadding(new java.awt.Insets(0, 2, 0, 0));
-        xLabel3.setExpression("#{entity.txntype.objid}");
         xLabel3.setFontStyle("font-weight:bold;font-size:12;");
         xLabel3.setPreferredSize(new java.awt.Dimension(54, 19));
         xFormPanel12.add(xLabel3);
+
+        xLabel4.setExpression("#{entity.trackingno}");
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel4.setCaptionWidth(35);
+        xLabel4.setCellPadding(new java.awt.Insets(0, 2, 0, 0));
+        xLabel4.setFontStyle("font-weight:bold;font-size:12;");
+        xLabel4.setPreferredSize(new java.awt.Dimension(100, 19));
+        xLabel4.setShowCaption(false);
+        xFormPanel12.add(xLabel4);
 
         xFormPanel11.add(xFormPanel12);
 
@@ -239,7 +249,7 @@ public class FAASPage extends javax.swing.JPanel {
         xSubFormPanel1.setLayout(xSubFormPanel1Layout);
         xSubFormPanel1Layout.setHorizontalGroup(
             xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 784, Short.MAX_VALUE)
+            .addGap(0, 852, Short.MAX_VALUE)
         );
         xSubFormPanel1Layout.setVerticalGroup(
             xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -368,6 +378,7 @@ public class FAASPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XIntegerField xIntegerField4;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XSubFormPanel xSubFormPanel1;
     private com.rameses.rcp.control.XTextArea xTextArea2;

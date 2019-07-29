@@ -44,6 +44,11 @@ class AttachmentFileAdapter implements AttachmentAdapter
         def folderpath = getFileServerPath() + getFolderName();
         doLoadFolders(files, new java.io.File(folderpath))
     }
+
+    public void loadFolders(files, folderName) {
+        def folderpath = getFileServerPath() + folderName;
+        doLoadFolders(files, new java.io.File(folderpath))
+    }
     
     void doLoadFolders(files, file){
         if (file.isDirectory()) {
@@ -73,15 +78,21 @@ class AttachmentFileAdapter implements AttachmentAdapter
         
         def dir = new java.io.File( info.filepath );
         dir.listFiles().each{ f-> 
+            println 'file xxxx => ' + f 
             if ( f.isDirectory()) return; 
 
             // primary info 
-            info.items << [
+            def item = [
                 objid    : f.name, 
                 caption  : f.name,  
                 filepath : f.canonicalPath,
-                thumbnail : model.createThumbnail(f),
             ]; 
+
+            if (info._addThumbnail == null || info._addThumbnail == true) {
+                item.thumbnail = model.createThumbnail(f);
+            }
+
+            info.items << item;
         } 
     }
     

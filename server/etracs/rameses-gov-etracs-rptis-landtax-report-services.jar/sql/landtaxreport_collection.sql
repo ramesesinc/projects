@@ -94,7 +94,7 @@ from (
     inner join rptpayment_share ri on rp.objid = ri.parentid
   where ${filter}  
     and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
-    and ri.revperiod != 'advance' 
+    and ri.revperiod <> 'advance' 
 )t 
 
 

@@ -94,13 +94,30 @@ UPDATE realproperty SET state = 'CANCELLED' WHERE objid = $P{objid}
 
 
 [getNonCancelledImprovements]
-SELECT f.tdno 
-FROM faas f
-	INNER JOIN rpu r ON f.rpuid = r.objid 
-WHERE r.realpropertyid = $P{realpropertyid}
-  AND r.rputype <> 'land'
-  AND f.state <> 'CANCELLED'	
-ORDER BY f.tdno   
+select 
+	x.tdno 
+from (
+	SELECT 
+		f.tdno,
+		case 
+			when br.landrpuid is not null then br.landrpuid 
+			when mr.landrpuid is not null then mr.landrpuid 
+			when pr.landrpuid is not null then pr.landrpuid 
+			when mir.landrpuid is not null then mir.landrpuid 
+			else null 
+		end as landrpuid 
+	FROM faas f
+		INNER JOIN rpu r ON f.rpuid = r.objid 
+		LEFT JOIN bldgrpu br on r.objid = br.objid 
+		LEFT JOIN machrpu mr on r.objid = mr.objid 
+		LEFT JOIN planttreerpu pr on r.objid = pr.objid 
+		LEFT JOIN miscrpu mir on r.objid = mir.objid 
+	WHERE r.realpropertyid = $P{realpropertyid}
+		AND r.rputype <> 'land'
+		AND f.state <> 'CANCELLED'	
+)x 
+WHERE x.landrpuid = $P{rpuid}
+ORDER BY x.tdno   
 
 
 [updateSignatoryInfo]

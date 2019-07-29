@@ -54,7 +54,7 @@ class StatementOfShareReportController extends com.rameses.gov.etracs.landtax.re
     </code>
     
     <pages>
-        <page template="com.rameses.gov.etracs.landtax.report.LandTaxReportInitPage"/>
+        <page template="com.rameses.gov.etracs.landtax.report.views.LandTaxReportInitPage"/>
         <page name="preview" template="com.rameses.gov.etracs.landtax.report.PreviewPage" />
     </pages>
 </workunit>

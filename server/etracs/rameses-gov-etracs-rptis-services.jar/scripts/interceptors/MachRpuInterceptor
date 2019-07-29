@@ -56,6 +56,12 @@ class MachRpuInterceptor
 		svc.deleteMachRpu(evt.args[0])
 	}
 
+	@Before(pattern="RPUService.deleteItems", eval="#{args[0].rputype == 'mach'}") 
+	public void deleteRpuItems( evt ) {
+		def rpu = evt.args[0]
+		svc.deleteItems(rpu)
+	}	
+
 	@After(pattern="RPUService.reviseRpu", eval="#{result.rputype == 'mach'}") 
 	public void reviseRpu( evt ) {
 		try {

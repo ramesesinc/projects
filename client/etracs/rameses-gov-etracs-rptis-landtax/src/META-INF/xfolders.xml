@@ -7,6 +7,11 @@
             </folder>
         </folder>
         
+        <folder id="setting" caption="Settings" index="2">
+            <folder id="landtax" caption="Land Tax" index="3">
+            </folder>
+        </folder>
+        
         <folder id="report" caption="Reports" index="3">
             <folder id="landtax" caption="Land Tax" index="1"/>
         </folder>

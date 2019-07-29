@@ -108,15 +108,23 @@ class ResectionInfoMainModel
             sectionLength = 3;
             parcelLength = 2;
         } 
+        
+        def ssection = (item.newfaas.section ? item.newfaas.section.toString() : '')
+        def sparcel = (item.newfaas.parcel ? item.newfaas.parcel.toString() : '')
 
-        item.newfaas.ssection = (item.newfaas.section + '').padLeft(sectionLength, '0');
-        item.newfaas.sparcel = (item.newfaas.parcel + '').padLeft(parcelLength, '0');
+        item.newfaas.ssection = ssection.padLeft(sectionLength, '0');
+        item.newfaas.sparcel = sparcel.padLeft(parcelLength, '0');
         pins << item.newfaas.ssection;
         pins << item.newfaas.sparcel;
 
         if (item.newfaas.suffix && item.newfaas.suffix != 0) {
             pins << item.newfaas.suffix;
         }
+
+        if (item.newfaas.claimno) {
+            pins << item.newfaas.claimno;
+        }
+
         item.newfaas.fullpin = pins.join('-');
     }
     

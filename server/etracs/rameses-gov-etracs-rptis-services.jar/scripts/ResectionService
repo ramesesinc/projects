@@ -179,35 +179,19 @@ class ResectionService
     @ProxyMethod
     public def createNewFaas(item) {
     	def faas = faasSvc.openFaas(item.faas)
-    	def faasid = faas.objid 
-    	def tdno = faas.tdno 
+		def prevfaas = buildPreviousFaas(faas)
 
-    	faas.objid = 'F' + new java.rmi.server.UID()
+    	faas.objid = prevfaas.faasid
     	faas.state = 'PENDING'
     	faas.tdno = item.newfaas.tdno 
+		faas.prevtdno = prevfaas.prevtdno 
     	faas.datacapture = false
     	faas.utdno = faasSvc.generateUniqueTdNo(faas)
     	faas.txntype = faasSvc.getTxnType('RS')
     	faas.memoranda = item.memoranda
     	faas.effectivityyear = dtSvc.serverYear + 1
 
-    	faas.previousfaases = []
-    	faas.previousfaases << [
-    		objid: 'PF' + new java.rmi.server.UID(),
-    		faasid: faas.objid,
-    		prevfaasid: faasid,
-    		prevrpuid: faas.rpu.objid,
-    		prevtdno: tdno,
-    		prevpin: faas.fullpin,
-    		prevowner: faas.owner.name,
-    		prevadministrator: faas.administrator?.name,
-    		prevav: faas.rpu.totalav,
-    		prevmv: faas.rpu.totalmv,
-    		prevareasqm: faas.rpu.totalareasqm,
-    		prevareaha: faas.rpu.totalareaha,
-    		preveffectivity: faas.effectivityyear,
-    	]
-
+    	faas.previousfaases = [prevfaas]
     	faas.backtaxes = [] 
     	faas.rp.state = 'INTERIM'
 
@@ -376,6 +360,24 @@ class ResectionService
 				e.printStackTrace()
 			}
 		}
+	}
+
+	def buildPreviousFaas(faas) {
+		return [
+			objid: faas.objid, 
+			faasid: 'F' + new java.rmi.server.UID(),
+			prevfaasid: faas.objid,
+			prevrpuid: faas.rpu.objid,
+			prevtdno: faas.tdno, 
+			prevpin: faas.fullpin,
+			prevowner: faas.owner.name,
+			prevadministrator: faas.administrator?.name,
+			prevav: faas.rpu.totalav,
+			prevmv: faas.rpu.totalmv,
+			prevareasqm: faas.rpu.totalareasqm,
+			prevareaha: faas.rpu.totalareaha,
+			preveffectivity: faas.effectivityyear,
+		]
 	}
 
 }

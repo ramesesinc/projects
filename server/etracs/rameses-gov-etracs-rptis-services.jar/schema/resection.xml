@@ -6,7 +6,7 @@
 		<field name="txndate" required="true" />
 		<field name="lgu_objid" required="true" />
 		<field name="barangay_objid" required="true" />
-		<field name="pintype" required="true" />
+		<field name="pintype" required="true" caption="PIN Type" />
 		<field name="section" required="true"  caption="Section" searchable="true" indexed="true" />
 		<field name="originlgu_objid" required="true" />
 		<field name="memoranda" required="true" />
@@ -27,7 +27,7 @@
 			<key field="originlgu_objid" target="objid" />
 		</complex>
 
-		<complex name="items" ref="resection_item" jointype="one-to-many" orderBy="faas.pin,faas.suffix">
+		<complex name="items" ref="resection_item" jointype="one-to-many" orderBy="faas.pin,faas.claimno,faas.suffix,">
 			<key field="objid" target="parent_objid" />
 		</complex>
 	</element>

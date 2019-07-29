@@ -173,6 +173,22 @@ public class ResectionInfoMainPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "newfaas.claimno"}
+                , new Object[]{"caption", "New Claim"}
+                , new Object[]{"width", 80}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", "#{item.faas.rputype == 'land' && item.newfaas.claimno == null}"}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "newfaas.suffix"}
                 , new Object[]{"caption", "New Suffix"}
                 , new Object[]{"width", 100}
@@ -252,7 +268,7 @@ public class ResectionInfoMainPage extends javax.swing.JPanel {
                         .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 147, Short.MAX_VALUE))
+                        .addGap(0, 62, Short.MAX_VALUE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );

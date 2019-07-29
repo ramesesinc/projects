@@ -1,5 +1,5 @@
 [getItems]
-select f.objid, r.rputype, rp.pintype, rp.pin, r.suffix  
+select f.objid, r.rputype, rp.pintype, rp.pin, rp.claimno, r.suffix  
 from faas f 
 inner join rpu r on f.rpuid = r.objid 
 inner join realproperty rp on f.realpropertyid = rp.objid 

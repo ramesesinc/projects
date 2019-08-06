@@ -327,81 +327,82 @@ order by b.name, rl.tdno, rl.cadastrallotno, rpi.year, rpi.qtr
 
 [getAbstractOfRPTCollectionSummary]
 select 
-    x.receiptno,
-    x.receiptdate,
-    x.amount,
-    x.barangay,
-    x.tdno,
-    x.assessedvalue,
-    x.taxpayername,
-    case 
-        when x.basic > 0 and x.basicint > 0 then round(x.basicint / x.basic, 2)
-        when x.basic > 0 and x.basicdisc > 0 then round(x.basicdisc / x.basic, 2)
+	xx.*,
+	case 
+        when xx.basic > 0 and xx.basicint > 0 then round(xx.basicint / xx.basic, 2)
+        when xx.basic > 0 and xx.basicdisc > 0 then round(xx.basicdisc / xx.basic, 2)
         else 0
-    end as rate,
-    min(x.year) as fromyear,
-    max(x.year) as toyear,
-    sum(x.basic) as basic,
-    sum(x.basicdp) as basicdp,
-    sum(x.basicnet) as basicnet,
-    sum(x.sef) as sef,
-    sum(x.sefdp) as sefdp,
-    sum(x.sefnet) as sefnet,
-    sum(x.total) as total 
+    end as rate
 from (
-    select 
-        c.receiptno,
-        c.receiptdate,
-        case when cv.objid is null then c.amount else 0 end as amount, 
-        b.name as barangay,
-        rl.tdno,
-        rlf.assessedvalue,
-        case when cv.objid is null then c.paidby else '*** VOIDED ***' end as taxpayername, 
-        rpi.year, 
-        sum(case when cv.objid is null then rpi.year else null end) as fromyear,
-        sum(case when cv.objid is null then rpi.year else null end) as toyear, 
-        sum(case when cv.objid is null then rpi.basic else null end) as basic,
-        sum(case when cv.objid is null then rpi.basicdisc else null end) as basicdisc,
-        sum(case when cv.objid is null then rpi.basicint else null end) as basicint,
-        sum(case when cv.objid is null then rpi.basicdp else null end) as basicdp,
-        sum(case when cv.objid is null then rpi.basicnet else null end) as basicnet,
-        sum(case when cv.objid is null then rpi.sef else null end ) as sef,
-        sum(case when cv.objid is null then rpi.sefdisc else null end ) as sefdisc,
-        sum(case when cv.objid is null then rpi.sefint else null end ) as sefint,
-        sum(case when cv.objid is null then rpi.sefdp else null end) as sefdp,
-        sum(case when cv.objid is null then rpi.sefnet else null end) as sefnet, 
-        sum(case when cv.objid is null then rpi.basicnet + rpi.sefnet else null end) as total
-    from cashreceipt c 
-        inner join cashreceipt_rpt crpt on crpt.objid = c.objid
-        inner join rptpayment rp on c.objid = rp.receiptid
-        inner join vw_rptpayment_item_detail rpi on rp.objid = rpi.parentid
-        inner join rptledger rl on rp.refid = rl.objid 
-        inner join barangay b on rl.barangayid = b.objid 
-        inner join rptledgerfaas rlf on rpi.rptledgerfaasid = rlf.objid 
-        left join cashreceipt_void cv on cv.receiptid  = c.objid 
-    where c.remittanceid = $P{remittanceid} 
-        and cv.objid is null 
-    group by 
-        c.receiptno,
-        c.receiptdate,
-        case when cv.objid is null then c.amount else 0 end, 
-        b.name,
-        rl.tdno,
-        rlf.assessedvalue,
-        case when cv.objid is null then c.paidby else '*** VOIDED ***' end,
-        rpi.year 
-) x 
-group by 
-    x.receiptno,
-    x.receiptdate,
-    x.amount,
-    x.barangay,
-    x.tdno,
-    x.assessedvalue,
-    x.taxpayername,
-    case 
-        when x.basic > 0 and x.basicint > 0 then round(x.basicint / x.basic, 2)
-        when x.basic > 0 and x.basicdisc > 0 then round(x.basicdisc / x.basic, 2)
-        else 0
-    end
-order by x.receiptno, x.tdno, x.fromyear
+	select 
+			x.receiptno,
+			x.receiptdate,
+			x.amount,
+			x.barangay,
+			x.tdno,
+			x.assessedvalue,
+			x.taxpayername,
+			min(x.year) as fromyear,
+			max(x.year) as toyear,
+			sum(x.basic) as basic,
+			sum(x.basicint) as basicint,
+			sum(x.basicdisc) as basicdisc,
+			sum(x.basicdp) as basicdp,
+			sum(x.basicnet) as basicnet,
+			sum(x.sef) as sef,
+			sum(x.sefdp) as sefdp,
+			sum(x.sefnet) as sefnet,
+			sum(x.total) as total 
+	from (
+			select 
+					c.receiptno,
+					c.receiptdate,
+					case when cv.objid is null then c.amount else 0 end as amount, 
+					b.name as barangay,
+					rl.tdno,
+					rlf.assessedvalue,
+					case when cv.objid is null then c.paidby else '*** VOIDED ***' end as taxpayername, 
+					rpi.year, 
+					sum(case when cv.objid is null then rpi.year else null end) as fromyear,
+					sum(case when cv.objid is null then rpi.year else null end) as toyear, 
+					sum(case when cv.objid is null then rpi.basic else null end) as basic,
+					sum(case when cv.objid is null then rpi.basicdisc else null end) as basicdisc,
+					sum(case when cv.objid is null then rpi.basicint else null end) as basicint,
+					sum(case when cv.objid is null then rpi.basicdp else null end) as basicdp,
+					sum(case when cv.objid is null then rpi.basicnet else null end) as basicnet,
+					sum(case when cv.objid is null then rpi.sef else null end ) as sef,
+					sum(case when cv.objid is null then rpi.sefdisc else null end ) as sefdisc,
+					sum(case when cv.objid is null then rpi.sefint else null end ) as sefint,
+					sum(case when cv.objid is null then rpi.sefdp else null end) as sefdp,
+					sum(case when cv.objid is null then rpi.sefnet else null end) as sefnet, 
+					sum(case when cv.objid is null then rpi.basicnet + rpi.sefnet else null end) as total
+			from cashreceipt c 
+					inner join cashreceipt_rpt crpt on crpt.objid = c.objid
+					inner join rptpayment rp on c.objid = rp.receiptid
+					inner join vw_rptpayment_item_detail rpi on rp.objid = rpi.parentid
+					inner join rptledger rl on rp.refid = rl.objid 
+					inner join barangay b on rl.barangayid = b.objid 
+					inner join rptledgerfaas rlf on rpi.rptledgerfaasid = rlf.objid 
+					left join cashreceipt_void cv on cv.receiptid  = c.objid 
+			where c.remittanceid = $P{remittanceid} 
+					and cv.objid is null 
+			group by 
+					c.receiptno,
+					c.receiptdate,
+					case when cv.objid is null then c.amount else 0 end, 
+					b.name,
+					rl.tdno,
+					rlf.assessedvalue,
+					case when cv.objid is null then c.paidby else '*** VOIDED ***' end,
+					rpi.year 
+	) x 
+	group by 
+			x.receiptno,
+			x.receiptdate,
+			x.amount,
+			x.barangay,
+			x.tdno,
+			x.assessedvalue,
+			x.taxpayername    
+) xx
+order by xx.receiptno, xx.tdno, xx.fromyear

@@ -43,6 +43,7 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.models.AbstractCa
     def barcodeprocessing = false;
     def processing = false;
     def msg;
+    def ledger;
     def billedLedgers = [];
 
                 
@@ -104,8 +105,8 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.models.AbstractCa
                 itemsforselection += ledgers;
                 selectionListHandler.reloadAll();
                 selectAllInit();
-                binding.focus('ledgertopay');
-                binding.refresh('selectionCount|selectedCount');
+                binding?.focus('ledgertopay');
+                binding?.refresh('selectionCount|selectedCount');
             },
         ])
     }
@@ -136,6 +137,15 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.models.AbstractCa
         mode = MODE_CREATE;
         return 'default';
     }    
+
+    def payByLedger() {
+        itemsforselection = [];
+        itemsforpayment = [];   
+        payoption = PAY_OPTION_BYLEDGER;
+        bill.payoption = payoption;
+        mode = MODE_CREATE;
+        return 'main';
+    }
 
     void selectAllInit() {
         selectionListHandler.selectAll();
@@ -484,7 +494,7 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.models.AbstractCa
     }
     
     void afterRefresh(binding, pagename){
-        binding.requestFocus('ledger');
+        binding.focus('ledger');
     }
     
     def getRpuCount() {

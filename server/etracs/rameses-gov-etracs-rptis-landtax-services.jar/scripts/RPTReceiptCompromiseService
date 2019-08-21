@@ -599,35 +599,43 @@ class RPTReceiptCompromiseService
 	//distribute payment proportionally to compromise items 
 	void postCapturedItemCredit(compromise, receipt) {
 		def partialamt = receipt.amount 
-		def openitems = em_compromise_item.find([parentid: compromise.objid]).orderBy('year asc').list().findAll{it.balance > 0}
+		def openitems = em_compromise_item.find([parentid: compromise.objid]).orderBy('year, qtr ').list().findAll{it.balance > 0}
 
 		def priorities = openitems.priority.unique().sort()
 		def yrs = openitems.year.unique().sort();
+
+		def toqtr = 4
 
 		for (int idx = 0; idx < yrs.size(); idx++){
 			if (partialamt <= 0) break;
 
 			def yritems = openitems.findAll{it.year == yrs[idx]}
+			def qtrs = yritems.qtr.unique().sort();
 
-			for (int i = 0; i < priorities.size(); i++){
+			for (int q = 0; q < qtrs.size(); q++){
 				if (partialamt <= 0) break;
 
-				def items = yritems.findAll{it.priority == priorities[i]}
-				def itembalance = numSvc.round(items.balance.sum())
-				if (partialamt >= itembalance){
-					partialamt -= itembalance 
-					//fully paid items 
-					items.each{
-						it.amtpaid = it.amount
-						it.interestpaid = it.interest 
-						it.balance = 0 
-						em_compromise_item.update(it)
+				def qtritems = yritems.findAll{ it.qtr == qtrs[q]}
+				for (int i = 0; i < priorities.size(); i++){
+					if (partialamt <= 0) break;
+
+					def items = qtritems.findAll{it.priority == priorities[i]}
+					def itembalance = numSvc.round(items.balance.sum())
+					if (partialamt >= itembalance){
+						partialamt -= itembalance 
+						//fully paid items 
+						items.each{
+							it.amtpaid = it.amount
+							it.interestpaid = it.interest 
+							it.balance = 0 
+							em_compromise_item.update(it)
+						}
 					}
-					continue
-				}
-				else if (partialamt > 0){
-					distributePartial(partialamt, items)
-					break;
+					else if (partialamt > 0){
+						distributePartial(partialamt, items)
+						partialamt = 0
+						break;
+					}
 				}
 			}
 		}

@@ -74,6 +74,7 @@ class RPTLedgerSyncSupportService
         }
         remoteledger._credits?.each{
             it.rptledgerid = ledger.objid 
+            it.refid = ledger.objid 
         }
         remoteledger._subledgers?.each{
             it.parent.objid = ledger.objid 

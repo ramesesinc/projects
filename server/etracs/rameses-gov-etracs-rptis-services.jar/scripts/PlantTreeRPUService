@@ -82,9 +82,14 @@ class PlantTreeRPUService
 
     @ProxyMethod
     public def deletePlantTreeRpu(rpu){
-    	rpu.planttrees.each{ em.delete(it, SCHEMA_DETAIL) }
+    	deleteItems(rpu)
         em.delete(rpu)
     }
+
+    @ProxyMethod
+	public def deleteItems(rpu) {
+		rpu.planttrees.each{ em.delete(it, SCHEMA_DETAIL) }
+	}    
 
 
     @ProxyMethod

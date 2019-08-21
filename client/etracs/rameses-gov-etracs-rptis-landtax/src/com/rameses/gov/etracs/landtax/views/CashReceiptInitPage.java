@@ -44,6 +44,7 @@ public class CashReceiptInitPage extends javax.swing.JPanel {
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
         xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField4 = new com.rameses.rcp.control.XDecimalField();
+        xButton6 = new com.rameses.rcp.control.XButton();
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
@@ -52,7 +53,7 @@ public class CashReceiptInitPage extends javax.swing.JPanel {
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        xFormPanel2.setCaptionWidth(110);
+        xFormPanel2.setCaptionWidth(120);
 
         xIntegerField2.setCaption("Year to Pay");
         xIntegerField2.setName("bill.billtoyear"); // NOI18N
@@ -69,7 +70,7 @@ public class CashReceiptInitPage extends javax.swing.JPanel {
         xComboBox1.setRequired(true);
         xFormPanel2.add(xComboBox1);
 
-        xLookupField1.setCaption("Ledger to Pay");
+        xLookupField1.setCaption("Add Ledger to Pay");
         xLookupField1.setHandler("lookupLedgerInit");
         xLookupField1.setName("ledgertopay"); // NOI18N
         xLookupField1.setCellPadding(new java.awt.Insets(5, 10, 5, 0));
@@ -235,14 +236,15 @@ public class CashReceiptInitPage extends javax.swing.JPanel {
         xButton3.setText("Deselect All");
 
         xButton4.setName("reloadItems"); // NOI18N
-        xButton4.setText("Reload Items");
+        xButton4.setText("Reload");
 
         xButton5.setName("clearItems"); // NOI18N
-        xButton5.setText("Clear Items");
+        xButton5.setText("Clear");
 
         xButton2.setMnemonic('p');
         xButton2.setName("process"); // NOI18N
         xButton2.setCellPadding(new java.awt.Insets(10, 10, 0, 0));
+        xButton2.setDefaultCommand(true);
         xButton2.setPreferredSize(new java.awt.Dimension(100, 23));
         xButton2.setShowCaption(false);
         xButton2.setText("Process Payment");
@@ -277,6 +279,13 @@ public class CashReceiptInitPage extends javax.swing.JPanel {
         xDecimalField4.setPreferredSize(new java.awt.Dimension(0, 24));
         xFormPanel5.add(xDecimalField4);
 
+        xButton6.setMnemonic('L');
+        xButton6.setName("payByLedger"); // NOI18N
+        xButton6.setCellPadding(new java.awt.Insets(10, 10, 0, 0));
+        xButton6.setPreferredSize(new java.awt.Dimension(100, 23));
+        xButton6.setShowCaption(false);
+        xButton6.setText("Pay by Ledger");
+
         org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -290,9 +299,11 @@ public class CashReceiptInitPage extends javax.swing.JPanel {
                 .add(xButton4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xButton5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(38, 38, 38)
+                .add(26, 26, 26)
+                .add(xButton6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 117, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 129, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 157, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 106, Short.MAX_VALUE)
                 .add(xFormPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 148, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xFormPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 153, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
@@ -302,13 +313,14 @@ public class CashReceiptInitPage extends javax.swing.JPanel {
             .add(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE, false)
+                        .add(xButton1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(xButton3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(xButton4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(xButton5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                         .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE, false)
-                            .add(xButton1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(xButton3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(xButton4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(xButton5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .add(xButton6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(xFormPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(xFormPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -350,6 +362,7 @@ public class CashReceiptInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XButton xButton4;
     private com.rameses.rcp.control.XButton xButton5;
+    private com.rameses.rcp.control.XButton xButton6;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;

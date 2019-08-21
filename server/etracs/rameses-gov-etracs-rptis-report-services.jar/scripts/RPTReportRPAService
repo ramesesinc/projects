@@ -49,6 +49,9 @@ class RPTReportRPAService
 			exemptclasses = buildExemptClasses(em.getExempts(params), params)	
 		}
 		else if (params.reporttype.type == 'lift'){
+			if (util.toBoolean(var.assessor_report_lift_show_net, true)) {
+				params.filter += " AND not exists(select * from faas_restriction where parent_objid = f.objid and state = 'ACTIVE') "
+			}
 			taxableclasses = buildTaxableClasses(em.getLiftTaxables(params), params)
 			exemptclasses = buildExemptClasses(em.getLiftExempts(params), params)	
 		}
@@ -56,6 +59,9 @@ class RPTReportRPAService
 			restrictions = buildRestrictions(params)
 		}
 		else if (params.reporttype.type == 'lift_idleland'){
+			if (util.toBoolean(var.assessor_report_lift_show_net, true)) {
+				params.filter += " AND not exists(select * from faas_restriction where parent_objid = f.objid and state = 'ACTIVE') "
+			}
 			taxableclasses = buildTaxableClasses(em.getLiftIdleLandTaxables(params), params)
 			exemptclasses = buildExemptClasses(em.getLiftIdleLandExempts(params), params)	
 		}

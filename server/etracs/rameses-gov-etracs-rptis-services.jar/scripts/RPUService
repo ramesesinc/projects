@@ -176,6 +176,10 @@ class RPUService
         deleteRpuMaster(rpu)
     }
 
+    @ProxyMethod
+	public def deleteItems(rpu) {
+    }
+
 
     @ProxyMethod
     public def approveRpu( rpu ) {

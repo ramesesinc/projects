@@ -48,6 +48,9 @@ class RPTLedgerService
     @DataContext('rptledger_subledger')
     def em_rptledger_subledger
 
+    @DataContext('rptledger_tag')
+    def em_rptledger_tag
+
     @DataContext('rptledger_avdifference')
     def em_avdifference
 
@@ -68,6 +71,9 @@ class RPTLedgerService
 
     @DataContext('rptpayment_item')
     def em_rptpayment_item
+
+    @DataContext('rptcompromise')
+    def em_rptcompromise
 
     @DataContext('vw_rptledger_avdifference')
     def vw_rptledger_avdifference
@@ -111,7 +117,7 @@ class RPTLedgerService
         ledger.subledger = em_rptledger_subledger.find([objid:ledger.objid]).first()
         ledger.subacctno = ledger.subledger?.subacctno
         ledger.parent = ledger.subledger?.parent
-        buildMessageList(ledger)
+        self.buildMessageList(ledger)
         return ledger 
     }        
 
@@ -400,7 +406,9 @@ class RPTLedgerService
 
     @ProxyMethod
     public def postLedgerFaas( ledgerfaas ) {
-        def ledgerfaases = em_rptledger_faas.find([rptledgerid:ledgerfaas.rptledgerid]).orderBy('fromyear desc, tdno desc')
+        def ledgerfaases = em_rptledger_faas.find([rptledgerid:ledgerfaas.rptledgerid, state: 'APPROVED'])
+                                            .orderBy('fromyear desc, tdno desc')
+                                            .list()
         def latestledgerfaas = ledgerfaases.first()
         if (latestledgerfaas) {
             if (latestledgerfaas.fromyear == ledgerfaas.fromyear && latestledgerfaas.fromqtr == ledgerfaas.fromqtr){
@@ -1159,14 +1167,36 @@ class RPTLedgerService
 
     @ProxyMethod
     public void buildMessageList(ledger) {
+        ledger._messagelist = []
         def subledger = em_rptledger_subledger.find([objid:ledger.objid]).first()
         if (subledger) {
             def parent = em_rptledger.select('tdno').find([objid: subledger.parent.objid]).first()
-            ledger._messagelist = []
             if (ledger.beneficiary && ledger.beneficiary.objid ) {
                 ledger._messagelist << 'Subledger of TD No. ' + parent.tdno + '.'
             }
         }
+
+        def compromise = em_rptcompromise.select('txnno').find([rptledgerid: ledger.objid, state: 'APPROVED']).first()
+        if (compromise) {
+            ledger._messagelist << 'Under Compromise #' + compromise.txnno + '.'
+        }
+    }
+
+    @ProxyMethod
+    public def getTags(ledger) {
+        return em_rptledger_tag.find([parent_objid: ledger.objid]).orderBy('tag').list()
+    }
+
+    @ProxyMethod
+    public def addTag(tag) {
+        em_rptledger_tag.create(tag)
+        return tag 
+    }
+
+    @ProxyMethod
+    public def removeTag(tag) {
+        em_rptledger_tag.delete(tag)
+        return tag
     }
 
 }

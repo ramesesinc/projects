@@ -19,7 +19,7 @@ class RPTDelinquencySummaryModel extends com.rameses.gov.etracs.rpt.report.Async
     
     void buildReportData(entity, asyncHandler){
         entity.reporttype = entity.format.reporttype 
-        svc.generateDelinquencyReport(entity, asyncHandler);
+        svc.buildReport(entity, asyncHandler);
     }
     
     String getReportName(){

@@ -98,10 +98,11 @@ class FAASReportService
 
 	
 	@ProxyMethod
-	public def getReportData( faas ) {
-		faas = em.findFaasById(faas)
-		if( !faas ) 
-			throw new Exception('Cannot open FAAS with ID No. ' + faas.objid + '.')
+	public def getReportData( param ) {
+		def faas = em.findFaasById(param)
+		if( !faas ) {
+			throw new Exception('Cannot open FAAS with ID No. ' + param.objid + '.')
+		}
 
 		faas.rpu = em.findRpuById(faas.rpu)
 		faas.rp = em.findRealPropertyById(faas.rp)

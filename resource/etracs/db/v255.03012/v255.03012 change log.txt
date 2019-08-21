@@ -1,0 +1,13 @@
+- TREAURY
+
+- BPLS 
+		
+- ASSESSOR	
+    - FAAS Encoding Monitoring update 
+    - Subdivision: view mother land FAAS report
+
+- LANDTAX
+    - Barangay Advance Share Summary Report
+    - Compromise Contract and Application updates
+    - Ledger Tag Support
+	

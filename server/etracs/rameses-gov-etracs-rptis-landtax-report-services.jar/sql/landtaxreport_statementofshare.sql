@@ -180,7 +180,7 @@ where ${filter}
     and cra.revtype in ('sef', 'sefint')
 
 
-[getBrgySharesStandard]
+[getStandardBrgyShares]
 select  
     b.name as brgyname, 
     sum(case when cra.revperiod='current' and revtype='basic' then cra.amount + cra.discount else 0.0 end )as basiccurrentamt,     
@@ -202,8 +202,6 @@ where ${filter}
     and cra.revperiod <> 'advance'
 group by b.name
 
-
-
 [getBrgySharesAdvance]
 select  
     min(b.name) as brgyname, 
@@ -222,3 +220,47 @@ where cr.receiptdate >= $P{fromdate} and cr.receiptdate < $P{todate}
      and cra.revperiod = 'advance'
 group by b.objid  
 
+
+[getAdvanceBrgySharesAnnual]
+select  
+	rpi.year, 
+	b.indexno as brgyno,
+    b.name as brgyname, 
+    sum(rpi.amount) as basic,     
+    sum(rpi.discount) as disc,     
+    sum(rpi.amount - rpi.discount) as total
+from remittance rem 
+    inner join collectionvoucher cv on cv.objid = rem.collectionvoucherid 
+    inner join cashreceipt cr on cr.remittanceid = rem.objid 
+    inner join rptpayment rp on cr.objid = rp.receiptid 
+    inner join rptpayment_item rpi on rp.objid = rpi.parentid
+    inner join rptledger rl on rp.refid = rl.objid
+    inner join barangay b on rl.barangayid = b.objid 
+where ${filter} 
+    and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
+    and rpi.revperiod = 'advance'
+group by rpi.year, b.indexno, b.name
+order by rpi.year, b.indexno 
+
+
+[getAdvanceBrgySharesQtrly]
+select  
+	rpi.year, 
+	rpi.qtr,
+    b.indexno as brgyno,
+    b.name as brgyname, 
+    sum(rpi.amount) as basic,     
+    sum(rpi.discount) as disc,     
+    sum(rpi.amount - rpi.discount) as total
+from remittance rem 
+    inner join collectionvoucher cv on cv.objid = rem.collectionvoucherid 
+    inner join cashreceipt cr on cr.remittanceid = rem.objid 
+    inner join rptpayment rp on cr.objid = rp.receiptid 
+    inner join rptpayment_item rpi on rp.objid = rpi.parentid
+    inner join rptledger rl on rp.refid = rl.objid
+    inner join barangay b on rl.barangayid = b.objid 
+where ${filter} 
+    and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
+    and rpi.revperiod = 'advance'
+group by rpi.year, rpi.qtr, b.indexno, b.name
+order by rpi.year, rpi.qtr, b.indexno 

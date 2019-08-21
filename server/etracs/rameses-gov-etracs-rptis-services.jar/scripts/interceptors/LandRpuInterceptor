@@ -59,6 +59,12 @@ class LandRpuInterceptor
 		svc.deleteLandRpu(rpu)
 	}
 
+	@Before(pattern="RPUService.deleteItems", eval="#{args[0].rputype == 'land'}") 
+	public void deleteLandRpuItems( evt ) {
+		def rpu = evt.args[0]
+		svc.deleteItems(rpu)
+	}
+
 	@After(pattern="RPUService.reviseRpu", eval="#{result.rputype == 'land'}") 
 	public void reviseRpu( evt ) {
 		try{

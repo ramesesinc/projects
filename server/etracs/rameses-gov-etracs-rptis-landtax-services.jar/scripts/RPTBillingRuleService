@@ -30,6 +30,9 @@ public class RPTBillingRuleService
 	@Service('NumberService')
 	def numSvc
 
+	@Service('RPTLedgerService')
+	def ledgerSvc 
+
 	@DataContext('rptcompromise')
 	def em_compromise
 
@@ -124,6 +127,16 @@ public class RPTBillingRuleService
 		facts << createLedgerFact(bill)
 		facts += createLedgerItemFacts(bill)
 		facts += createIncentiveFacts(bill)
+		facts += createTagFacts(bill)
+		return facts 
+	}
+
+	def createTagFacts(bill) {
+		def facts = []
+		def tags = ledgerSvc.getTags(bill.rptledger)
+		tags.each {
+			facts << new RPTLedgerTag(it.tag)
+		}
 		return facts 
 	}
 

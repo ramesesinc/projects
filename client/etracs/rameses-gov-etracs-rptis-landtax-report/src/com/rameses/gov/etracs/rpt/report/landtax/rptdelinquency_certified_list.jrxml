@@ -59,37 +59,37 @@
 	<field name="grandtotal" class="java.lang.Number"/>
 	<field name="year" class="java.lang.Number"/>
 
-	<variable name="landav" class="java.lang.Number" resetType="Report" calculation="Sum">
+	<variable name="landav" class="java.lang.Number" resetType="Group" resetGroup="CLASSIFICATION" calculation="Sum">
 		<variableExpression><![CDATA[$F{landav}]]></variableExpression>
 	</variable>
-	<variable name="impav" class="java.lang.Number" resetType="Report" calculation="Sum">
+	<variable name="impav" class="java.lang.Number" resetType="Group" resetGroup="CLASSIFICATION" calculation="Sum">
 		<variableExpression><![CDATA[$F{impav}]]></variableExpression>
 	</variable>
-	<variable name="machav" class="java.lang.Number" resetType="Report" calculation="Sum">
+	<variable name="machav" class="java.lang.Number" resetType="Group" resetGroup="CLASSIFICATION" calculation="Sum">
 		<variableExpression><![CDATA[$F{machav}]]></variableExpression>
 	</variable>
-	<variable name="annualtax" class="java.lang.Number" resetType="Report" calculation="Sum">
+	<variable name="annualtax" class="java.lang.Number" resetType="Group" resetGroup="CLASSIFICATION" calculation="Sum">
 		<variableExpression><![CDATA[$F{annualtax}]]></variableExpression>
 	</variable>
-	<variable name="basic" class="java.lang.Number" resetType="Report" calculation="Sum">
+	<variable name="basic" class="java.lang.Number" resetType="Group" resetGroup="CLASSIFICATION" calculation="Sum">
 		<variableExpression><![CDATA[$F{basic}]]></variableExpression>
 	</variable>
-	<variable name="basicint" class="java.lang.Number" resetType="Report" calculation="Sum">
+	<variable name="basicint" class="java.lang.Number" resetType="Group" resetGroup="CLASSIFICATION" calculation="Sum">
 		<variableExpression><![CDATA[$F{basicint}]]></variableExpression>
 	</variable>
-	<variable name="basictotal" class="java.lang.Number" resetType="Report" calculation="Sum">
+	<variable name="basictotal" class="java.lang.Number" resetType="Group" resetGroup="CLASSIFICATION" calculation="Sum">
 		<variableExpression><![CDATA[$F{basictotal}]]></variableExpression>
 	</variable>
-	<variable name="sef" class="java.lang.Number" resetType="Report" calculation="Sum">
+	<variable name="sef" class="java.lang.Number" resetType="Group" resetGroup="CLASSIFICATION" calculation="Sum">
 		<variableExpression><![CDATA[$F{sef}]]></variableExpression>
 	</variable>
-	<variable name="sefint" class="java.lang.Number" resetType="Report" calculation="Sum">
+	<variable name="sefint" class="java.lang.Number" resetType="Group" resetGroup="CLASSIFICATION" calculation="Sum">
 		<variableExpression><![CDATA[$F{sefint}]]></variableExpression>
 	</variable>
-	<variable name="seftotal" class="java.lang.Number" resetType="Report" calculation="Sum">
+	<variable name="seftotal" class="java.lang.Number" resetType="Group" resetGroup="CLASSIFICATION" calculation="Sum">
 		<variableExpression><![CDATA[$F{seftotal}]]></variableExpression>
 	</variable>
-	<variable name="grandtotal" class="java.lang.Number" resetType="Report" calculation="Sum">
+	<variable name="grandtotal" class="java.lang.Number" resetType="Group" resetGroup="CLASSIFICATION" calculation="Sum">
 		<variableExpression><![CDATA[$F{grandtotal}]]></variableExpression>
 	</variable>
 
@@ -1274,12 +1274,12 @@
 			</band>
 		</columnFooter>
 		<pageFooter>
-			<band height="144"  isSplitAllowed="true" >
+			<band height="125"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="129"
+						y="112"
 						width="882"
 						height="11"
 						forecolor="#000000"
@@ -1298,7 +1298,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="811"
-						y="128"
+						y="111"
 						width="70"
 						height="12"
 						key="textField"/>
@@ -1311,8 +1311,8 @@
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="62"
-						y="79"
+						x="68"
+						y="58"
 						width="201"
 						height="14"
 						forecolor="#000000"
@@ -1331,8 +1331,8 @@
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="62"
-						y="93"
+						x="68"
+						y="72"
 						width="201"
 						height="14"
 						forecolor="#000000"
@@ -1351,8 +1351,8 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="62"
-						y="53"
+						x="68"
+						y="32"
 						width="201"
 						height="14"
 						forecolor="#000000"
@@ -1371,8 +1371,8 @@
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="599"
-						y="79"
+						x="605"
+						y="58"
 						width="201"
 						height="14"
 						forecolor="#000000"
@@ -1391,8 +1391,8 @@
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="599"
-						y="93"
+						x="605"
+						y="72"
 						width="201"
 						height="14"
 						forecolor="#000000"
@@ -1411,8 +1411,8 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="599"
-						y="53"
+						x="605"
+						y="32"
 						width="201"
 						height="14"
 						forecolor="#000000"
@@ -1428,6 +1428,15 @@
 					</textElement>
 				<text><![CDATA[Certified Correct:]]></text>
 				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="12"
+						width="882"
+						height="0"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
 			</band>
 		</pageFooter>
 		<summary>

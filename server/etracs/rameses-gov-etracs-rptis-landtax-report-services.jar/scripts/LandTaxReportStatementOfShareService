@@ -5,10 +5,13 @@ import java.rmi.server.UID
 
 class LandTaxReportStatementOfShareService{
     @ActiveDB('landtaxreport_statementofshare')
-    def em;
+    def em
 
     @Service('DateService')
-    def dtsvc;
+    def dtsvc
+
+    @Service('NumberService')
+    def numSvc
 
     @ProxyMethod
     def generateIdleLandSharesAbstract(params){
@@ -18,9 +21,9 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d");
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate);
-        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
+        params.filter = ' cv.controldate >= $P{fromdate} AND cv.controldate < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
+            params.filter = ' rem.controldate >= $P{fromdate} AND rem.controldate < $P{todate} '
         }
         
 
@@ -42,9 +45,9 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
-        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
+        params.filter = ' cv.controldate >= $P{fromdate} AND cv.controldate < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
+            params.filter = ' rem.controldate >= $P{fromdate} AND rem.controldate < $P{todate} '
         }
         
 
@@ -70,9 +73,9 @@ class LandTaxReportStatementOfShareService{
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
 
-        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
+        params.filter = ' cv.controldate >= $P{fromdate} AND cv.controldate < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
+            params.filter = ' rem.controldate >= $P{fromdate} AND rem.controldate < $P{todate} '
         }
 
         def shares = em.getBasicSharesAbstract(params)
@@ -100,12 +103,10 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
-        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
+        params.filter = ' cv.controldate >= $P{fromdate} AND cv.controldate < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
+            params.filter = ' rem.controldate >= $P{fromdate} AND rem.controldate < $P{todate} '
         }
-        
-        println 'params.filter -> ' + params.filter 
         
         def shares = em.getBasicShares(params)
         if (!shares) 
@@ -131,16 +132,15 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
-        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
+        params.filter = ' cv.controldate >= $P{fromdate} AND cv.controldate < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
+            params.filter = ' rem.controldate >= $P{fromdate} AND rem.controldate < $P{todate} '
         }
         
 
         def shares = em.getBasicSharesSummary(params)
         if (!shares) 
             throw new Exception('Records not found.')
-            println 'shares -> ' + shares 
         return [
             params : [PERIOD : period],  
             shares : shares
@@ -157,11 +157,10 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
-        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
+        params.filter = ' cv.controldate >= $P{fromdate} AND cv.controldate < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
+            params.filter = ' rem.controldate >= $P{fromdate} AND rem.controldate < $P{todate} '
         }
-        
         def shares = em.getSefShares(params)
         if (!shares) 
             throw new Exception('Records not found.')
@@ -175,19 +174,19 @@ class LandTaxReportStatementOfShareService{
     }
 
     @ProxyMethod
-    public def getBarangaySharesStandard(params) {
+    public def getBarangayShares(params) {
         String idx = (params.month.index+'').padLeft(2, '0')
         params.fromdate = dtsvc.parse('yyyy-MM-dd', params.year+"-"+idx+"-01")
         params.todate = dtsvc.getMonthEndDate(dtsvc.parse("yyyy-MM-dd",params.fromdate))
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
-        params.filter = ' cv.dtposted >= $P{fromdate} AND cv.dtposted < $P{todate} '
+        params.filter = ' cv.controldate >= $P{fromdate} AND cv.controldate < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
+            params.filter = ' rem.controldate >= $P{fromdate} AND rem.controldate < $P{todate} '
         }
-        
-        def shares = em.getBrgySharesStandard( params) 
+
+        def shares = em.getStandardBrgyShares( params) 
         if(! shares )  throw new Exception('Records not found.')
         
         return [
@@ -196,5 +195,39 @@ class LandTaxReportStatementOfShareService{
         ]
     }
 
-   
+    @ProxyMethod
+    public def getBarangayAdvanceShares(params) {
+        params.filter = ' rpi.year = $P{advanceyear} '
+        
+        def shares = []
+
+        if ('QTRLY' == params.summarytype.name) {
+            shares = em.getAdvanceBrgySharesQtrly( params) 
+        } else {
+            shares = em.getAdvanceBrgySharesAnnual( params) 
+        }
+
+        if(! shares )  throw new Exception('Records not found.')
+        
+        buildBarangayShares(shares)
+
+        return [
+            params : [PERIOD : 'For the Year ' + params.advanceyear],  
+            shares : shares
+        ]
+    }
+
+    void buildBarangayShares(shares) {
+        def rate = 0.25
+
+        shares.each {
+            it.brgybasic = numSvc.round( it.basic * rate)
+            it.brgydisc = numSvc.round( it.disc * rate)
+            it.brgyshare = it.brgybasic - it.brgydisc 
+
+            it.provmunibasic = it.basic - it.brgybasic 
+            it.provmunidisc = it.disc - it.brgydisc 
+            it.provmunishare = it.total - it.brgyshare
+        }
+    }
 }

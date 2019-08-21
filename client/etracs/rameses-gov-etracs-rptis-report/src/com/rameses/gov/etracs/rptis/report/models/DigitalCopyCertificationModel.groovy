@@ -46,8 +46,8 @@ public class DigitalCopyCertificationModel extends com.rameses.gov.etracs.rpt.re
     
     def next(){
         def info = [:];
-        info.entity = [objid: entity.faasid];
-        info.folderName = (entity.trackingno ? entity.trackingno : 'objid');
+        info.entity = [objid: entity.faasid,tdno: entity.tdno];
+        info.folderName = entity.trackingno;
         info.isMultiSelect = true;
     	opener = Inv.lookupOpener('attachment:view', info);
         mode = MODE_SELECT;

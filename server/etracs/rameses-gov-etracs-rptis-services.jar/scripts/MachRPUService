@@ -82,10 +82,15 @@ class MachRPUService
 
     @ProxyMethod
     public def deleteMachRpu(rpu){
-        em.deleteAllMachDetails(rpu)
-        em.deleteAllMachUses(rpu)
+        deleteItems(rpu)
         em.delete(rpu)
     }
+
+	@ProxyMethod
+	public def deleteItems(rpu) {
+		em.deleteAllMachDetails(rpu)
+        em.deleteAllMachUses(rpu)
+	}    
 
 
     @ProxyMethod

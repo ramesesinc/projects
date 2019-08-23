@@ -163,7 +163,7 @@ public class PlantTreeRYSettingService
     * COPY AND REVISION support
     ----------------------------------------------------------*/
     @ProxyMethod
-    public Map copy( objid, ry ) {
+    public Map copy(setting) {
         def newsetting = em_planttree.read(setting)
         if (!newsetting) throw new Exception('Setting does not exist or has already been deleted.')
 

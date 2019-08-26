@@ -2,9 +2,12 @@ import com.rameses.annotations.*
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
 
-class SyncService {
+class RPTMainSyncService {
 	@Env 
 	def env 
+
+	@Context 
+	def appCtx
 
 	@Service()
 	def self 
@@ -14,6 +17,9 @@ class SyncService {
 
     @Service('DateService')
     def dtSvc 
+
+    @Service('Var')
+    def var
 
 	@DataContext('sync_data')
 	def em_sync
@@ -94,6 +100,11 @@ class SyncService {
 
 	@ProxyMethod
 	public def schedule(parentid, refid, reftype, action, dtfiled, idx, remote) {
+		if (isV254Notification(remote)){
+			println 'Remote LGU ' + remote + ' is currently using v254 notification'
+			return
+		}
+
 		def data = [:]
 		data.parentid = parentid
         data.refid = refid
@@ -155,5 +166,23 @@ class SyncService {
 		em_sync_forprocess.delete(syncdata)
 		println 'SyncService [ERROR] : ' + err.message 
 	}
+
+	def isV254Notification(remote) {
+        def lgus = var.assessor_v254_notification_lgus
+        println 'lgus => ' + lgus
+        if (lgus) {
+            def tokens = lgus.split(',')
+            println 'remote => ' + remote
+            println 'tokens => ' + tokens
+            for ( int i=0; i < tokens.length; i++) {
+                def token = tokens[i]            
+                if (token.replaceAll('-', '').trim() == remote.orgid.replaceAll('-', '') ) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
 }
 

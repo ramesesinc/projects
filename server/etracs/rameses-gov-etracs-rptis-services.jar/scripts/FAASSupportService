@@ -296,6 +296,7 @@ class FAASSupportService
 			addr = [parentid:faas.taxpayer.objid, type:'local', text:s]
 			faas.taxpayer.address = addr;
 		}
+		if (!faas.taxpayer.state) faas.taxpayer.state = 'ACTIVE'
 		entitySvc.save(faas.taxpayer)
 		faas.taxpayer.address = faas.taxpayer?.address?.text 
 	}

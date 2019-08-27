@@ -702,12 +702,20 @@ class FAASService
         }
 
 		def ntdno = tdno
-		if (tdno.indexOf('-') >= 0 ) {
+		if (isHyphenateTdNo()) {
 			ntdno += '-'
 		}
         ntdno += seqSvc.getNextFormattedSeriesA( tdno, seqcount )
         return ntdno 
     }    	
+
+    def isHyphenateTdNo() {
+    	def hyphenate = var.faas_tdno_hyphenate
+    	if (!hyphenate || util.isTrue(hyphenate)) {
+    		return true
+    	}
+    	return false
+    }
 
 
 	@ProxyMethod

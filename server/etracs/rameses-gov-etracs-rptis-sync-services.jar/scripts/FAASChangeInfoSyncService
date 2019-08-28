@@ -32,6 +32,7 @@ class FAASChangeInfoSyncService
 
 	@ProxyMethod
 	public void schedulePostChangeInfo(changeinfo){
+		svc.checkAndUpdateLgu(changeinfo)
 		def dtfiled = dtSvc.serverDate
         def remoteOrg = rptSync.getRemoteOrg(changeinfo)
         def idx = 1

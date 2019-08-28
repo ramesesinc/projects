@@ -26,7 +26,7 @@ class ProvinceCancelledFAASWorkflowInterceptor
 		println 'Submit cancelled FAAS approval to municipality'
 		def cancelledfaas = evt.args[0].data;
 		cancelledfaas.dtapproved = dtSvc.serverDate
-		svc.approveFaasCancellation(cancelledfaas)
+		svc.approve(cancelledfaas)
 		notifyMunicipality(cancelledfaas)
 	}
 
@@ -34,7 +34,7 @@ class ProvinceCancelledFAASWorkflowInterceptor
 	public void deleteCancelledFaas( evt ) {
 		println 'Delete online cancelled FAAS'
 		def cancelledfaas = evt.args[0].data
-		svc.deleteCancelledFaas(cancelledfaas)
+		svc.delete(cancelledfaas)
 	}
 
 	@After(pattern="CancelledFAASWorkflowService.signal", eval="#{args[0].action == 'disapprove'}") 
@@ -43,7 +43,7 @@ class ProvinceCancelledFAASWorkflowInterceptor
 		def cancelledfaas = evt.args[0].data
 		cancelledfaas.disapprovemessage = env.message 
 		notifyDisapprove(cancelledfaas)
-		svc.deleteCancelledFaas(cancelledfaas)
+		svc.delete(cancelledfaas)
 	}
 
 	void notifyMunicipality(cancelledfaas){

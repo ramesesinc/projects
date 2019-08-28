@@ -98,3 +98,15 @@ from rpt_redflag rr
 where rr.objid = $P{objid}
 and rq.requirementtypeid = $P{requirementtypeid};
 
+
+[findLgu] 
+select lguid from faas where objid = $P{refid}
+union 
+select lguid from subdivision where objid = $P{refid}
+union 
+select lguid from consolidation where objid = $P{refid}
+union 
+select lgu_objid as lguid from resection where objid = $P{refid}
+
+
+	

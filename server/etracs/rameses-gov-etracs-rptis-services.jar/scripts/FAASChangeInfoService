@@ -128,5 +128,15 @@ class FAASChangeInfoService
 	public def getTxnTypes(  ) {
 		return faasSvc.getTxnTypes()
 	}
+
+	@ProxyMethod
+	public void checkAndUpdateLgu(changeinfo) {
+		if (!changeinfo.lguid) {
+			def lgu = em.findLgu(changeinfo.refid)
+			if (lgu) {
+				changeinfo.lguid = lgu.lguid
+			}
+		}
+	}
 }
 

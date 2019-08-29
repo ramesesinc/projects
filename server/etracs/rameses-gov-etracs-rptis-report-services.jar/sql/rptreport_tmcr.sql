@@ -28,7 +28,7 @@ order by  rp.pin, r.suffix, f.tdno
 SELECT
 	b.name as barangay, rp.barangayid, rp.section, rp.blockno, 
 	r.fullpin, rp.surveyno, f.titleno, r.totalareasqm,
-	 pc.code, f.owner_name, f.tdno, f.rpuid, r.rputype,
+	 pc.code, f.owner_name, f.owner_address, f.tdno, f.rpuid, r.rputype,
 	 f.txntype_objid, ft.displaycode as txntype_code
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
@@ -95,6 +95,7 @@ select
 	rp.parcel,
 	pc.code as classcode,
 	f.owner_name, 
+	f.owner_address,
 	f.administrator_name,
 	f.prevtdno,
 	f.txntype_objid,

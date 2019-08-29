@@ -34,16 +34,19 @@ class BPApplicationListingReportService {
 		params.enddate = resolveDate( dateSvc.add( enddate, '1d' )); 
 		params.permittypeid = params.permittype.objid;  
 
+		params.apptypefilter = "''"; 
 		if ( params.apptypes ) {
 			params.apptypefilter = params.apptypes.findAll{( it?.objid )}.collect{"'"+ it.objid +"'"}.join(','); 
-		} else {
-			params.apptypefilter = "''"; 
 		} 
 
+		params.appstatefilter = "''"; 
 		if ( params.appstates ) {
 			params.appstatefilter = params.appstates.findAll{( it?.objid )}.collect{"'"+ it.objid +"'"}.join(','); 
-		} else {
-			params.appstatefilter = "''"; 
+		} 
+
+		params.assessmenttypefilter = "''"; 
+		if ( params.assessmenttypes ) {
+			params.assessmenttypefilter = params.assessmenttypes.findAll{( it?.objid )}.collect{"'"+ it.objid +"'"}.join(','); 
 		} 
 
 		params.filter = ''; 

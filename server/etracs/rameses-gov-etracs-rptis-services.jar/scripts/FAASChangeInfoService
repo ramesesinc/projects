@@ -132,7 +132,7 @@ class FAASChangeInfoService
 	@ProxyMethod
 	public void checkAndUpdateLgu(changeinfo) {
 		if (!changeinfo.lguid) {
-			def lgu = em.findLgu(changeinfo.refid)
+			def lgu = em.findLgu(changeinfo)
 			if (lgu) {
 				changeinfo.lguid = lgu.lguid
 			}

@@ -52,11 +52,10 @@ public class RPUModel extends SubPageModel
     }
 
     def isAllowModify() {
+        if (entity._modify_) return true;
         if (entity.state.matches('CURRENT|CANCELLED')) return false;
         if (RPTUtil.toBoolean(entity.datacapture, false) == true) return true;
-        if (!entity._modify_) return true;
-        if (entity.txntype.objid == 'TR') return false;
-        return true;
+        return false;
     }
     
 }

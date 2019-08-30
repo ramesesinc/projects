@@ -26,6 +26,7 @@ public class BatchGRModel
     
     
     String title = 'General Revision';
+    String entityName = 'batchgr';
     
     void open() {
         entity.putAll(svc.open(entity));

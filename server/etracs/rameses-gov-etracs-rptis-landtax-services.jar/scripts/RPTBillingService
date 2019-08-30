@@ -207,7 +207,11 @@ public class RPTBillingService
 		if (!bill.billtoqtr) throw new Exception('Bill to quarter must be specified.')
 		bill.taxpayerid = bill.taxpayer?.objid 
 		bill.taxpayerid = (bill.taxpayerid ? bill.taxpayerid : '%')
-		bill.rptledgerid = (bill.rptledgerid ? bill.rptledgerid : '%')
+		if (bill.rptledgerid) {
+			bill.taxpayerid = '%'
+		} else {
+			bill.rptledgerid = '%'
+		}
 		bill.barangayid = (bill.barangay ? bill.barangay.objid : '%')
 		bill.rputype = (bill.rputype ? bill.rputype : '%')
 		return em.getBilledLedgers(bill)

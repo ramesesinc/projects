@@ -70,7 +70,6 @@ FROM (
   WHERE (rl.taxpayer_objid like $P{taxpayerid} or rl.beneficiary_objid like $P{taxpayerid})
    and rl.objid like $P{rptledgerid}
    AND rl.state = 'APPROVED'
-   and rl.totalav > 0 
    and rl.rputype like $P{rputype}
    and rl.barangayid like $P{barangayid}
    AND (rl.lastyearpaid < $P{billtoyear}
@@ -103,7 +102,6 @@ FROM (
   WHERE pp.taxpayer_objid like $P{taxpayerid}
    and rl.objid like $P{rptledgerid}
    AND rl.state = 'APPROVED'
-   and rl.totalav > 0 
    and rl.rputype like $P{rputype}
    and rl.barangayid like $P{barangayid}
    AND (rl.lastyearpaid < $P{billtoyear}

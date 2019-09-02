@@ -121,7 +121,7 @@ class SubdivisionSupport2Service
 
     @ProxyMethod
     public def buildSubdivisionData(subdivision){
-        subdivision.putAll(subdivisionSvc.open(subdivision.objid))
+        subdivision.putAll(subdivisionSvc.open(subdivision))
         subdivision.subdividedlands = subdivisionSvc.getSubdividedLands(subdivision.objid)
         subdivision.motherlands = subdivisionSvc.getMotherLands(subdivision)
         subdivision.affectedrpus = subdivisionSvc.getAffectedRpus(subdivision.objid)

@@ -55,6 +55,7 @@ public class RPUModel extends SubPageModel
         if (entity._modify_) return true;
         if (entity.state.matches('CURRENT|CANCELLED')) return false;
         if (RPTUtil.toBoolean(entity.datacapture, false) == true) return true;
+        if (getAllowEdit()) return true;
         return false;
     }
     

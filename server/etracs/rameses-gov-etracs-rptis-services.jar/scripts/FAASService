@@ -1220,9 +1220,9 @@ class FAASService
 	public def validateAndGetNumberBackTaxYears( effectivityyear, lastitem ) {
 		def maxbaxtaxyears = getMaximumBackTaxYearsPolicy() + 1
         def lastbacktaxyear = effectivityyear - maxbaxtaxyears
-        def backtaxyears = effectivityyear - lastitem_faas.effectivityyear
+        def backtaxyears = effectivityyear - lastitem.effectivityyear
 
-        if( lastitem_faas.effectivityyear < lastbacktaxyear ) {
+        if( lastitem.effectivityyear < lastbacktaxyear ) {
             throw new Exception("Total back tax years of $backtaxyears exceeded the maximum $maxbaxtaxyears years policy.\nLast effective year must be ${lastbacktaxyear}.")
         }
         return backtaxyears

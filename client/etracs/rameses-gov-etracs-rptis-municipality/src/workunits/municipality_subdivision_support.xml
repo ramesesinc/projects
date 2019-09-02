@@ -19,12 +19,15 @@ class MunicipalitySubdivisionSupportController
     
     @Service('MunicipalitySubdivisionSupport2Service')
     def svc; 
+
+    @Service('SubdivisionSyncService')
+    def syncSvc; 
     
     def entity;
     
     void resendToProvince(){
         if (MsgBox.confirm('Resubmit subdivision to Province?')){
-            svc.resubmitToProvince(entity);
+            syncSvc.scheduleSubmitToProvince(entity);
             MsgBox.confirm('Subdivision has been successfully submitted to province.')
         }
     }

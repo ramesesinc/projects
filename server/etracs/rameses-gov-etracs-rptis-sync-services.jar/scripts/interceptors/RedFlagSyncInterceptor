@@ -33,6 +33,12 @@ class RedFlagSyncInterceptor
         syncSvc.scheduleResolvedRedFlag(redflag)
     }
 
+    @After(pattern="MunicipalityRedFlagService.resendToProvince") 
+    public void scheduleResendToProvince( evt ) {
+        def redflag = evt.result
+        syncSvc.scheduleResolvedRedFlag(redflag)
+    }
+
     /*---------------------------------------------------------
     *
     * SEND/RECEIVE HANDLERS

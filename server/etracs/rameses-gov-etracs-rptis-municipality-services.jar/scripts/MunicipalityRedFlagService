@@ -33,9 +33,9 @@ class MunicipalityRedFlagService
 
 	@ProxyMethod
 	public def resendToProvince( redflag ) {
-		redflag = redflagSvc.open(redflag)
-		def changeinfo = changeinfoSvc.openByRedFlag(redflag)
-		notifyFiledBy(redflag)
-		return changeinfo 
+		return redflagSvc.open(redflag)
+		// def changeinfo = changeinfoSvc.openByRedFlag(redflag)
+		// notifyFiledBy(redflag)
+		// return changeinfo 
 	}
 }

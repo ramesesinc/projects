@@ -50,7 +50,7 @@ class FAASChangeInfoService
             changeinfo.taxpayer = entitySvc.open(changeinfo.newinfo.taxpayer)
         }
         else if (changeinfo.action == 'add_faas_requirement_document'){
-        	redflag.requirementtypeid = redflag.info.requirementtype.objid 
+        	changeinfo.requirementtypeid = changeinfo.newinfo.requirementtype?.objid 
         }
         else if (changeinfo.action == 'change_faas_sketch'){
             changeinfo.sketch = faasSvc.openSketch([objid: changeinfo.refid])

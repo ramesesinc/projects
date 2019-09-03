@@ -46,6 +46,7 @@ class RedFlagSyncService
         def remoteOrg = rptSync.getRemoteOrg(redflag)
         def idx = 1
         syncSvc.schedule(redflag.objid, redflag.objid, 'redflag', 'REDFLAG-RESOLVED', dtfiled, idx++, remoteOrg)
+        rptSync.scheduleRequirements(redflag.parentid, 'redflag', dtfiled, remoteOrg, idx)
 	}
 
 	/*---------------------------------------------------------

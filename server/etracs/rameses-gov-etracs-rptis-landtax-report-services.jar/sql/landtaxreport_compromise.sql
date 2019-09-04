@@ -43,7 +43,7 @@ select
   sum(cro.sh - cro.shdisc) as sh,
   sum(cro.firecode) as firecode,
   sum(cro.basicint + cro.sefint + cro.basicidleint + cro.shint) as penalty 
-from rptledger_compromise rc 
+from rptcompromise rc 
   inner join cashreceipt cr on rc.cypaymentreceiptid = cr.objid
   inner join rptpayment rp on cr.objid = rp.receiptid 
   inner join vw_rptpayment_item_detail cro on rp.objid = cro.parentid

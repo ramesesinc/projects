@@ -117,6 +117,7 @@ class RPTReceiptCompromiseService
 		params.lastyearpaid = lastitem.year 
 		params.lastqtrpaid = (lastitem.qtr ? lastitem.qtr : 4)
 		em_rptledger.find([objid:params.objid]).update(params)
+		em_rptledger_item.find([parentid: params.objid, year: params.lastyearpaid]).delete()
 	}
 
 	@ProxyMethod

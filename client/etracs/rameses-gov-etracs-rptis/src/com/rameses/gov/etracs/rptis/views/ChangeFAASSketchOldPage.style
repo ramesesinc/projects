@@ -1,0 +1,19 @@
+"entity.rp.*"[true == true]{
+    enabled:false;
+}
+
+"entity.rp.*"[mode=='changeinfo']{
+    enabled:true;
+}
+
+"uploadSketch|removeSketch|paste" [true == true]{
+    enabled:false;
+}
+
+"uploadSketch|paste" [ (image == null || image.length == 0)]{
+    enabled:true;
+}
+
+"removeSketch" [ image.length > 0]{
+    enabled:true;
+}

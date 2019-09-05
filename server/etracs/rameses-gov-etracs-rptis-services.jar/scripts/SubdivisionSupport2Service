@@ -9,6 +9,9 @@ class SubdivisionSupport2Service
     @Env
     def env
     
+    @Service('DateService')
+    def dtSvc
+
     @Service('SubdivisionService')
     def svc 
 
@@ -111,6 +114,39 @@ class SubdivisionSupport2Service
         }
     }
 
+
+    @ProxyMethod
+    public def postDisapprovedSubdivision(subdivision){
+        def state = svc.getState( subdivision )
+        if (state  && state.equalsIgnoreCase('FORAPPROVAL')){
+            em_subdivision_task.where('refid = :refid and enddate is null', [refid: subdivision.objid]).delete()
+            def recommendertask = em_subdivision_task.find([refid: subdivision.objid, state: 'recommender'])
+                                            .orderBy('startdate desc')
+                                            .first()
+            if (recommendertask) {
+                def message = 'Subdivision has been disapproved.'
+                recommendertask.objid = 'TSK' + new java.rmi.server.UID()
+                recommendertask.startdate = dtSvc.serverDate
+                recommendertask.enddate = null
+                recommendertask.signature = null 
+                recommendertask.message = message
+                em_subdivision_task.create(recommendertask)
+
+
+                def msg = [
+                    objid     : recommendertask.refid,
+                    recipientid : (recommendertask.assignee.objid ? recommendertask.assignee.objid : '-'),
+                    recipienttype : 'user',
+                    senderid  : '-',
+                    sender    : '-',
+                    message   : message,
+                    filetype  : 'subdivision',
+                    data      : [objid: subdivision.objid],
+                ]
+                notifySvc.addMessage(msg)
+            }
+        }
+    }
 
 
 

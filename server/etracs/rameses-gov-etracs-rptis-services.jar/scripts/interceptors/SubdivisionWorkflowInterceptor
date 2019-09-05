@@ -93,6 +93,12 @@ class SubdivisionWorkflowInterceptor
 		subdivisionSvc.delete(subdivision)
 	}
 
+	@After(pattern="SubdivisionWorkflowService.signal", eval="#{args[0].action =='disapprove'}", index=10) 
+	public void disapproveSubdivision( evt ) {
+		def subdivision = evt.args[0].data
+		subdivisionSvc.delete(subdivision)
+	}
+
 	@Before(pattern="SubdivisionWorkflowService.signal", eval="#{args[0].state.equalsIgnoreCase('examiner') && !args[0].action?.matches('return.*')}", index=10) 
 	public void validateExaminationInfo( evt ) {
 		def subdivision = evt.args[0].data

@@ -94,6 +94,15 @@ class SubdivisionSyncService
         syncSvc.schedule(subdivision.objid, subdivision.objid, 'subdivision', 'SUBDIVISION-APPROVED', dtfiled, idx++, remoteOrg)
 	}
 
+	@ProxyMethod
+	public void scheduleSubdivisionDisapproval(subdivision){
+		def dtfiled = dtSvc.serverDate
+        def remoteOrg = rptSync.getRemoteOrg(subdivision)
+        def idx = 1
+
+        //subdivision
+        syncSvc.schedule(subdivision.objid, subdivision.objid, 'subdivision', 'SUBDIVISION-DISAPPROVAL', dtfiled, idx++, remoteOrg)
+	}
 
 	
 	/*---------------------------------------------------------
@@ -114,6 +123,7 @@ class SubdivisionSyncService
 	    	'SUBDIVISION-FORAPPROVAL': [send: getForApproval, receive: postForApproval],
 	    	'SUBDIVISION-FAAS-APPROVED': [send: getApprovedFaas, receive: postApprovedFaas],
 	    	'SUBDIVISION-APPROVED': [send: getApprovedSubdivision, receive: postApprovedSubdivision],
+	    	'SUBDIVISION-DISAPPROVAL': [send: getDisapprovedSubdivision, receive: postDisapprovedSubdivision],
 	    ]
 	}
 
@@ -150,7 +160,16 @@ class SubdivisionSyncService
 		subdivisionSupport.postApprovedSubdivision(subdivision)
 
 	}
+	
+	def getDisapprovedSubdivision = {subdivision ->
+		return subdivision
+	}
 
+	def postDisapprovedSubdivision = {syncdata ->
+		def subdivision = syncdata.data 
+		subdivisionSupport.postDisapprovedSubdivision(subdivision)
+
+	}
 
 
 	void startWorkflow(syncdata, subdivision){

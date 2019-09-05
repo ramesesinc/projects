@@ -33,6 +33,12 @@ class SubdivisionSyncInterceptor
         syncSvc.scheduleSubdivisionApproval(subdivision)
     }
 
+    @After(pattern="SubdivisionWorkflowService.signal", eval="#{args[0].action=='disapprove'}", index=10000) 
+    public void scheduleSubdivisionDisapproval( evt ) {
+        def subdivision = evt.args[0].data;
+        syncSvc.scheduleSubdivisionDisapproval(subdivision)
+    }
+
     /*---------------------------------------------------------
     *
     * SEND/RECEIVE HANDLERS

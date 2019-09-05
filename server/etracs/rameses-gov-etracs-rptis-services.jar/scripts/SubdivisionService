@@ -149,6 +149,12 @@ class SubdivisionService
         txnRef.delete(subdivision.objid)
         em.deleteTasks(subdivision)
         em.delete(subdivision)
+        return subdivision
+    }
+
+    @ProxyMethod
+    public def disapprove( subdivision ) {
+        return delete(subdivision)
     }
 
 

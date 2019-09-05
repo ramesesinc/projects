@@ -175,6 +175,9 @@ class MachRPUService
 
 
     void calculateDepreciation( machine ) {
+        if (machine.replacementcost == null) machine.replacementcost = 0
+        if (machine.depreciation == null) machine.depreciation = 0
+        
         if( util.isTrue(machine.autodepreciate) && machine.estimatedlife > 0) {
             def dep = machine.remaininglife / machine.estimatedlife
             dep = (1 - dep) * 100;

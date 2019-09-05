@@ -38,7 +38,7 @@ select
         rpi.sef + rpi.sefint - rpi.sefdisc + 
         rpi.sh + rpi.shint - rpi.shdisc + rpi.firecode) as amount
 from rptpayment rp 
-    inner join vw_rptpayment_item rpi on rp.objid = rpi.parentid
+    inner join vw_rptpayment_item_detail rpi on rp.objid = rpi.parentid
     inner join rptledger rl on rp.refid = rl.objid 
     left join rptledgerfaas rlf on rpi.rptledgerfaasid = rlf.objid 
     left join cashreceipt cr on rp.receiptid = cr.objid 

@@ -320,10 +320,16 @@ select
 	tmp2.numfemale, tmp2.nummale, tmp2.numresident, tmp2.numemployee, 
 	(case when ei.gender='M' then 1 else 0 end) as malecount,
 	(case when ei.gender='F' then 1 else 0 end) as femalecount,  
-	case 
-		when b.orgtype='SING' then (select tin from entityindividual WHERE objid=b.owner_objid) 
-		else (select tin FROM entityjuridical WHERE objid=b.owner_objid) 
-	end as tin, '' as sss, 
+	(
+		select top 1 idno from entityid 
+		where entityid = b.owner_objid and idtype='TIN' 
+		order by dtissued desc 
+	) as tin, 
+	(
+		select top 1 idno from entityid 
+		where entityid = b.owner_objid and idtype='SSS' 
+		order by dtissued desc 
+	) as sss, 
 	case 
 		when b.state='ACTIVE' then (
 			select top 1 permitno from business_permit 

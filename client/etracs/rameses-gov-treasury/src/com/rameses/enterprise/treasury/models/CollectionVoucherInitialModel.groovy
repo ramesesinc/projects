@@ -44,7 +44,7 @@ class CollectionVoucherInitialModel extends CrudListModel {
         
         db.add("1d"); 
         def enddate = db.format("yyyy-MM-dd"); 
-        
+
         def m = [_schemaname: 'remittance' ];
         m.select = "objid,posted:{CASE WHEN state='POSTED' THEN 1 ELSE 0 END},controlno,controldate,dtposted,collector.name,amount,totalcash,totalcheck,totalcr,state"
         

@@ -13,8 +13,8 @@
 		 columnSpacing="0"
 		 leftMargin="25"
 		 rightMargin="108"
-		 topMargin="25"
-		 bottomMargin="25"
+		 topMargin="18"
+		 bottomMargin="18"
 		 whenNoDataType="NoPages"
 		 isTitleNewPage="false"
 		 isSummaryNewPage="false">
@@ -40,29 +40,384 @@
 	<parameter name="LOGOLGUURL" isForPrompting="false" class="java.net.URL"/>
 
 	<field name="afid" class="java.lang.String"/>
-	<field name="costperstub" class="java.math.BigDecimal"/>
-	<field name="qtyreceived" class="java.math.BigDecimal"/>
+	<field name="costperstub" class="java.lang.Number"/>
+	<field name="qtyreceived" class="java.lang.Number"/>
 	<field name="receivedseries" class="java.lang.String"/>
-	<field name="qtyissued" class="java.math.BigDecimal"/>
+	<field name="qtyissued" class="java.lang.Number"/>
 	<field name="issuedseries" class="java.lang.String"/>
-	<field name="qtyissuedcost" class="java.math.BigDecimal"/>
-	<field name="qtyending" class="java.math.BigDecimal"/>
+	<field name="qtyissuedcost" class="java.lang.Number"/>
+	<field name="qtyending" class="java.lang.Number"/>
 	<field name="endingseries" class="java.lang.String"/>
-	<field name="qtyendingcost" class="java.math.BigDecimal"/>
-	<field name="gaincost" class="java.math.BigDecimal"/>
-	<field name="qtyreceivedcost" class="java.math.BigDecimal"/>
-	<field name="minlineno" class="java.math.BigDecimal"/>
-	<field name="qtybegin" class="java.lang.Integer"/>
-	<field name="qtybegincost" class="java.math.BigDecimal"/>
+	<field name="qtyendingcost" class="java.lang.Number"/>
+	<field name="gaincost" class="java.lang.Number"/>
+	<field name="qtyreceivedcost" class="java.lang.Number"/>
+	<field name="minlineno" class="java.lang.Number"/>
+	<field name="qtybegin" class="java.lang.Number"/>
+	<field name="qtybegincost" class="java.lang.Number"/>
 	<field name="beginseries" class="java.lang.String"/>
 
-	<variable name="TOTALISSUEDCOST" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TOTALISSUEDCOST" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{qtyissuedcost}]]></variableExpression>
 	</variable>
-	<variable name="TOTALISSUEDGAINCOST" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TOTALISSUEDGAINCOST" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{gaincost}]]></variableExpression>
 		<initialValueExpression><![CDATA[0.0]]></initialValueExpression>
 	</variable>
+	<variable name="TOTALBEGINCOST" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[($F{qtybegincost} ? $F{qtybegincost} : 0.0)]]></variableExpression>
+	</variable>
+	<variable name="TOTALENDINGCOST" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[($F{qtyendingcost} ? $F{qtyendingcost} : 0.0)]]></variableExpression>
+	</variable>
+
+		<group  name="grpA" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="156"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="0"
+						width="875"
+						height="16"
+						key="staticText-47"
+						stretchType="RelativeToBandHeight"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="21"
+						width="589"
+						height="16"
+						key="staticText-39"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+				<text><![CDATA[Cash Basis]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="37"
+						width="589"
+						height="16"
+						key="staticText-40"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+				<text><![CDATA[Gain For Sold AF]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="53"
+						width="589"
+						height="16"
+						key="staticText-41"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+				<text><![CDATA[Total Cost of Accountable Form Issued]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="589"
+						y="21"
+						width="73"
+						height="16"
+						key="textField-20"
+						stretchType="RelativeToBandHeight"/>
+					<box rightPadding="5">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[($V{TOTALISSUEDCOST} ? $V{TOTALISSUEDCOST} : 0.0)]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="589"
+						y="37"
+						width="73"
+						height="16"
+						key="textField-21"
+						stretchType="RelativeToBandHeight"/>
+					<box rightPadding="5">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[($V{TOTALISSUEDGAINCOST} ? $V{TOTALISSUEDGAINCOST} : 0.0)]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="589"
+						y="53"
+						width="73"
+						height="16"
+						key="textField-22"
+						stretchType="RelativeToBandHeight"/>
+					<box rightPadding="5">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[($V{TOTALISSUEDCOST} ? $V{TOTALISSUEDCOST} : 0.0) + ($V{TOTALISSUEDGAINCOST} ? $V{TOTALISSUEDGAINCOST} : 0.0)]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="662"
+						y="21"
+						width="213"
+						height="16"
+						key="staticText-42"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+				<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="662"
+						y="37"
+						width="213"
+						height="16"
+						key="staticText-43"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+				<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="662"
+						y="53"
+						width="213"
+						height="16"
+						key="staticText-44"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+				<text><![CDATA[]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="661"
+						y="103"
+						width="186"
+						height="16"
+						key="textField-23"/>
+					<box>					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="9" isUnderline="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{TREASURERNAME}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="661"
+						y="118"
+						width="186"
+						height="16"
+						key="textField-24"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="9" isUnderline="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{TREASURERTITLE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="71"
+						y="103"
+						width="186"
+						height="16"
+						key="textField-25"/>
+					<box>					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PREPAREDBY}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="71"
+						y="118"
+						width="186"
+						height="16"
+						key="textField-26"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PREPAREDBYTITLE}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="44"
+						y="82"
+						width="118"
+						height="16"
+						key="staticText-46"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+				<text><![CDATA[ PREPARED BY :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="129"
+						y="0"
+						width="73"
+						height="16"
+						key="textField-27"
+						stretchType="RelativeToBandHeight"/>
+					<box rightPadding="5">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TOTALBEGINCOST}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="803"
+						y="0"
+						width="72"
+						height="16"
+						key="textField-28"
+						stretchType="RelativeToBandHeight"/>
+					<box rightPadding="5">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TOTALENDINGCOST}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="589"
+						y="0"
+						width="73"
+						height="16"
+						key="textField-29"
+						stretchType="RelativeToBandHeight"/>
+					<box rightPadding="5">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TOTALISSUEDCOST}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="497"
+						y="82"
+						width="360"
+						height="16"
+						key="staticText-48"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+				<text><![CDATA[I HEREBY CERTIFY that the above Report of Accountable Forms is true and correct.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="501"
+						y="118"
+						width="118"
+						height="16"
+						key="staticText-49"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+				<text><![CDATA[Date]]></text>
+				</staticText>
+			</band>
+			</groupFooter>
+		</group>
 		<background>
 			<band height="0"  isSplitAllowed="true" >
 			</band>
@@ -78,23 +433,23 @@
 						x="0"
 						y="47"
 						width="875"
-						height="15"
+						height="20"
 						key="textField-15"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{TREASUREROFFICENAME}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="84"
+						y="87"
 						width="875"
 						height="15"
 						key="textField-3"/>
 					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
+					<textElement textAlignment="Center" verticalAlignment="Top">
 						<font fontName="Tahoma"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PERIOD}]]></textFieldExpression>
@@ -102,13 +457,13 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="68"
+						y="70"
 						width="875"
-						height="15"
+						height="20"
 						key="staticText-2"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="14" isBold="true"/>
 					</textElement>
 				<text><![CDATA[INVENTORY REPORT OF ACCOUNTABLE FORMS]]></text>
 				</staticText>
@@ -147,7 +502,7 @@
 						key="staticText-1"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica" isBold="false"/>
 					</textElement>
 				<text><![CDATA[REPUBLIC OF THE PHILIPPINES]]></text>
 				</staticText>
@@ -396,7 +751,7 @@
 				<staticText>
 					<reportElement
 						x="21"
-						y="15"
+						y="13"
 						width="222"
 						height="15"
 						key="staticText-30"/>
@@ -427,7 +782,7 @@
 				<staticText>
 					<reportElement
 						x="316"
-						y="15"
+						y="13"
 						width="243"
 						height="15"
 						key="staticText-31"/>
@@ -458,7 +813,7 @@
 				<staticText>
 					<reportElement
 						x="649"
-						y="15"
+						y="13"
 						width="222"
 						height="15"
 						key="staticText-32"/>
@@ -616,7 +971,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{qtybegin}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{qtybegin}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -626,7 +981,7 @@
 						height="16"
 						key="textField"
 						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="3">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="5">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
@@ -635,7 +990,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{costperstub}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{costperstub}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -645,7 +1000,7 @@
 						height="16"
 						key="textField"
 						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="3">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="5">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
@@ -654,7 +1009,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{qtybegincost}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{qtybegincost}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -673,7 +1028,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{qtyreceived}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{qtyreceived}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -730,7 +1085,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{qtyissued}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{qtyissued}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -759,7 +1114,7 @@
 						height="16"
 						key="textField"
 						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="3">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="5">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
@@ -768,7 +1123,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{qtyissuedcost}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{qtyissuedcost}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -787,7 +1142,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{qtyending}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{qtyending}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -816,7 +1171,7 @@
 						height="16"
 						key="textField"
 						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="3">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="5">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
@@ -825,12 +1180,12 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{qtyendingcost}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{qtyendingcost}]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>
 		<columnFooter>
-			<band height="0"  isSplitAllowed="true" >
+			<band height="0"  isSplitAllowed="false" >
 			</band>
 		</columnFooter>
 		<pageFooter>
@@ -840,7 +1195,7 @@
 						mode="Transparent"
 						x="0"
 						y="0"
-						width="745"
+						width="781"
 						height="11"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -859,7 +1214,7 @@
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="749"
+						x="782"
 						y="0"
 						width="65"
 						height="11"
@@ -879,9 +1234,9 @@
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="814"
+						x="847"
 						y="0"
-						width="61"
+						width="28"
 						height="11"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -899,253 +1254,7 @@
 			</band>
 		</pageFooter>
 		<summary>
-			<band height="165"  isSplitAllowed="true" >
-				<staticText>
-					<reportElement
-						x="0"
-						y="0"
-						width="589"
-						height="16"
-						key="staticText-39"/>
-					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="9"/>
-					</textElement>
-				<text><![CDATA[Cash Basis]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="0"
-						y="16"
-						width="589"
-						height="16"
-						key="staticText-40"/>
-					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="9"/>
-					</textElement>
-				<text><![CDATA[Gain For Sold AF]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="0"
-						y="32"
-						width="589"
-						height="16"
-						key="staticText-41"/>
-					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="9"/>
-					</textElement>
-				<text><![CDATA[Total Cost of Accountable Form Issued]]></text>
-				</staticText>
-				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="589"
-						y="0"
-						width="73"
-						height="16"
-						key="textField-20"
-						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="3">					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTALISSUEDCOST}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="589"
-						y="16"
-						width="73"
-						height="16"
-						key="textField-21"
-						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="3">					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTALISSUEDGAINCOST}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="589"
-						y="32"
-						width="73"
-						height="16"
-						key="textField-22"
-						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="3">					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[($V{TOTALISSUEDCOST} + $V{TOTALISSUEDGAINCOST})]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement
-						x="662"
-						y="0"
-						width="213"
-						height="16"
-						key="staticText-42"/>
-					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="9"/>
-					</textElement>
-				<text><![CDATA[]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="662"
-						y="16"
-						width="213"
-						height="16"
-						key="staticText-43"/>
-					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="9"/>
-					</textElement>
-				<text><![CDATA[]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="662"
-						y="32"
-						width="213"
-						height="16"
-						key="staticText-44"/>
-					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="9"/>
-					</textElement>
-				<text><![CDATA[]]></text>
-				</staticText>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="568"
-						y="111"
-						width="230"
-						height="16"
-						key="textField-23"/>
-					<box>					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="9" isUnderline="false"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{TREASURERNAME}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement
-						x="568"
-						y="78"
-						width="129"
-						height="16"
-						key="staticText-45"/>
-					<box></box>
-					<textElement verticalAlignment="Middle">
-						<font fontName="SansSerif" size="9"/>
-					</textElement>
-				<text><![CDATA[NOTED :]]></text>
-				</staticText>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="568"
-						y="127"
-						width="230"
-						height="16"
-						key="textField-24"/>
-					<box>					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="9" isUnderline="false"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{TREASURERTITLE}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="98"
-						y="111"
-						width="230"
-						height="16"
-						key="textField-25"/>
-					<box>					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="9"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PREPAREDBY}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="98"
-						y="127"
-						width="230"
-						height="16"
-						key="textField-26"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="9"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PREPAREDBYTITLE}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement
-						x="98"
-						y="78"
-						width="118"
-						height="16"
-						key="staticText-46"/>
-					<box></box>
-					<textElement verticalAlignment="Middle">
-						<font fontName="SansSerif" size="9"/>
-					</textElement>
-				<text><![CDATA[ PREPARED BY :]]></text>
-				</staticText>
+			<band height="0"  isSplitAllowed="true" >
 			</band>
 		</summary>
 </jasperReport>

@@ -38,14 +38,20 @@ class CollectionVoucherInitialModel extends CrudListModel {
         remBalance = 0.0;
         remittancelist = null; 
         if ( !controldate ) return;
+
+        def db = new com.rameses.util.DateBean( controldate ); 
+        def startdate = db.format("yyyy-MM-dd"); 
+        
+        db.add("1d"); 
+        def enddate = db.format("yyyy-MM-dd"); 
         
         def m = [_schemaname: 'remittance' ];
         m.select = "objid,posted:{CASE WHEN state='POSTED' THEN 1 ELSE 0 END},controlno,controldate,dtposted,collector.name,amount,totalcash,totalcheck,totalcr,state"
         
-        def qstr = " controldate = :cdate "; 
-        if ( liquidate_remittance_as_of_date ) qstr = " controldate <= :cdate "; 
+        def qstr = " controldate >= :startdate AND controldate < :enddate "; 
+        if ( liquidate_remittance_as_of_date ) qstr = " controldate < :enddate "; 
         
-        m.where = [""+ qstr +" AND collectionvoucherid IS NULL AND state <> 'DRAFT' ", [ cdate: controldate ]];
+        m.where = [""+ qstr +" AND collectionvoucherid IS NULL AND state <> 'DRAFT' ", [ startdate: startdate, enddate: enddate ]];
         m.orderBy = "controldate, collector_name, dtposted";
         remittancelist = queryService.getList( m );
     }

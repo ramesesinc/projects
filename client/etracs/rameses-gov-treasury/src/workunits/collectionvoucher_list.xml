@@ -4,7 +4,7 @@
         <invoker folderid="menucategory/treasury/remittance" action="init" 
                  caption="View Collection Vouchers" windowTitle="Collection Vouchers"
                  formTitle="Collection Vouchers" formId="treasury-remittance-collectionvouchers"
-                 cols="controlno,controldate,liquidatingofficer.name,amount,state"
+                 cols="controlno,controldate,liquidatingofficer.name,amount,totalcash,totalcheck,totalcr,state"
                  orderBy="controldate DESC" 
                  role="LIQUIDATING_OFFICER" 
                  target="window" index="32" 
@@ -13,10 +13,12 @@
         <invoker folderid="menucategory/treasury/mgmt" action="init" 
                  caption="View Collection Vouchers" windowTitle="Collection Vouchers"
                  formTitle="Collection Vouchers" formId="treasury-mgmt-collectionvouchers"
-                 cols="controlno,controldate,liquidatingofficer.name,amount,state"
+                 cols="controlno,controldate,liquidatingofficer.name,amount,totalcash,totalcheck,totalcr,state"
                  orderBy="controldate DESC" 
                  role="SHARED" permission="collectionvoucher.view" 
                  target="window" />
         
    </invokers>
+   
+    <code class="com.rameses.enterprise.treasury.models.CollectionVoucherListModel" />       
 </workunit>

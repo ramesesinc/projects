@@ -63,7 +63,7 @@ class CashReceiptCheckPaymentModel extends PageFlowController {
     void searchCheckIfExists() {
         new_check = true;
         def m = [_schemaname:'checkpayment'];
-        m.where = [ " amount - amtused > 0 AND collector.objid =:collectorid", [collectorid: entity.collector.objid] ];
+        m.where = [ " amount - amtused > 0 AND collector.objid =:collectorid", [collectorid: entity?.collector?.objid] ];
         selectionList = queryService.getList( m );
         if(selectionList ) {
             check_exists = true;

@@ -3,7 +3,7 @@
     <invokers>
         <invoker type="machrysetting:create" 
                  action="create" 
-                 caption="Land Revision Setting" 
+                 caption="Machinery Revision Setting" 
                  target="window" 
                  entityName="machrysetting" 
                  serviceName="MachRYSettingService"

@@ -51,7 +51,7 @@ class CollectionVoucherInitialModel extends CrudListModel {
         def qstr = " controldate >= :startdate AND controldate < :enddate "; 
         if ( liquidate_remittance_as_of_date ) qstr = " controldate < :enddate "; 
         
-        m.where = [""+ qstr +" AND collectionvoucherid IS NULL AND state <> 'DRAFT' ", [ startdate: startdate, enddate: enddate ]];
+        m.where = [""+ qstr +" AND collectionvoucherid IS NULL AND state not in ('DRAFT','CAPTURE') ", [ startdate: startdate, enddate: enddate ]];
         m.orderBy = "controldate, collector_name, dtposted";
         remittancelist = queryService.getList( m );
     }
@@ -59,7 +59,7 @@ class CollectionVoucherInitialModel extends CrudListModel {
     void buildDatesList() {
         def m = [_schemaname:'remittance'];
         m.select = "controldate";
-        m.where = [" collectionvoucherid IS NULL AND state <> 'DRAFT' "];
+        m.where = [" collectionvoucherid IS NULL AND state not in ('DRAFT','CAPTURE') "];
         m.groupBy = "controldate";
         m.orderBy = "controldate"; 
         def xlist  = queryService.getList(m);

@@ -115,7 +115,7 @@ class RemittanceImportExportService  {
 						def chk = [
 							objid: it.checkid, bankid: it.bankid, 
 							refno: it.refno, refdate: it.refdate, 
-							amount: it.amount, amtused: it.amount, 
+							amount: it.amount, amtused: 0.0, 
 							receivedfrom: rct.paidby, state: 'PENDING', 
 							split: 0, external: 0 
 						]; 

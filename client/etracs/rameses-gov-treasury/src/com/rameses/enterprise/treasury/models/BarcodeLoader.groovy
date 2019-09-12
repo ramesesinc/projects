@@ -8,16 +8,32 @@ import com.rameses.util.*;
         
 public class BarcodeLoader {
         
-    @Service("CashReceiptService")
-    def cashReceiptSvc;
-    
-    @Service("CashReceiptBarcodeService")
-    def barcodeSvc;
-
-    @Service('QueryService')
-    def qrySvc 
+    def _cashReceiptSvc;
+    def _barcodeSvc;
+    def _qrySvc;
     
     def handler;
+    
+    public def getCashReceiptSvc() {
+        if ( _cashReceiptSvc == null ) {
+            _cashReceiptSvc = InvokerProxy.getInstance().create("CashReceiptService", null);
+        }
+        return _cashReceiptSvc; 
+    } 
+
+    public def getBarcodeSvc() {
+        if ( _cashReceiptSvc == null ) {
+            _cashReceiptSvc = InvokerProxy.getInstance().create("CashReceiptBarcodeService", null);
+        }
+        return _cashReceiptSvc; 
+    } 
+
+    public def getQrySvc() {
+        if ( _qrySvc == null ) {
+            _qrySvc = InvokerProxy.getInstance().create("QueryService", null);
+        }
+        return _qrySvc; 
+    } 
 
     void init() {
         def p = MsgBox.prompt("Enter barcode");

@@ -9,14 +9,9 @@ import com.rameses.util.*;
 
 abstract class CashReceiptAbstractIssueModel extends PageFlowController  {
 
-    @Service("QueryService")
-    def qryService;
-    
-    @Service("CashReceiptService")
-    def cashReceiptSvc;
-    
-    @Service("AFControlService")
-    def afControlSvc;  
+    def _qryService;
+    def _cashReceiptSvc;
+    def _afControlSvc;  
 
     boolean subcollectorMode = false;
 
@@ -35,6 +30,27 @@ abstract class CashReceiptAbstractIssueModel extends PageFlowController  {
     
     abstract String getDefaultAfType();
     abstract String getFormType();
+    
+    public def getCashReceiptSvc() {
+        if ( _cashReceiptSvc == null ) {
+            _cashReceiptSvc = InvokerProxy.getInstance().create("CashReceiptService", null);
+        }
+        return _cashReceiptSvc; 
+    }     
+    
+    public def getQryService() {
+        if ( _qryService == null ) {
+            _qryService = InvokerProxy.getInstance().create("QueryService", null);
+        }
+        return _qryService; 
+    }     
+    
+    public def getAfControlSvc() {
+        if ( _afControlSvc == null ) {
+            _afControlSvc = InvokerProxy.getInstance().create("AFControlService", null);
+        }
+        return _afControlSvc; 
+    }     
     
     @PropertyChangeListener
     def listener = [

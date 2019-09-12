@@ -9,18 +9,12 @@ import java.rmi.server.UID
 
 class CashReceiptCheckPaymentModel extends PageFlowController { 
 
-    
+    def _persistenceService;
+    def _queryService;
+    def _cashReceiptSvc;
+
     @Binding 
     def binding; 
-
-    @Service("PersistenceService")
-    def persistenceService;
-    
-    @Service("QueryService")
-    def queryService;
-    
-    @Service("CashReceiptService")
-    def cashReceiptSvc;
 
     def entity;
     def saveHandler;
@@ -41,6 +35,27 @@ class CashReceiptCheckPaymentModel extends PageFlowController {
     def noncashListHandler = [
         fetchList: { return payments; }, 
     ] as BasicListModel;
+    
+    public def getPersistenceService() {
+        if ( _persistenceService == null ) {
+            _persistenceService = InvokerProxy.getInstance().create("PersistenceService", null);
+        }
+        return _persistenceService; 
+    }     
+    
+    public def getQueryService() {
+        if ( _queryService == null ) {
+            _queryService = InvokerProxy.getInstance().create("QueryService", null);
+        }
+        return _queryService; 
+    }     
+    
+    public def getCashReceiptSvc() {
+        if ( _cashReceiptSvc == null ) {
+            _cashReceiptSvc = InvokerProxy.getInstance().create("CashReceiptService", null);
+        }
+        return _cashReceiptSvc; 
+    }     
     
     void init() {
         check = [split:0];

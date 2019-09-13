@@ -1,6 +1,6 @@
-import com.rameses.annotations.*
-import com.rameses.util.*
-import com.rameses.common.*
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.common.*;
 import treasury.utils.*;
 
 class EORRemittanceService {
@@ -30,19 +30,20 @@ class EORRemittanceService {
     @Service("JevService")
     def jevSvc;    
 
-
+    @Service('EORNumberService')
+    def numSvc;
 
     @Env
     def env;
 
     @ProxyMethod
     public def create( def pp ) {
-        if(!pp.items )
+        if ( !pp.items ) 
             throw new Exception("Please select at least one item to remit");
         if( pp.amount <= 0 )
             throw new Exception("Amount must be greater than 0");
-        def items = pp.items;
 
+        def items = pp.items;
         def arr = items.collect{ it.objid };
 
         def m = [state:"DRAFT"];
@@ -68,7 +69,26 @@ class EORRemittanceService {
     }
 
     @ProxyMethod
-    public def post( def o ) {
+    public def post( o ) { 
+        def findby = [ objid: o.objid ];
+        def reminfo = remEm.find( findby ).select('objid,state').first(); 
+        if ( !reminfo?.objid ) 
+            throw new Exception('EOR Remittance record not found'); 
+        if ( reminfo?.state.toString().toUpperCase() != 'DRAFT' ) 
+            throw new Exception('EOR Remittance record must be in DRAFT state'); 
+
+        def u = [ state: 'POSTED' ]; 
+        u.postedby = [objid: env.USERID, name: env.FULLNAME];
+        u.dtposted = dateSvc.getServerDate();
+        u.controlno = numSvc.getNextRemittanceNumber( [:] ); 
+        remEm.find( findby ).update( u ); 
+        u.objid = o.objid; 
+        return u; 
+    } 
+
+    /*
+    @ProxyMethod
+    public def post( o ) {
         def fundlist = remFundEm.find([ remittanceid : o.objid ]).list();
         fundlist.each { 
             if ( !it.bankaccount?.objid ) throw new Exception("Each fund must have a bank account")
@@ -113,7 +133,7 @@ class EORRemittanceService {
         jevBatch.items.addAll( remEm.getPayableLedgerItems( pm ) );
         jevSvc.createBatch( jevBatch ); 
     } 
-
+    */
 
     @ProxyMethod 
     public void updateValidation( params ) {

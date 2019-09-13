@@ -19,5 +19,9 @@
 		
 		<complex name="info" serializer="default" required="true"/>
 		<complex name="items" serializer="default" required="false" type="list" />
+
+		<field name="state" />
+		<field name="mobileno" />
+		<field name="email" />
 	</element>
 </schema>

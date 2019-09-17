@@ -1,7 +1,7 @@
 import com.rameses.annotations.*;
 import com.rameses.common.*;
 
-class RPTISSyncService
+class MunicipalitySyncService
 {   
 	@Service(value='CloudNotificationService', connection='notification_proxy')
 	def cloudNotificationSvc;
@@ -12,6 +12,9 @@ class RPTISSyncService
 	@Env
 	def env 
 
+	@Service('OrgService')
+	def orgSvc 
+
     @Context
     def appContext 
 
@@ -20,25 +23,28 @@ class RPTISSyncService
 
 	@ProxyMethod
 	public def syncData(params) {
-		println 'RPTISSyncService.sync============'
-		util.required('servicename', params.servicename)
-		util.required('methodname', params.methodname)
+		def org = orgSvc.open([objid:env.ORGID])
+		def data = [
+			orgid   : org.objid, 
+			orgcode : org.code,
+		]
 
-		params.orgid = env.ORGID 
-		def args = [params] as Object[];
-		def asyncreq = new AsyncRequest(params.servicename, params.methodname, args, env); 
+		data.putAll(params);
+
+		def args = [data] as Object[];
+		def asyncreq = new AsyncRequest(params.remoteservicename, 'syncData', args, env); 
 		asyncreq.contextName = 'etracs25';
 		asyncreq.connection = 'async_remote'; 
 
 		def msg = [
             origin   : env.ORGID.replaceAll('-.*?', ''),
             data     : asyncreq, 
-            channel  : (appContext.conf.cloud_channel ? appContext.conf.cloud_channel : 'etracs'), 
+            channel  : (appContext.conf.cloud_channel ? appContext.conf.cloud_channel : 'etracs'),
             channelgroup: util.getParentCode(),
 		]
+
 		cloudNotificationSvc.addMessage(msg)
 		asyncConn.register(asyncreq.id)
 		return new AsyncToken(asyncreq.id, asyncreq.connection)
 	}
-
 }

@@ -20,11 +20,10 @@ class ProvinceRedFlagService
 	def util
 
 
-	//TODO:
 	@ProxyMethod
 	public def postRedFlag( entity ) {
 		entity.putAll(redflagSvc.create(entity))
-		//notifyMunicipality(entity)
+		notifyMunicipality(entity)
 		return entity
 	}
 

@@ -10,11 +10,8 @@ class MunicipalitySubdivisionRemoteCallHandler
 	@Service('SubdivisionService')
 	def svc
 
-	@Service('SubdivisionSupportService')
-	def supportSvc
-
 	@Service('SubdivisionSupport2Service')
-	def supportSvc2 
+	def supportSvc 
 
 	@Service('FAASService')
 	def faasSvc
@@ -35,7 +32,11 @@ class MunicipalitySubdivisionRemoteCallHandler
 		if (state == null || state != 'APPROVED'){
 			state = 'FORAPPROVAL'
 			subdivision.state = state
-			supportSvc2.postSubdivisionData(subdivision)
+			subdivision.faases.each{
+				def fstate = em_faas.select('state').find([objid:faas.objid]).first()?.state
+				it.state = (fstate == null ? 'PENDING' : fstate.state)
+			}
+			supportSvc.postSubdivisionData(subdivision)
 			subdivision.tasks = em_subdivision_task.where('refid = :objid and enddate is not null', subdivision).list()
 			doApproveSubdivision(subdivision)
 			println 'Subdivision ' + subdivision.txnno + ' created from Province has been successfully posted and approved.'
@@ -46,18 +47,7 @@ class MunicipalitySubdivisionRemoteCallHandler
 	public void approveSubdivisionByProvince(subdivision){
 		def state = svc.getState( subdivision )
 		if (state  && ! state.equalsIgnoreCase('APPROVED')){
-			// supportSvc2.updateFaasesData(subdivision)
-			doApproveSubdivision(subdivision)
-			notifyRecommender(subdivision)
-			println 'Subdivision ' + subdivision.txnno + ' has been successfully approved.'
-		}
-	}
-
-	@ProxyMethod
-	public void approveSubdivisionTransmittalByProvince(subdivision){
-		def state = svc.getState( subdivision )
-		if (state  && ! state.equalsIgnoreCase('APPROVED')){
-			supportSvc.updateFaasesData(subdivision)
+			// supportSvc.updateFaasesData(subdivision)
 			doApproveSubdivision(subdivision)
 			notifyRecommender(subdivision)
 			println 'Subdivision ' + subdivision.txnno + ' has been successfully approved.'
@@ -70,7 +60,7 @@ class MunicipalitySubdivisionRemoteCallHandler
 		def currfaas = em_faas.select('state').find([objid:faas.objid]).first()
 		if (currfaas && currfaas.state == 'CURRENT') return
 		faas.state = 'PENDING';
-		supportSvc2.postFaasData(faas)
+		supportSvc.postFaasData(faas)
 		faasSvc.approveFaas(faas)
 		println 'Subdivision FAAS ' + faas.tdno + ' has been successfully approved.'
 	}
@@ -83,7 +73,7 @@ class MunicipalitySubdivisionRemoteCallHandler
 		}
 		em_subdivision_task.where('refid = :objid and enddate is null', subdivision).delete()
 		svc.insertFaasSignatories(subdivision)
-		svc.approveSubdivision(subdivision)
+		svc.approve(subdivision)
 	}
 
 

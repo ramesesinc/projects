@@ -54,7 +54,7 @@ class MunicipalityConsolidationRemoteCallHandler
 			svc.approveAffectedRpuFaasRecord(consolidation, it)
 		}
 
-		svc.approveConsolidation(consolidation)
+		svc.approve(consolidation)
 
 		consolidation.tasks.each{
 			it.data = consolidation

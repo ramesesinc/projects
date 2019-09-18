@@ -140,14 +140,14 @@ from (
         group by afd.controlid 
       )bt1 
         inner join af_control_detail afd on afd.objid = bt1.detailid 
-        left join aftxnitem afi on afi.objid = afd.refitemid 
+        left join aftxnitem afi on afi.objid = afd.aftxnitemid 
 
     )tmp1 
     group by tmp1.controlid 
 
   )tmp2 
     inner join af_control_detail afd on afd.objid = tmp2.detailid 
-    left join aftxnitem afi on afi.objid = afd.refitemid 
+    left join aftxnitem afi on afi.objid = afd.aftxnitemid 
 
 )tmp3, af_control afc, af 
 where afc.objid = tmp3.controlid 

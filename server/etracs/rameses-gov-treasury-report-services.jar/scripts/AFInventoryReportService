@@ -22,7 +22,8 @@ class AFInventoryReportService {
 		p.enddate = DateUtil.add( p.startdate, '1M' ); 	
 
 		def data =[ items: getReportData( p ) ]; 
-		data.info = [ PERIOD : 'FOR THE MONTH OF ' + params.month.caption + ' ' + params.year]; 
+		data.info = [ PERIOD : 'FOR THE MONTH OF ' + params.month.caption + ' ' + params.year];
+		data.info.PERIOD = data.info.PERIOD.toUpperCase();  
 		data.info.PREPAREDBY = env.FULLNAME; 
 		data.info.PREPAREDBYTITLE = env.JOBTITLE;
 		return data; 
@@ -74,12 +75,10 @@ class AFInventoryReportService {
 				fo.gaincost = vv.findAll{( it.gaincost > 0 )}.sum{ it.gaincost } 
 				if ( fo.gaincost == null ) fo.gaincost = 0.0; 
 
-				fo.qtyreceivedcost = vv.findAll{( it.qtyreceivedcost > 0 )}.sum{ it.qtyreceivedcost } 
-				fo.qtybegincost = vv.findAll{( it.qtybegincost > 0 )}.sum{ it.qtybegincost } 
-				fo.qtyissuedcost = vv.findAll{( it.qtyissuedcost > 0 )}.sum{ it.qtyissuedcost } 				
-
-				def cps = vv.find{( it.costperstub > 0 )} 
-				if ( cps ) fo.costperstub = cps.costperstub; 
+				fo.costperstub = (fo.cost ? fo.cost : 0.0); 
+				fo.qtyreceivedcost = fo.qtyreceived * fo.costperstub; 
+				fo.qtybegincost = fo.qtybegin * fo.costperstub; 
+				fo.qtyissuedcost = fo.qtyissued * fo.costperstub; 
 
 				fo.receivedstartseries = receivedstartseries; 
 				fo.receivedendseries = receivedendseries; 
@@ -88,25 +87,24 @@ class AFInventoryReportService {
 				fo.issuedstartseries = issuedstartseries;
 				fo.issuedendseries = issuedendseries; 
 				fo.endingstartseries = fo.endingendseries = null; 
+				fo.qtyending = 0; 
 
 				def sseries = [ fo.beginstartseries, fo.receivedstartseries ].findAll{( it )}.min{( it )} 
 				def eseries = [ fo.beginendseries, fo.receivedendseries ].findAll{( it )}.max{( it )} 
 
-				fo.qtyending = (fo.qtybegin + fo.qtyreceived) - fo.qtyissued; 
-
-				if ( fo.qtyending > 0 ) {
-					if ( fo.qtyissued > 0 ) { 
-						if ( fo.issuedendseries < eseries ) { 
-							fo.endingstartseries = fo.issuedendseries+1; 
-							fo.endingendseries = eseries; 
-						} 
-					} else {
-						fo.endingstartseries = sseries; 
+				if ( fo.qtyissued > 0 ) {
+					if ( fo.issuedendseries < eseries ) { 
+						fo.endingstartseries = fo.issuedendseries+1; 
 						fo.endingendseries = eseries; 
+						fo.qtyending = fo.endingendseries - fo.endingstartseries+1; 
 					} 
-
-					fo.qtyendingcost = fo.qtyending * fo.costperstub; 
+				}
+				else {
+					fo.endingstartseries = sseries; 
+					fo.endingendseries = eseries; 
+					fo.qtyending = fo.endingendseries - fo.endingstartseries+1; 
 				} 
+				fo.qtyendingcost = fo.qtyending * fo.costperstub; 
 
 				if ( fo.qtyreceived > 0 ) fo.receivedseries = formatSeries(fo.receivedstartseries, fo.receivedendseries, fo.serieslength).toString(); 
 				if ( fo.qtybegin > 0 ) fo.beginseries = formatSeries(fo.beginstartseries, fo.beginendseries, fo.serieslength).toString(); 
@@ -117,11 +115,56 @@ class AFInventoryReportService {
 				if ( fo.qtybegin == 0 ) fo.qtybegin = null; 
 				if ( fo.qtyissued == 0 ) fo.qtyissued = null; 
 				if ( fo.qtyending == 0 ) fo.qtyending = null; 
+				if ( fo.qtyreceivedcost == 0 ) fo.qtyreceivedcost = null; 
+				if ( fo.qtybegincost == 0 ) fo.qtybegincost = null; 
+				if ( fo.qtyissuedcost == 0 ) fo.qtyissuedcost = null; 
+				if ( fo.qtyendingcost == 0 ) fo.qtyendingcost = null; 
+				if ( fo.costperstub == 0 ) fo.costperstub = null; 
 
 				results << fo; 
 			} 
 		} 
 		serials.clear(); 
+
+		list.groupBy{ it.formno }.each{ k,v-> 
+			
+			v.each{ oo-> 
+				if ( oo.qtyreceived > 0 ) 
+					oo.qtyreceived = oo.receivedendseries-oo.receivedstartseries+1; 
+				if ( oo.qtybegin > 0 ) 
+					oo.qtybegin = oo.beginendseries-oo.beginstartseries+1;
+				if ( oo.qtyissued > 0 ) 
+					oo.qtyissued = oo.issuedendseries-oo.issuedstartseries+1;
+			}
+
+			def fo = v.first();
+			fo.receivedstartseries = fo.receivedendseries = null;   
+			fo.beginstartseries = fo.beginendseries = null;   
+			fo.issuedstartseries = fo.issuedendseries = null;   
+			fo.endingstartseries = fo.endingendseries = null;   
+			fo.qtyreceived = v.sum{ it.qtyreceived } 
+			fo.qtybegin = v.sum{ it.qtybegin } 
+			fo.qtyissued = v.sum{ it.qtyissued }
+			fo.qtyending = (fo.qtyreceived ? fo.qtyreceived : fo.qtybegin) - fo.qtyissued;
+
+			fo.costperstub = (fo.cost ? fo.cost : 0.0); 
+			fo.qtyreceivedcost = fo.qtyreceived * fo.costperstub; 
+			fo.qtybegincost = fo.qtybegin * fo.costperstub; 
+			fo.qtyissuedcost = fo.qtyissued * fo.costperstub; 
+
+
+			if ( !fo.qtyreceived ) fo.qtyreceived = null; 
+			if ( !fo.qtybegin ) fo.qtybegin = null; 
+			if ( !fo.qtyissued ) fo.qtyissued = null; 
+			if ( !fo.qtyending ) fo.qtyending = null; 
+			if ( !fo.qtyreceivedcost ) fo.qtyreceivedcost = null; 
+			if ( !fo.qtybegincost ) fo.qtybegincost = null; 
+			if ( !fo.qtyissuedcost ) fo.qtyissuedcost = null; 
+			if ( !fo.qtyendingcost ) fo.qtyendingcost = null; 
+			if ( !fo.costperstub ) fo.costperstub = null; 
+
+			results << fo; 
+		} 
 
 		list.clear();
 		results.sort{ it.lineno } 

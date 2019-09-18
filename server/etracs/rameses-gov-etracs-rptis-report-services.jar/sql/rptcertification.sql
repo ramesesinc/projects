@@ -150,6 +150,7 @@ SELECT
 	rp.blockno,
 	rp.cadastrallotno,
 	rp.surveyno,
+	r.taxable,
 	f.effectivityyear,
 	f.effectivityqtr
 FROM rptcertificationitem rci 
@@ -207,6 +208,7 @@ SELECT
 	rp.blockno,
 	rp.surveyno,
 	rp.street,
+	r.taxable,
 	f.effectivityyear,
 	f.effectivityqtr
 FROM rptcertificationitem rci 
@@ -231,7 +233,7 @@ SELECT
 	r.ry, r.realpropertyid, r.rputype, r.fullpin, r.totalmv, r.totalav,
 	r.totalareasqm, r.totalareaha,
 	rp.barangayid, rp.cadastrallotno, rp.blockno, rp.surveyno, rp.street,
-	b.name AS barangay_name, so.name as lgu_name 
+	b.name AS barangay_name, so.name as lgu_name, r.taxable 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
@@ -326,6 +328,7 @@ SELECT
 	rp.surveyno,
 	rp.street,
 	r.rputype,
+	r.taxable,
 	f.effectivityyear,
 	f.effectivityqtr
 FROM rptcertificationitem rci 
@@ -441,7 +444,8 @@ SELECT
 	rp.surveyno,
 	rp.street,
 	r.objid as rpuid,
-	r.rputype
+	r.rputype,
+	r.taxable
 FROM rptcertificationitem rci 
 	INNER JOIN faas f ON rci.refid = f.objid 
 	INNER JOIN rpu r ON f.rpuid = r.objid 

@@ -119,7 +119,8 @@ SELECT
 	r.totalav,
 	r.totalmv, 
 	rp.surveyno,
-	rp.street
+	rp.street,
+	r.taxable
 FROM rptcertificationitem rci 
 	INNER JOIN faas f ON rci.refid = f.objid 
 	INNER JOIN rpu r ON f.rpuid = r.objid 

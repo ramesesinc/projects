@@ -825,19 +825,21 @@ class FAASService
 
 	@ProxyMethod 
 	public void updateFullPinInfo(faas){
-		faas.fullpin = faas.rpu.fullpin 
+		def tokens = faas.rp.pin.tokenize('-')
 		if (faas.rpu.rputype != 'land'){
 			def landowner = em_faas.findLandOwner([rpuid:faas.rpu.objid]);
 			if (landowner && faas.taxpayer.objid != landowner.objid){
-				def tokens = faas.rp.pin.tokenize('-')
 				tokens[4] = '(' + tokens[4] + ')'
-				tokens << faas.rpu.suffix
-				faas.fullpin = tokens.join('-')
+			}
+			tokens << faas.rpu.suffix
+			if (faas.rpu.subsuffix) {
+				tokens << faas.rpu.subsuffix
 			}
 		}
 		if (faas.rp && faas.rp.claimno ){
-			faas.fullpin += '-' + faas.rp.claimno
+			tokens << faas.rp.claimno 
 		}
+		faas.fullpin = tokens.join('-')
 	}
 
 	@ProxyMethod 

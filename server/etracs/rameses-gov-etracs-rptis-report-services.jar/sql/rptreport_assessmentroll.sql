@@ -75,7 +75,7 @@ SELECT
 	f.owner_name, f.owner_address, 
 	f.administrator_name, f.administrator_address, 
 	f.tdno, f.effectivityyear, f.prevtdno, 
-	rp.cadastrallotno, rp.surveyno, rp.blockno, pc.code AS classcode, r.rputype, r.totalav, 
+	rp.cadastrallotno, rp.surveyno, rp.blockno, pc.code AS classcode, r.rputype, r.totalav, r.totalareasqm, r.totalareaha,
 	r.fullpin, f.prevtdno, f.memoranda, 
 	b.name AS barangay, b.indexno AS barangayindex,
 	et.code AS legalbasis   
@@ -110,7 +110,7 @@ SELECT
 	f.owner_name, f.owner_address, 
 	f.administrator_name, f.administrator_address, 
 	f.tdno, f.effectivityyear, f.prevtdno, 
-	rp.cadastrallotno,  rp.surveyno, rp.blockno, pc.code AS classcode, r.rputype, r.totalav, 
+	rp.cadastrallotno,  rp.surveyno, rp.blockno, pc.code AS classcode, r.rputype, r.totalav, r.totalareasqm, r.totalareaha,
 	r.fullpin, f.memoranda, rp.barangayid,
 	f.memoranda, et.code AS legalbasis  
 FROM faas f

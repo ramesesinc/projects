@@ -16,7 +16,8 @@ class RPTReportSubdivisionService
     	
     	if (data.items){
     		data.txnno = data.items[0].txnno
-    		data.barangay = data.items[0].barangay
+            data.barangay = data.items[0].barangay
+    		data.lguname = data.items[0].lguname
     	}
     	return data 
     }

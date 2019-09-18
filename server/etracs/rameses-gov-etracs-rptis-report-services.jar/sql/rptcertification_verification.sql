@@ -10,7 +10,8 @@ select
 	r.totalmv,
 	r.totalav,
 	rp.cadastrallotno,
-	pc.code as classcode 
+	pc.code as classcode,
+	r.taxable
 from faas f 
 	inner join rpu r on f.rpuid = r.objid 
 	inner join realproperty rp on f.realpropertyid = rp.objid 

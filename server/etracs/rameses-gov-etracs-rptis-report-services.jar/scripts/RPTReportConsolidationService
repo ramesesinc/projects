@@ -9,13 +9,17 @@ class RPTReportConsolidationService
 
     @ProxyMethod
     public def buildSummaryData( consolidation ) {
-    	def items = em.getConsolidations(consolidation)
-    	def previtems = em.getConsolidatedLands(consolidation)
-        return [
-            txnno : items[0].txnno,
-            barangay : items[0].barangay,
-			items : items,
-			previtems : previtems 
-		]
+		def data = [:]
+		
+    	data.items = em.getConsolidations(consolidation)
+    	data.previtems = em.getConsolidatedLands(consolidation)
+        
+		if (data.items){
+			data.txnno = data.items[0].txnno
+			data.barangay = data.items[0].barangay
+			data.lguname = data.items[0].lguname
+			data.tdno = data.items[0].tdno
+    	}
+    	return data
     }
 }

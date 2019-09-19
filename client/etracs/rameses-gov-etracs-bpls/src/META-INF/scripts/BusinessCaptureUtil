@@ -48,29 +48,30 @@ public class BusinessCaptureUtil {
     } 
 
     def listModel = [
-        getRows : { return 25; },
+        getRows : { return -1; },
         fetchList: { o->
             if(!query) return [];
             if(!query.tradename && !query.ownername) return [];
             if(!o) o = [:];
             o.putAll(query);
+            o._limit = o._rowsize = 25; 
             return service.search( o );
         },
         onafterFetchList: {list-> 
             result_size = list.size(); 
         }
-    ] as PageListModel;
+    ] as BasicListModel;
 
 
     void search() {
         searching = true;
-        listModel.doSearch();
+        listModel.search();
     }
 
     void reset() {
         searching = false;
         query = [:];
-        listModel.doSearch();
+        listModel.search();
     }
 
     void openEntry() {

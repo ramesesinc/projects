@@ -50,7 +50,7 @@ class RPTUtilityService
 	}
 
 	void updateCommonInfo(info){
-		info.rpu = [objid:info.rpuid, fullpin:info.newpin, rputype:info.rputype]
+		info.rpu = [objid:info.rpuid, fullpin:info.newpin, rputype:info.rputype, suffix: info.suffix]
 		if (info.rputype != 'land' || (info.rputype == 'land' && info.claimno != null)){
 			faasSvc.updateFullPinInfo(info)
 			info.newpin = info.fullpin 
@@ -79,6 +79,7 @@ class RPTUtilityService
 		info.barangayid = info.barangay.objid
 		info.barangayname = info.barangay.name 
 		info.landrpuid =landfaas.rpuid 
+		info.rp = landfaas.rp 
 
 
 		if('bldg' == info.rputype)

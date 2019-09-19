@@ -82,7 +82,7 @@ select objid, fullpin, rpuid, realpropertyid, taxpayer_objid from faas where obj
 
 
 [findLandFaas]
-select f.objid, f.realpropertyid, f.rpuid, f.fullpin, 
+select f.objid, f.realpropertyid, f.rpuid, f.fullpin, rp.pin as rp_pin,
 	rp.barangayid as barangay_objid, b.name as barangay_name  
 from faas f 
 	inner join realproperty rp on f.realpropertyid = rp.objid 

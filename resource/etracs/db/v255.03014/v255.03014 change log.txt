@@ -2,9 +2,13 @@ CHANGELOG: v255.03014
 ==============================================
 
 - ASSESSOR	
+    - RPTIS: notification: set default sender values 
+    - RealProperty: improve parcel length support
+    - FAAS: display sketch for drawing data
+    - Setting: building: auto load building kind
     - Resection: add multiple claim support
-    - Setting: Building: auto load building kind
-    - 
+
     
 - LANDTAX
     - 
+

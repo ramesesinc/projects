@@ -57,7 +57,7 @@ public class RYSettingLGUModel implements SubPage
         lgu.lgu         = data.lgu;
         lgu.barangayid    = data.barangay?.objid;
         lgu.barangay    = data.barangay;
-        lgu.lguname     = (data.barangay ? data.lgu.name + ' - ' + data.barangay.name : data.lgu.name);
+        lgu.lguname     = (data.barangay ? data.barangay.name : data.lgu.name);
         lgu.settingtype = entity.type;
         lgu.putAll(svc.createLgu(lgu));
         if (!lgus) lgus = [];

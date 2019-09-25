@@ -8,7 +8,7 @@ public class BldgRYSettingService
     @Env 
     def env 
     
-	@ActiveDB('bldgrysetting')
+    @ActiveDB('bldgrysetting')
     def em
 
     @DataContext('rysetting_bldg')
@@ -201,6 +201,7 @@ public class BldgRYSettingService
     @ProxyMethod
     public void saveBldgType( bldgtype ) {
         em_bldgtype.save(bldgtype)
+        loadBldgKinds(bldgtype)
     }
 
     
@@ -549,6 +550,28 @@ public class BldgRYSettingService
                     it.name += '.'
                 }
                 saveAdditionalItem(it)
+            }
+        }
+    }
+
+    void loadBldgKinds(bldgtype) {
+        def bucc = em_bucc.find([bldgtypeid: bldgtype.objid]).first()
+        if (!bucc) {
+            em_bldgkind.where('1=1').orderBy('code').list().each {bk ->
+                bucc = [:]
+                bucc.objid = 'BU' + new java.rmi.server.UID()
+                bucc.bldgtype = bldgtype
+                bucc.bldgtypeid = bldgtype.objid 
+                bucc.bldgrysettingid = bldgtype.bldgrysettingid
+                bucc.bldgkind = bk 
+                bucc.basevaluetype = 'fix'
+                bucc.basevalue = 0
+                bucc.minbasevalue = 0 
+                bucc.maxbasevalue = 0
+                bucc.gapvalue = 0
+                bucc.minarea = 0
+                bucc.maxarea = 0
+                em_bucc.save(bucc)
             }
         }
     }

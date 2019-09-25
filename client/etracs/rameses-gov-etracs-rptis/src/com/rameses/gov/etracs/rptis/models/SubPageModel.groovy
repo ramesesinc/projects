@@ -28,7 +28,9 @@ public class SubPageModel implements SubPage
     }
     
     void calculateAssessment(){
-        rpumodel.calculateAssessment();
+        if (getAllowEdit()) {
+            rpumodel.calculateAssessment();
+        }
     }    
         
     void modeChanged(String mode){

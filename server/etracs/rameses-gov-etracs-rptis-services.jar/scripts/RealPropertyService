@@ -199,13 +199,20 @@ class RealPropertyService
         	throw new Exception('Invalid section. Section must be less than or equal to 99.')
         }
 
-        if (!util.isTrue(var.assessor_allow_3_digit_parcel)){
-	        if (entity.pintype == 'new' && entity.parcel?.length() > 2){
-	        	throw new Exception('Invalid parcel. Parcel must be less than or equal to 99.')
-	        }
+        if (entity.pintype == 'new'){
+        	def allowedlength = util.toInteger(var.getProperty('assessor_allowed_new_parcel_length', 2))
+        	if (util.isTrue(var.assessor_allow_3_digit_parcel)) {
+        		allowedlength = 3
+        	}
+        	if (entity.parcel?.length() > allowedlength) {
+        		throw new Exception('Invalid parcel. Parcel must be less than or equal to ' + ('9'*allowedlength))
+        	}
         }
-        if (entity.pintype == 'old' && entity.parcel?.length() > 3){
-        	throw new Exception('Invalid parcel. Parcel must be less than or equal to 999.')
+        if (entity.pintype == 'old'){
+        	def allowedlength = util.toInteger(var.getProperty('assessor_allowed_old_parcel_length', 3))
+        	if (entity.parcel?.length() > allowedlength) {
+        		throw new Exception('Invalid parcel. Parcel must be less than or equal to ' + ('9'*allowedlength) )
+        	}
         }
 	}
  

@@ -233,6 +233,10 @@ public class FAASModel
         return service.isOldSketch([objid:entity.objid]) 
     }
 
+    def getShowNewSketch() {
+        return !service.isOldSketch([objid:entity.objid]) 
+    }
+
     /*===============================================
      *
      * EDITABILITY SUPPORT

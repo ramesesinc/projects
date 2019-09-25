@@ -1,0 +1,10 @@
+CHANGELOG: v255.03014
+==============================================
+
+- ASSESSOR	
+    - Resection: add multiple claim support
+    - Setting: Building: auto load building kind
+    - 
+    
+- LANDTAX
+    - 

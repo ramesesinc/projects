@@ -558,7 +558,7 @@ class SubdivisionService
         faas.titleno         = null
         faas.titledate       = null
         faas.memoranda       = subdivision.memoranda
-        faas.lguid           = subdivision.originlguid
+        faas.lguid           = (oldfaases ? oldfaases[0].lguid : subdivision.originlguid)
         faas.originlguid     = subdivision.originlguid
     }
 

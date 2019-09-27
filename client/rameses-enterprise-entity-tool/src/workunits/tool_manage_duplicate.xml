@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/entity/tools" 
+            caption="Manage Duplicate Entity" 
+            role="MASTER,ADMIN" permission="entity.manage-duplicate"/>
+        
+        <invoker type="formActions" action="_close" caption="Close"  />
+        <invoker type="formActions" action="refresh" caption="Refresh"  />
+        
+    </invokers>
+    <code class="com.rameses.entity.models.EntityManageDuplicateModel"/>
+    <pages>
+        <page template="com.rameses.entity.views.EntityManageDuplicatePage"/>        
+    </pages>
+</workunit>

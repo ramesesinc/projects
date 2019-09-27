@@ -1,0 +1,7 @@
+<folders>
+     <folder id="home">
+        <folder id="entity" caption="Taxpayer Entities" icon="home/icons/entity.png">
+            <folder id="tools" caption="Tools" icon="home/icons/admin.png"/>
+        </folder>
+    </folder>  
+</folders>

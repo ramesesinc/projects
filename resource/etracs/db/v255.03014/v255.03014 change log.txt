@@ -1,6 +1,8 @@
 CHANGELOG: v255.03014
 ==============================================
-
+- ENTITY
+	- Duplicate Management Tool
+	
 - ASSESSOR	
     - RPTIS: notification: set default sender values 
     - RealProperty: improve parcel length support

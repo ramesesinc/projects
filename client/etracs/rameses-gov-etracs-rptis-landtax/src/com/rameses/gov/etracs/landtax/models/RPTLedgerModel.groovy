@@ -114,4 +114,16 @@ class RPTLedgerModel extends CrudFormModel
     def getMessagelist() {
         return entity._messagelist
     }
+
+    def getShowManualNotice() {
+        if (entity.state != 'APPROVED') {
+            return false;
+        }
+        
+        def auctionModel = OsirisContext.class.getClassLoader().getResource("com/rameses/gov/etracs/landtax/models/AuctionModel.groovy");
+        if (auctionModel) {
+            return false;
+        }
+        return true;
+    }
 }

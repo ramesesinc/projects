@@ -31,6 +31,9 @@ public class EntityManageDuplicatePage extends javax.swing.JPanel {
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         xButton1 = new com.rameses.rcp.control.XButton();
         xButton2 = new com.rameses.rcp.control.XButton();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
 
         xActionTextField1.setActionName("search");
         xActionTextField1.setCaption("Search");
@@ -94,6 +97,31 @@ public class EntityManageDuplicatePage extends javax.swing.JPanel {
         xButton2.setName("deactivate"); // NOI18N
         xButton2.setText("Deactivate");
 
+        xFormPanel2.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        xFormPanel2.setCaptionPadding(new java.awt.Insets(3, 1, 0, 5));
+        xFormPanel2.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+
+        xIntegerField1.setCaption("Selected Count");
+        xIntegerField1.setDepends(new String[] {"selectedItem"});
+        xIntegerField1.setName("selectedcount"); // NOI18N
+        xIntegerField1.setCaptionWidth(105);
+        xIntegerField1.setCellPadding(new java.awt.Insets(0, 0, 0, 20));
+        xIntegerField1.setDisabledTextColor(new java.awt.Color(255, 0, 0));
+        xIntegerField1.setEnabled(false);
+        xIntegerField1.setFont(new java.awt.Font("Monospaced", 1, 18)); // NOI18N
+        xIntegerField1.setForeground(new java.awt.Color(255, 0, 0));
+        xIntegerField1.setPreferredSize(new java.awt.Dimension(80, 20));
+        xFormPanel2.add(xIntegerField1);
+
+        xIntegerField2.setCaption("Record Count");
+        xIntegerField2.setName("count"); // NOI18N
+        xIntegerField2.setCaptionWidth(95);
+        xIntegerField2.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xIntegerField2.setEnabled(false);
+        xIntegerField2.setFont(new java.awt.Font("Monospaced", 1, 18)); // NOI18N
+        xIntegerField2.setPreferredSize(new java.awt.Dimension(80, 20));
+        xFormPanel2.add(xIntegerField2);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -101,13 +129,14 @@ public class EntityManageDuplicatePage extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 561, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 608, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -116,11 +145,13 @@ public class EntityManageDuplicatePage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
+                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(xButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(xButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -130,5 +161,8 @@ public class EntityManageDuplicatePage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XIntegerField xIntegerField2;
     // End of variables declaration//GEN-END:variables
 }

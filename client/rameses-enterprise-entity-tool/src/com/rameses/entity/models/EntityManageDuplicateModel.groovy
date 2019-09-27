@@ -6,6 +6,9 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 
 class EntityRemoveDuplicateModel {
+    @Binding
+    def binding;
+    
     @Service('PersistenceService')
     def persistence;
     
@@ -32,6 +35,7 @@ class EntityRemoveDuplicateModel {
             items = qrySvc.getList(param);
         }
         listHandler.reload();
+        binding.refresh('count');
     }
     
     void deleteEntity(entity) {
@@ -52,6 +56,7 @@ class EntityRemoveDuplicateModel {
                 deleteEntity(it);
             }
             listHandler.reload();
+            binding.refresh('count');
         }
     }
     
@@ -69,6 +74,7 @@ class EntityRemoveDuplicateModel {
                 deactivateEntity(it);
             }
             listHandler.reload();
+            binding.refresh('count');
         }
     }
     
@@ -81,8 +87,21 @@ class EntityRemoveDuplicateModel {
             def inv = Inv.lookupOpener(opener, [entity: item]);
             inv.target = 'popup';
             return inv;
+        },
+        afterSelectionChange: {
+            binding?.refresh('selectedcount');
         }
     ] as BasicListModel;
+ 
+    def getCount() {
+        return items.size();
+    }
     
+    def getSelectedcount() {
+        if (listHandler.selectedValue) {
+            return listHandler.selectedValue.size();
+        }
+        return 0;
+    }
     
 }

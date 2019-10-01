@@ -1,0 +1,39 @@
+import com.rameses.annotations.*
+
+class EORRemittanceInterceptor {
+
+	@DataContext('eor') 
+	def eor_db;
+
+	@DataContext('eor_remittance') 
+	def rem_db;
+
+	@DataContext('eor_remittance_fund') 
+	def rem_fund_db;
+
+	@DataContext('paymentpartner') 
+	def partner_db;
+
+	@Before( pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'eor_remittance'}" ) 
+	public void beforeRemoveEntity( evt ) { 
+		def param = evt.args[0]; 
+		def reminfo = rem_db.find([ objid: param.objid ]).select('objid,state').first(); 
+		if ( !reminfo?.objid ) 
+			throw new Exception('EOR Remittance record not found'); 
+		if ( reminfo?.state.toString().toUpperCase() != 'DRAFT' ) 
+			throw new Exception('EOR Remittance record must be in DRAFT state'); 
+
+		def findby = [remittanceid: param.objid]; 
+		eor_db.find( findby ).update([ remittanceid: '{NULL}']); 
+		rem_fund_db.find( findby ).delete(); 
+	}
+
+	@After( pattern="PersistenceService.read", eval="#{args[0]._schemaname == 'eor_remittance'}" ) 
+	public void afterOpen( evt ) { 
+		def res = evt.result; 
+		println 'after open -> '+ res;
+		if ( res?.partnerid ) {
+			res.partner = partner_db.find([ objid: res.partnerid ]).select('objid,code,name').first(); 
+		}
+	}
+} 

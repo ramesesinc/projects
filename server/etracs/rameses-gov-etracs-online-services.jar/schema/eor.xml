@@ -27,5 +27,10 @@
 		<complex name="sharing" ref="eor_share" jointype="one-to-many" required="false">
 			<key field="objid" target="parentid" />
 		</complex>
+
+		<complex name="partner" ref="paymentpartner" jointype="many-to-one" required="false" includefields="name,code">
+			<key field="partnerid" target="objid" />
+		</complex>	
+
 	</element>
 </schema>

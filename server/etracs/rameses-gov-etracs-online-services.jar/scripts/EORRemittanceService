@@ -1,6 +1,6 @@
-import com.rameses.annotations.*;
-import com.rameses.util.*;
-import com.rameses.common.*;
+import com.rameses.annotations.*
+import com.rameses.util.*
+import com.rameses.common.*
 import treasury.utils.*;
 
 class EORRemittanceService {
@@ -58,9 +58,22 @@ class EORRemittanceService {
         eorEm.where( '''objid IN (${ids})''').vars("ids", "'" + arr.join("','") + "'").update([remittanceid: m.objid ]);
 
         def fundList = eorItemEm.select("item.fund.objid,amount:{SUM(amount)}").where( "parent.remittanceid = :remittanceid", [remittanceid:m.objid] ).groupBy("item.fund.objid").list();
-        fundList.each {
-            def v = [remittanceid:m.objid]    
-            v.fund = fundEm.find( [objid: it.item.fund.objid ] ).first(); 
+        fundList.each { 
+            def v = [ remittanceid: m.objid ]; 
+            def fundid = it.item?.fund?.objid;
+            v.fund = fundEm.find([ objid: fundid.toString() ]).first(); 
+            if ( !v.fund?.objid ) 
+                throw new Exception("'"+ fundid +"' item fund not found"); 
+
+            if ( v.fund?.depositoryfundid ) {
+                def depfundid = v.fund.depositoryfundid;
+                def depfund = fundEm.find([ objid: depfundid ]).select('objid,code,title').first(); 
+                if ( !depfund?.objid ) 
+                    throw new Exception("'"+ depfundid +"' depository fund not found"); 
+
+                v.fund = depfund; 
+            } 
+
             v.amount = it.amount;
             remFundEm.create( v );
         }

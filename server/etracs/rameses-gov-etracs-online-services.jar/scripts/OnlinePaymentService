@@ -23,8 +23,18 @@ class OnlinePaymentService   {
     @Service("EORService")
     def eorSvc;  
 
-    @Service('PersistenceService')
-    def persistenceSvc; 
+    @Service('OrgService')
+    def orgSvc; 
+
+    @Service("DateService")
+    def dateSvc;
+
+    @Service("EORNumberService") 
+    def seqSvc; 
+
+    @Service("NumberService")
+    def numSvc;
+
 
     private void initEnv() {
         env.USERID = 'E-PAYMENT'; 
@@ -44,35 +54,60 @@ class OnlinePaymentService   {
         return [:];
     }
 
+    //this method will be intercepted by the other modules based on the txntype 
     @ProxyMethod
     public def createPaymentOrder( def o ) {
         initEnv();       
 
-        if(!o.txntype) return [status:1, message:'txntype is required'];
+        if(!o.txntype) return [status:0, message:'txntype is required'];
         if( !o.info ) 
             throw new Exception("info is required in the arguments. Please override @Before OnlinePaymentService.createPaymentOrder and pass info");
 
         def info = o.info; 
         info.origin = o.origin;  
-        info._schemaname = 'eor_paymentorder'; 
-        def m = persistenceSvc.create( info ); 
+
+        String locid = orgSvc.getRoot().code.replaceAll('-', ''); 
+        info.objid =  KeyGen.generateAlphanumKey( locid.padRight( 6, "0" ), 12 );
+        info.txndate = dateSvc.getServerDate(); 
+        info.controlno =  seqSvc.getNextPONumber( locid.padRight( 5, "0" ));  
+        info.locationid = locid; 
+
+        def cal = Calendar.instance; 
+        cal.setTime( info.txndate ); 
+        cal.add( Calendar.HOUR, 24 ); 
+        info.expirydate = new java.sql.Timestamp( cal.getTimeInMillis() ); 
+        if ( info.txntypename==null ) info.txntypename = info.txntype; 
+
+        info.state = 'PENDING';
+        def m = poEm.create( info ); 
 
         def result = [:];
-        result.status=0
+        result.status=0;
+        result.objid = m.objid;
         result.paymentrefid=m.objid;
         result.amount=m.amount;
         result.txntype=m.txntype;
         result.txntypename=m.txntypename;
+        result.txndate=m.txndate;
         result.controlno=m.controlno;
         result.paidby=m.paidby;
         result.particulars=m.particulars;
         result.expirydate=m.expirydate;
-
         result.message=info.message;
         result.email=info.email;
         result.mobileno=info.mobileno;
         result.phoneno=info.phoneno;
         return result;
+    }
+
+    @ProxyMethod
+    public void activatePaymentOrder(def o ) {
+        poEm.find( [objid: o.objid ] ).update( [state: 'ACTIVE'] );
+    }
+
+    @ProxyMethod
+    public void cancelPaymentOrder(def o ) {
+        poEm.find( [objid: o.refno ] ).delete();
     }
 
     @ProxyMethod(local=true)
@@ -90,12 +125,13 @@ class OnlinePaymentService   {
         }
 
         po.paymentrefid = po.objid; 
+        po.partnercode = o.partnercode;
         po.partnerid = o.partnerid; 
         po.tracedate = o.tracedate; 
         po.traceid = o.traceid;
 
         def r = null; 
-        def retval = [:];
+        def retval = [:]; 
         boolean pass = false; 
         try { 
             r = eorSvc.post( po ); 
@@ -124,12 +160,14 @@ class OnlinePaymentService   {
             unpostedpayment_db.create( m );  
             retval = null; 
         } 
-        
-        if ( pass ) { 
-            poEm.find([ objid: po.objid ]).delete(); 
-            unpostedpayment_db.find([ paymentrefid: po.objid ]).delete(); 
-        }
-        return retval;
+        /* 
+        //if ( pass ) { 
+            //hide this. we do not want to delete the payment order.
+            //poEm.find([ objid: po.objid ]).delete(); 
+            //unpostedpayment_db.find([ paymentrefid: po.objid ]).delete(); 
+        //} 
+        */
+        return retval; 
     }
 
     @ProxyMethod
@@ -142,7 +180,16 @@ class OnlinePaymentService   {
         if(!rc) {
             throw new Exception("Receipt " + o + " not found");
         }
-        return rc;
+        //get amount in words
+        if ( rc?.amount instanceof Number ) { 
+            if( rc.amount < 1 ) { 
+                def amount = Long.parseLong( rc.amount.toString().split("\\.")[1] ); 
+                rc.amountinwords = numSvc.doubleToWords( amount ).toUpperCase() + " CENTAVOS"; 
+            } else { 
+                rc.amountinwords = numSvc.doubleToWords( rc.amount ).toUpperCase() + " PESOS ONLY";
+            } 
+        } 
+        return rc; 
     } 
 
     private def buildErrorInfo( Throwable t ) {

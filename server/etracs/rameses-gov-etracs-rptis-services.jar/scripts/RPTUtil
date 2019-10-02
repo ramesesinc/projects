@@ -567,12 +567,11 @@ class RPTUtil
 
     @ProxyMethod
     public String getParentCode(){
-        if ('MUNICIPALITY'.equalsIgnoreCase(env.ORGCLASS)){
-            def muni = em_org.find([objid:env.ORGID]).first()
-            if (muni){
-                def prov = em_org.find([objid:muni.parent.objid]).first()
-                if(prov) 
-                    return prov.code.replaceAll('-','')
+        def root = em_org.find([root: 1]).first()
+        if ('MUNICIPALITY'.equalsIgnoreCase(root.orgclass)){
+            def prov = em_org.find([objid:root.parent.objid]).first()
+            if(prov) {
+                return prov.code.replaceAll('-','')
             }
         }
         return env.ORGCODE.replaceAll('-.*','')

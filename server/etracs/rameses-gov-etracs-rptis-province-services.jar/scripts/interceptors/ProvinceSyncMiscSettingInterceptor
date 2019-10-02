@@ -45,6 +45,9 @@ class ProvinceSyncMiscSettingInterceptor
 		def settings = []
 
 		def lgusettings = em_setting_lgu.find([lguid:params.orgid, settingtype:'misc']).list()
+		if (!lgusettings) {
+			lgusettings = em_setting_lgu.find([lguid:params.orgid.replaceAll('-', ''), settingtype:'misc']).list()
+		}
 		lgusettings.each{
 			def sdata = em_misc.find([objid:it.rysettingid, ry:params.ry]).first()
 			if (sdata) {
@@ -61,6 +64,9 @@ class ProvinceSyncMiscSettingInterceptor
 
 	void checkValidOrg(params) {
 		def org = em_org.find([objid: params.orgid]).first()
+		if (!org) {
+			org = em_org.find([objid: params.orgid.replaceAll('-', '')]).first()
+		}
 		if (!org){
 			throw new Exception('Organization ' + params.orgcode + ' is not defined.')
 		}

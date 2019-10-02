@@ -28,6 +28,9 @@ class FAASNewDiscoveryService
     	def faas = [:]
         faas.putAll(ndfaas)
     	def prevry = getPreviousRevision(faas, lastry)
+        if (prevry == null) {
+            prevry = ndfaas.rpu.ry
+        }
 
     	initLand(faas, prevry)
 

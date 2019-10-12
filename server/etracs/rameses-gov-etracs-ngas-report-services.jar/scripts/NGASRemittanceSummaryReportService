@@ -26,7 +26,7 @@ class NGASRemittanceSummaryReportService {
 		def m = [:]; 
 		m.funds = em.getFunds([ remittanceid: param.objid ]); 
 
-		m.acctgroups = acctgroup_db.where("reporttype IN ('NGAS','PPSAS')").orderBy('reportype, version, title').list(); 
+		m.acctgroups = acctgroup_db.where("reporttype IN ('NGAS','PPSAS')").orderBy('reporttype, version, title').list(); 
 		return m; 
 	}
 

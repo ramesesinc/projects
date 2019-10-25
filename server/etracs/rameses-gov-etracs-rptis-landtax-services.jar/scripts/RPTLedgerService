@@ -409,17 +409,19 @@ class RPTLedgerService
         def ledgerfaases = em_rptledger_faas.find([rptledgerid:ledgerfaas.rptledgerid, state: 'APPROVED'])
                                             .orderBy('fromyear desc, tdno desc')
                                             .list()
-        def latestledgerfaas = ledgerfaases.first()
-        if (latestledgerfaas) {
-            if (latestledgerfaas.fromyear == ledgerfaas.fromyear && latestledgerfaas.fromqtr == ledgerfaas.fromqtr){
-                latestledgerfaas.state = 'CANCELLED' 
-                latestledgerfaas.toyear = latestledgerfaas.fromyear 
+        if (ledgerfaases) {
+            def latestledgerfaas = ledgerfaases.first()
+            if (latestledgerfaas) {
+                if (latestledgerfaas.fromyear == ledgerfaas.fromyear && latestledgerfaas.fromqtr == ledgerfaas.fromqtr){
+                    latestledgerfaas.state = 'CANCELLED' 
+                    latestledgerfaas.toyear = latestledgerfaas.fromyear 
+                }
+                else {
+                    latestledgerfaas.toyear = (ledgerfaas.fromqtr == 1 ? ledgerfaas.fromyear - 1 : ledgerfaas.fromyear)
+                }
+                latestledgerfaas.toqtr = (ledgerfaas.fromqtr == 1 ? 4 : ledgerfaas.fromqtr - 1)
+                em_rptledger_faas.save(latestledgerfaas)
             }
-            else {
-                latestledgerfaas.toyear = (ledgerfaas.fromqtr == 1 ? ledgerfaas.fromyear - 1 : ledgerfaas.fromyear)
-            }
-            latestledgerfaas.toqtr = (ledgerfaas.fromqtr == 1 ? 4 : ledgerfaas.fromqtr - 1)
-            em_rptledger_faas.save(latestledgerfaas)
         }
         em_rptledger_faas.save(ledgerfaas)
         //delete unpaid posted years greater than or equal to fromyear 

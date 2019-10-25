@@ -33,7 +33,7 @@ class MunicipalityCancelledFAASRemoteCallHandler
 		else if (cf.state.matches('APPROVED')) 
 			return;
 
-		svc.approveFaasCancellationByProvince(data)
+		svc.onlineApprove(data)
 		saveTasks(data)
 		svc.saveSignatory(data.signatory)
 
@@ -53,7 +53,7 @@ class MunicipalityCancelledFAASRemoteCallHandler
 
 
 	@ProxyMethod
-	public void disapproveCancelledFaasByProvince(data){
+	public void disapprove(data){
 		taskEm.deleteOpenTask(data)
 		def recommendertask = taskEm.findRecommederTask([refid:data.objid])
 		if (recommendertask){

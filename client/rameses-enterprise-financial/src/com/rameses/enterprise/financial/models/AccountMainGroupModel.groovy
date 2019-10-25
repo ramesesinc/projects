@@ -25,16 +25,19 @@ class AccountMainGroupModel extends CrudFormModel {
     }
     
     boolean removeNode(def node ) {
-        if(node==null) throw new Exception("Please select an item");
-        if(!MsgBox.confirm("You are about to remove this node. Continue?")) return false;
-        def m = node.item.item;
-        m._schemaname = "account";
+        if ( node == null ) throw new Exception("Please select an item");
+        if (!MsgBox.confirm("You are about to remove this item. Continue?")) return false;
+        
         try {
+            def m = node.item.item;
+            m._schemaname = "account";
             persistenceService.removeEntity( m );
             return true;
-        }catch(e) {
-            return false;
         }
+        catch(Throwable t) { 
+            MsgBox.err( t ); 
+            return false; 
+        } 
     }
 
     /************************************************************************

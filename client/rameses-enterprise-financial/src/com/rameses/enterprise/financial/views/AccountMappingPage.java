@@ -31,16 +31,61 @@ public class AccountMappingPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        listPanel1 = new com.rameses.seti2.components.ListPanel();
+        jPanel1 = new javax.swing.JPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xActionTextField1 = new com.rameses.rcp.control.XActionTextField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xRadio1 = new com.rameses.rcp.control.XRadio();
         xRadio2 = new com.rameses.rcp.control.XRadio();
+        listPanel1 = new com.rameses.seti2.components.ListPanel();
         jPanel7 = new javax.swing.JPanel();
         xButton11 = new com.rameses.rcp.control.XButton();
         xButton12 = new com.rameses.rcp.control.XButton();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
+
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setLayout(new java.awt.BorderLayout());
+
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        xLabel1.setText("Select an item by ticking the checkbox and click map account button below");
+        jPanel1.add(xLabel1, java.awt.BorderLayout.NORTH);
+
+        xFormPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 10, 0));
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
+
+        xActionTextField1.setActionName("searchItem");
+        xActionTextField1.setCaption("Search");
+        xActionTextField1.setName("searchtext"); // NOI18N
+        xActionTextField1.setPreferredSize(new java.awt.Dimension(200, 20));
+        xFormPanel1.add(xActionTextField1);
+
+        xComboBox1.setCaption("Acct Types");
+        xComboBox1.setItems("itemAcctTypes");
+        xComboBox1.setName("itemAcctType"); // NOI18N
+        xComboBox1.setCaptionWidth(100);
+        xComboBox1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        xFormPanel1.add(xComboBox1);
+
+        xRadio1.setName("showUnmapped"); // NOI18N
+        xRadio1.setOptionValue(true);
+        xRadio1.setMargin(new java.awt.Insets(2, 20, 2, 2));
+        xRadio1.setShowCaption(false);
+        xRadio1.setText("Show only unmapped items");
+        xFormPanel1.add(xRadio1);
+
+        xRadio2.setName("showUnmapped"); // NOI18N
+        xRadio2.setOptionValue(false);
+        xRadio2.setMargin(new java.awt.Insets(2, 10, 2, 2));
+        xRadio2.setShowCaption(false);
+        xRadio2.setText("Show only mapped items");
+        xFormPanel1.add(xRadio2);
+
+        jPanel1.add(xFormPanel1, java.awt.BorderLayout.SOUTH);
+
+        add(jPanel1, java.awt.BorderLayout.NORTH);
 
         listPanel1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
@@ -78,38 +123,16 @@ public class AccountMappingPage extends javax.swing.JPanel {
         });
         listPanel1.setDynamic(true);
         listPanel1.setName("selectedItem"); // NOI18N
-
-        xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-
-        xActionTextField1.setActionName("searchItem");
-        xActionTextField1.setCaption("Search");
-        xActionTextField1.setName("searchtext"); // NOI18N
-        xActionTextField1.setPreferredSize(new java.awt.Dimension(200, 20));
-        xFormPanel1.add(xActionTextField1);
-
-        xComboBox1.setCaption("Acct Types");
-        xComboBox1.setItems("itemAcctTypes");
-        xComboBox1.setName("itemAcctType"); // NOI18N
-        xComboBox1.setCaptionWidth(100);
-        xComboBox1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
-        xFormPanel1.add(xComboBox1);
-
-        xRadio1.setName("showUnmapped"); // NOI18N
-        xRadio1.setOptionValue(true);
-        xRadio1.setShowCaption(false);
-        xRadio1.setText("Show only unmapped items");
-        xFormPanel1.add(xRadio1);
-
-        xRadio2.setName("showUnmapped"); // NOI18N
-        xRadio2.setOptionValue(false);
-        xRadio2.setShowCaption(false);
-        xRadio2.setText("Show only mapped items");
-        xFormPanel1.add(xRadio2);
+        listPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        add(listPanel1, java.awt.BorderLayout.CENTER);
 
         jPanel7.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        jPanel7.setLayout(new com.rameses.rcp.control.layout.XLayout());
+        com.rameses.rcp.control.layout.XLayout xLayout1 = new com.rameses.rcp.control.layout.XLayout();
+        xLayout1.setSpacing(5);
+        jPanel7.setLayout(xLayout1);
 
         xButton11.setDepends(new String[] {"showUnmapped"});
+        xButton11.setMnemonic('m');
         xButton11.setName("mapAccount"); // NOI18N
         xButton11.setVisibleWhen("#{showUnmapped == true}");
         xButton11.setText("Map Account");
@@ -121,42 +144,13 @@ public class AccountMappingPage extends javax.swing.JPanel {
         jPanel7.add(xButton11);
 
         xButton12.setDepends(new String[] {"showUnmapped"});
+        xButton12.setMnemonic('u');
         xButton12.setName("unmapAccount"); // NOI18N
         xButton12.setVisibleWhen("#{showUnmapped == false }");
         xButton12.setText("Unmap Account");
         jPanel7.add(xButton12);
 
-        xLabel1.setText("Select an item by ticking the checkbox and click map account button below");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 974, Short.MAX_VALUE)
-                    .addComponent(listPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 765, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 659, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(13, 13, 13)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(listPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(279, Short.MAX_VALUE))
-        );
+        add(jPanel7, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
 
     private void xButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xButton11ActionPerformed
@@ -164,6 +158,7 @@ public class AccountMappingPage extends javax.swing.JPanel {
     }//GEN-LAST:event_xButton11ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel7;
     private com.rameses.seti2.components.ListPanel listPanel1;
     private com.rameses.rcp.control.XActionTextField xActionTextField1;

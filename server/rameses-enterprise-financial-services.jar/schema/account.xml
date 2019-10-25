@@ -3,8 +3,8 @@
 	<element tablename="account">
 		<field name="objid" primary="true"/>
 
-		<field name="code" required="true" searchable="true" indexed="true"/>
-		<field name="title" required="true" searchable="true" indexed="true"/>
+		<field name="code" caption="Code" required="true" searchable="true" indexed="true"/>
+		<field name="title" caption="Title" required="true" searchable="true" indexed="true"/>
 
 		<complex name="maingroup" ref="account_maingroup" jointype="many-to-one" includefields="name,title">
 			<key field="maingroupid" target="objid" />	

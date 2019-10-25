@@ -74,6 +74,7 @@ class AccountMappingModel {
                 m._schemaname = "itemaccount";
                 m.select = "objid,code,title,account_code:{NULL},account_title:{NULL}";
                 conds << ' objid NOT IN (${subquery}) ';
+                conds << " type NOT IN ('CASH_IN_TREASURY', 'CASH_IN_BANK') "; 
                 m.vars = [subquery: "SELECT itemid FROM account_item_mapping WHERE maingroupid = '" + mainGroup.objid + "'"];
             }
             else {

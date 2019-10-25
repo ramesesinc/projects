@@ -1,8 +1,17 @@
-<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="account">
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" 
+          schemaName="account" allowViewReport="false" allowPrint="false">
     <invokers>
-         <invoker type="account:create" caption="New Account Header" action="create" target="popup"/>
-         <invoker type="account:open"  caption="Open Account Header"  action="open"  target="popup"/>
-   </invokers>
+        <invoker type="account:create" caption="Account Header" action="create" target="popup"/>
+        <invoker type="account:open"  caption="Account Header"  action="open"  target="popup"/>
+        
+        <invoker type="formActions" caption="Action" action="showMenu" 
+                 context="actions"  visibleWhen="#{mode == 'read'}"/>
+        
+        <invoker type="account:form:actions" caption="Change Parent Group" 
+                 action="changeParentGroup" role="MASTER" target="process"
+                 visibleWhen="#{ entity?.type.toString().matches('group|item|detail') == true }" /> 
+        
+    </invokers>
    
     <code class="com.rameses.enterprise.financial.models.AccountModel" />
    

@@ -1,8 +1,14 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="bankaccount_ledger">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="bankaccount_ledger" allowCreate="false" 
+          allowOpen="false" allowDelete="false">
+    
     <invokers>
-         <invoker folderid="menucategory/financial/ledger" caption="Bank Account Ledger" index="1" 
-                cols="jev.jevdate,jev.refno,bankaccount.code,bankaccount.title,dr,cr"
-                orderBy="jev.jevdate"    
-                role="MASTER"  action="init"/>
-   </invokers>
+        <invoker folderid="menucategory/financial/ledger" 
+                 caption="Bank Account Ledger" action="init" 
+                 role="MASTER" index="1" 
+                 cols="jev.jevdate,jev.refno,bankaccount.code,bankaccount.title,dr,cr" 
+                 orderBy="jev.jevdate" />
+    </invokers>
+    
+    <code class="com.rameses.enterprise.financial.models.BankAccountLedgerListModel"/> 
 </workunit>

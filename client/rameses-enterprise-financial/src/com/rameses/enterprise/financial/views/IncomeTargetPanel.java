@@ -27,23 +27,28 @@ public class IncomeTargetPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        txtYear = new com.rameses.rcp.control.XIntegerField();
 
-        setLayout(new java.awt.BorderLayout());
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        setLayout(new com.rameses.rcp.control.layout.XLayout());
 
-        xFormPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        xLabel1.setLabelFor(txtYear);
+        xLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 5));
+        xLabel1.setFontStyle("font-size:12;");
+        xLabel1.setText("Year :");
+        add(xLabel1);
 
-        xIntegerField1.setCaption("Year");
-        xIntegerField1.setName("query.year"); // NOI18N
-        xFormPanel1.add(xIntegerField1);
-
-        add(xFormPanel1, java.awt.BorderLayout.CENTER);
+        txtYear.setCaption("Year");
+        txtYear.setName("query.year"); // NOI18N
+        txtYear.setActionCommand("search");
+        txtYear.setPreferredSize(new java.awt.Dimension(60, 20));
+        add(txtYear);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XIntegerField txtYear;
+    private com.rameses.rcp.control.XLabel xLabel1;
     // End of variables declaration//GEN-END:variables
 }

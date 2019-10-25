@@ -1,0 +1,17 @@
+<workunit>
+    <invokers>
+        <invoker type="collectionvoucher:reports" 
+                 caption="NGAS Abstract of Collection" 
+                 action="initReport" index="21" target="self" />
+       
+        <invoker type="formActions" caption="Back" 
+                 action="_close" mnemonic="b" 
+                 shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+    </invokers>
+   
+    <code class="com.rameses.gov.etracs.ngas.models.NGASAbstractOfCollectionReportModel"/> 
+   
+    <pages>
+        <page name="report" template="com.rameses.gov.etracs.ngas.views.ReportByFund"/> 
+    </pages>
+</workunit>

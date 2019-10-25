@@ -1,0 +1,17 @@
+<workunit>
+    <invokers>
+        <invoker type="collectionvoucher:reports" 
+                 caption="SRE Abstract of Collection" 
+                 action="initReport" index="21" target="self" />
+       
+        <invoker type="formActions" caption="Back" 
+                 action="_close" mnemonic="b" 
+                 shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+    </invokers>
+   
+    <code class="com.rameses.gov.etracs.sre.models.SREAbstractOfCollectionReportModel"/> 
+   
+    <pages>
+        <page name="report" template="com.rameses.gov.etracs.sre.views.ReportByFund"/> 
+    </pages>
+</workunit>

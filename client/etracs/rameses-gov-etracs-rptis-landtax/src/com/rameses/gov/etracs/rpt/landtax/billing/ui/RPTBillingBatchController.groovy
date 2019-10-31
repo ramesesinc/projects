@@ -30,7 +30,7 @@ class RPTBillingBatchController extends AbstractBatchReportController
                 
         }
     ]
-    
+
     public void afterInit(params){
         params.advancebill = false;
         params.billdate = null;
@@ -42,16 +42,16 @@ class RPTBillingBatchController extends AbstractBatchReportController
     }
             
     public def getReportData(ledger){
-        def data = [:]
-        data.rptledgerid = ledger.objid;
-        data.taxpayer = ledger.taxpayer;
-        data.advancebill = params.advancebill;
-        data.billdate = params.billdate;
-        return data;
+        def bill = billSvc.initBill();
+        bill.ledgers = [[objid: ledger.objid]];
+        bill.taxpayer = ledger.taxpayer;
+        bill.advancebill = params.advancebill;
+        bill.billdate = params.billdate;
+        return [bill: bill];
     }
             
     public def getReportInvokerName(){
-        return 'rptbill:batch';
+        return 'rptbill:preview';
     }
     
     public def continueOnError(){return true}

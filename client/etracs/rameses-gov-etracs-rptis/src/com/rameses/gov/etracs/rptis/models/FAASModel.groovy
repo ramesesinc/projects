@@ -244,6 +244,7 @@ public class FAASModel
      *===============================================*/
         
     boolean getAllowEdit(){
+        if ( getEntity()._modify_ == true) return true;
         if ( getEntity().state == 'CURRENT' ) return false;
         if ( getEntity().state == 'CANCELLED' ) return false;
         if (getEntity().originlguid != getOrgid()) return false;

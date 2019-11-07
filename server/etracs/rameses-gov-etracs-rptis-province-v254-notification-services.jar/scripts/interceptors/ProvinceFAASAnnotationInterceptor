@@ -20,7 +20,7 @@ class ProvinceFAASAnnotationInterceptor
     def annotationSvc 
 
 
-	@After(pattern="FAASAnnotationService.approveAnnotation", eval="#{result.isremote==null}") 
+	@After(pattern="FAASAnnotationService.approve", eval="#{result.isremote==null}") 
 	public void submitAnnotationToMunicipality( evt ) {
 		def annotation = evt.result
         annotation.image = annotationSvc.getImage(annotation)
@@ -31,7 +31,7 @@ class ProvinceFAASAnnotationInterceptor
 	}
 
 
-    @After(pattern="CancelAnnotationService.approveCancelAnnotation", eval="#{result.isremote==null}") 
+    @After(pattern="CancelAnnotationService.approve", eval="#{result.isremote==null}") 
     public void submitCancelAnnotationToMunicipality( evt ) {
         def cancelannotation = evt.result
         cancelannotation.isremote = true

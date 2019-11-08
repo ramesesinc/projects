@@ -45,7 +45,7 @@ class PropertyAuctionNoticeInterceptor
 	}
 
 
-	@After(pattern="CashReceiptService.post", eval="#{args[0].txntype.toString().matches('rptonline|rptmanual')}", index=1000000) 
+	@After(pattern="CashReceiptService.post", eval="#{args[0].txntype.toString().matches('online|manual')}", index=1000000) 
 	public void postPayment( evt ) {
 		def receipt = evt.result
 		svc.closePaidNotices(receipt)

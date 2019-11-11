@@ -81,14 +81,9 @@ SELECT
     SUM(CASE WHEN ri.revtype = 'sef' THEN ri.amount ELSE 0 END) AS sef,
     SUM(CASE WHEN ri.revtype = 'sef' THEN ri.discount ELSE 0 END) AS sefdisc,
     SUM(CASE WHEN ri.revtype = 'sef' THEN ri.interest ELSE 0 END) AS sefint,
-
-    CASE 
-		WHEN MIN(ri.qtr) = MAX(ri.qtr) AND MIN(ri.qtr) <> 0 THEN CONCAT(MIN(ri.qtr), 'Q, ', ri.year)
-		WHEN (MIN(ri.qtr) = 1 AND MAX(ri.qtr) = 4) OR ((MIN(ri.qtr) = 0 AND MAX(ri.qtr) = 0))
-        THEN  CONCAT('', ri.year)
-        ELSE
-            CONCAT(MIN(ri.qtr), 'Q,', ri.year, ' - ', MAX(ri.qtr), 'Q,', ri.year) 
-    END AS period
+    MIN(ri.qtr) as minqtr,
+    MAX(ri.qtr) as maxqtr,
+    ri.year
 FROM rptcertificationitem rci 
     INNER JOIN rptledger rl ON rci.refid = rl.objid 
     INNER JOIN rptpayment rp ON rl.objid = rp.refid

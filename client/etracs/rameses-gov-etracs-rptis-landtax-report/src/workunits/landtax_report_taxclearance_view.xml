@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rpttaxclearance:view" action="view" caption="Tax Clearance" />
+        <invoker type="formActions" action="_close"   caption="Close" />
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.landtax.report.models.TaxClearanceViewModel" >
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.report.PreviewPage" />
+    </pages>
+</workunit>

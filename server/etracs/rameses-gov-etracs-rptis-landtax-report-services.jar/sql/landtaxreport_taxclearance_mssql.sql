@@ -81,7 +81,9 @@ select
     SUM(CASE WHEN ri.revtype = 'sef' THEN ri.amount ELSE 0 END) AS sef,
     SUM(CASE WHEN ri.revtype = 'sef' THEN ri.discount ELSE 0 END) AS sefdisc,
     SUM(CASE WHEN ri.revtype = 'sef' THEN ri.interest ELSE 0 END) AS sefint,
-
+    MIN(ri.qtr) as minqtr,
+    MAX(ri.qtr) as maxqtr,
+    ri.year,
     case when (min(ri.qtr) = 1 and max(ri.qtr) = 4) or ((min(ri.qtr) = 0 and max(ri.qtr) = 0))
         then  'FULL ' + convert(varchar(4), ri.year)
         else

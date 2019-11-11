@@ -255,3 +255,6 @@ android/waterworks-v2
 /client/rameses-enterprise-entity-tool/nbproject/private/
 /client/rameses-enterprise-entity-tool/build/
 /client/rameses-enterprise-entity-tool/dist/
+/client/plugins/rameses-gov-obo-rptis/nbproject/private/
+/client/plugins/rameses-gov-obo-rptis/dist/
+/client/plugins/rameses-gov-obo-rptis/build/

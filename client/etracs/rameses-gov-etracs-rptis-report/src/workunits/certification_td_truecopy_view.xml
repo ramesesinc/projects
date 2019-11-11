@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="tdtruecopy:view" action="view" caption="Certified True Copy of Tax Declaration" /> 
+		<invoker type="formActions" action="_close"   caption="Close" />
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.rpt.report.td.TDTrueCopyViewModel" >
+    </code>
+    <pages>
+    	<page template="com.rameses.gov.etracs.rpt.report.PreviewPage" />
+    </pages>
+</workunit>

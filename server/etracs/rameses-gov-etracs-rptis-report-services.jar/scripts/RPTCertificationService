@@ -1,6 +1,7 @@
 import com.rameses.annotations.*
 import com.rameses.eserver.*;
 import com.rameses.common.*;
+import com.rameses.services.extended.*;
 
 class RPTCertificationService 
 {
@@ -21,6 +22,9 @@ class RPTCertificationService
 
 	@Service('FAASService')
     def faasSvc
+
+    @DataContext('sys_org')
+    def em_org
 
 	
 
@@ -43,10 +47,13 @@ class RPTCertificationService
 
 	@ProxyMethod
 	public def createCertification( cert ) {
-		if (!cert.objid)
+		if (!cert.objid) {
 			cert.objid = 'C' + new java.rmi.server.UID()
+		}
 		if (!cert.txnno){
-			cert.txnno = env.ORGCODE.replaceAll('-', '') + seqSvc.getNextFormattedSeries('RPTCERTIFICATION')
+			def org = em_org.find([root: 1]).first()
+			def key = org.code.replaceAll('-', '')
+			cert.txnno = key + seqSvc.getNextFormattedSeries('RPTCERTIFICATION')
 		}
 		cert.txndate = dtSvc.serverDate
 		cert.createdbyid = env.USERID
@@ -141,7 +148,7 @@ class RPTCertificationService
 	}
 
 	void validateORInfo(cert){
-		if (! cert.official){
+		if (! cert.official && !cert._online){
 			if (cert.oramount <= 0.0)
 			throw new Exception('Amount must be greater than zero.')
 

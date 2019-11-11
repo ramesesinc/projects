@@ -1,0 +1,219 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class RPTCertificationOnlineService {
+	@Service('DateService')
+	def dtSvc
+
+	@Service('Var')
+	def var
+
+	@Service('EntityService')
+	def entitySvc
+
+	@Service('RPTCertificationService')
+	def certSvc
+
+	@Service('LandTaxReportTaxClearanceService')
+	def clearanceSvc
+
+	@Service('ReportParameterService')
+	def reportSvc
+
+	@DataContext('faas')
+	def em_faas
+
+	@DataContext('rptcertification')
+	def em_cert
+
+	@DataContext('rptcertification_online')
+	def em_cert_online
+
+	@DataContext('rptledger')
+	def em_ledger
+
+	@ProxyMethod
+	public def issueTrueCopy( params ) {
+		def existCert = em_cert_online.find([refid: params.refid]).first()
+		if (existCert) {
+			return existCert
+		} else {
+			def cert = initTrueCopy(params)
+			def entity = entitySvc.open([objid: params.entityid])
+			entity.address = entity.address.text
+			cert.taxpayer = entity
+			cert.requestedby = entity.name
+			cert.requestedbyaddress = entity.address
+			certSvc.createCertification(cert)
+			cert.items.each { certSvc.createItem(it) }
+			return createOnlineCertification(cert, params)
+		}
+	}
+
+	@ProxyMethod
+	public def issueTaxClearance( params ) {
+		def existCert = em_cert_online.find([refid: params.refid]).first()
+		if (existCert) {
+			return existCert
+		} else {
+			def cert = initTaxClearance(params)
+			def entity = entitySvc.open([objid: params.entityid])
+			entity.address = entity.address.text
+			cert.taxpayer = entity
+			cert.requestedby = entity.name
+			cert.requestedbyaddress = entity.address
+			cert.reporttype = [name: 'fullypaid']
+			clearanceSvc.createClearance(cert)
+			return createOnlineCertification(cert, params)
+		}
+	}
+
+	@ProxyMethod
+	public void postPayment( cert ) {
+		required('objid', cert.objid)
+		required('orno', cert.orno)
+		required('ordate', cert.ordate)
+		required('oramount', cert.oramount)
+		cert.state = 'PAID'
+		em_cert.update(cert)
+		em_cert_online.update(cert)
+	}
+
+	@ProxyMethod
+	public def open(cert) {
+		return em_cert_online.read(cert)
+	}
+
+
+	def createOnlineCertification(cert, params) {
+		def onlineCert = [
+			objid : cert.objid,
+			state : 'FORPAYMENT',
+			txnno : cert.txnno,
+			reftype: params.reftype,
+			refid: params.refid,
+			refno: params.refno,
+			refdate: params.refdate
+		]
+		em_cert_online.create(onlineCert)
+		return onlineCert
+	}
+
+
+	def initTrueCopy(params) {
+		required('entityid', params.entityid);
+		required('faas', params.faas);
+		required('faas.objid', params.faas.objid);
+		required('faas.tdno', params.faas.tdno);
+		required('refid', params.refid);
+		required('reftype', params.reftype);
+		required('refno', params.refno);
+		required('refdate', params.refdate);
+		required('purpose', params.purpose);
+
+		validatedFaas(params.faas);
+
+		params.certid = 'RC' + new java.rmi.server.UID()
+		params.faases = []
+		params.faases << [
+			rptcertificationid: params.certid,
+			refid: params.faas.objid
+		]
+
+		def reportParams = reportSvc.getStandardParameter()
+
+		def certifiedby = reportParams.ASSESSORNAME
+		def certifiedbytitle = reportParams.ASSESSORTITLE
+
+		if (!certifiedby) {
+			certifiedby = var.ASSESSORCERTIFIEDBY
+			certifiedbytitle = var.ASSESSORCERTIFIEDBYTITLE
+		}
+
+		if (!certifiedby) {
+			certifiedby = 'SYSTEM'
+			certifiedbytitle = 'SYSTEM'
+		}
+
+		return [
+			objid            : params.certid,
+        	opener           : 'tdtruecopy',
+        	certifiedby      : certifiedby,
+        	certifiedbytitle : certifiedbytitle,
+        	purpose          : params.purpose,
+			asofyear         : dtSvc.getServerYear(),
+			faasid 			 : params.faas.objid,
+			items 			 : params.faases,
+			oramount         : 0.0,
+        	stampamount      : 0.0,
+        	office           : 'assessor',
+        	official         : false,
+        	_online 		 : true,
+		]
+	}
+
+	def initTaxClearance(params) {
+		required('entityid', params.entityid);
+		required('faases', params.faases);
+		required('refid', params.refid);
+		required('reftype', params.reftype);
+		required('refno', params.refno);
+		required('refdate', params.refdate);
+		required('purpose', params.purpose);
+
+		def year = dtSvc.getServerYear()
+		params.certid = 'RC' + new java.rmi.server.UID()
+
+		params.faases.each {
+			def ledger = em_ledger.select('lastyearpaid, lastqtrpaid').find([faasid: it.objid]).first()
+			if (ledger) {
+				it.rptcertificationid = params.certid 
+				it.refid = it.objid
+				it.putAll(ledger)
+			}
+		}
+
+		def reportParams = reportSvc.getStandardParameter()
+
+		def certifiedby = reportParams.TREASURERNAME
+		def certifiedbytitle = reportParams.TREASURERTITLE
+
+		if (!certifiedby) {
+			certifiedby = var.LANDTAXCERTIFIEDBY
+			certifiedbytitle = var.LANDTAXCERTIFIEDBYTITLE
+		}
+
+		if (!certifiedby) {
+			certifiedby = 'SYSTEM'
+			certifiedbytitle = 'SYSTEM'
+		}
+
+		return [
+			objid            : params.certid,
+        	opener           : 'rpttaxclearance',
+        	certifiedby      : 'SYSTEM',
+        	certifiedbytitle : 'SYSTEM',
+        	purpose          : params.purpose,
+			asofyear         : year,
+			year 			 : year,
+			qtr 			 : 4,
+			items 			 : params.faases,
+        	oramount         : 0.0,
+        	stampamount      : 0.0,
+        	office           : 'landtax',
+        	official         : false,
+        	_online 		 : true,
+		]
+	}
+
+	void required(caption, value) {
+		if (!value) throw new Exception(caption + ' must be specified');
+	}
+
+	void validatedFaas(entity) {
+		def faas = em_faas.select('objid,state').find([objid: entity.objid]).first()
+		if (!faas) throw new Exception('FAAS ' + entity.tdno + ' does not exist or has been deleted.')
+		if (faas.state.matches('INTERIM|PENDING')) throw new Exception('FAAS ' + entity.tdno + ' is not yet approved.')
+	}
+}

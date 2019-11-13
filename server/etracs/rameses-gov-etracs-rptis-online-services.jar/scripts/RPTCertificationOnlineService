@@ -33,11 +33,12 @@ class RPTCertificationOnlineService {
 	@DataContext('rptledger')
 	def em_ledger
 
+
 	@ProxyMethod
 	public def issueTrueCopy( params ) {
-		def existCert = em_cert_online.find([refid: params.refid]).first()
-		if (existCert) {
-			return existCert
+		def onlineCert = getOnlineCert(params, 'truecopy') 
+		if (onlineCert) {
+			return onlineCert
 		} else {
 			def cert = initTrueCopy(params)
 			def entity = entitySvc.open([objid: params.entityid])
@@ -53,9 +54,9 @@ class RPTCertificationOnlineService {
 
 	@ProxyMethod
 	public def issueTaxClearance( params ) {
-		def existCert = em_cert_online.find([refid: params.refid]).first()
-		if (existCert) {
-			return existCert
+		def onlineCert = getOnlineCert(params, 'rpttaxclearance') 
+		if (onlineCert) {
+			return onlineCert
 		} else {
 			def cert = initTaxClearance(params)
 			def entity = entitySvc.open([objid: params.entityid])
@@ -215,5 +216,16 @@ class RPTCertificationOnlineService {
 		def faas = em_faas.select('objid,state').find([objid: entity.objid]).first()
 		if (!faas) throw new Exception('FAAS ' + entity.tdno + ' does not exist or has been deleted.')
 		if (faas.state.matches('INTERIM|PENDING')) throw new Exception('FAAS ' + entity.tdno + ' is not yet approved.')
+	}
+
+	def getOnlineCert(params, certtype) {
+		def onlineCert = em_cert_online.find([refid: params.refid]).first()
+		if (onlineCert) {
+			def mainCert = em_cert.select('opener').find([objid: onlineCert.objid]).first()
+			if (mainCert.opener == certtype) {
+				return onlineCert
+			}
+		} 
+		return null
 	}
 }

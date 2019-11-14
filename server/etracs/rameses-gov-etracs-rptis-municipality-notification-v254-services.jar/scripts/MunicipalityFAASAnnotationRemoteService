@@ -30,8 +30,8 @@ class MunicipalityFAASAnnotationRemoteService
 		boolean createrecord = (cancelEm.findById(cancelannotation) == null)
 		if (createrecord){
 			cancelEm.create(cancelannotation)
-			def annotation = annotationSvc.openAnnotation( cancelannotation.annotationid )
-			annotationSvc.cancelAnnotation(annotation)
+			def annotation = annotationSvc.open([objid: cancelannotation.annotationid])
+			annotationSvc.cancel(annotation)
 			println 'FAAS Annotation Cancellation has been successfully created.'
 		}
 	}	

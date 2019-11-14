@@ -44,14 +44,7 @@ public class FAASAnnotationPage extends javax.swing.JPanel {
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
         xActionBar1 = new com.rameses.rcp.control.XActionBar();
         jPanel1 = new javax.swing.JPanel();
-        formPanel6 = new com.rameses.rcp.util.FormPanel();
-        xLabel3 = new com.rameses.rcp.control.XLabel();
-        xLabel5 = new com.rameses.rcp.control.XLabel();
-        xLabel6 = new com.rameses.rcp.control.XLabel();
-        xLabel8 = new com.rameses.rcp.control.XLabel();
-        xLabel9 = new com.rameses.rcp.control.XLabel();
-        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
+        xDataTable1 = new com.rameses.rcp.control.XDataTable();
 
         formPanel2.setCaptionFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         formPanel2.setCaptionWidth(160);
@@ -59,19 +52,19 @@ public class FAASAnnotationPage extends javax.swing.JPanel {
         formPanel2.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         formPanel2.setPadding(new java.awt.Insets(0, 0, 0, 0));
 
+        xLabel1.setCaption("Annotation No.");
+        xLabel1.setExpression("#{entity.txnno}");
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel1.setCaption("Annotated TD No.");
         xLabel1.setCellPadding(new java.awt.Insets(0, 0, 0, 20));
         xLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        xLabel1.setName("entity.faas.tdno"); // NOI18N
         xLabel1.setPreferredSize(new java.awt.Dimension(200, 24));
         formPanel2.add(xLabel1);
 
-        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel2.setCaption("State");
+        xLabel2.setExpression("#{entity.state}");
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel2.setCaptionWidth(70);
         xLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        xLabel2.setName("entity.state"); // NOI18N
         xLabel2.setPreferredSize(new java.awt.Dimension(150, 24));
         formPanel2.add(xLabel2);
 
@@ -132,6 +125,8 @@ public class FAASAnnotationPage extends javax.swing.JPanel {
 
         jPanel3.setLayout(new java.awt.BorderLayout());
 
+        xDataTable2.setHandler("imageListHandler");
+        xDataTable2.setName("selectedImage"); // NOI18N
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("Support Documents");
         xDataTable2.setBorder(xTitledBorder2);
@@ -146,6 +141,8 @@ public class FAASAnnotationPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -159,12 +156,12 @@ public class FAASAnnotationPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             })
         });
-        xDataTable2.setHandler("listHandler");
-        xDataTable2.setName("selectedItem"); // NOI18N
         jPanel3.add(xDataTable2, java.awt.BorderLayout.CENTER);
 
         xActionBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -196,84 +193,131 @@ public class FAASAnnotationPage extends javax.swing.JPanel {
 
         jTabbedPane1.addTab("Annotation Information", jPanel2);
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder3.setTitle("Property Information");
-        formPanel6.setBorder(xTitledBorder3);
-        formPanel6.setCaptionWidth(100);
-
-        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel3.setCaption("TD No.");
-        xLabel3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        xLabel3.setName("entity.faas.tdno"); // NOI18N
-        xLabel3.setPreferredSize(new java.awt.Dimension(0, 19));
-        formPanel6.add(xLabel3);
-
-        xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel5.setCaption("Owner Name");
-        xLabel5.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
-        xLabel5.setName("entity.faas.owner.name"); // NOI18N
-        xLabel5.setPreferredSize(new java.awt.Dimension(0, 19));
-        formPanel6.add(xLabel5);
-
-        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel6.setCaption("Address");
-        xLabel6.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
-        xLabel6.setName("entity.faas.owner.address"); // NOI18N
-        xLabel6.setPreferredSize(new java.awt.Dimension(0, 19));
-        formPanel6.add(xLabel6);
-
-        xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel8.setCaption("PIN");
-        xLabel8.setCellPadding(new java.awt.Insets(0, 0, 0, 31));
-        xLabel8.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        xLabel8.setName("entity.faas.fullpin"); // NOI18N
-        xLabel8.setOpaque(true);
-        xLabel8.setPreferredSize(new java.awt.Dimension(200, 19));
-        formPanel6.add(xLabel8);
-
-        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel9.setCaption("Classification");
-        xLabel9.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
-        xLabel9.setName("entity.faas.classification.code"); // NOI18N
-        xLabel9.setOpaque(true);
-        xLabel9.setPreferredSize(new java.awt.Dimension(200, 19));
-        formPanel6.add(xLabel9);
-
-        xDecimalField2.setCaption("Market Value");
-        xDecimalField2.setCellPadding(new java.awt.Insets(0, 0, 0, 31));
-        xDecimalField2.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xDecimalField2.setEnabled(false);
-        xDecimalField2.setName("entity.faas.totalmv"); // NOI18N
-        xDecimalField2.setPreferredSize(new java.awt.Dimension(200, 19));
-        formPanel6.add(xDecimalField2);
-
-        xDecimalField3.setCaption("Assessed Value");
-        xDecimalField3.setCellPadding(new java.awt.Insets(0, 0, 0, 31));
-        xDecimalField3.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xDecimalField3.setEnabled(false);
-        xDecimalField3.setName("entity.faas.totalav"); // NOI18N
-        xDecimalField3.setPreferredSize(new java.awt.Dimension(200, 19));
-        formPanel6.add(xDecimalField3);
+        xDataTable1.setHandler("faasListHandler");
+        xDataTable1.setName("selectedFaas"); // NOI18N
+        xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "faas.tdno"}
+                , new Object[]{"caption", "TD No."}
+                , new Object[]{"width", 140}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "faas.fullpin"}
+                , new Object[]{"caption", "PIN"}
+                , new Object[]{"width", 180}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "faas.classcode"}
+                , new Object[]{"caption", "Class"}
+                , new Object[]{"width", 60}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "faas.totalareasqm"}
+                , new Object[]{"caption", "Area (sqm)"}
+                , new Object[]{"width", 120}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "faas.totalmv"}
+                , new Object[]{"caption", "Market Value"}
+                , new Object[]{"width", 120}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "faas.totalav"}
+                , new Object[]{"caption", "Assessed Value"}
+                , new Object[]{"width", 120}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "faas.state"}
+                , new Object[]{"caption", "State"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            })
+        });
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 646, Short.MAX_VALUE)
-            .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jPanel1Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .add(formPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .add(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 416, Short.MAX_VALUE)
-            .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jPanel1Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .add(formPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .add(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Annotated Property", jPanel1);
@@ -304,7 +348,6 @@ public class FAASAnnotationPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.util.FormPanel formPanel2;
     private com.rameses.rcp.util.FormPanel formPanel3;
-    private com.rameses.rcp.util.FormPanel formPanel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -312,18 +355,12 @@ public class FAASAnnotationPage extends javax.swing.JPanel {
     private javax.swing.JTabbedPane jTabbedPane1;
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
+    private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XDateField xDateField3;
-    private com.rameses.rcp.control.XDecimalField xDecimalField2;
-    private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XDecimalField xDecimalField4;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
-    private com.rameses.rcp.control.XLabel xLabel3;
-    private com.rameses.rcp.control.XLabel xLabel5;
-    private com.rameses.rcp.control.XLabel xLabel6;
-    private com.rameses.rcp.control.XLabel xLabel8;
-    private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XTextArea xTextArea2;
     private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField5;

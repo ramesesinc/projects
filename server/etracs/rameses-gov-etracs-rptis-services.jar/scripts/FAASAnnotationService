@@ -5,8 +5,11 @@ import com.rameses.services.extended.*
 
 class FAASAnnotationService 
 {
-	@ActiveDB('faasannotation')
+	@DataContext('faasannotation')
 	def em
+
+	@DataContext('faasannotation_faas')
+	def em_annotation_faas
 	
 	@Service('TxnRefService')
 	def txnRef
@@ -33,9 +36,6 @@ class FAASAnnotationService
 	@Env
 	def env
 
-	@DataContext('faasannotation')
-	def em_annotation
-	
 	def SCHEMA_NAME = 'faasannotation'
 	
 	def STATE_DRAFT 		= 'DRAFT' 
@@ -84,13 +84,19 @@ class FAASAnnotationService
 		txnRef.checkReference(faas.objid)
 		if (faas.state == 'CANCELLED') throw new Exception('FAAS has already been cancelled.')
 		if (faas.state != 'CURRENT') throw new Exception('FAAS is not yet approved. Only current record is allowed.')
-		return [
+		def entity = [
 			objid : util.generateId('FA'),
 			state : STATE_DRAFT,
-			faas  : faas,
-			faasid : faas.objid, 
 			oramount : 0.0,
-		]	
+			faasid: faas.objid,
+			faas: faas,
+		]
+
+		entity.items = [
+			[parent: [objid: entity.objid], faas: faas]
+		]
+
+		return entity
 	}
 	
 	@ProxyMethod
@@ -116,7 +122,7 @@ class FAASAnnotationService
 
 	@ProxyMethod
 	public def open( annotation ) {
-		annotation = em_annotation.read(annotation)
+		annotation = em.read(annotation)
 		if( !annotation ) throw new Exception('Record does not exist or has already been deleted.')
 		return annotation 
 	}
@@ -196,18 +202,6 @@ class FAASAnnotationService
 	}
 
 	@ProxyMethod
-	public def carryOverAnnotations( faas ) {
-		faas.previousfaases?.each{ pf ->
-			def annotations = getAnnotationsByFaasId( pf.prevfaasid )
-			annotations.each{
-				it.objid = 'FA' + new java.rmi.server.UID();
-				it.faasid = pf.faasid 
-				em.create(it);
-			}
-		}
-	}
-
-	@ProxyMethod
 	public void checkActiveAnnotations(txntype, entity  ) {
 		if (util.isFalse(txntype.allowannotated)) {
 			def annotations = em.getActiveAnnotations(entity)
@@ -226,7 +220,7 @@ class FAASAnnotationService
 		def currdate = dateSvc.serverDate 
 		def ordate	 = dateSvc.parse('yyyy-MM-dd', annotation.ordate )
 		if( ordate > currdate ) throw new Exception('O.R. Date must not exceed current date.')
-		checkFaasCurrentState( annotation.faasid )
+		checkFaasCurrentState(annotation.faasid)
 	} 
 	
 
@@ -243,9 +237,9 @@ class FAASAnnotationService
 
 	@ProxyMethod
 	public void postRemote(annotation){
-		def exist = em_annotation.find([objid: annotation.objid]).first() != null
+		def exist = em.find([objid: annotation.objid]).first() != null
 		if (!exist) {
-			em_annotation.create(annotation)
+			em.create(annotation)
 		}
 	}
 

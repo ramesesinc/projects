@@ -32,6 +32,7 @@ public class FAASAnnotationController extends PageFlowController
     def faas;
     def mode;
     def entity;
+    def selectedFaas;
     def images;
     
     String entityName = 'faasannotation';
@@ -45,6 +46,7 @@ public class FAASAnnotationController extends PageFlowController
     
     def open(){
         entity = svc.open(entity)
+        faasListHandler.reload();
         loadImages();
         mode = MODE_READ;
         return super.signal('open');
@@ -67,8 +69,11 @@ public class FAASAnnotationController extends PageFlowController
         return false;
         return true 
     }
-    
-    
+
+    def faasListHandler = [ 
+        fetchList : { return entity.items }
+    ] as BasicListModel
+
 
     /*-----------------------------------------------------
      * 
@@ -138,7 +143,7 @@ public class FAASAnnotationController extends PageFlowController
      * SUPPORT DOCUMENTS
      *
      *----------------------------------------------------*/
-    def selectedItem;
+    def selectedImage;
     
     void loadImages(){
         images = [];
@@ -146,14 +151,13 @@ public class FAASAnnotationController extends PageFlowController
             images = DBImageUtil.getInstance().getImages(entity?.objid);    
         }
         catch(e){
-            println 'Load Images error ============';
             e.printStackTrace();
         }
-        listHandler?.load();
+        imageListHandler?.load();
     }
     
                 
-    def listHandler = [
+    def imageListHandler = [
         fetchList : { return images },
     ] as BasicListModel
     
@@ -169,18 +173,18 @@ public class FAASAnnotationController extends PageFlowController
     }
             
     void deleteImage(){
-        if (!selectedItem) return;
+        if (!selectedImage) return;
         if (MsgBox.confirm('Delete selected image?')){
-            DBImageUtil.getInstance().deleteImage(selectedItem.objid);
+            DBImageUtil.getInstance().deleteImage(selectedImage.objid);
             loadImages();
         }
     }
             
             
     def viewImage(){
-        if (!selectedItem) return null;
+        if (!selectedImage) return null;
         return InvokerUtil.lookupOpener('image:view', [
-                entity : selectedItem,
+                entity : selectedImage,
             ]);
     }
     

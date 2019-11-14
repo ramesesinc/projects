@@ -18,8 +18,8 @@ class FAASService
 	@DataContext('faas_affectedrpu')
 	def em_faas_affectedrpu 
 
-	@DataContext('faasannotation')
-	def em_faas_annotation 
+	@DataContext('faasannotation_faas')
+	def em_annotation_faas 
 
 	@DataContext('faas_backtax')
 	def em_faas_backtax
@@ -589,9 +589,9 @@ class FAASService
         }
 
         //annotations
-        def annotations = em_faas_annotation.where(" faasid = :objid and state = 'APPROVED' ", faas).list()
+        def annotations = em_annotation_faas.select('parent.fileno').where("faas_objid = :objid and parent.state = 'APPROVED'", faas).list()
         if(annotations){
-        	msgs << 'FAAS has active Annotation # ' + annotations.fileno.join(',')
+        	msgs << 'FAAS has active Annotation # ' + annotations.parent.fileno.join(',')
         }
 		faas.messagelist = msgs;
 	}

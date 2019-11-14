@@ -38,6 +38,8 @@ class MunicipalityFAASAnnotationInterceptor
         msg.filetype    = 'cancelannotation'
         msg.message     = 'Create FAAS annotation cancellation.'
         msg.messagetype = 'create-cancelannotation'
+        msg.txnid = annotation.objid
+        msg.txnno = annotation.txnno
         svc.sendAsyncMessage(msg)
         println 'Submit municipality approved cancel annotation to Province....'
     }    

@@ -39,3 +39,57 @@ CREATE TABLE `assessmentnotice_online` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 ;
 
+
+
+/*===============================================================
+**
+** FAAS ANNOTATION
+**
+===============================================================*/
+CREATE TABLE `faasannotation_faas` (
+  `objid` varchar(50) NOT NULL,
+  `parent_objid` varchar(50) NOT NULL,
+  `faas_objid` varchar(50) NOT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+;
+
+
+alter table faasannotation_faas 
+add constraint fk_faasannotationfaas_faasannotation foreign key(parent_objid)
+references faasannotation (objid)
+;
+
+alter table faasannotation_faas 
+add constraint fk_faasannotationfaas_faas foreign key(faas_objid)
+references faas (objid)
+;
+
+create index ix_parent_objid on faasannotation_faas(parent_objid)
+;
+
+create index ix_faas_objid on faasannotation_faas(faas_objid)
+;
+
+
+create unique index ux_parent_faas on faasannotation_faas(parent_objid, faas_objid)
+;
+
+alter table faasannotation modify column faasid varchar(50) null
+;
+
+
+
+-- insert annotated faas
+insert into faasannotation_faas(
+  objid, 
+  parent_objid,
+  faas_objid 
+)
+select 
+  objid, 
+  objid as parent_objid,
+  faasid as faas_objid 
+from faasannotation
+;
+

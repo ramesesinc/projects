@@ -48,7 +48,7 @@ class MunicipalityCancelledFAASWorkflowInterceptor
         util.required('Cancel Reason', cancelledfaas.reason)
         util.required('Cancel Reason', cancelledfaas.reason.code)
         util.required('Remarks', cancelledfaas.remarks)
-        faasSvc.approveFaasCancellation(cancelledfaas)
+        faasSvc.approve(cancelledfaas)
         println 'Cancelled FAAS has been manually approved.'
     }       
 }

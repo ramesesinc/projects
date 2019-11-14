@@ -28,7 +28,7 @@ class MunicipalityFAASSupportInterceptor
 	}
 
 
-    @After(pattern="CancelledFAASService.approveFaasCancellation", eval="#{result.isremote==null}") 
+    @After(pattern="CancelledFAASService.approve", eval="#{result.isremote==null}") 
     public void submitToProvinceFaasCancellation( evt ) {
         def entity = evt.result
         entity.isremote = true

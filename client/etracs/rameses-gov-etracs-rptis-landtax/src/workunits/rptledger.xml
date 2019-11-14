@@ -8,6 +8,12 @@
                  action="open" caption="Realty Tax Ledger" 
                  target="window"
                  role="LANDTAX" permission="rptledger.read"/> 
+
+         <invoker type="formActions" 
+                caption="Actions" 
+                name="popupActions" 
+                visibleWhen="#{entity.state=='APPROVED'}" 
+                category="rptledger:actions" role="ADMIN" />
         
         <invoker type="formActions" 
                  action="approve" caption="Approve" 

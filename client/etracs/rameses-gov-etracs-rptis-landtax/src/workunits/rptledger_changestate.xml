@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="rptledger:form:menuActions" 
+        <invoker type="rptledger:actions" 
                  action="init" caption="Change State" 
                  role="ADMIN" permission="rptledger.changestate"
                  visibleWhen="#{entity.state.matches('APPROVED|CANCELLED')}" 

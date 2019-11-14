@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="rptledger:form:menuActions" 
+        <invoker type="rptledger:actions" 
                  action="init" caption="Change FAAS Reference" target="popup" 
                 domain="LANDTAX" role="ADMIN" permission="rptledger.change_faas_reference" 
                 visibleWhen="#{entity.state=='APPROVED'}" index="50001"/>        

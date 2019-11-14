@@ -1,5 +1,6 @@
 package com.rameses.gov.etracs.landtax.models;
 
+import com.rameses.common.*;
 import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.common.*;
@@ -43,6 +44,20 @@ class RPTLedgerModel extends CrudFormModel
         super.reloadEntity();
         refreshSections();
     }
+
+
+    def popupActions(def inv) {
+        def popupMenu = new PopupMenuOpener();
+        def list = InvokerUtil.lookupOpeners( inv.properties.category, [entity: entity] ).findAll{
+            def vw = it.properties.visibleWhen;
+            return  ((!vw)  ||  ExpressionResolver.getInstance().evalBoolean(vw, [entity: entity]));
+        }
+        list.each{
+            popupMenu.add( it );
+        }
+        return popupMenu;
+    }
+
     
     /*--------------------------------------------------------------
     *

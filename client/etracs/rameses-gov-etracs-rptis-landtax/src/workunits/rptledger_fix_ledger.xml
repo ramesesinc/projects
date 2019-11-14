@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="rptledger:form:menuActions" 
+        <invoker type="rptledger:actions" 
                  action="init" caption="Fix Ledger" target="popup" 
                 role="ADMIN" permission="rptledger.fixledger"
                  visibleWhen="#{entity.state=='APPROVED'}" />        

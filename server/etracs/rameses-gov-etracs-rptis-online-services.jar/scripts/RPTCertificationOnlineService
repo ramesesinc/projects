@@ -205,6 +205,7 @@ class RPTCertificationOnlineService {
         	office           : 'landtax',
         	official         : false,
         	_online 		 : true,
+        	properties 		 : [reporttype:[name:"fullypaid",title:"FULL PAYMENT"]],
 		]
 	}
 

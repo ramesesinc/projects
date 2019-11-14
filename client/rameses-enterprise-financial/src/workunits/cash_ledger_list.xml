@@ -1,7 +1,13 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="cash_treasury_ledger">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="cash_treasury_ledger" allowCreate="false" 
+          allowOpen="false" allowDelete="false">
+    
     <invokers>
-         <invoker folderid="menucategory/financial/ledger" caption="Cash Treasury Ledger"
-            cols="jev.jevdate,jev.refno,dr,cr" 
-            index="1" action="init" role="MASTER" />
-   </invokers>
+        <invoker folderid="menucategory/financial/ledger" 
+                 caption="Cash Treasury Ledger" action="init" 
+                 role="MASTER" index="1" 
+                 cols="jev.jevdate,jev.refno,dr,cr" />
+    </invokers>
+    
+    <code class="com.rameses.enterprise.financial.models.CashLedgerListModel"/> 
 </workunit>

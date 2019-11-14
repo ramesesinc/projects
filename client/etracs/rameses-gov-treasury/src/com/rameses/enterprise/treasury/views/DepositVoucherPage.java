@@ -190,7 +190,7 @@ public class DepositVoucherPage extends javax.swing.JPanel {
 
         jPanel1.add(jPanel7, java.awt.BorderLayout.SOUTH);
 
-        xTabbedPane1.addTab("  Funds   ", jPanel1);
+        xTabbedPane1.addTab("   Funds     ", jPanel1);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         jPanel2.setLayout(new java.awt.BorderLayout());
@@ -343,7 +343,7 @@ public class DepositVoucherPage extends javax.swing.JPanel {
 
         jPanel2.add(jPanel4, java.awt.BorderLayout.SOUTH);
 
-        xTabbedPane1.addTab("  Checks   ", jPanel2);
+        xTabbedPane1.addTab("   Checks     ", jPanel2);
 
         schemaList3.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
@@ -429,7 +429,7 @@ public class DepositVoucherPage extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        xTabbedPane1.addTab("  References   ", jPanel3);
+        xTabbedPane1.addTab("   References     ", jPanel3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

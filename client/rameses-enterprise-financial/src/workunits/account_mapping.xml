@@ -2,8 +2,8 @@
     <invokers>
         <invoker folderid="menucategory/financial/master" caption="Account Mapping" action="init" />
         <invoker type="formActions" action="_close" caption="Close" visibleWhen="#{mode=='initial'}"/>
-        <invoker type="formActions" action="next" caption="Next" visibleWhen="#{mode=='initial'}"/>
-        <invoker type="formActions" action="back" caption="Back"  visibleWhen="#{mode!='initial'}"/>
+        <invoker type="formActions" action="next" caption="Next" visibleWhen="#{mode=='initial'}" mnemonic="N"/>
+        <invoker type="formActions" action="back" caption="Back"  visibleWhen="#{mode!='initial'}" mnemonic="B"/>
    </invokers>
    
     <code class="com.rameses.enterprise.financial.models.AccountMappingModel" />

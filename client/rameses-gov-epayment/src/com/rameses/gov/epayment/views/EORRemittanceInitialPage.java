@@ -63,6 +63,8 @@ public class EORRemittanceInitialPage extends javax.swing.JPanel {
         xDateField1.setRequired(true);
         xFormPanel1.add(xDateField1);
 
+        xDataTable1.setHandler("listHandler");
+        xDataTable1.setName("selectedItem"); // NOI18N
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "receiptno"}
@@ -84,7 +86,7 @@ public class EORRemittanceInitialPage extends javax.swing.JPanel {
                 , new Object[]{"caption", "Receipt Date"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"maxWidth", 120}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -114,7 +116,7 @@ public class EORRemittanceInitialPage extends javax.swing.JPanel {
                 , new Object[]{"caption", "Txn Type"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"maxWidth", 120}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -159,7 +161,7 @@ public class EORRemittanceInitialPage extends javax.swing.JPanel {
                 , new Object[]{"caption", "Amount"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -168,6 +170,21 @@ public class EORRemittanceInitialPage extends javax.swing.JPanel {
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "paymentrefid"}
+                , new Object[]{"caption", "PaymentRef#"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "traceid"}
@@ -200,8 +217,6 @@ public class EORRemittanceInitialPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable1.setHandler("listHandler");
-        xDataTable1.setName("selectedItem"); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -222,6 +237,8 @@ public class EORRemittanceInitialPage extends javax.swing.JPanel {
 
         xTabbedPane1.addTab("EOR For Remittance", jPanel1);
 
+        xDataTable3.setHandler("resolveListHandler");
+        xDataTable3.setName("selectedPO"); // NOI18N
         xDataTable3.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "objid"}
@@ -299,12 +316,10 @@ public class EORRemittanceInitialPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })
         });
-        xDataTable3.setHandler("resolveListHandler");
-        xDataTable3.setName("selectedPO"); // NOI18N
 
         xButton1.setDepends(new String[] {"selectedPO"});
-        xButton1.setImmediate(true);
         xButton1.setName("resolve"); // NOI18N
+        xButton1.setImmediate(true);
         xButton1.setText("Resolve");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -338,10 +353,12 @@ public class EORRemittanceInitialPage extends javax.swing.JPanel {
 
         xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
 
-        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel1.setCaption("Amount");
-        xLabel1.setExpression("#{ entity.amount }");
+        xLabel1.setExpression("#{entity.amount}");
+        xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel1.setFont(new java.awt.Font("Monospaced", 0, 16)); // NOI18N
+        xLabel1.setNumberFormat("#,##0.00");
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel1);
 

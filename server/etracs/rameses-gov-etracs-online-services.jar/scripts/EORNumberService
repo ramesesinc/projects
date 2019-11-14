@@ -44,7 +44,7 @@ class EORNumberService {
         num_db.find([ objid: prefix ]).update([ currentno: rec.currentno ]); 
 
         // return the formatted sequence 
-        return prefix + String.format("%06d", rec.currentno ); 
+        return prefix + String.format("%06d", rec.currentno );
     }   
 
     @ProxyMethod(local=true)
@@ -59,4 +59,28 @@ class EORNumberService {
         } 
         return (prefix ? prefix : '') + String.format("%010d", rec.currentno );
     } 
+
+    @ProxyMethod(local=true)
+    public def getNextRemittanceNumber( param ) { 
+        def org = orgSvc.getRoot(); 
+        def orgid = (org?.objid ? org.objid : '');
+
+        String prefix = 'EORREM-'+ orgid;
+        def rec = num_db.find([ objid: prefix ]).first();
+        if ( !rec ) num_db.create([ objid: prefix, currentno: 0 ]);
+
+        // update to initiate record locked
+        int lockno = 10;  
+        num_db.find([ objid: prefix ]).update([ currentno: "{currentno + "+ (lockno + 1) +"}"]);
+
+        // get the current number minus lockno 
+        rec = num_db.find([ objid: prefix ]).first();
+        rec.currentno -= lockno; 
+
+        // re-update to sync sequence 
+        num_db.find([ objid: prefix ]).update([ currentno: rec.currentno ]); 
+
+        // return the formatted sequence 
+        return prefix + String.format("%06d", rec.currentno );
+    }       
 } 

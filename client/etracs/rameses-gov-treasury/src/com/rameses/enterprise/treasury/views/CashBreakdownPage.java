@@ -35,12 +35,15 @@ public class CashBreakdownPage extends javax.swing.JPanel {
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Cash Breakdown");
-        jPanel1.setBorder(xTitledBorder1);
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        setBorder(xTitledBorder1);
 
+        jPanel1.setLayout(new com.rameses.rcp.control.layout.XLayout());
+
+        cashDenomination1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10));
         cashDenomination1.setAmountField("total");
         cashDenomination1.setName("cashbreakdown"); // NOI18N
-        jPanel1.add(cashDenomination1, java.awt.BorderLayout.CENTER);
+        cashDenomination1.setOpaque(false);
+        jPanel1.add(cashDenomination1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -48,15 +51,14 @@ public class CashBreakdownPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(35, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

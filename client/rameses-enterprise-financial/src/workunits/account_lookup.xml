@@ -1,9 +1,33 @@
-<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="account">
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
+          schemaName="account" allowCreate="false" allowPrint="false">
     <invokers>
-         <invoker type="account:lookup" 
-             caption="Lookup Account" action="init" target="popup"
-             customFilter="maingroupid = :maingroupid AND type='item' "
-            cols="code,title,group.title,type" />
-   </invokers>
-   
+        <invoker type="account:lookup" 
+                 caption="Lookup Account" action="init" target="popup" 
+                 customFilter="maingroupid = :maingroupid AND type='item' "
+                 cols="code,title,group.title,type" 
+                 width="800" height="600"/> 
+
+        <invoker type="account:lookup-root-group" 
+                 caption="Lookup Parent Account" action="init" target="popup" 
+                 cols="code,title,group.title,type" 
+                 customFilter="maingroupid = :maingroupid AND type IN ('root','group')"
+                 orderBy="code,title" 
+                 width="800" height="600"/>
+        
+        <invoker type="account:lookup-group" 
+                 caption="Lookup Parent Account" action="init" target="popup" 
+                 cols="code,title,group.title,type" 
+                 customFilter="maingroupid = :maingroupid AND type = 'group'"
+                 orderBy="code,title" 
+                 width="800" height="600"/>
+
+        <invoker type="account:lookup-item" 
+                 caption="Lookup Parent Account" action="init" target="popup" 
+                 cols="code,title,group.title,type" 
+                 customFilter="maingroupid = :maingroupid AND type = 'item'"
+                 orderBy="code,title" 
+                 width="800" height="600"/>
+    </invokers>
+    
+    <code class="com.rameses.enterprise.financial.models.AccountLookupModel" /> 
 </workunit>

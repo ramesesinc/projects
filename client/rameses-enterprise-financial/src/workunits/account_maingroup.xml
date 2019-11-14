@@ -1,7 +1,7 @@
 <workunit schemaName="account_maingroup" formName="account_maingroup" allowCreate="false"  allowDelete="false">
     <invokers>
          <invoker type="account_maingroup:open" caption="#{entity.name} Accounts" action="open" 
-            formTitle="#{entity.name} Account Main Group" formId="#{entity.objid}"/>
+            formTitle="Account Main Group (#{entity.objid})" formId="#{entity.objid}"/>
          
          <invoker type="formActions" caption="Reindex" action="reindex"/>
    </invokers>

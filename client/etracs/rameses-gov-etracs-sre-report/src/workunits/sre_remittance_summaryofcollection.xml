@@ -1,0 +1,17 @@
+<workunit>
+    <invokers>
+        <invoker type="remittance:reports" 
+                 caption="Remittance Summary of Collection (SRE)" 
+                 action="initReport"  target="self" index="9"/>
+        
+        <invoker type="formActions" caption="Back" 
+                 action="_close" mnemonic="b" shortcut="ctrl B" 
+                 icon="images/toolbars/arrow_left.png"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.sre.models.SRERemittanceSummaryReportModel"/>
+    
+    <pages>
+        <page name="report" template="com.rameses.gov.etracs.sre.views.ReportByFund"/>
+    </pages>   
+</workunit>

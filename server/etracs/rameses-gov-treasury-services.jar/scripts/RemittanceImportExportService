@@ -22,6 +22,9 @@ class RemittanceImportExportService  {
 	@DataContext('cashreceipt_reprint_log') 
 	def reprintLog_db; 
 
+	@DataContext('bank') 
+	def bank_db; 
+
 
 	@ProxyMethod
 	public def exportRemittance(objid) {
@@ -87,12 +90,45 @@ class RemittanceImportExportService  {
 	private void importDataOldVersion( data ) {
 		data.cashreceipts.groupBy{ it.controlid }.each{ k,v-> 
 			v.sort{ it.series } 
-			v.each{
-				def voided = it.remove('voided');
-				crSvc.post( it )
+			v.each{ rct-> 
+				if ( rct.checks == null ) rct.checks = []; 
+				if ( rct.paymentitems == null ) rct.paymentitems = []; 
+
+				if ( rct.paymentitems ) {
+					def funds = []; 
+					rct.items.collect{ it.item?.fund?.objid }.findAll{( it )}.unique().each{ 
+						funds << [objid: it]; 
+					} 
+
+					rct.paymentitems.each{ nc-> 
+						nc.refid = "CRPMT-"+ new java.rmi.server.UID(); 
+						nc.voidamount = 0.0; 
+					} 
+
+					rct.paymentitems.findAll{( it.reftype == 'CHECK' )}.each{ 
+						it.checkid = it.refid; 
+
+						if ( it.fund == null ) { 
+							it.fund = (funds ? funds.first() : [:]); 
+						}
+
+						def chk = [
+							objid: it.checkid, bankid: it.bankid, 
+							refno: it.refno, refdate: it.refdate, 
+							amount: it.amount, amtused: 0.0, 
+							receivedfrom: rct.paidby, state: 'PENDING', 
+							split: 0, external: 0 
+						]; 
+						chk.bank = bank_db.find([ objid: it.bankid ]).select('objid,name').first(); 
+						rct.checks << chk; 
+					} 
+				}
+
+				def voided = rct.remove('voided');
+				crSvc.post( rct )
 
 				if ( voided && voided == 1) {
-					voidSvc.post([ receipt:it, reason: it.voidreason ]);
+					voidSvc.post([ receipt:rct, reason: rct.voidreason ]);
 				}
 			}
 		} 

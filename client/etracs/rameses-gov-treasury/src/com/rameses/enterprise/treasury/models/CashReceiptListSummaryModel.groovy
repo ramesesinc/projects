@@ -80,14 +80,14 @@ class CashReceiptListSummaryModel  {
     
     void initRemittance() {
         openerName = "cashreceipt_list:remitted:view";
-        conditions = [ "remittanceid = :remid", [remid: caller.entity.objid ] ];
+        conditions = [ "remittanceid = :remid AND void.objid IS NULL", [ remid: caller.entity.objid ]];
         title = "Cash Receipt Summary";
         def m = [_schemaname: "cashreceipt"];
         m.where = conditions;
         m.select = "formno,amount:{SUM(amount)}";
         m.groupBy = "formno";
         list = queryService.getList( m );
-        total = list.sum{ it.amount };
+        total = list.sum{ it.amount }
     }
     
     def listHandler = [

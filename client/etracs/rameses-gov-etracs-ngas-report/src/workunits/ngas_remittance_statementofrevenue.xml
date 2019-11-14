@@ -1,0 +1,17 @@
+<workunit>
+    <invokers>
+        <invoker type="remittance:reports" reftype="remittance"
+                 caption="NGAS Statement of Revenue" 
+                 action="initReport"  target="self" index="9"/>
+        
+        <invoker type="formActions" caption="Back" 
+                 action="_close" mnemonic="b" shortcut="ctrl B" 
+                 icon="images/toolbars/arrow_left.png"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.ngas.models.NGASStatementOfRevenueReportModel"/>
+    
+    <pages>
+        <page name="report" template="com.rameses.gov.etracs.ngas.views.ReportByFund"/>
+    </pages>   
+</workunit>

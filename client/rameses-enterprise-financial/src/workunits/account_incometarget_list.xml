@@ -1,0 +1,16 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="vw_account_incometarget"
+          entitySchemaName="account_incometarget">
+    <invokers>
+        <invoker folderid="menucategory/financial/master" 
+                  caption="Income Target" action="init" role="MASTER" index="1" 
+                  cols="maingroupid,item.code,item.title,target,year,group.code,group.title"
+                  orderBy="maingroupid, item.code, item.title" />
+    </invokers>
+    
+    <code class="com.rameses.enterprise.financial.models.AccountIncomeTargetListModel"/>
+    
+    <pages>
+        <page name="queryForm" template="com.rameses.enterprise.financial.views.IncomeTargetPanel" />
+    </pages>
+</workunit>

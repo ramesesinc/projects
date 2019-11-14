@@ -288,7 +288,7 @@ public class RemittancePage extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        xTabbedPane1.addTab("Fund Summary   ", jPanel12);
+        xTabbedPane1.addTab("   Fund Summary     ", jPanel12);
 
         jPanel9.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         com.rameses.rcp.control.layout.XLayout xLayout2 = new com.rameses.rcp.control.layout.XLayout();
@@ -371,7 +371,7 @@ public class RemittancePage extends javax.swing.JPanel {
 
         xFormPanel3.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel3.setCaptionWidth(100);
-        xFormPanel3.setPadding(new java.awt.Insets(3, 0, 0, 2));
+        xFormPanel3.setPadding(new java.awt.Insets(3, 0, 0, 0));
 
         xDecimalField5.setCaption("Total Non-Cash");
         xDecimalField5.setName("totalNoncash"); // NOI18N
@@ -394,6 +394,7 @@ public class RemittancePage extends javax.swing.JPanel {
         jPanel8.setBorder(xTitledBorder2);
         jPanel8.setLayout(new java.awt.BorderLayout());
 
+        cashDenomination1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 5));
         cashDenomination1.setAmountField("entity.totalcash");
         cashDenomination1.setEnabled(false);
         cashDenomination1.setFooterVisible(false);
@@ -404,7 +405,7 @@ public class RemittancePage extends javax.swing.JPanel {
 
         xFormPanel4.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel4.setOpaque(true);
-        xFormPanel4.setPadding(new java.awt.Insets(3, 15, 0, 2));
+        xFormPanel4.setPadding(new java.awt.Insets(3, 15, 0, 0));
 
         xDecimalField9.setCaption("Total Cash");
         xDecimalField9.setDisabledTextColor(new java.awt.Color(0, 0, 0));
@@ -418,7 +419,7 @@ public class RemittancePage extends javax.swing.JPanel {
 
         jPanel9.add(jPanel11);
 
-        xTabbedPane1.addTab("  Cash and Checks   ", jPanel9);
+        xTabbedPane1.addTab("   Cash and Checks     ", jPanel9);
 
         add(xTabbedPane1);
     }// </editor-fold>//GEN-END:initComponents

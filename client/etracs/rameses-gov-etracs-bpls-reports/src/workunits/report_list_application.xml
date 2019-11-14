@@ -44,27 +44,28 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
     def formControl = [
         getControlList: { 
             return [
-                [type:'combo', caption:'Permit Type', name:'entity.permittype', required:true, items:'permitTypes',  expression:'#{item.title}', preferredSize:'0,20', captionWidth:100],
-                [type:'combo', caption:'Permit Option', name:'entity.permitoption', required:true, items:'permitOptions',  expression:'#{item.title}', preferredSize:'0,20', captionWidth:100],
+                [type:'combo', caption:'Permit Type', name:'entity.permittype', required:true, items:'permitTypes',  expression:'#{item.title}', preferredSize:'0,20', captionWidth:130],
+                [type:'combo', caption:'Permit Option', name:'entity.permitoption', required:true, items:'permitOptions',  expression:'#{item.title}', preferredSize:'0,20', captionWidth:130],
             
-                [type:'combo', caption:'Period', name:'entity.period', required:true, items:'periodUtil.types',  expression:'#{item.title}', preferredSize:'100,20', captionWidth:100],
-                [type:'integer', caption:'Year', name:'entity.year', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type.matches("yearly|quarterly|monthly")==true }', preferredSize:'100,20', captionWidth:100 ],
-                [type:'combo', caption:'Quarter', name:'entity.qtr', required:true, items:'periodUtil.quarters', depends:'entity.period', visibleWhen:'#{ entity.period.type=="quarterly" }', preferredSize:'100,20', captionWidth:100],
-                [type:'combo', caption:'Month', name:'entity.month', required:true, items:'periodUtil.months', expression:'#{item.title}', depends:'entity.period', visibleWhen:'#{ entity.period.type=="monthly" }', preferredSize:'100,20', captionWidth:100],
-                [type:'date', caption:'Date', name:'entity.date', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="daily" }', preferredSize:'100,20', captionWidth:100],
-                [type:'date', caption:'Start Date', name:'entity.startdate', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="range" }', preferredSize:'100,20', captionWidth:100],
-                [type:'date', caption:'End Date', name:'entity.enddate', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="range" }', preferredSize:'100,20', captionWidth:100],
+                [type:'combo', caption:'Period', name:'entity.period', required:true, items:'periodUtil.types',  expression:'#{item.title}', preferredSize:'100,20', captionWidth:130],
+                [type:'integer', caption:'Year', name:'entity.year', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type.matches("yearly|quarterly|monthly")==true }', preferredSize:'100,20', captionWidth:130 ],
+                [type:'combo', caption:'Quarter', name:'entity.qtr', required:true, items:'periodUtil.quarters', depends:'entity.period', visibleWhen:'#{ entity.period.type=="quarterly" }', preferredSize:'100,20', captionWidth:130],
+                [type:'combo', caption:'Month', name:'entity.month', required:true, items:'periodUtil.months', expression:'#{item.title}', depends:'entity.period', visibleWhen:'#{ entity.period.type=="monthly" }', preferredSize:'100,20', captionWidth:130],
+                [type:'date', caption:'Date', name:'entity.date', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="daily" }', preferredSize:'100,20', captionWidth:130],
+                [type:'date', caption:'Start Date', name:'entity.startdate', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="range" }', preferredSize:'100,20', captionWidth:130],
+                [type:'date', caption:'End Date', name:'entity.enddate', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="range" }', preferredSize:'100,20', captionWidth:130],
 
-                [type:'checklist', caption:'App Type', name:'entity.apptypes', immediate:true, preferredSize:'0,20', items:'appTypeList', itemExpression:'#{item.title}', selectionMode:'MULTIPLE', itemCount:3, captionWidth:100 ],
-                [type:'checklist', caption:'App Status', name:'entity.appstates', immediate:true, preferredSize:'0,45', items:'appStatusList', itemExpression:'#{item.title}', selectionMode:'MULTIPLE', itemCount:3, captionWidth:100 ],
+                [type:'checklist', caption:'App Type', name:'entity.apptypes', immediate:true, preferredSize:'0,55', items:'appTypeList', itemExpression:'#{item.title}', selectionMode:'MULTIPLE', itemCount:3, captionWidth:130 ],
+                [type:'checklist', caption:'App Status', name:'entity.appstates', immediate:true, preferredSize:'0,55', items:'appStatusList', itemExpression:'#{item.title}', selectionMode:'MULTIPLE', itemCount:3, captionWidth:130 ],
+                [type:'checklist', caption:'Assessment Type', name:'entity.assessmenttypes', immediate:true, preferredSize:'0,30', items:'assessmentTypeList', itemExpression:'#{item.title}', selectionMode:'MULTIPLE', itemCount:3, captionWidth:130 ],
                 
-                [type:'combo', caption:'Barangay', name:'entity.barangay', items:'barangaylist',  expression:'#{item.name}', preferredSize:'0,20', captionWidth:100],
-                [type:'combo', caption:'Classification', name:'entity.classification', items:'classificationlist', expression:'#{item.name}', preferredSize:'0,20', captionWidth:100],
-                [type:'lookup', caption:'Line of Business', name:'entity.lob', handler:'lookupLOB', expression:'#{item.name}', depends:'entity.classification', preferredSize:'0,20', captionWidth:100],
+                [type:'combo', caption:'Barangay', name:'entity.barangay', items:'barangaylist',  expression:'#{item.name}', preferredSize:'0,20', captionWidth:130],
+                [type:'combo', caption:'Classification', name:'entity.classification', items:'classificationlist', expression:'#{item.name}', preferredSize:'0,20', captionWidth:130],
+                [type:'lookup', caption:'Line of Business', name:'entity.lob', handler:'lookupLOB', expression:'#{item.name}', depends:'entity.classification', preferredSize:'0,20', captionWidth:130],
 
                 [type:'label', caption:'', expression:' ', preferredSize:'0,10', showCaption:false],
-                [type:'checkbox', caption:'',  text:'With Capital', name:'entity.withcapital', immediate:true, preferredSize:'0,20', captionWidth:100 ], 
-                [type:'checkbox', caption:'',  text:'With Gross', name:'entity.withgross', immediate:true, preferredSize:'0,20', captionWidth:100 ] 
+                [type:'checkbox', caption:'',  text:'Show Capital', name:'entity.withcapital', immediate:true, preferredSize:'0,20', captionWidth:130 ], 
+                [type:'checkbox', caption:'',  text:'Show Gross', name:'entity.withgross', immediate:true, preferredSize:'0,20', captionWidth:130 ] 
             ]; 
         } 
     ] as FormPanelModel; 
@@ -82,12 +83,17 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
         [objid: 'RETIRELOB', title:'RETIRE-LOB'],
         [objid: 'ADDITIONAL', title:'ADDITIONAL'] 
     ];
+    def assessmentTypeList = [
+        [objid: 'NEW', title:'NEW       '],
+        [objid: 'RENEW', title:'RENEW     '],
+        [objid: 'RETIRE', title:'RETIRE    ']
+    ]; 
     def appStatusList = [
-        [objid: 'INFO', title: 'INFO'],
-        [objid: 'ASSESSMENT', title: 'ASSESSMENT'],
-        [objid: 'PAYMENT', title: 'FOR-PAYMENT'],
+        [objid: 'COMPLETED', title: 'COMPLETED'], 
         [objid: 'RELEASE', title: 'FOR-RELEASE'],
-        [objid: 'COMPLETED', title: 'COMPLETED'] 
+        [objid: 'PAYMENT', title: 'FOR-PAYMENT'],
+        [objid: 'ASSESSMENT', title: 'ASSESSMENT'],
+        [objid: 'INFO', title: 'INFO']
     ]; 
 
     def permitTypes;
@@ -100,6 +106,7 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
         entity.withgross = entity.withcapital = true; 
         entity.apptypes = appTypeList.findAll{ it.objid.matches('NEW|RENEW')}
         entity.appstates = appStatusList.findAll{ it.objid == 'COMPLETED' }    
+        entity.assessmenttypes = assessmentTypeList.findAll{ it.objid.matches('NEW|RENEW')} 
         permitTypes = permitTypeSvc.getList(); 
         entity.permittype = (permitTypes? permitTypes[0] : null); 
         entity.permitoption = permitOptions[0];
@@ -148,22 +155,16 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
             WITH_GROSS     : ( entity.withgross ? 1 : 0 ) 
         ]; 
         
-        m.APPTYPE = '( ALL )';
-        if ( entity.apptypes ) {
-            m.APPTYPE = entity.apptypes.collect{ it.objid }.join(', '); 
-        } 
-        
-        m.STATE = '( ALL )';
-        if ( entity.appstates ) {
-            m.STATE = entity.appstates.collect{ it.objid }.join(', ');
-        } 
+        m.APPTYPE = entity.apptypes.collect{ it.objid }.join(', '); 
+        m.ASSESSMENT_TYPE = entity.assessmenttypes.collect{ it.objid }.join(', '); 
+        m.STATE = entity.appstates.collect{ it.objid }.join(', ');
         
         m.PERMIT_OPTION = entity.permitoption;
         if ( entity.permitoption?.objid == 'any' ) {
             m.PERMIT_OPTION = null; 
         }
-        return m;         
-    }
+        return m;  
+    } 
 
     List getBarangaylist() {
         return brgySvc.getList([:]);

@@ -258,3 +258,8 @@ android/waterworks-v2
 /client/plugins/rameses-gov-obo-rptis/nbproject/private/
 /client/plugins/rameses-gov-obo-rptis/dist/
 /client/plugins/rameses-gov-obo-rptis/build/
+/client/etracs/rameses-gov-etracs-sre-report/nbproject/private/
+/client/etracs/rameses-gov-etracs-sre-report/build/
+/client/etracs/rameses-gov-etracs-sre-report/dist/
+/client/etracs/rameses-gov-etracs-ngas-report/build/
+/client/etracs/rameses-gov-etracs-ngas-report/dist/

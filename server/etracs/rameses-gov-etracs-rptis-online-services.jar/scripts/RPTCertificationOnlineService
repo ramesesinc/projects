@@ -167,6 +167,7 @@ class RPTCertificationOnlineService {
 		params.certid = 'RC' + new java.rmi.server.UID()
 
 		params.faases.each {
+			validatedFaas(it)
 			def ledger = em_ledger.select('lastyearpaid, lastqtrpaid').find([faasid: it.objid]).first()
 			if (ledger) {
 				it.rptcertificationid = params.certid 
@@ -215,6 +216,13 @@ class RPTCertificationOnlineService {
 
 	void validatedFaas(entity) {
 		def faas = em_faas.select('objid,state').find([objid: entity.objid]).first()
+		if (!faas) {
+			//resolve faas by tdno
+			faas = em_faas.select('objid,state').find([tdno: entity.objid]).first()
+			if (faas) {
+				entity.objid = faas.objid
+			}
+		}
 		if (!faas) throw new Exception('FAAS ' + entity.tdno + ' does not exist or has been deleted.')
 		if (faas.state.matches('INTERIM|PENDING')) throw new Exception('FAAS ' + entity.tdno + ' is not yet approved.')
 	}

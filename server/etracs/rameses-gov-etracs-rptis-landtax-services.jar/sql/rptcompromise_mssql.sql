@@ -417,11 +417,10 @@ where rptledgerid = $P{objid}
   and fullypaid = 0 
 
 
-
 [getDefaultedCompromises]
-select objid, rptledgerid, txnno, startyear, endyear   
+select *
 from rptcompromise
-where DATEADD(D, 1, enddate) < $P{currentdate}
+where enddate < $P{enddate}
   and state = 'APPROVED' 
 
 
@@ -445,6 +444,32 @@ from rptcompromise_item
 where rptcompromiseid = $P{objid}
   and fullypaid = 1
 order by year desc, qtr desc 
+
+
+[getUnpaidLedgerItems]
+select 
+	rci.objid,
+	rc.rptledgerid as parentid,
+	rlf.objid as rptledgerfaasid,
+	rlf.objid as rptledgerfaas_objid,
+	null as remarks,
+	rlf.assessedvalue as basicav,
+	rlf.assessedvalue as sefav,
+	rlf.assessedvalue as  av,
+	rci.revtype,
+	rci.year,
+	rci.qtr, 
+	rci.amount,
+	rci.amtpaid,
+	rci.priority,
+	rci.taxdifference,
+	0 as system
+from rptcompromise rc 
+inner join rptcompromise_item rci on rc.objid = rci.parentid 
+inner join rptledgerfaas rlf on rci.rptledgerfaasid = rlf.objid 
+where rc.objid = $P{objid}
+and (rci.amount - rci.amtpaid + rci.interest - rci.interestpaid) > 0
+
 
 [findFirstUnpaidCompromiseItem]
 select * 

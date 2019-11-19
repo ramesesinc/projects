@@ -27,6 +27,9 @@ class RPTUtilityService
 	@Service('FAASService')
 	def faasSvc 
 
+	@DataContext('realproperty')
+	def em_realproperty
+
 
 	
 	 //info: faasid, oldpin, tdno, pintype, municipality, barangay, 
@@ -38,7 +41,6 @@ class RPTUtilityService
 		def tokens = info.newpin.tokenize('-')
 		info.ssection = tokens[3]
 		info.sparcel = tokens[4]
-
 		info.oldfaas = em.findFaasInfo(info)
 		info.oldfullpin = info.oldfaas.fullpin
 		info.taxpayer = info.oldfaas.taxpayer 
@@ -52,8 +54,13 @@ class RPTUtilityService
 	void updateCommonInfo(info){
 		info.rpu = [objid:info.rpuid, fullpin:info.newpin, rputype:info.rputype, suffix: info.suffix]
 		info.rp = [pin: info.newpin]
+		
 		if (info.suffix > 0) {
-			info.rp = [pin: info.landfaas.fullpin]
+			if (info.landfaas) {
+				info.rp = [pin: info.landfaas.fullpin]
+			} else {
+				info.rp = em_realproperty.select('pin').find([objid: info.realpropertyid]).first();
+			}
 		}
 		
 		if (info.rputype != 'land' || (info.rputype == 'land' && !info.claimno)){

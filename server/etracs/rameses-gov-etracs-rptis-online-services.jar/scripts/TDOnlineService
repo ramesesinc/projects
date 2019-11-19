@@ -27,7 +27,7 @@ class TDOnlineService {
 	@DataContext('rptpayment')
 	def em_rptpayment
 
-	@DataContext('rptis_online_taxdec')
+	@ActiveDB('rptis_online_taxdec')
 	def em_online_taxdec
 
 	@ProxyMethod

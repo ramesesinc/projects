@@ -27,6 +27,9 @@ class TDOnlineService {
 	@DataContext('rptpayment')
 	def em_rptpayment
 
+	@DataContext('rptis_online_taxdec')
+	def em_online_taxdec
+
 	@ProxyMethod
 	public def verifyTaxDec(params) {
 		params.tdno = params.refno 
@@ -68,6 +71,13 @@ class TDOnlineService {
             boundary: boundary,
         ]
 	}
+
+	@ProxyMethod
+	public def getImprovementsByPermitNo(params) {
+		if (!params.permitno) throw new Exception('Building Permit No. must be specified.')
+		return em_online_taxdec.getImprovementsByPermitNo(params);
+	}
+
 
 	def getLedger(params) {
 		def rptledger = em_rptledger

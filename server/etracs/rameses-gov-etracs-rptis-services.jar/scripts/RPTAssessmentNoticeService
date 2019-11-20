@@ -36,6 +36,9 @@ class RPTAssessmentNoticeService
 	@DataContext('faas')
 	def em_faas
 
+	@DataContext('sys_org')
+	def em_org
+
 	def STATE_OPEN = 'OPEN'
 	def STATE_DELIVERED = 'DELIVERED'
 
@@ -80,6 +83,8 @@ class RPTAssessmentNoticeService
 		notice.createdbytitle =  (env.JOBTITLE ? env.JOBTITLE : 'SYSTEM')
 		notice.approvedbyname = reportSvc.standardParameter.ASSESSORNAME
 		notice.approvedbytitle = reportSvc.standardParameter.ASSESSORTITLE
+		if (!notice.approvedbyname) notice.approvedbyname = 'SYSTEM'
+		if (!notice.approvedbytitle) notice.approvedbytitle = 'SYSTEM'
 
 		em.create(notice) 
 
@@ -89,6 +94,13 @@ class RPTAssessmentNoticeService
 			em_item.create(it)
 		}
 		return open(notice)
+	}
+
+	@ProxyMethod
+	public def getReportData(param) {
+		def entity = em.read(param)
+		if (!entity) throw new Exception('Assessment does not exist or has been deleted.')
+		return open(entity)
 	}
 
 
@@ -139,14 +151,23 @@ class RPTAssessmentNoticeService
 		return notice
 	}	
 
-  @ProxyMethod
-  public def getApprovedFaasList(taxpayerid){
-    return  em.getApprovedFaasList([taxpayerid:taxpayerid])
-  }	
+	@ProxyMethod
+	public def getApprovedFaasList(taxpayerid){
+		return  em.getApprovedFaasList([taxpayerid:taxpayerid])
+	}	
+
+	def getOrgId() {
+		def orgid = env.ORGID
+		if (!orgid) {
+			def org = em_org.find([root: 1]).first()
+			orgid = org.objid
+		}
+		return orgid
+	}
 
 	def getNextSeries(notice){
 		def cy = dtSvc.serverYear 
-		return env.ORGID.replaceAll('-', '') + '-' + cy +  seqSvc.getNextFormattedSeries('ASSESSMENT_NOTICE-' + cy)
+		return getOrgId().replaceAll('-', '') + '-' + cy +  seqSvc.getNextFormattedSeries('ASSESSMENT_NOTICE-' + cy)
 	}	
 
 

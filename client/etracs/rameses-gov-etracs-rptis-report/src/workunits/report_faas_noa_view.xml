@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="assessmentnotice:view" action="doView" caption="Notice of Assessment" />
+        <invoker type="formActions" action="_close" caption="Close" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.report.models.AssessmentNoticeViewModel">
+    </code>
+    <pages>
+    	<page template="com.rameses.gov.etracs.rpt.report.PreviewPage" />
+    </pages>
+</workunit>
+
+

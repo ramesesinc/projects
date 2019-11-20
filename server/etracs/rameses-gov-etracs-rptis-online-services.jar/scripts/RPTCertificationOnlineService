@@ -18,6 +18,9 @@ class RPTCertificationOnlineService {
 	@Service('LandTaxReportTaxClearanceService')
 	def clearanceSvc
 
+	@Service('RPTAssessmentNoticeService')
+	def noaSvc
+
 	@Service('ReportParameterService')
 	def reportSvc
 
@@ -29,6 +32,12 @@ class RPTCertificationOnlineService {
 
 	@DataContext('rptcertification_online')
 	def em_cert_online
+
+	@DataContext('assessmentnotice')
+	def em_noa
+
+	@DataContext('assessmentnotice_online')
+	def em_noa_online
 
 	@DataContext('rptledger')
 	def em_ledger
@@ -71,6 +80,18 @@ class RPTCertificationOnlineService {
 	}
 
 	@ProxyMethod
+	public def issueNOA(params) {
+		def onlineNoa = getOnlineNoa(params) 
+		if (onlineNoa) {
+			return onlineNoa
+		} else {
+			def noa = initNoa(params)
+			noaSvc.loadNotice(noa, params.faas);
+			return createOnlineNoa(noa, params)
+		}
+	}
+
+	@ProxyMethod
 	public void postPayment( cert ) {
 		required('objid', cert.objid)
 		required('orno', cert.orno)
@@ -79,6 +100,7 @@ class RPTCertificationOnlineService {
 		cert.state = 'PAID'
 		em_cert.update(cert)
 		em_cert_online.update(cert)
+		em_noa_online.update(cert)
 	}
 
 	@ProxyMethod
@@ -210,17 +232,49 @@ class RPTCertificationOnlineService {
 		]
 	}
 
+	def initNoa(params) {
+		required('faas', params.faas);
+		required('faas.objid', params.faas.objid);
+		validatedFaas(params.faas);
+
+		def noa = [objid: 'NOA' + new java.rmi.server.UID()]
+		noa.taxpayer = params.faas.taxpayer
+		noa._online = true
+		noa.items = []
+		noa.items << [
+			faasid: params.faas.objid,
+			faas: params.faas
+		]
+		return noa
+	}
+
+	def createOnlineNoa(noa, params) {
+		def onlineNoa = [
+			objid : noa.objid,
+			state : 'FORPAYMENT',
+			txnno : noa.txnno,
+			reftype: params.reftype,
+			refid: params.refid,
+			refno: params.refno,
+			refdate: params.refdate
+		]
+		em_noa_online.create(onlineNoa)
+		return onlineNoa
+	}	
+
 	void required(caption, value) {
 		if (!value) throw new Exception(caption + ' must be specified');
 	}
 
 	void validatedFaas(entity) {
-		def faas = em_faas.select('objid,state').find([objid: entity.objid]).first()
+		def fields = 'objid,state,effectivityyear,taxpayer.objid,taxpayer.name,taxpayer.address.text,administrator.name,administrator.address'
+		def faas = em_faas.select(fields).find([objid: entity.objid]).first()
 		if (!faas) {
 			//resolve faas by tdno
-			faas = em_faas.select('objid,state').find([tdno: entity.objid]).first()
+			faas = em_faas.select(fields).find([tdno: entity.objid]).first()
 			if (faas) {
 				entity.objid = faas.objid
+				entity.faas = faas
 			}
 		}
 		if (!faas) throw new Exception('FAAS ' + entity.tdno + ' does not exist or has been deleted.')
@@ -234,6 +288,14 @@ class RPTCertificationOnlineService {
 			if (mainCert.opener == certtype) {
 				return onlineCert
 			}
+		} 
+		return null
+	}
+
+	def getOnlineNoa(params) {
+		def onlineNoa = em_noa_online.find([refid: params.refid]).first()
+		if (onlineNoa) {
+			return onlineNoa
 		} 
 		return null
 	}

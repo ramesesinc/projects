@@ -1,7 +1,8 @@
 CHANGELOG: v255.03015
 ==============================================
 - ASSESSOR	
-	- Add online access support for true copy
+	- Online access support for true copy
+	- Online support for NOA
 	
 - LANDTAX
     - Add online access support for tax clearance

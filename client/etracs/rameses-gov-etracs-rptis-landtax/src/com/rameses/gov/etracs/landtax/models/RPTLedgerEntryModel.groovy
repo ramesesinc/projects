@@ -16,10 +16,12 @@ class RPTLedgerEntryModel
     def entries;
     def faases;
     def ledger
+    def totalTaxDue;
     
     void init(){
         ledger = [objid:entity.objid]
         entries = svc.getLedgerEntries(ledger);
+        totalTaxDue = entries.amount.sum();
     }
     
     void refresh(){
@@ -30,13 +32,6 @@ class RPTLedgerEntryModel
     def listHandler = [
         fetchList :{ entries }
     ] as BasicListModel
-    
-    def getAmountDue(){
-        if (entries)
-            return entries.total.sum();
-        return 0.0
-    }
-    
     
     def addLedgerItem(){
         loadTaxableFaases();

@@ -6,4 +6,6 @@ CHANGELOG: v255.03015
 	- FAAS Annotation updates
 	
 - LANDTAX
-    - Add online access support for tax clearance
+	- Online access support for tax clearance
+	- Support LedgerFAAS rule fact to handle staggered AV
+	- Support Computation based on Actual Use (mixed used)

@@ -91,7 +91,7 @@ class RPTLedgerService
         ledger.owner = ledger.taxpayer
         ledger.taxpayer.address = ledger.taxpayer.address.text 
         ledger.faases = []
-        ledger.faases << createLedgerFaas(ledger, createFaasFromLedger(ledger))
+        ledger.faases += createLedgerFaas(ledger, createFaasFromLedger(ledger))
     }    
 
     @ProxyMethod
@@ -383,8 +383,9 @@ class RPTLedgerService
             ledger.nextbilldate = null 
             ledger.taxable = util.toBoolean(ledger.taxable, true)
             em_rptledger.update(ledger)
-            def ledgerfaas = createLedgerFaas(ledger, faas)
-            postLedgerFaas(ledgerfaas) 
+            createLedgerFaas(ledger, faas).each{
+                postLedgerFaas(it) 
+            }
             postTaxDifference(ledger, faas)
             updateLedgerFaasInfo(faas, ledger)
         }
@@ -595,27 +596,29 @@ class RPTLedgerService
             titleno                 : faas.titleno,
         ]
 
-        ledger.faases << createLedgerFaas( ledger, faas )
+        ledger.faases += createLedgerFaas( ledger, faas )
         def lastfaas = ledger.faases.last() 
         faas.backtaxes?.each{ backtax ->
             backtax.txntype         = faas.txntype 
             backtax.rpu             = faas.rpu 
             backtax.backtaxyrs      = faas.backtaxyrs
             backtax.taxable         = util.toBoolean(backtax.taxable, true)
-            def ledgerfaas          = createLedgerFaas(ledger, backtax)
-            ledgerfaas.faasid       = backtax.faasid 
-            ledgerfaas.assessedvalue = backtax.av 
-            ledgerfaas.backtax      = true 
-            ledgerfaas.toyear       = (lastfaas.fromqtr == 1 ? lastfaas.fromyear - 1 : lastfaas.fromyear)
-            ledgerfaas.toqtr        = (lastfaas.fromqtr == 1 ? 4 : lastfaas.fromqtr - 1)
-            ledger.faases << ledgerfaas 
-            lastfaas = ledgerfaas
+            def ledgerfaases          = createLedgerFaas(ledger, backtax)
+            ledgerfaases.each{ledgerfaas -> 
+                ledgerfaas.faasid       = backtax.faasid 
+                ledgerfaas.assessedvalue = backtax.av 
+                ledgerfaas.backtax      = true 
+                ledgerfaas.toyear       = (lastfaas.fromqtr == 1 ? lastfaas.fromyear - 1 : lastfaas.fromyear)
+                ledgerfaas.toqtr        = (lastfaas.fromqtr == 1 ? 4 : lastfaas.fromqtr - 1)
+                ledger.faases << ledgerfaas 
+                lastfaas = ledgerfaas
+            }
         }
         return ledger 
     }    
 
     def createLedgerFaas(ledger, faas){
-        return [
+        def lf = [
             objid             : faas.objid,
             state             : ledger.state,
             rptledgerid       : ledger.objid,
@@ -635,6 +638,22 @@ class RPTLedgerService
             assessedvalue     : faas.rpu.totalav,
             systemcreated     : true,
         ]
+
+        if (util.isTrue(var.rptledger_post_ledgerfaas_by_actualuse)) {
+            def list = []
+            def assessments = em_rptledger.getRpuAssessments(faas)
+            assessments.each {
+                def newlf = [:]
+                newlf.putAll(lf)
+                newlf.objid = 'RLF' + new java.rmi.server.UID()
+                newlf.assessedvalue = it.assessedvalue
+                newlf.actualuse = it.actualuse
+                list << newlf
+            }
+            return list
+        } else {
+            return [lf]
+        }
     }
 
     def createFaasFromLedger(ledger){
@@ -657,7 +676,7 @@ class RPTLedgerService
         items.each{
             it.parentid = ledger.objid
             def exist = em_rptledger_item.select('objid')
-                        .find([parentid:ledger.objid, year:yr, revtype:it.revtype, taxdifference:it.taxdifference])
+                        .find([parentid:ledger.objid, year:yr, revtype:it.revtype, taxdifference:it.taxdifference, rptledgerfaasid: it.rptledgerfaasid])
                         .first()
             if (exist){
                 exist.amount = it.amount

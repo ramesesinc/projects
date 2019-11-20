@@ -632,11 +632,11 @@ public class RPTCompromisePage extends javax.swing.JPanel {
         xDateField3.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel5.add(xDateField3);
 
+        xDataTable1.setHandler("witnessListHandler");
+        xDataTable1.setName("selectedWitness"); // NOI18N
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder8 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder8.setTitle("List of Witnesses");
         xDataTable1.setBorder(xTitledBorder8);
-        xDataTable1.setHandler("witnessListHandler");
-        xDataTable1.setName("selectedWitness"); // NOI18N
 
         org.jdesktop.layout.GroupLayout jPanel6Layout = new org.jdesktop.layout.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -740,13 +740,14 @@ public class RPTCompromisePage extends javax.swing.JPanel {
 
         jTabbedPane1.addTab("Required Payments", jPanel7);
 
+        xDataTable2.setHandler("delinquentListHandler");
         xDataTable2.setAutoResize(false);
         xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "year"}
                 , new Object[]{"caption", "Year"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
+                , new Object[]{"width", 80}
+                , new Object[]{"minWidth", 80}
                 , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
@@ -756,6 +757,21 @@ public class RPTCompromisePage extends javax.swing.JPanel {
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "qtr"}
+                , new Object[]{"caption", "Qtr"}
+                , new Object[]{"width", 50}
+                , new Object[]{"minWidth", 50}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "revtype"}
@@ -848,7 +864,6 @@ public class RPTCompromisePage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })
         });
-        xDataTable2.setHandler("delinquentListHandler");
 
         xFormPanel2.setName("delinquentTotal"); // NOI18N
 
@@ -885,6 +900,7 @@ public class RPTCompromisePage extends javax.swing.JPanel {
 
         jTabbedPane1.addTab("Delinquent Data", jPanel5);
 
+        xDataTable4.setHandler("creditListHandler");
         xDataTable4.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "orno"}
@@ -977,7 +993,6 @@ public class RPTCompromisePage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable4.setHandler("creditListHandler");
 
         xButton1.setMnemonic('m');
         xButton1.setName("capturePayment"); // NOI18N

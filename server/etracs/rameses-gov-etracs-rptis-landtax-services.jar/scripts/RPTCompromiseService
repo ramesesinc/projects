@@ -225,8 +225,6 @@ class RPTCompromiseService {
 		em_rptledger.find([objid: compromise.rptledgerid]).update([undercompromise: false])
 		em_compromise.find([objid:compromise.objid]).update([state:compromise.state])
 		return compromise 
-
-		return compromise 
 	}	
 
 	void updateForApprovalIfPaymentComplied( compromise ){

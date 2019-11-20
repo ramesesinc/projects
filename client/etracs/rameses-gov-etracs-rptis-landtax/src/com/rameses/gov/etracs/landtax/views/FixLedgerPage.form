@@ -20,9 +20,9 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="102" attributes="0">
-                      <Component id="xButton2" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="xButton1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="xButton2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="xFormPanel2" alignment="1" min="-2" pref="447" max="-2" attributes="0"/>
                   <Component id="xFormPanel1" min="-2" pref="447" max="-2" attributes="1"/>
@@ -43,7 +43,7 @@
                   <Component id="xButton1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="xButton2" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="34" max="32767" attributes="0"/>
+              <EmptySpace pref="26" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -140,8 +140,8 @@
     </Container>
     <Component class="com.rameses.rcp.control.XButton" name="xButton1">
       <Properties>
-        <Property name="defaultCommand" type="boolean" value="true"/>
         <Property name="name" type="java.lang.String" value="fixLedger" noResource="true"/>
+        <Property name="defaultCommand" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="Update"/>
       </Properties>
     </Component>
@@ -231,8 +231,8 @@
     </Container>
     <Component class="com.rameses.rcp.control.XButton" name="xButton2">
       <Properties>
-        <Property name="accelerator" type="java.lang.String" value="_close"/>
         <Property name="name" type="java.lang.String" value="_close" noResource="true"/>
+        <Property name="accelerator" type="java.lang.String" value="_close"/>
         <Property name="text" type="java.lang.String" value="Cancel"/>
       </Properties>
     </Component>

@@ -33,3 +33,33 @@ where rp.refid  =   $P{objid}
 and rpi.year = $P{year}
 and rp.voided = 0 
 group by year 
+
+[getRpuAssessments]
+select
+  x.classification_objid,
+  x.actualuse_objid,
+  sum(x.assessedvalue) as assessedvalue 
+from (
+  select 
+    r.classification_objid, 
+    case 
+      when l.objid is not null then l.classification_objid
+      when b.objid is not null then b.classification_objid
+      when m.objid is not null then m.classification_objid
+      when p.objid is not null then p.classification_objid
+      when mi.objid is not null then mi.classification_objid
+      else r.actualuse_objid
+    end as actualuse_objid,
+    r.assessedvalue
+  from faas f
+  inner join rpu_assessment r on f.rpuid = r.rpuid 
+  left join landassesslevel l on r.actualuse_objid = l.objid 
+  left join bldgassesslevel b on r.actualuse_objid = b.objid 
+  left join machassesslevel m on r.actualuse_objid = m.objid 
+  left join planttreeassesslevel p on r.actualuse_objid = p.objid 
+  left join miscassesslevel mi on r.actualuse_objid = mi.objid 
+  where f.objid = $P{objid}
+) x
+group by 
+  x.classification_objid,
+  x.actualuse_objid

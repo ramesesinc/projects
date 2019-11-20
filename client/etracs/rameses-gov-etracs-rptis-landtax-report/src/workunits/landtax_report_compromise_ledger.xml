@@ -40,7 +40,7 @@ class RPTCompromiseLedgerReportModel
     
     
     void buildReportInfo(){
-        data = svc.buildCompromiseLedgerReport([objid:entity.objid])
+        data = svc.getLedgerData([objid:entity.objid])
         report.viewReport()
     }
 

@@ -93,3 +93,17 @@ select
 from faasannotation
 ;
 
+
+
+/*============================================
+*
+*  LEDGER FAAS FACTS
+*
+=============================================*/
+INSERT INTO `sys_var` (`name`, `value`, `description`, `datatype`, `category`) 
+VALUES ('rptledger_rule_include_ledger_faases', '0', 'Include Ledger FAASes as rule facts', 'checkbox', 'LANDTAX')
+;
+
+INSERT INTO `sys_var` (`name`, `value`, `description`, `datatype`, `category`) 
+VALUES ('rptledger_post_ledgerfaas_by_actualuse', '0', 'Post by Ledger FAAS by actual use', 'checkbox', 'LANDTAX')
+;

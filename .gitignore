@@ -264,3 +264,6 @@ android/waterworks-v2
 /client/etracs/rameses-gov-etracs-sre-report/dist/
 /client/etracs/rameses-gov-etracs-ngas-report/build/
 /client/etracs/rameses-gov-etracs-ngas-report/dist/
+/client/plugins/rameses-gov-etracs-rptis-landtax-auction/nbproject/private/
+/client/plugins/rameses-gov-etracs-rptis-landtax-auction/build/
+/client/plugins/rameses-gov-etracs-rptis-landtax-auction/dist/

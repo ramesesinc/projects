@@ -54,6 +54,12 @@ class ConsolidationService
     @DataContext('faas_previous')
     def em_faas_previous 
 
+    @DataContext('faas_task')
+    def em_faas_task
+
+    @DataContext('consolidation_affectedrpu')
+    def em_affectedrpu
+
     def SCHEMA_CONSOLIDATION 		= 'consolidation'
     def SCHEMA_CONSOLIDATED_LAND 	= 'consolidatedland'
     def SCHEMA_AFFECTED_RPU 		= 'affectedrpu'
@@ -567,8 +573,12 @@ class ConsolidationService
 
     @ProxyMethod
     public void insertFaasSignatories(consolidation) {
-        em.deleteMotherFaasTasks(consolidation)
-        em.deleteAffectedRpuFaasTasks(consolidation)
+        em_faas_task.find([refid: consolidation.newfaasid]).delete()
+
+        em_affectedrpu.find([consolidationid: consolidation.objid]).list().each{
+            em_faas_task.find([refid: it.newfaasid]).delete()
+        }
+
         em.insertConsolidatedFaasSignatories(consolidation)
         em.insertAffectedRpuSignatories(consolidation)
     }

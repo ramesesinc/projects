@@ -407,21 +407,24 @@ class RPTLedgerService
 
     @ProxyMethod
     public def postLedgerFaas( ledgerfaas ) {
-        def ledgerfaases = em_rptledger_faas.find([rptledgerid:ledgerfaas.rptledgerid, state: 'APPROVED'])
+        def param = [rptledgerid:ledgerfaas.rptledgerid, state: 'APPROVED', fromyear: ledgerfaas.fromyear]
+        def ledgerfaases = em_rptledger_faas.where('rptledgerid = :rptledgerid and state = :state and fromyear < :fromyear', param)
                                             .orderBy('fromyear desc, tdno desc')
                                             .list()
         if (ledgerfaases) {
-            def latestledgerfaas = ledgerfaases.first()
-            if (latestledgerfaas) {
-                if (latestledgerfaas.fromyear == ledgerfaas.fromyear && latestledgerfaas.fromqtr == ledgerfaas.fromqtr){
-                    latestledgerfaas.state = 'CANCELLED' 
-                    latestledgerfaas.toyear = latestledgerfaas.fromyear 
+            def latest = ledgerfaases.first()
+            if (latest) {
+                ledgerfaases.findAll{it.fromyear == latest.fromyear}.each{latestledgerfaas ->
+                    if (latestledgerfaas.fromyear == ledgerfaas.fromyear && latestledgerfaas.fromqtr == ledgerfaas.fromqtr) {
+                        latestledgerfaas.state = 'CANCELLED' 
+                        latestledgerfaas.toyear = latestledgerfaas.fromyear 
+                    }
+                    else {
+                        latestledgerfaas.toyear = (ledgerfaas.fromqtr == 1 ? ledgerfaas.fromyear - 1 : ledgerfaas.fromyear)
+                    }
+                    latestledgerfaas.toqtr = (ledgerfaas.fromqtr == 1 ? 4 : ledgerfaas.fromqtr - 1)
+                    em_rptledger_faas.save(latestledgerfaas)
                 }
-                else {
-                    latestledgerfaas.toyear = (ledgerfaas.fromqtr == 1 ? ledgerfaas.fromyear - 1 : ledgerfaas.fromyear)
-                }
-                latestledgerfaas.toqtr = (ledgerfaas.fromqtr == 1 ? 4 : ledgerfaas.fromqtr - 1)
-                em_rptledger_faas.save(latestledgerfaas)
             }
         }
         em_rptledger_faas.save(ledgerfaas)

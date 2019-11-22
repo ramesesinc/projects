@@ -17,6 +17,9 @@ class RPTReceiptBatchModel extends PageFlowController
     @Service('RPTBillingService')
     def billSvc;
     
+    @Service('AFControlService')
+    def afControlSvc;
+
     @Service('CashReceiptService')
     def receiptSvc;
     
@@ -361,8 +364,6 @@ class RPTReceiptBatchModel extends PageFlowController
         
         mode = MODE_PAYMENT;
         
-        def selectaf = false;
-        
         while(true){
             try{
                 createReceipt();
@@ -378,8 +379,15 @@ class RPTReceiptBatchModel extends PageFlowController
                 }
             }
             catch(Warning w) { 
-                selectaf = true;
-                break;
+                def afSelected = false;
+               def onselect = { o-> 
+                    afControlSvc.activateSelectedControl([ objid: o.objid ]);
+                    afSelected = true;
+                }
+                Modal.show('cashreceipt:select-af', [entity: receipt, onselect: onselect]);
+                if (!afSelected) {
+                    break;
+                }
             }
             catch(Exception ex){
                 ex.printStackTrace();
@@ -388,10 +396,6 @@ class RPTReceiptBatchModel extends PageFlowController
             catch(BreakException be) { 
                 return null;
             }
-        }
-        
-        if (selectaf){
-            return InvokerUtil.lookupOpener('cashreceipt:select-afcontrol', [entity: receipt]);
         }
         
         if (mode == MODE_PAID){

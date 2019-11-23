@@ -22,7 +22,7 @@ select
     rp.toqtr,
     rp.type as mode,
     rpi.partialled,
-    rlf.tdno,
+    case when rlf.objid is null then rl.tdno else rlf.tdno end as tdno,
     rlf.assessedvalue,
     sum(rpi.basic) as basic,
     sum(rpi.basicint) as basicint,

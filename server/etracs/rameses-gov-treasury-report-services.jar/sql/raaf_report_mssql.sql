@@ -1,123 +1,136 @@
 [getReportData]
-select tt2.*, 
-  case 
-    when (tt2.receivedstartseries + tt2.receivedendseries) is null then 0 
-    else tt2.receivedendseries - tt2.receivedstartseries + 1 
-  end as qtyreceived, 
-  case 
-    when (tt2.beginendseries + tt2.beginendseries) is null then 0 
-    else tt2.beginendseries - tt2.beginstartseries + 1 
-  end as qtybegin,   
-  case 
-    when (tt2.issuedendseries + tt2.issuedendseries) is null then 0 
-    else tt2.issuedendseries - tt2.issuedstartseries + 1 
-  end as qtyissued, 
-  case 
-    when (tt2.endingendseries + tt2.endingendseries) is null then 0 
-    else tt2.endingendseries - tt2.endingstartseries + 1 
-  end as qtyending 
+select tmp5.* 
 from ( 
-  select 
-    tt1.controlid, a.afid, a.afid as formno, af.formtype, af.serieslength, af.denomination, 
-    a.stubno, a.prefix, a.suffix, a.startseries, a.endseries, a.startseries as sortseries, a.endseries+1 as nextseries, 
-    min(tt1.receivedstartseries) as receivedstartseries, max(tt1.receivedendseries) as receivedendseries, 
-    case when min(tt1.receivedstartseries) > 0 then null else min(tt1.beginstartseries) end as beginstartseries, 
-    case when max(tt1.receivedendseries) > 0 then null else max(tt1.beginendseries) end as beginendseries, 
-    min(tt1.issuedstartseries) as issuedstartseries, max(tt1.issuedendseries) as issuedendseries, 
-    case 
-      when max(tt1.issuedendseries) >= a.endseries then null 
-      when max(tt1.issuedendseries) <  a.endseries then max(tt1.issuedendseries)+1 
-      else max(tt1.endingstartseries) 
-    end as endingstartseries, 
-    case 
-      when max(tt1.issuedendseries) >= a.endseries then null 
-      when max(tt1.issuedendseries) <  a.endseries then a.endseries 
-      else max(tt1.endingendseries) 
-    end as endingendseries 
+
+  select tmp4.*, 
+    tmp4.ownername as name, tmp4.ownertype as respcentertype, 
+    (case when tmp4.ownertype='AFO' then 1 else 2 end) as respcenterlevel, 
+    (case when tmp4.qtyissued > 0 then 0 else 1 end) as categoryindex 
+    
   from ( 
 
     select 
-      d.controlid, null as receivedstartseries, null as receivedendseries, 
-      d.endingstartseries as beginstartseries, d.endingendseries as beginendseries, 
-      null as issuedstartseries, null as issuedendseries, d.endingstartseries, d.endingendseries 
-    from ( 
-      select t1.*, 
-        (
-          select top 1 objid from af_control_detail 
-          where controlid = t1.controlid and refdate = t1.refdate 
-          order by convert(date, refdate) desc, txndate desc, indexno desc 
-        ) as detailid 
-      from ( 
-        select d.controlid, max(d.refdate) as refdate 
-        from af_control_detail d 
-        where d.issuedto_objid = $P{collectorid}  
-          and d.refdate < $P{startdate} 
-        group by d.controlid 
-      )t1 
-    )t2, af_control_detail d 
-    where d.objid = t2.detailid 
-      and d.qtyending > 0 
-
-    union all 
-
-    select 
-      d.controlid, d.endingstartseries as receivedstartseries, d.endingendseries as receivedendseries, 
-      null as beginstartseries, null as beginendseries, null as issuedstartseries, null as issuedendseries, 
-      d.endingstartseries, d.endingendseries 
-    from af_control_detail d 
-    where d.issuedto_objid = $P{collectorid}  
-      and d.refdate >= $P{startdate} 
-      and d.refdate <  $P{enddate} 
-      and d.reftype = 'ISSUE' 
-      and d.qtyreceived > 0 
-
-    union all 
-
-    select 
-      t1.controlid, null as receivedstartseries, null as receivedendseries, 
+      tmp3.controlid, tmp3.minrefdate, tmp3.maxrefdate, 
+      afc.afid, af.formtype as aftype, afc.afid as formno, af.formtype, af.denomination, af.serieslength, 
+      afc.dtfiled, afc.prefix, afc.suffix, afc.stubno as startstub, afc.stubno as endstub, 
+      afc.startseries, afc.endseries, afc.endseries+1 as nextseries, afc.startseries as sortseries, 
+      (case when afd.issuedto_objid is null then 0 else 1 end) as ownerlevel, 
+      (case when afd.issuedto_objid is null then 'AFO' else 'COLLECTOR' end) as ownertype, 
+      (case when afd.issuedto_objid is null then 'AFO' else afd.issuedto_objid end) as ownerid, 
+      (case when afd.issuedto_objid is null then 'AFO' else afd.issuedto_name end) as ownername, 
+      (case when afd.txntype = 'SALE' then 1 else 0 end) as saled, 
+      tmp3.receivedstartseries, tmp3.receivedendseries, 
       case 
-        when min(t1.issuedstartseries) > 0 then min(t1.issuedstartseries) else min(t1.beginstartseries) 
+        when tmp3.receivedstartseries > 0 
+        then (tmp3.receivedendseries-tmp3.receivedstartseries)+1 else 0
+      end as qtyreceived, 
+      case 
+        when tmp3.issuedstartseries > 0 then tmp3.issuedstartseries 
+        when tmp3.receivedstartseries > 0 then null 
+        else tmp3.beginstartseries
       end as beginstartseries, 
       case 
-        when min(t1.issuedstartseries) > 0 then a.endseries else min(t1.beginendseries) 
+        when tmp3.issuedstartseries > 0 then afc.endseries  
+        when tmp3.receivedstartseries > 0 then null 
+        else tmp3.beginendseries
       end as beginendseries, 
-      min(t1.issuedstartseries) as issuedstartseries, max(t1.issuedendseries) as issuedendseries, 
       case 
-        when max(t1.issuedendseries) >= a.endseries then null 
-        when max(t1.issuedendseries) <  a.endseries then max(t1.issuedendseries)+1 
-        else max(t1.beginstartseries) 
-      end as endingstartseries, 
+        when tmp3.issuedstartseries > 0 then (afc.endseries-tmp3.issuedstartseries)+1   
+        when tmp3.receivedstartseries > 0 then 0 
+        else (tmp3.beginendseries-tmp3.beginstartseries)+1 
+      end as qtybegin, 
+      tmp3.issuedstartseries, tmp3.issuedendseries, tmp3.qtyissued, 
+      tmp3.endingstartseries, tmp3.endingendseries, 
       case 
-        when max(t1.issuedendseries) >= a.endseries then null 
-        when max(t1.issuedendseries) <  a.endseries then a.endseries 
-        else max(t1.beginendseries) 
-      end as endingendseries 
+        when tmp3.endingstartseries > 0 
+        then (tmp3.endingendseries-tmp3.endingstartseries)+1 else 0 
+      end as qtyending, 
+      tmp3.consumed, 
+      case 
+        when afd.txntype = 'SALE' then 'SALE'  
+        when tmp3.consumed > 0 then 'CONSUMED' 
+        else null 
+      end as remarks 
     from ( 
-      select 
-        d.controlid, null as receivedstartseries, null as receivedendseries, 
-        case when d.qtybegin > 0 then d.beginstartseries else null end as beginstartseries,  
-        case when d.qtybegin > 0 then d.beginendseries else null end as beginendseries, 
-        case when d.qtyissued > 0 then d.issuedstartseries else null end as issuedstartseries, 
-        case when d.qtyissued > 0 then d.issuedendseries else null end as issuedendseries, 
-        case when d.qtyending > 0 then d.endingstartseries else null end as endingstartseries, 
-        case when d.qtyending > 0 then d.endingendseries else null end as endingendseries, 
-        0 as qtyreceived, d.qtybegin, d.qtyissued, d.qtyending, 0 as qtycancelled 
-      from af_control_detail d 
-      where d.issuedto_objid = $P{collectorid}  
-        and d.refdate >= $P{startdate} 
-        and d.refdate <  $P{enddate} 
-        and (d.qtybegin + d.qtyissued) > 0 
-    )t1, af_control a 
-    where a.objid = t1.controlid 
-    group by t1.controlid, a.endseries  
 
-  )tt1, af_control a, af  
-  where a.objid = tt1.controlid 
-    and a.afid = af.objid 
-  group by tt1.controlid, a.afid, af.formtype, af.serieslength,  
-    af.denomination, a.stubno, a.prefix, a.suffix, a.startseries, a.endseries 
-)tt2 
-order by formno, startseries 
+      select tmp2.*, (
+          select top 1 objid from af_control_detail 
+          where controlid = tmp2.controlid 
+            and refdate = tmp2.maxrefdate 
+            and issuedto_objid = tmp2.issuedto_objid 
+          order by refdate desc, txndate desc 
+        ) as detailid 
+      from ( 
+
+        select 
+          tmp1.controlid, min(tmp1.refdate) as minrefdate, max(tmp1.refdate) as maxrefdate, tmp1.issuedto_objid, 
+          min(tmp1.receivedstartseries) as receivedstartseries, min(tmp1.receivedendseries) as receivedendseries, 
+          min(tmp1.beginstartseries) as beginstartseries, min(tmp1.beginendseries) as beginendseries, 
+          min(tmp1.issuedstartseries) as issuedstartseries, max(tmp1.issuedendseries) as issuedendseries, 
+          sum(tmp1.qtyissued) as qtyissued, 
+          case 
+            when max(tmp1.issuedendseries) >= tmp1.endseries then null 
+            when max(tmp1.issuedendseries) < tmp1.endseries then max(tmp1.issuedendseries)+1 
+            when min(tmp1.beginstartseries) > 0 then min(tmp1.beginstartseries) 
+            else min(tmp1.receivedstartseries) 
+          end as endingstartseries, 
+          case 
+            when max(tmp1.issuedendseries) >= tmp1.endseries then null 
+            else tmp1.endseries 
+          end as endingendseries, 
+          case 
+            when max(tmp1.issuedendseries) >= tmp1.endseries then 1 else 0 
+          end as consumed  
+        from ( 
+
+          select 
+            afd.controlid, afd.refdate, bt1.endseries, bt1.issuedto_objid, 
+            null as receivedstartseries, null as receivedendseries, 
+            afd.endingstartseries as beginstartseries, afd.endingendseries as beginendseries, 
+            null as issuedstartseries, null as issuedendseries, 0 as qtyissued 
+          from ( 
+            select afd.controlid, max(afd.refdate) as refdate, afc.endseries, afd.issuedto_objid  
+            from af_control_detail afd 
+              inner join af_control afc on afc.objid = afd.controlid 
+            where afd.refdate < $P{startdate} 
+              and afd.issuedto_objid = $P{collectorid} 
+            group by afd.controlid, afc.endseries, afd.issuedto_objid 
+          )bt1 
+            inner join af_control_detail afd on (afd.controlid = bt1.controlid and afd.refdate = bt1.refdate)
+          where afd.qtyending > 0 
+            and afd.issuedto_objid = bt1.issuedto_objid 
+
+          union all 
+
+          select 
+            afd.controlid, max(afd.refdate) as refdate, afc.endseries, afd.issuedto_objid, 
+            min(case when afd.receivedstartseries > 0 then afd.receivedstartseries else null end) as receivedstartseries, 
+            min(case when afd.receivedendseries > 0 then afd.receivedendseries else null end) as receivedendseries, 
+            min(case when afd.beginstartseries > 0 then afd.beginstartseries else null end) as beginstartseries, 
+            min(case when afd.beginendseries > 0 then afd.beginendseries else null end) as beginendseries, 
+            min(case when afd.issuedstartseries > 0 then afd.issuedstartseries else null end) as issuedstartseries, 
+            max(case when afd.issuedendseries > 0 then afd.issuedendseries else null end) as issuedendseries, 
+            sum(afd.qtyissued) as qtyissued 
+          from af_control_detail afd, af_control afc  
+          where afd.refdate >= $P{startdate} 
+            and afd.refdate <  $P{enddate}  
+            and afd.issuedto_objid = $P{collectorid} 
+            and afc.objid = afd.controlid 
+          group by afd.controlid, afc.endseries, afd.issuedto_objid 
+
+        )tmp1 
+        group by tmp1.controlid, tmp1.endseries, tmp1.issuedto_objid   
+
+      )tmp2
+
+    )tmp3, af_control_detail afd, af_control afc, af  
+    where afd.objid = tmp3.detailid 
+      and afc.objid = afd.controlid 
+      and af.objid = afc.afid 
+
+  )tmp4
+)tmp5
+order by tmp5.afid, tmp5.respcenterlevel, tmp5.categoryindex, tmp5.dtfiled, tmp5.startseries 
 
 
 [getReportDataByRef]

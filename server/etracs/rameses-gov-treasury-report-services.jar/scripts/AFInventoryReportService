@@ -126,46 +126,6 @@ class AFInventoryReportService {
 		} 
 		serials.clear(); 
 
-		list.groupBy{ it.formno }.each{ k,v-> 
-			
-			v.each{ oo-> 
-				if ( oo.qtyreceived > 0 ) 
-					oo.qtyreceived = oo.receivedendseries-oo.receivedstartseries+1; 
-				if ( oo.qtybegin > 0 ) 
-					oo.qtybegin = oo.beginendseries-oo.beginstartseries+1;
-				if ( oo.qtyissued > 0 ) 
-					oo.qtyissued = oo.issuedendseries-oo.issuedstartseries+1;
-			}
-
-			def fo = v.first();
-			fo.receivedstartseries = fo.receivedendseries = null;   
-			fo.beginstartseries = fo.beginendseries = null;   
-			fo.issuedstartseries = fo.issuedendseries = null;   
-			fo.endingstartseries = fo.endingendseries = null;   
-			fo.qtyreceived = v.sum{ it.qtyreceived } 
-			fo.qtybegin = v.sum{ it.qtybegin } 
-			fo.qtyissued = v.sum{ it.qtyissued }
-			fo.qtyending = (fo.qtyreceived ? fo.qtyreceived : fo.qtybegin) - fo.qtyissued;
-
-			fo.costperstub = (fo.cost ? fo.cost : 0.0); 
-			fo.qtyreceivedcost = fo.qtyreceived * fo.costperstub; 
-			fo.qtybegincost = fo.qtybegin * fo.costperstub; 
-			fo.qtyissuedcost = fo.qtyissued * fo.costperstub; 
-
-
-			if ( !fo.qtyreceived ) fo.qtyreceived = null; 
-			if ( !fo.qtybegin ) fo.qtybegin = null; 
-			if ( !fo.qtyissued ) fo.qtyissued = null; 
-			if ( !fo.qtyending ) fo.qtyending = null; 
-			if ( !fo.qtyreceivedcost ) fo.qtyreceivedcost = null; 
-			if ( !fo.qtybegincost ) fo.qtybegincost = null; 
-			if ( !fo.qtyissuedcost ) fo.qtyissuedcost = null; 
-			if ( !fo.qtyendingcost ) fo.qtyendingcost = null; 
-			if ( !fo.costperstub ) fo.costperstub = null; 
-
-			results << fo; 
-		} 
-
 		list.clear();
 		results.sort{ it.lineno } 
 		return results; 

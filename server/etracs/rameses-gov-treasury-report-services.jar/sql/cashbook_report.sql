@@ -91,7 +91,7 @@ from (
 		and r.objid = v.objid 
 		and r.liquidatingofficer_objid is not null 
 )t1 
-order by sortdate 
+order by sortdate, refdate 
 
 
 [getSummaries]

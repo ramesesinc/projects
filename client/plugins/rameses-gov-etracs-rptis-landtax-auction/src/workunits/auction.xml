@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml"
+    schemaName="propertyauction"
+    allowEdit="#{entity.state.matches('DRAFT|FORAPPROVAL')}"
+    allowDelete="#{entity.state.matches('DRAFT|FORAPPROVAL')}" >
+    <invokers>
+        <invoker type="propertyauction:create" 
+                 action="create" caption="Public Auction (New)" 
+                 role="ADMIN" />
+        
+        <invoker type="propertyauction:open" 
+                 action="open" caption="Public Auction" 
+                 role="AUCTIONEER" />
+        
+        <invoker type="formActions" 
+                 action="approve" caption="Approve" 
+                 role="ADMIN"
+                 visibleWhen="#{entity.state == 'DRAFT' &amp;&amp; mode=='read'}" />
+                        
+                
+        <invoker type="formActions" 
+                 action="publish" caption="Publish NSDRP" 
+                 role="ADMIN"
+                 visibleWhen="#{entity.state == 'APPROVED' &amp;&amp; entity._forpublication}" />
+        
+        <invoker type="formActions" 
+                 action="generateFirstPublication" caption="Generate First Publication" 
+                 role="ADMIN"
+                 visibleWhen="#{entity.state == 'PUBLICATION' &amp;&amp; entity._publish1 == true}" />
+        
+        <invoker type="formActions" 
+                 action="generateSecondPublication" caption="Generate Second Publication" 
+                 role="ADMIN"
+                 visibleWhen="#{entity.state == 'PUBLICATION' &amp;&amp; entity._publish2 == true}" />
+        
+        <invoker type="formActions" 
+                 action="conductAuction" caption="Conduct Auction" 
+                 role="ADMIN"
+                 visibleWhen="#{entity.state == 'PUBLICATION' &amp;&amp; entity._forauction}" />
+        
+        <invoker type="formActions" 
+                 action="closeAuction" caption="Close Auction" 
+                 role="ADMIN"
+                 visibleWhen="#{entity.state == 'AUCTION'}" />
+        
+        <invoker type="formActions" 
+                 action="concludeAuction" caption="Close Auction" 
+                 role="ADMIN"
+                 visibleWhen="#{entity.state == 'FINALSALE'}" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.AuctionModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.AuctionPage"/>
+    </pages>
+</workunit>

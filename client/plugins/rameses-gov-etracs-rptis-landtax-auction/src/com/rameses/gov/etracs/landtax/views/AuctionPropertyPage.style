@@ -1,0 +1,3 @@
+"entity.(amtdue|minbidamt|bidamt)|entity.rptledger.*"[true]{
+    enabled:false;
+}

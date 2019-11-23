@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml"
+    schemaName="propertyauction_notice"
+    allowCreate="false"
+    allowDelete="false" 
+    allowEdit="false" >
+    <invokers>
+        <invoker type="propertyauction_notice:open" 
+                 action="open" caption="Auction Notice" 
+                 target="popup"
+                 role="AUCTIONEER" />
+        
+        <invoker type="formActions" 
+                action="deliver" caption="Delivered" 
+                visibleWhen="#{entity.state == 'FORDELIVERY' &amp;&amp; mode == 'read'}" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.AuctionNoticeModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.AuctionNoticePage"/>
+        <page name="deliver" template="com.rameses.gov.etracs.landtax.views.AuctionNoticeDeliveryPage"/>
+    </pages>
+</workunit>

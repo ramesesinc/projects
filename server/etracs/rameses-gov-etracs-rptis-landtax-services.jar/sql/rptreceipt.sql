@@ -31,6 +31,7 @@ order by rl.tdno
 
 [getItemsForPrinting]
 select
+	rl.objid as rptledgerid,
 	rl.owner_name, 
 	rl.tdno,
 	rl.rputype,

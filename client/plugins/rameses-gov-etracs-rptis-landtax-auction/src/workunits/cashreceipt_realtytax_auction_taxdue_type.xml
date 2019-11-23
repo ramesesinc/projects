@@ -1,0 +1,25 @@
+<workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
+    <invokers>
+        <invoker type="collectiontype:handler" caption="Auction Tax Due" 
+            name="rptauction" formno="56" formtype="serial" index="0"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        
+        class  RealtyTaxAuctionTypeController {
+            @Caller 
+            def caller 
+            
+            def getEntity(){
+                return caller.entity
+            }
+            
+            
+        }
+        ]]>
+        
+    </code>
+</workunit>

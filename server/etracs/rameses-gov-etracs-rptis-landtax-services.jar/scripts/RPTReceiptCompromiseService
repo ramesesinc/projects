@@ -156,7 +156,6 @@ class RPTReceiptCompromiseService
 		def bill = [:]
 
 		if (receipt.requiredpayment == null || receipt.requiredpayment.type == 'downpayment'){
-			em_compromise.debug = true 
 			rptledger.postingitems = em_compromise.getUnpaidItems([objid:receipt.compromise.objid])
 			bill = [billdate: receipt.receiptdate, rptledger: rptledger, cy: dtSvc.serverYear]
 			bill.partial = [amount:receipt.amount]
@@ -211,7 +210,6 @@ class RPTReceiptCompromiseService
 
 	@ProxyMethod
 	public def getUnpaidInstallments(compromise) {
-		em_compromise_installment.debug = true 
 		def list = em_compromise_installment
 						.find([parentid:compromise.objid, fullypaid:false])
 						.orderBy('installmentno')
@@ -536,8 +534,19 @@ class RPTReceiptCompromiseService
 		info.interestpaid = '{interestpaid - :interest}'
 		info.discount = '{discount - :discount}'
 
-		em_rptpayment_item.find([parentid:pmt.objid]).list().each{
-			em_compromise_item.find([parentid:compromise.objid, year:it.year, revtype:it.revtype, revperiod:it.revperiod, priority:it.priority])
+		def items = em_rptpayment_item.find([parentid:pmt.objid]).list()
+		items.each {
+			def filter = [
+				parentid: compromise.objid, 
+				year: it.year, 
+				qtr: it.qtr,
+				revtype: it.revtype, 
+				revperiod: it.revperiod, 
+				priority: it.priority,
+				rptledgerfaasid: it.rptledgerfaasid,
+			]
+			em_compromise_item
+				.find(filter)
 				.update(info, [amount:it.amount, interest:it.interest, discount:it.discount])
 		}
 	}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
+    schemaName="propertyauction_step"
+    allowCreate="false"
+    allowDelete="false"
+    cols="seqno,title,duration,applicable"
+    orderBy="seqno"
+>
+    <invokers>
+        <invoker folderid="/menucategory/landtax/auction" 
+                 action="init" caption="Auction Steps" 
+                role="ADMIN" index="1" />
+    </invokers>
+</workunit>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml"
+    schemaName="propertyauction_step"
+    allowCreate="false"
+    allowDelete="false" >
+    <invokers>
+        <invoker type="propertyauction_step:open" 
+                 action="open" caption="Auction Step" 
+                 target="popup"
+                 role="ADMIN" />
+    </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.AuctionStepPage"/>
+    </pages>
+</workunit>

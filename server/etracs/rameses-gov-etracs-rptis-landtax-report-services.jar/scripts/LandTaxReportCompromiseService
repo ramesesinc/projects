@@ -23,15 +23,13 @@ class LandTaxReportCompromiseService{
 
 
     @ProxyMethod
-    public def buildCompromiseLedgerReport( compromise ) {
+    public def getLedgerData( compromise ) {
         compromise = getCompromiseInfo(compromise)
         def balance = compromise.amount
         compromise.credits = em.getLedgerCredits(compromise).eachWithIndex{v, idx ->
             v.idx = ++idx
-            if (v.installmentid){
-                v.balance = balance - v.oramount 
-                balance -= v.oramount 
-            }
+            v.balance = balance - v.oramount 
+            balance -= v.oramount 
         }
         compromise.balance = balance 
         return compromise

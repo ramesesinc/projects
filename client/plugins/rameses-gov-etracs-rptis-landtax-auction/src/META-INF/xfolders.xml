@@ -1,0 +1,13 @@
+
+<folders>
+    <folder id="menucategory">
+        <folder id="landtax" caption="Land Tax">
+            <folder id="auction" caption="Auction" index="100" icon="home/icons/auction.png" />
+        </folder>
+    </folder>
+    <folder id="explorer">
+        <folder id="rulemgmt" caption="Rule Management">
+            <folder id="landtax" caption="Land Tax" index="100" />
+        </folder>
+    </folder>
+</folders>

@@ -11,6 +11,9 @@ public class RPTLedgerRuleService
 	@Resource('RuleService')
 	def ruleSvc
 
+	@Service('Var')
+	def var
+
 	@Service('DateService')
 	def dtSvc
 
@@ -68,9 +71,15 @@ public class RPTLedgerRuleService
 		def ledgerfact = new RPTLedgerFact(ledger)
 		facts << ledgerfact 
 
-		def faases = em_ledger_faas.select('fromyear,toyear,idleland,assessedvalue,actualuse.objid')
+		def faases = em_ledger_faas.select('fromyear,toyear,idleland,assessedvalue,classification.objid,actualuse.objid')
 						.find([rptledgerid: ledger.objid, state:'APPROVED'])
 						.list()
+
+		if (util.isTrue(var.rptledger_rule_include_ledger_faases)) {
+			faases.each {
+				facts << new RPTLedgerFaasFact(it)
+			}
+		}
 
 		ledger.faases.each{faas ->
 			def item = [:]

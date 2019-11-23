@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml"
     schemaName="rptcompromise"
-    cols="state,txnno,txndate,rptledger.tdno,rptledger.fullpin,rptledger.owner.name,rptledger.administrator.name,enddate,term,numinstallment,amount"
+    cols="state,txnno,txndate,rptledger.tdno,rptledger.fullpin,rptledger.taxpayer.name,rptledger.administrator.name,enddate,term,numinstallment,amount"
     allowDelete="#{entity &amp;&amp; entity.state == 'DRAFT'}"
 >
     <invokers>

@@ -1,0 +1,12 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/landtax" 
+                 action="init" 
+                 caption="List of Notices" 
+                 target="window" 
+                role="REPORT" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.AuctionReportDeliveredNoticeListModel">
+
+    </code>
+</workunit>

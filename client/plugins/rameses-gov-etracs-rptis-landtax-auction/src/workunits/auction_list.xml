@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
+    schemaName="propertyauction"
+    cols="state,txndate,publicationdate1,publicationdate2,auctiondate,approvedby.name,closedby.name"
+    allowDelete="#{entity.state=='DRAFT'}"
+    orderBy="auctiondate desc"
+    autoResize="false"
+>
+    <invokers>
+        <invoker folderid="/menucategory/landtax/auction" 
+                 action="init" caption="View Auctions" 
+                role="SHARED" index="10"/>
+    </invokers>
+</workunit>

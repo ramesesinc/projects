@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
+    schemaName="propertyauction_bidder"
+    cols="state,bidderno,entity.name,entity.address.text,bondamt"
+    allowDelete="#{entity.state=='DRAFT'}"
+    allowEdit="#{entity.state=='DRAFT'}"
+    allowPrint="#{false}"
+    autoResize="false"
+    orderBy="bidderno"
+>
+    <invokers>
+        <invoker type="propertyauction:section" 
+                 caption="Bidders" 
+                 index="10" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.AuctionSectionBidderModel" />
+</workunit>

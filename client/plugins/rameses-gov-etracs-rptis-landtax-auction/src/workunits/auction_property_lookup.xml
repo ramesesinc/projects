@@ -1,0 +1,12 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
+          schemaName="propertyauction_property"
+          allowCreate="false"
+          allowDelete="false">
+   <invokers>
+         <invoker type="propertyauction_property:lookup" caption="Auctioned Property Lookup" 
+         		  action="init" target="popup" width="650" height="450"
+                  cols="rptledger.tdno,rptledger.fullpin,rptledger.owner.name,rptledger.totalav" 
+                  hiddenCols="notice.toyear,rptledger.objid,bidder.entity.name,bidder.entity.address.text,rptledger.taxpayer.objid,rptledger.taxpayer.name,rptledger.taxpayer.address.text,rptledger.totalmv,rptledger.totalareaha,parent.objid" />
+   </invokers>
+   <code class="com.rameses.gov.etracs.landtax.models.AuctionPropertyLookupModel" />
+</workunit>

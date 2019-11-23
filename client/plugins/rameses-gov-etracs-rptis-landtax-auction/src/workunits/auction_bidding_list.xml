@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml"
+    schemaName="propertyauction_bidding"
+    cols="property.rptledger.tdno,property.rptledger.fullpin,bidder.entity.name,property.rptledger.totalareasqm,property.rptledger.totalmv,property.rptledger.totalav,dtstarted,dtclosed"
+    hiddenCols="state" 
+    allowCreate="false"
+    allowDelete="#{entity?.state=='DRAFT'}"
+    orderBy="property.rptledger.tdno"
+>
+    <invokers>
+        <invoker folderid="/menucategory/landtax/auction" 
+                 action="init" caption="View Biddings" 
+                role="SHARED" index="30"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.AuctionBiddingListModel" />
+</workunit>

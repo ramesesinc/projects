@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="propertyauction_property:redeem" 
+                 action="init" caption="Auctioned Property (Redemption)" 
+                 target="popup" 
+                 role="AUCTIONEER" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.AuctionPropertyRedeemModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.AuctionPropertyRedeemPage"/>
+    </pages>
+</workunit>

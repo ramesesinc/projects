@@ -31,6 +31,8 @@ public class RPTLedgerEntryPage extends javax.swing.JPanel {
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         xActionBar1 = new com.rameses.rcp.control.XActionBar();
 
+        xDataTable5.setHandler("listHandler");
+        xDataTable5.setName("selectedItem"); // NOI18N
         xDataTable5.setAutoResize(false);
         xDataTable5.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
@@ -199,18 +201,16 @@ public class RPTLedgerEntryPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             })
         });
-        xDataTable5.setHandler("listHandler");
-        xDataTable5.setName("selectedItem"); // NOI18N
 
         xFormPanel1.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         xFormPanel1.setCellpadding(new java.awt.Insets(2, 0, 0, 0));
         xFormPanel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
 
-        xDecimalField1.setCaption("Amount Due");
+        xDecimalField1.setCaption("Total Tax Due");
+        xDecimalField1.setName("totalTaxDue"); // NOI18N
         xDecimalField1.setCaptionWidth(100);
         xDecimalField1.setEnabled(false);
         xDecimalField1.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
-        xDecimalField1.setName("amountDue"); // NOI18N
         xDecimalField1.setPreferredSize(new java.awt.Dimension(120, 20));
         xFormPanel1.add(xDecimalField1);
 

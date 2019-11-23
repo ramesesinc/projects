@@ -13,9 +13,9 @@ class RPTLedgerCompromiseTask
 	@Service('RPTCompromiseService')
 	def svc 
 
-	@Schedule(interval=10)
+	@Schedule(interval=20)
 	public def closeDefaultedCompromise(task) {
-		def enddate = dtSvc.add(dtSvc.serverDate, '1d');
+		def enddate = dtSvc.add(dtSvc.serverDate, '-1d');
 		def list = em.getDefaultedCompromises([enddate:enddate]);
 		list.each{
 			svc.closeDefaultedCompromise(it)

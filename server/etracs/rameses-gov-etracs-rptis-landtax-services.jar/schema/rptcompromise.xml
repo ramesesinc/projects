@@ -58,7 +58,7 @@
 			<key field="objid" target="parentid"/>
 		</complex>
 
-		<complex name="items" ref="rptcompromise_item" jointype="one-to-many" required="true" orderBy="year,priority,revtype">
+		<complex name="items" ref="rptcompromise_item" jointype="one-to-many" required="true" orderBy="year,qtr,priority,revtype">
 			<key field="objid" target="parentid"/>
 		</complex>
 

@@ -76,7 +76,6 @@ class RPTLedgerInterceptor
 
     @After(pattern="FAASService.(approveFaas|approveFaasByRemote)")
     public void postFaasToRPTLedger(evt){
-        println 'postFaasToRPTLedger ....'
         def faas = evt.result 
 
         def org = em_org.select('orgclass').find([root: 1]).first()

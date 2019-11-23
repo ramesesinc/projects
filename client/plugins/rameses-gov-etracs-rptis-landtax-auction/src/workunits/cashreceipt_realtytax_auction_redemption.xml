@@ -1,0 +1,12 @@
+<workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
+    <invokers>
+        <invoker type="cashreceipt:auctionredeem" action="init" />
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.landtax.models.AuctionReceiptRedeemModel" />
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.AuctionReceiptRedeemPage" />
+    </pages>
+    
+</workunit>

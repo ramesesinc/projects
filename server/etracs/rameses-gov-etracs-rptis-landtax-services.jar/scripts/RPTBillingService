@@ -417,7 +417,7 @@ public class RPTBillingService
 		bill.totals = [total:0.0]
 		def items = []
 		def minyear = bill.items.year.min() 
-		def groups = bill.items.groupBy{ it.year + '-' + (it.qtr ? it.qtr : 1) + ':' + it.taxdifference }
+		def groups = bill.items.groupBy{ it.year + '-' + (it.qtr ? it.qtr : 1) + ':' + it.taxdifference + ':' + it.rptledgerfaasid }
 		groups.each{k, list ->
 			def first = list.first() 
 			def item = [:]
@@ -446,8 +446,8 @@ public class RPTBillingService
 			items << item
 		}
 		items.sort{a, b ->
-			def ayrq = a.year + '-' + (a.qtr ? a.qtr : 0)
-			def byrq = b.year + '-' + (b.qtr ? b.qtr : 0)
+			def ayrq = a.year + '-' + (a.qtr ? a.qtr : 0) + '-' + a.originalav
+			def byrq = b.year + '-' + (b.qtr ? b.qtr : 0) + '-' + b.originalav
 			return ayrq <=> byrq
 		}
 		return items

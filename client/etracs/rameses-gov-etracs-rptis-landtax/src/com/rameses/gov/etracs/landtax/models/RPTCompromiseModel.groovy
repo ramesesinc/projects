@@ -390,9 +390,7 @@ public class RPTCompromiseModel
     }
     
     def getBalance(){
-        def total = entity.items.total.sum();
-        def payment = entity.items.payment.sum();
-        return total - payment;
+        return entity.items.balance.sum();
     }
     
     def getShowRestructure(){

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml"
+    schemaName="propertyauction_notice"
+    allowCreate="false"
+    allowDelete="#{entity.state=='FORDELIVERY' &amp;&amp; entity.step.objid == 'NOD'}"
+    cols="state,txndate,txnno,amount,rptledger.owner.name,rptledger.tdno,rptledger.titleno,rptledger.fullpin,rptledger.totalav,amtdue,expirydate"
+    hiddenCols="step.objid"
+    orderBy="txnno"
+    autoResize="false"
+>
+    <invokers>
+        <invoker folderid="/menucategory/landtax/auction" 
+                 action="init" caption="View Notices" 
+                role="SHARED" index="15" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.AuctionNoticeListModel" />
+</workunit>

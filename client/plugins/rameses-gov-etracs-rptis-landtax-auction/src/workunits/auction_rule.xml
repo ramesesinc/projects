@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" tag="propertyauctionbilling">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/landtax" caption="Auction Rules" action="init" index="55" role="RULE_AUTHOR"/>
+    </invokers>
+</workunit>

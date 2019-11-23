@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="propertyauction_bidding:session" 
+                 action="init" caption="Bidding Session" 
+                 role="AUCTIONEER"
+                 target="popup"  />
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.AuctionBiddingSessionModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.AuctionBiddingSessionPage"/>
+    </pages>
+</workunit>

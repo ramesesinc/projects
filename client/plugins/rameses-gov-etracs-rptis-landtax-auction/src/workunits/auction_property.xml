@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml"
+    schemaName="propertyauction_property"
+    allowCreate="#{false}"
+    allowEdit="#{false}"
+    allowDelete="#{false}" >
+    <invokers>
+        <invoker type="propertyauction_property:open" 
+                 action="open" caption="Auctioned Property" 
+                 target="popup" 
+                 role="AUCTIONEER" />
+        
+        <invoker type="formActions" 
+            action="submitForPayment" 
+            caption="Submit for Payment" 
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.state =='AUCTIONED' &amp;&amp; entity.bidder.objid != null}"/>
+            
+        <invoker type="formActions" 
+            action="approveSale" 
+            caption="Approve Sale" 
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.state =='FORPAYMENT'}"/>
+            
+        <invoker type="formActions" 
+                 action="redeemSale" 
+                 caption="Redeem Sale" 
+                 visibleWhen="#{mode == 'read' &amp;&amp; entity.state =='FORREDEMPTION'}"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.AuctionPropertyModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.AuctionPropertyPage"/>
+    </pages>
+</workunit>

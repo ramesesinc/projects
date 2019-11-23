@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml"
+    schemaName="propertyauction_bidder"
+    cols="state,bidderno,entity.name,entity.address,bondamt"
+    allowDelete="#{entity.state=='DRAFT'}"
+    orderBy="bidderno"
+>
+    <invokers>
+        <invoker folderid="/menucategory/landtax/auction" 
+                 action="init" caption="View Bidders" 
+                role="SHARED" index="25"/>
+    </invokers>
+</workunit>

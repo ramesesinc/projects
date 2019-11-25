@@ -1,0 +1,7 @@
+<schema adapter="zamboanga_treasury">
+	<element name="co24" tablename="cto_bpls_user.CO248Rate">
+		<field name="id" primary="true" />
+		<field name="violation" caption="Violation" searchable="true" />
+		<field name="amount" caption="Fee" type="decimal" />
+	</element>
+</schema>

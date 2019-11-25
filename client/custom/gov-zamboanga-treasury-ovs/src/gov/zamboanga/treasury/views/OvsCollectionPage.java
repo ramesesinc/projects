@@ -33,10 +33,14 @@ public class OvsCollectionPage extends javax.swing.JPanel {
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         jPanel3 = new javax.swing.JPanel();
         xButton1 = new com.rameses.rcp.control.XButton();
+        jPanel4 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xTextField2 = new com.rameses.rcp.control.XTextField();
+        xDateField2 = new com.rameses.rcp.control.XDateField();
         jPanel2 = new javax.swing.JPanel();
         xDataTable3 = new com.rameses.rcp.control.XDataTable();
 
@@ -89,25 +93,42 @@ public class OvsCollectionPage extends javax.swing.JPanel {
         xButton1.setImmediate(true);
         xButton1.setText("Verify Violator");
 
+        jPanel4.setLayout(new java.awt.BorderLayout());
+
         xFormPanel1.setCaptionWidth(135);
+        xFormPanel1.setPreferredSize(new java.awt.Dimension(380, 69));
 
         xTextField1.setCaption("Ticket No.");
         xTextField1.setName("entity.ctno"); // NOI18N
-        xTextField1.setText("entity.ctdate");
         xTextField1.setRequired(true);
         xFormPanel1.add(xTextField1);
 
         xDateField1.setCaption("Ticket Date");
-        xDateField1.setName("entity._ctdate"); // NOI18N
+        xDateField1.setName("entity.ctdate"); // NOI18N
         xDateField1.setRequired(true);
         xFormPanel1.add(xDateField1);
 
         xComboBox1.setCaption("Apprehending Office");
         xComboBox1.setItems("apprehendingOffices");
         xComboBox1.setName("entity.apprehendingoffice"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(250, 20));
+        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
+
+        jPanel4.add(xFormPanel1, java.awt.BorderLayout.WEST);
+
+        xFormPanel2.setCaptionWidth(100);
+        xFormPanel2.setPadding(new java.awt.Insets(0, 20, 5, 5));
+
+        xTextField2.setCaption("Cedula No.");
+        xTextField2.setName("entity.cedulano"); // NOI18N
+        xFormPanel2.add(xTextField2);
+
+        xDateField2.setCaption("Cedula Date");
+        xDateField2.setName("entity.ceduladate"); // NOI18N
+        xFormPanel2.add(xDateField2);
+
+        jPanel4.add(xFormPanel2, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -116,8 +137,8 @@ public class OvsCollectionPage extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 744, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -125,10 +146,11 @@ public class OvsCollectionPage extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         jPanel1.add(jPanel3, java.awt.BorderLayout.PAGE_START);
@@ -234,12 +256,16 @@ public class OvsCollectionPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable3;
     private com.rameses.rcp.control.XDateField xDateField1;
+    private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XTextField xTextField1;
+    private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables
 }

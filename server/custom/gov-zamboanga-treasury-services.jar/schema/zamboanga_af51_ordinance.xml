@@ -1,0 +1,18 @@
+<schema adapter="zamboanga_treasury">
+	<element name="af51_ordinance" tablename="cto_bpls_user.af51_ordinance">
+		<field name="orno" />
+		<field name="description" />
+		<field name="acctcode" />
+		<field name="bclass" />
+		<field name="sclass" />
+		<field name="xclass" />
+		<field name="amount" type="decimal" />
+		<field name="ctno" />
+		<field name="ctdate" />
+		<field name="cedulano" />
+		<field name="ceduladate" />
+		<field name="apprehendingoffice" />
+		<field name="violation" />
+		<field name="orid" fieldname="or_id" />
+	</element>
+</schema>

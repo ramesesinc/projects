@@ -1,0 +1,25 @@
+<workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
+    <invokers>
+        <invoker type="collectiontype:handler" caption="Zamboanga MTOP" 
+            name="zamboanga_mtop" formno="51" formtype="serial" index="0"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        
+        class  ZamboangaMtopCollectionTypeModel{
+            @Caller 
+            def caller 
+            
+            def getEntity(){
+                return caller.entity
+            }
+            
+            
+        }
+        ]]>
+        
+    </code>
+</workunit>

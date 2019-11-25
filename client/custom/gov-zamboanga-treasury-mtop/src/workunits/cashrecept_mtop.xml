@@ -1,0 +1,11 @@
+<workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
+    <invokers>
+        <invoker type="cashreceipt:zamboanga_mtop" action="init" />
+    </invokers>
+    <code class="gov.zamboanga.treasury.models.MtopCollectionModel" >
+    </code>
+    <pages>
+        <page template="gov.zamboanga.treasury.views.MtopCollectionPage" />
+    </pages>
+    
+</workunit>

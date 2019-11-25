@@ -1,0 +1,21 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+
+class ZamboangaCollectionMtopInterceptor {
+	@Service('ZamboangaCollectionMtopService')
+	def svc
+	
+	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'zamboanga_mtop'}")
+	public void afterPost(evt) {
+		def receipt = evt.result
+		svc.postCollection(receipt)
+	}
+
+	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype?.handler=='zamboanga_mtop'}")
+	public void voidReceipt( evt ) {
+		def receipt = evt.args[0].receipt
+		svc.postVoidPayment( receipt )
+	}
+}

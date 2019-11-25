@@ -1,0 +1,103 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class ZamboangaCollectionOvsService {
+	@ActiveDB(value="zamboanga_collection_ovs", adapter="zamboanga_treasury")
+	def em
+
+	@DataContext('zamboanga_af51')
+	def em_af51
+
+	@DataContext('zamboanga_af51_ordinance')
+	def em_af51_ordinance
+
+	@DataContext('sys_user')
+	def em_user
+
+
+	@ProxyMethod
+	public def getViolators(params) {
+		if (!params.violator) {
+			params.violator = '';
+		}
+		params.violator += '%'
+		def list = em.getViolators(params);
+		return list; 
+	}
+
+	@ProxyMethod
+	public def getViolations(params) {
+		return em.getViolations(params)
+	}
+
+	@ProxyMethod
+	public def getApprehendingOffices() {
+		return em.getApprehendingOffices().collect{ it.apprehendingoffice }
+	}
+
+	@ProxyMethod
+	public void postCollection(receipt) {
+		def af51 = initAf51(receipt)
+		em_af51.create(af51)
+		def o = em_af51.select('orid: {or_id}').find([orno: af51.orno, ordate: receipt.receiptdate, payee: receipt.paidby]).first()
+		af51.orid = o.orid
+		postItems(receipt, af51)
+	}
+
+
+	@ProxyMethod
+	public postVoidPayment(receipt) {
+		def filter = [
+			orno: receipt.receiptno, 
+			ordate: receipt.receiptdate, 
+			payee: receipt.paidby
+		]
+		em_af51.find(filter).update([orstatus: 'C'])
+	}
+
+	def initAf51(receipt) {
+		def af51 = [:]
+		af51.orno = receipt.receiptno
+		af51.ordate = receipt.receiptdate
+		af51.payee = receipt.paidby
+		af51.usercode = em_user.select('txncode').find([objid: receipt.collector.objid]).first()?.txncode
+		af51.orstatus = 1 					//active
+		af51.orbatchno = receipt.stubno
+		af51.kindofsystem = 'ORDINANCE'
+		af51.ortotal = receipt.amount
+		af51.dateprinted = receipt.receiptdate
+		af51.remarks = receipt.remarks
+		af51.ortypecode = 1 				//af51
+		af51.systemid = 7 					//ordinance
+		af51.series = (receipt.prefix ? receipt.prefix : receipt.suffix)
+		af51.fundid = null
+		af51.fromboss = 0
+		return af51
+	}
+	
+	void postItems(receipt, af51) {
+		receipt.items.each{
+			def item = [:]
+			item.orno = receipt.receiptno
+			item.description = it.item.title
+
+			def vwacct = em.findAccount(it.item)
+			if (vwacct) {
+				item.acctcode = vwacct.acctcode
+				item.bclass = vwacct.bcode
+				item.sclass = vwacct.ccode
+				item.xclass = vwacct.dcode
+			}
+			item.amount = it.amount
+			item.ctno = receipt.ctno
+			item.ctdate = receipt.ctdate
+			item.cedulano = receipt.cedulano
+			item.ceduladate = receipt.ceduladate
+			item.apprehendingoffice = receipt.apprehendingoffice
+			item.violation = (it.violation.violation ? it.violation.violation : it.remarks)
+			item.orid = af51.orid
+			em_af51_ordinance.create(item)
+		}
+	}
+}

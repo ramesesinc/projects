@@ -1,0 +1,111 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class ZamboangaCollectionMtopService {
+	@ActiveDB(value="zamboanga_collection_mtop", adapter="zamboanga_mtop")
+	def em_mtop
+
+	@ActiveDB(value="zamboanga_collection_mtop", adapter="zamboanga_treasury")
+	def em_treasury
+
+	@DataContext('sys_user')
+	def em_user
+
+	@DataContext('zamboanga_af51')
+	def em_af51
+
+	@DataContext('zamboanga_af51_tricycle')
+	def em_af51_tricycle
+
+	@DataContext('itemaccount')
+	def em_itemaccount
+
+
+	@ProxyMethod
+	public def getFranchise(params) {
+		def mtop = em_mtop.findFranchise(params)
+		if (!mtop) throw new Exception('Franchise does not exist.\nVerify zone code and franchise number.')
+		mtop.items = em_mtop.getPayables(mtop)
+		if (!mtop.items) throw new Exception('There are no unpaid items for this franchise.')
+		mtop.operator = mtop.items.last().operator
+		resolveItemAccounts(mtop)
+		return mtop
+	}
+
+
+	@ProxyMethod
+	public void postCollection(receipt) {
+		def af51 = initAf51(receipt)
+		em_af51.create(af51)
+		def o = em_af51.select('orid: {or_id}').find([orno: af51.orno, ordate: receipt.receiptdate, payee: receipt.paidby]).first()
+		af51.orid = o.orid
+		postItems(receipt, af51)
+	}
+
+
+	@ProxyMethod
+	public postVoidPayment(receipt) {
+		def filter = [
+			orno: receipt.receiptno, 
+			ordate: receipt.receiptdate, 
+			payee: receipt.paidby
+		]
+		def af51 = em_treasury.findAf51(filter)
+
+		//void receipt
+		em_af51.find(filter).update([orstatus: 'C'])
+
+		//reset orderofpayment paidind
+		em_treasury.getPaidOrderOfPayments(af51).each{
+			em_mtop.resetPaidStatus(it)
+		}
+	}
+
+	def initAf51(receipt) {
+		def af51 = [:]
+		af51.orno = receipt.receiptno
+		af51.ordate = receipt.receiptdate
+		af51.payee = receipt.paidby
+		af51.usercode = em_user.select('txncode').find([objid: receipt.collector.objid]).first()?.txncode
+		af51.orstatus = 1 					//active
+		af51.orbatchno = receipt.stubno
+		af51.kindofsystem = 'TRICYCLE'
+		af51.ortotal = receipt.amount
+		af51.dateprinted = receipt.receiptdate
+		af51.remarks = receipt.remarks
+		af51.ortypecode = 1 				//af51
+		af51.systemid = 2 					//tricycle
+		af51.series = (receipt.prefix ? receipt.prefix : receipt.suffix)
+		af51.fundid = null
+		af51.fromboss = 0
+		return af51
+	}	
+
+
+	void postItems(receipt, af51) {
+		receipt.items.each{
+			def item = [:]
+			item.orno = receipt.receiptno
+			item.franchiseid = it.franchiseid
+			item.cyear = it.cyear
+			item.feeid = it.fee.feeid
+			item.amount = it.amount
+			item.acctcode = it.fee.acctcode
+			item.bclass = it.fee.bclass
+			item.orid = af51.orid
+			em_af51_tricycle.create(item)
+			em_mtop.updatePaidStatus(item)
+		}
+	}
+
+	void resolveItemAccounts(mtop) {
+		mtop.items.each {
+			def vwacct = em_treasury.findViewAccount(it.fee)
+			if (!vwacct) throw new Exception('Cannot locate view mapping for ' + it.fee.description)
+			it.item = em_itemaccount.find([objid: vwacct.refid]).first()
+			if (!it.item) throw new Exception('Assocaited item account for ' + it.fee.description + ' does not exist.')
+		}
+	}
+
+}

@@ -1,0 +1,11 @@
+<workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
+    <invokers>
+        <invoker type="cashreceipt:zamboanga_ovs" action="init" />
+    </invokers>
+    <code class="gov.zamboanga.treasury.models.OvsCollectionModel" >
+    </code>
+    <pages>
+        <page template="gov.zamboanga.treasury.views.OvsCollectionPage" />
+    </pages>
+    
+</workunit>

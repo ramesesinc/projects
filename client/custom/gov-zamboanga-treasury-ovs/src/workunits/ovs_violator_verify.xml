@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="zamboanga_ovs_violator:verify" action="search" target="popup" />
+    </invokers>
+    <code class="gov.zamboanga.treasury.models.OvsViolatorVerifyModel" >
+    </code>
+    <pages>
+        <page template="gov.zamboanga.treasury.views.OvsViolatorVerifyPage" />
+    </pages>
+    
+</workunit>

@@ -20,17 +20,14 @@ class MtopCollectionModel extends BasicCashReceipt {
         try {
             entity.mtop = [:]
             entity.mtop.zoningcode = zoningcode;
-            entity.mtop.franchiseno = franchiseno;
+            entity.mtop.franchiseno = franchiseno.toString().padLeft(5, '0');
             entity.mtop.putAll(svc.getFranchise(entity.mtop));
             entity.items = entity.mtop.items;
             itemListModel.reload();
             updateBalances();
-            if (!entity.paidby) {
-                entity.paidby = entity.mtop.operator.name
-                entity.paidbyaddress = entity.mtop.operator.address
-                binding.refresh('entity.paidby.*');
-            }
-            binding.refresh('franchiseno');
+            entity.paidby = entity.mtop.operator.name
+            entity.paidbyaddress = entity.mtop.operator.address
+            binding.refresh('franchiseno|entity.paidby.*');
         } catch(e) {
             resetInfo();
             throw e;

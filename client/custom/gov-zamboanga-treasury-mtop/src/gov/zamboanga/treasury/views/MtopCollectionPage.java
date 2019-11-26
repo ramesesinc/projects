@@ -126,6 +126,7 @@ public class MtopCollectionPage extends javax.swing.JPanel {
         xIntegerField1.setName("zoningcode"); // NOI18N
         xIntegerField1.setCaptionWidth(110);
         xIntegerField1.setCellPadding(new java.awt.Insets(1, 0, 0, 0));
+        xIntegerField1.setIndex(-1002);
         xIntegerField1.setPreferredSize(new java.awt.Dimension(40, 20));
         xIntegerField1.setRequired(true);
         xFormPanel3.add(xIntegerField1);
@@ -135,6 +136,7 @@ public class MtopCollectionPage extends javax.swing.JPanel {
         xIntegerField2.setPattern("00000");
         xIntegerField2.setCaptionWidth(110);
         xIntegerField2.setCellPadding(new java.awt.Insets(1, 5, 0, 0));
+        xIntegerField2.setIndex(-1001);
         xIntegerField2.setRequired(true);
         xIntegerField2.setShowCaption(false);
         xFormPanel3.add(xIntegerField2);

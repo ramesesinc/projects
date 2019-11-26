@@ -1,0 +1,12 @@
+<schema adapter="zamboanga_treasury">
+	<element name="af51_tricycle" tablename="dbo.af51_tricycle">
+		<field name="orno" />
+		<field name="franchiseid" />
+		<field name="cyear" type="integer" />
+		<field name="feeid" />
+		<field name="amount" type="decimal" />
+		<field name="acctcode" />
+		<field name="bclass" />
+		<field name="orid" fieldname="or_id" type="integer" />
+	</element>
+</schema>

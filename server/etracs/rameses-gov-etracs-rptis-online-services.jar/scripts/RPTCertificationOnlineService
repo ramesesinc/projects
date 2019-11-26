@@ -73,7 +73,6 @@ class RPTCertificationOnlineService {
 			cert.taxpayer = entity
 			cert.requestedby = entity.name
 			cert.requestedbyaddress = entity.address
-			cert.reporttype = [name: 'fullypaid']
 			clearanceSvc.createClearance(cert)
 			return createOnlineCertification(cert, params)
 		}
@@ -188,13 +187,25 @@ class RPTCertificationOnlineService {
 		def year = dtSvc.getServerYear()
 		params.certid = 'RC' + new java.rmi.server.UID()
 
+		def reporttype = null;
+
 		params.faases.each {
 			validatedFaas(it)
-			def ledger = em_ledger.select('lastyearpaid, lastqtrpaid').find([faasid: it.objid]).first()
+			def ledger = em_ledger.select('lastyearpaid,lastqtrpaid,taxable,totalav,txntype.objid').find([faasid: it.objid]).first()
 			if (ledger) {
 				it.rptcertificationid = params.certid 
 				it.refid = it.objid
 				it.putAll(ledger)
+
+				if (ledger.taxable == 0) {
+					reporttype = [name: 'exempt', title: 'EXEMPT']
+				} else if (ledger.totalav == 0) {
+					reporttype = [name: 'zerovalue', title: 'ZERO VALUE']
+				} else if (ledger.txntype.objid == 'ND') {
+					reporttype = [name: 'newdiscovery', title: 'NEW EFFECTIVE']
+				} else {
+					reporttype = [name:"fullypaid", title:"FULL PAYMENT"]
+				}
 			}
 		}
 
@@ -228,7 +239,8 @@ class RPTCertificationOnlineService {
         	office           : 'landtax',
         	official         : false,
         	_online 		 : true,
-        	properties 		 : [reporttype:[name:"fullypaid",title:"FULL PAYMENT"]],
+        	reporttype		 : reporttype,
+        	properties 		 : [reporttype: reporttype],
 		]
 	}
 
@@ -285,7 +297,7 @@ class RPTCertificationOnlineService {
 		def onlineCert = em_cert_online.find([refid: params.refid]).first()
 		if (onlineCert) {
 			def mainCert = em_cert.select('opener').find([objid: onlineCert.objid]).first()
-			if (mainCert.opener == certtype) {
+			if (mainCert?.opener == certtype) {
 				return onlineCert
 			}
 		} 

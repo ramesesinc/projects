@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml"
+    schemaName="zamboanga_ovs_violation"
+    allowCreate="false"
+    allowDelete="false"
+    orderBy="violation"
+>
+    <invokers>
+        <invoker type="zamboanga_ovs_violation:lookup" action="init" caption="OVS Violation" target="popup" />
+    </invokers>
+</workunit>

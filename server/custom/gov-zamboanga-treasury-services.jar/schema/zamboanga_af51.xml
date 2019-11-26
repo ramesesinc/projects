@@ -1,0 +1,21 @@
+<schema adapter="zamboanga_treasury">
+	<element name="af51" tablename="dbo.af51">
+		<field name="orno" />
+		<field name="ordate" />
+		<field name="payee" />
+		<field name="usercode" />
+		<field name="orstatus" />
+		<field name="orbatchno" />
+		<field name="kindofsystem" />
+		<field name="ortotal" type="decimal" />
+		<field name="dateprinted" />
+		<field name="remarks" />
+		<field name="ortypecode" />
+		<field name="funds" />
+		<field name="systemid" />
+		<field name="address" />
+		<field name="series" />
+		<field name="fundid" />
+		<field name="fromboss" />
+	</element>
+</schema>

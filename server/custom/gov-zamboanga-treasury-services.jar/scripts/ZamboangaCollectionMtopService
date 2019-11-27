@@ -69,7 +69,7 @@ class ZamboangaCollectionMtopService {
 		af51.payee = receipt.paidby
 		af51.usercode = em_user.select('txncode').find([objid: receipt.collector.objid]).first()?.txncode
 		af51.orstatus = 1 					//active
-		af51.orbatchno = receipt.stubno
+		af51.orbatchno = receipt.stub
 		af51.kindofsystem = 'TRICYCLE'
 		af51.ortotal = receipt.amount
 		af51.dateprinted = receipt.receiptdate

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml"
+    schemaName="rptledger_redflag"
+    allowEdit="false"
+>
+    <invokers>
+        <invoker type="rptledger_redflag:create" 
+            action="create" caption="Red Flag (New)"  
+            role="RECORD" permission="redflag.create"
+            target="popup" />
+        
+        <invoker type="rptledger_redflag:open" 
+            action="open" caption="Red Flag"  
+            role="RECORD" permission="redflag.read"
+            target="popup" />
+
+        <invoker type="formActions" 
+            action="approve" caption="Approve" 
+            visibleWhen="#{entity.state == 'DRAFT'}" />
+
+        <invoker type="formActions" 
+            action="resolve" caption="Resolve" 
+            visibleWhen="#{entity.state == 'OPEN'}" />
+
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.RPTLedgerRedFlagModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.RPTLedgerRedFlagPage" />
+    </pages>
+</workunit>

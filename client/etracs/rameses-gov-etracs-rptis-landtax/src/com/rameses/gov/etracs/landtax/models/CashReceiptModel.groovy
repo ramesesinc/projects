@@ -45,6 +45,8 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.models.AbstractCa
     def msg;
     def ledger;
     def billedLedgers = [];
+    def hasErrors = false;
+    def errors = [];
 
                 
     
@@ -193,9 +195,14 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.models.AbstractCa
         binding.fireNavigation('main');
     }
 
+    def viewErrors() {
+        return Inv.lookupOpener('errors:open', [errors: errors]);
+    }
 
     def loadLedgerTask = {
         run: {
+            hasErrors = false;
+            errors = [];
             if (payoption == 'bycount') {
                 if (!bill.itemcount) bill.itemcount = 5; 
                 if (billedLedgers.size() > bill.itemcount) {
@@ -209,9 +216,11 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.models.AbstractCa
 
             billedLedgers.each {
                 try {
-                    msg = 'Processing ledger ' + (it.rptledger ? it.rptledger.tdno : '...');
+                    msg = 'Processing ledger ' + it.tdno;
                     loadItemByLedger(it)
                 } catch(Exception ex) {
+                    hasErrors = true;
+                    errors << [tdno: it.tdno, error: ex.message];
                     ex.printStackTrace();
                 }
             }

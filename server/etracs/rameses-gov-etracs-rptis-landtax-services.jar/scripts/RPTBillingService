@@ -31,6 +31,9 @@ public class RPTBillingService
 	def em_collectiontype
 
 
+	@Service()
+	def self
+
 	@Service('Var')
 	def var 
 
@@ -136,7 +139,7 @@ public class RPTBillingService
 	@Async
 	@ProxyMethod
 	public def generateBillAsync(bill) {
-		return generateBill(bill)
+		return self.generateBill(bill)
 	}
 
 	@ProxyMethod
@@ -160,7 +163,7 @@ public class RPTBillingService
 		bill.taxpayer = ledger.taxpayer 
 		bill.ledgers = [[objid:ledger.objid]]
 		bill._forpayment = true 
-		return  generateBill(bill)
+		return  self.generateBill(bill)
 	}
 
 	@ProxyMethod

@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="errors:open" caption="Error Messages" target="popup" />
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.landtax.models.ErrorsModel">
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.ErrorsPage" />
+    </pages>
+</workunit>

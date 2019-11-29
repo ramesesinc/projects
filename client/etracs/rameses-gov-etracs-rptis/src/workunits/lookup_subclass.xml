@@ -32,8 +32,9 @@ class SubClassLookupController extends LookupController
     List fetchList( Map params ) { 
         params.lguid = lguid;
         params.barangayid = barangayid;
-        params.ry = ry 
-        return svc.lookupSubclasses(params)
+        params.ry = ry;
+        params._limit = 250;
+        return svc.lookupSubclasses(params);
     }
 }  
 

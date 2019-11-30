@@ -30,7 +30,7 @@
         <field name="ismanual" expr="case when faasid is null then 'M' else null end" caption="" width="30"/>
         
         <complex name="faases" ref="rptledger_faas" jointype="one-to-many" 
-            required="true" orderBy="fromyear desc,fromqtr desc">
+            required="true" orderBy="fromyear desc,fromqtr desc,tdno desc">
                 <key field="objid" target="rptledgerid" />
         </complex>
         <complex name="taxpayer" ref="entity" jointype="many-to-one" required="false"

@@ -37,6 +37,7 @@ inner join FranchiseTricycleUnit ftu on f.franchiseid = ftu.franchiseid
 inner join Tricycle t on ftu.trikeid = t.trikeid 
 where p.franchiseid = $P{franchiseid}
 and p.paidind = 0
+and ftu.RecStatus = 'A'
 order by p.cyear, p.feeid 
 
 

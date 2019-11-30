@@ -37,15 +37,9 @@ class RPTLedgerPaymentService
 
     @ProxyMethod
     public def getPayments(entity) {
-        def list = em_rptpayment.find([refid:entity.objid, voided:0])
+        return em_rptpayment.find([refid:entity.objid, voided:0])
                         .orderBy('receiptdate desc,receiptno desc, fromyear desc,fromqtr desc')
                         .list()
-        list.each{
-            it.partialled = em_rptpayment_item.select('objid')
-                                    .find([parentid:it.objid, partialled:1])
-                                    .first() != null
-        }
-        return list 
     }
 
     @ProxyMethod

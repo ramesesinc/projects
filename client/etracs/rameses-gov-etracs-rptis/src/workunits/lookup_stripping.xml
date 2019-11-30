@@ -32,6 +32,7 @@ class StrippingLookupController extends LookupController
         params.barangayid = barangayid;
         params.ry = ry ;
         params.classificationid = classificationid
+        params._limit = 250;
         return svc.lookupStrippings(params)
     }
 }  

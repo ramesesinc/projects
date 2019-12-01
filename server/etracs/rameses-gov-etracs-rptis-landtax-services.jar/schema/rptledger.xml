@@ -41,7 +41,7 @@
             includefields="entityno,name,address.text">
                 <key field="beneficiary_objid" target="objid" />
         </complex>
-        <complex name="barangay" ref="barangay" jointype="many-to-one" required="true"
+        <complex name="barangay" ref="barangay" jointype="many-to-one" required="false"
             includefields="indexno,pin,name">
                 <key field="barangayid" target="objid" />
         </complex>

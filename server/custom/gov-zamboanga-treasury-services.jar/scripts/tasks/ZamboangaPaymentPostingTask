@@ -1,0 +1,116 @@
+import com.rameses.common.*
+import com.rameses.annotations.*
+import com.rameses.services.extended.*
+
+
+class ZamboangaPaymentPostingTask {
+	@DataContext('rptledger')
+	def em_ledger
+
+	@DataContext('rptledger_faas')
+	def em_ledgerfaas 
+
+	@DataContext('rptledger_item')
+	def em_ledger_item
+
+	@DataContext('rptpayment')
+	def em_rptpayment
+
+	@DataContext('rptpayment_item')
+	def em_rptpayment_item
+
+	@ActiveDB(value='zamboanga_collection_landtax', adapter='zamboanga_landtax')
+	def em_zamboanga_landtax
+
+
+	@Schedule(interval=10)
+	public void postPayment(task) {
+		em_zamboanga_landtax.getPaymentsForPosting().each{ortopost ->
+			if (isPaymentPosted(ortopost)) return 
+
+			def lf = getLedgerFaas(ortopost)
+			if (!lf) return 
+
+			em_zamboanga_landtax.getPaymentInfos(ortopost).each{ pmt ->
+				try {
+					pmt.objid = 'RP' + new java.rmi.server.UID()
+					pmt.type = 'system'
+					pmt.refid = lf.rptledgerid
+					pmt.reftype = 'rptledger'
+					em_rptpayment.create(pmt)
+					createPaymentItem(lf, pmt, 'basic')
+					createPaymentItem(lf, pmt, 'sef')
+					updateLedgerInfo(pmt)
+					println 'Payment for ' + ortopost.tdn + ' has been successfully posted'
+				}catch(e) {
+					it.remarks = e.message
+				}
+			}
+			moveToPosted(ortopost)
+		}
+	}
+
+	def isPaymentPosted(ortopost) {
+		def posted = em_rptpayment.find([receiptno: ortopost.orno, receiptdate: ortopost.ordate]).first() != null
+		if (posted) {
+			ortopost.remarks = 'Payment has already been posted.'
+			moveToPosted(ortopost)
+		}
+		return posted 
+	}
+
+	def getLedgerFaas(ortopost) {
+		def lf = em_ledgerfaas.select('rptledgerid').find([tdno: ortopost.tdn]).first()
+		if (!lf) {
+			ortopost.remarks = 'Ledger FAAS ' + ortopost.tdn + ' does not exist'
+			moveToPosted(ortopost)
+		}
+		return lf 
+	}
+
+	void updateLedgerInfo(pmt) {
+		//update lastyear/qtrpaid 
+		em_ledger.find([objid: pmt.refid])
+		         .update([lastyearpaid: pmt.toyear, lastqtrpaid: pmt.toqtr])
+
+		//delete ledger items
+		em_rptpayment_item.where('year >= :year', [year: pmt.toyear]).delete()
+	}
+
+	void moveToPosted(item) {
+		em_zamboanga_landtax.moveToPosted(item)
+		em_zamboanga_landtax.deleteFromForPosting(item)
+	}
+
+	void createPaymentItem(lf, pmt, acct) {
+		def periods = ['previous', 'current', 'advance']
+		def fromrevperiod = periods[pmt.fromperiod]
+		def torevperiod = periods[pmt.toperiod]
+
+		def item = [
+			objid: 'RPI' + new java.rmi.server.UID(),
+			parentid: pmt.objid,
+			rptledgerfaasid: lf.objid,
+			year: pmt.fromyear,
+			qtr: pmt.fromqtr, 
+			revtype: acct,
+			revperiod: fromrevperiod,
+			amount: pmt[acct], 
+			interest: pmt[acct+'pen'],
+			discount: pmt[acct+'disc'],
+			partialled: 0, 
+			priority: 10000
+		]
+		em_rptpayment_item.create(item)
+
+		//to item
+		item.objid = 'RPI' + new java.rmi.server.UID()
+		item.year = pmt.toyear
+		item.qtr = pmt.toqtr
+		item.amount = 0.0
+		item.interest = 0.0
+		item.discount = 0.0
+		item.revperiod = torevperiod
+		em_rptpayment_item.create(item)
+	}
+}

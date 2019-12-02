@@ -86,7 +86,7 @@ class RPULandAppraisalModel extends SubPageModel
     }
     
     def getLookupStripping(){
-        def classification = selectedLand?.subclass?.classification;
+        def classification = selectedLand?.specificclass?.classification;
         return InvokerUtil.lookupOpener('lcuvstripping:lookup', [lguid:entity.lguid, barangayid:entity.rp.barangayid, ry:entity.rpu.ry, classificationid:classification?.objid] )
     }
     

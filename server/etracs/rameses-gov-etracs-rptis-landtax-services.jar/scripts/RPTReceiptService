@@ -139,7 +139,7 @@ class RPTReceiptService
         entity.putAll(cashReceiptSvc.init(entity))
 		entity.billid = bill.objid
 		bill.billdate = entity.receiptdate
-		bill.ledgers = getItemsForPayment(bill)
+		bill.ledgers = self.getItemsForPayment(bill)
 		entity.bill = bill 
 		return entity
 	}
@@ -214,7 +214,7 @@ class RPTReceiptService
 		}
 
         def bill = billSvc.getBillByBarcode(barcode)
-        return getItemsForPayment(bill)
+        return self.getItemsForPayment(bill)
 	}
 
 

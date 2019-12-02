@@ -4,8 +4,8 @@ select
     pc.code AS classcode, 
     rl.*
 from rptledger rl 
-    inner join entity e on rl.taxpayer_objid = e.objid 
-    inner join propertyclassification pc on rl.classification_objid = pc.objid 
+    left join entity e on rl.taxpayer_objid = e.objid 
+    left join propertyclassification pc on rl.classification_objid = pc.objid 
 where rl.objid = $P{objid}
 
 
@@ -48,6 +48,8 @@ where rp.refid = $P{objid}
 group by 
     rp.receiptno,
     rp.receiptdate,
+    rlf.objid,
+    rl.tdno, 
     cr.collector_name,
     cr.paidby,
     rp.fromyear,

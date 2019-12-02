@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptledger_redflag:resolve" 
+            caption="Resolve Red Flag"  
+            role="RECORD" permission="redflag.resolve"
+            target="popup" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.RPTLedgerRedFlagResolveModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.RPTLedgerRedFlagResolvePage" />
+    </pages>
+</workunit>

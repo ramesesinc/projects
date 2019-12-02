@@ -43,6 +43,7 @@ public class CashReceiptPage extends javax.swing.JPanel {
         formPanel6 = new com.rameses.rcp.util.FormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xActionTextField1 = new com.rameses.rcp.control.XActionTextField();
+        xButton5 = new com.rameses.rcp.control.XButton();
 
         setPreferredSize(new java.awt.Dimension(884, 487));
         setLayout(new java.awt.BorderLayout());
@@ -256,7 +257,7 @@ public class CashReceiptPage extends javax.swing.JPanel {
 
         formPanel6.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         formPanel6.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        formPanel6.setPreferredSize(new java.awt.Dimension(600, 35));
+        formPanel6.setPreferredSize(new java.awt.Dimension(700, 35));
 
         xLookupField1.setCaption("Search Ledger");
         xLookupField1.setExpression("#{''}");
@@ -277,6 +278,13 @@ public class CashReceiptPage extends javax.swing.JPanel {
         xActionTextField1.setCellPadding(new java.awt.Insets(10, 10, 0, 0));
         xActionTextField1.setPreferredSize(new java.awt.Dimension(200, 20));
         formPanel6.add(xActionTextField1);
+
+        xButton5.setName("viewErrors"); // NOI18N
+        xButton5.setVisibleWhen("#{hasErrors}");
+        xButton5.setCellPadding(new java.awt.Insets(8, 10, 0, 0));
+        xButton5.setShowCaption(false);
+        xButton5.setText("View Errors");
+        formPanel6.add(xButton5);
 
         jPanel9.add(formPanel6, java.awt.BorderLayout.WEST);
 
@@ -305,6 +313,7 @@ public class CashReceiptPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XButton xButton4;
+    private com.rameses.rcp.control.XButton xButton5;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;

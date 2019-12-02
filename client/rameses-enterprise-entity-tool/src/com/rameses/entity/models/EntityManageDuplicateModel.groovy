@@ -29,7 +29,7 @@ class EntityRemoveDuplicateModel {
         items = []
         if (searchtext) {
             def param = [_schemaname: 'entity'];
-            param.select = 'objid, name, address_text, type, _isbpls';
+            param.select = 'objid, name, entityno, address_text, type, _isbpls';
             param.where = ['state = :state and name like :name', [state:'ACTIVE', name: searchtext+'%']];
             param.orderBy = 'name';
             items = qrySvc.getList(param);

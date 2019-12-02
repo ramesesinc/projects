@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml"
+    schemaName="rptledger_redflag"
+    cols="caseno,dtfiled,type,rptledger.tdno,rptledger.fullpin,rptledger.owner.name,blockaction"
+    hiddenCols="state"
+    orderBy="caseno desc"
+    allowDelete="#{entity.state == 'DRAFT'}"
+    allowPrint="false" >
+    <invokers>
+        <invoker folderid="/menucategory/landtax/mgmt" 
+                action="init" caption="Red Flags"  
+                 target="window" index="1000"  
+                 role="SHARED" permission="redflag.list"/>
+    </invokers>
+</workunit>

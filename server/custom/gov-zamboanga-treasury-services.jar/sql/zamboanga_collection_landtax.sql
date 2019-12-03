@@ -21,6 +21,7 @@ select
 	postedby,
 	postedbytitle,
 	dtposted,
+	year, 
 	min(revperiod) as fromperiod,
 	min(fromyear) as fromyear,
 	min(fromqtr) as fromqtr,
@@ -49,5 +50,7 @@ group by
 	postedby,
 	postedbytitle,
 	dtposted,
+	year,
 	collectingagency,
 	voided
+order by year 	

@@ -74,7 +74,7 @@ class ZamboangaPaymentPostingTask {
 		         .update([lastyearpaid: pmt.toyear, lastqtrpaid: pmt.toqtr])
 
 		//delete ledger items
-		em_rptpayment_item.where('year >= :year', [year: pmt.toyear]).delete()
+		em_ledger_item.where('parentid = :parentid and year >= :year', [parentid: pmt.refid, year: pmt.toyear]).delete()
 	}
 
 	void moveToPosted(item) {

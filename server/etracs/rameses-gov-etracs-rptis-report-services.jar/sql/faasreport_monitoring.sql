@@ -5,7 +5,7 @@ FROM txnlog
 WHERE ref = 'FAAS'
 AND userid LIKE $P{userid}
 AND txndate >= $P{startdate} AND txndate < $P{enddate}
-ORDER BY username, action
+ORDER BY action
 
 
 [findActionCount]

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package gov.zamboanga.landtax.views;
+package gov.zamboanga.support.views;
 
 /**
  *

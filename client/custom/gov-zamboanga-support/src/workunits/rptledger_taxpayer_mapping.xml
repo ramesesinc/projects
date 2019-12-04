@@ -1,0 +1,32 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
+    schemaName="rptledger"
+    cols="owner.name,taxpayer.address.text,tdno,fullpin,totalmv,totalav"
+    hiddenCols="taxpayer.objid,faasid,barangayid,rputype,cadastrallotno,totalareasqm"
+    allowCreate="false"
+    allowEdit="false"
+    allowDelete="false"
+    allowPrint="false"
+    allowOpen="false"
+    surroundSearch="false" 
+    customFilter="taxpayer.objid is null" 
+    multiSelect="true" 
+    orderBy="owner.name,tdno"
+>
+    <invokers>
+        <invoker folderid="/menucategory/landtax/util" 
+                action="init" caption="Assign Taxpayer to FAAS and Ledger"  
+                 target="window" 
+                 role="SUPPORT" permission="rptledger.taxpayer.mapping"/>                
+        
+        <invoker folderid="/menucategory/rpt/util" 
+                action="init" caption="Assign Taxpayer to FAAS and Ledger"  
+                 target="window" 
+                 domain="RPT" role="SUPPORT" permission="faas.taxpayer.mapping"/>                
+        
+        <invoker type="listActions" 
+                 action="assignTaxpayer" 
+                 caption="Assign Property Owner" />                 
+    </invokers>
+    <code class="gov.zamboanga.support.models.LedgerTaxpayerMappingModel" />
+
+</workunit>

@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml"
     schemaName="rptledger"
-    cols="owner.name,taxpayer.address.text,tdno,fullpin,totalmv,totalav"
+    cols="owner.name,faas.owner.address,tdno,fullpin,totalmv,totalav"
     hiddenCols="taxpayer.objid,faasid,barangayid,rputype,cadastrallotno,totalareasqm"
     allowCreate="false"
     allowEdit="false"

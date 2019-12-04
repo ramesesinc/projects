@@ -14,12 +14,12 @@
 >
     <invokers>
         <invoker folderid="/menucategory/landtax/util" 
-                action="init" caption="Assign Taxpayer to FAAS and Ledger"  
+                action="init" caption="Assign Property Owner to Ledger"  
                  target="window" 
                  role="SUPPORT" permission="rptledger.taxpayer.mapping"/>                
         
         <invoker folderid="/menucategory/rpt/util" 
-                action="init" caption="Assign Taxpayer to FAAS and Ledger"  
+                action="init" caption="Assign Property Owner to FAAS"  
                  target="window" 
                  domain="RPT" role="SUPPORT" permission="faas.taxpayer.mapping"/>                
         

@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
         <invoker type="rptledger:taxpayer:mapping"
-            caption="Assign Taxpayer to FAAS and Ledger" 
+            caption="Assign Property Owner" 
             target="popup" />                
     </invokers>
     <code class="gov.zamboanga.support.models.AssignTaxpayerModel" />

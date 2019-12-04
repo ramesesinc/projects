@@ -33,10 +33,11 @@ public class AssignTaxpayerPage extends javax.swing.JPanel {
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("New Taxpayer");
+        xTitledBorder1.setTitle("New Property Owner");
         xFormPanel1.setBorder(xTitledBorder1);
+        xFormPanel1.setCaptionWidth(110);
 
-        xLookupField1.setCaption("Taxpayer");
+        xLookupField1.setCaption("Property Owner");
         xLookupField1.setExpression("#{item.name}");
         xLookupField1.setHandler("entity:lookup");
         xLookupField1.setName("taxpayer"); // NOI18N
@@ -62,7 +63,7 @@ public class AssignTaxpayerPage extends javax.swing.JPanel {
         xDataTable1.setHandler("listHandler");
         xDataTable1.setName("selectedItem"); // NOI18N
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("Properties to assign taxpayer");
+        xTitledBorder2.setTitle("Properties to assign new Property Owner");
         xDataTable1.setBorder(xTitledBorder2);
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{

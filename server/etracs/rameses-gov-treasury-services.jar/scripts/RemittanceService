@@ -205,6 +205,11 @@ class RemittanceService  {
 		}
 
 		def t = rfEm.find( remparam ).select( "totalcash:{SUM(totalcash)},totalcheck:{SUM(totalcheck)},totalcr:{SUM(totalcr)},amount:{SUM(amount)}" ).first();
+		if ( t.totalcash == null ) t.totalcash = 0.0; 
+		if ( t.totalcheck == null ) t.totalcheck = 0.0; 
+		if ( t.totalcr == null ) t.totalcr = 0.0; 
+		if ( t.amount == null ) t.amount = 0.0; 
+		
 		remEm.find( [objid: m.objid]).update(t);
 		return m;
 	}
@@ -267,8 +272,14 @@ class RemittanceService  {
 		def rem = remEm.find([ objid: param.objid ]).first(); 
 		if ( !rem ) throw new Exception("remittance transaction not found"); 
 
-		if ( rem.collector.objid == env.USERID ) 
-			throw new Exception('You are not allowed to liquidate this transaction.'); 
+		if ( rem.collector.objid == env.USERID ) { 
+			boolean pass = var.liquidate_owned_remittance.toString().matches('true|1'); 
+			if ( pass ) {
+				// the collector itself can liquidate his/her owned remittance transactions 
+			} else {
+				throw new Exception('You are not allowed to liquidate this transaction.'); 
+			}
+		}
 
 		def m = [ state: 'POSTED']; 
 		m.liquidatingofficer = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
@@ -291,6 +302,7 @@ class RemittanceService  {
 
 	@ProxyMethod 
 	public def getReportData( params ) { 
+		params.prevtxn = remEm.findPrevious([ remittanceid: params.objid ]); 
 		return params; 
 	} 
 
@@ -337,6 +349,6 @@ class RemittanceService  {
 				it.cashbreakdown = []; 
 				rfEm.create( it ); 
 			} 
-		}
+		} 
 	} 
 } 

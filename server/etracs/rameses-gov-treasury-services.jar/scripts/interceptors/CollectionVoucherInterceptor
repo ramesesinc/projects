@@ -11,6 +11,8 @@ class CollectionVoucherInterceptor {
 	@DataContext('collectionvoucher_fund')
 	def cvf_db;
 
+	@ActiveDB('income_summary')
+	def inc_db;
 	
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'collectionvoucher' }")
 	public void afterGetNodes( evt ) { 
@@ -46,7 +48,7 @@ class CollectionVoucherInterceptor {
 	}
 
 	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'collectionvoucher' }" )
-	public void afterRead(def evt) {
+	public void afterRead( evt ) {
 		def p = evt.result;
 		/*
 		if( p.amount < 1 ) { 
@@ -57,4 +59,14 @@ class CollectionVoucherInterceptor {
 		}
 		*/
 	}
+
+	@After(pattern="CollectionVoucherService.post", index=-9999)
+	public void afterPost( evt ) { 
+		def res = evt.result; 
+		if ( !res.objid ) throw new Exception('objid parameter is required');
+
+		def m = [collectionvoucherid: res.objid]; 
+		inc_db.clear( m );
+		inc_db.post( m );  
+	} 
 }

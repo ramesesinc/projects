@@ -135,9 +135,7 @@ class CollectionVoucherService  {
 		} 
 		cvEm.find([ objid: p.objid ]).update( m ); 
 
-		//auto post to ledger
-		//postJev( [objid: p.objid] );
-
+		m.objid = p.objid; 
 		return m; 
 	}	
 

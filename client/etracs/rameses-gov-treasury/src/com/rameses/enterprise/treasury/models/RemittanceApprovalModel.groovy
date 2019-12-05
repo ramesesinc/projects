@@ -16,17 +16,27 @@ class RemittanceApprovalModel extends com.rameses.seti2.models.SimpleFormReportM
 
     @Caller
     def caller;
+
+    @FormTitle    
+    def _formTitle;
+    
+    @FormId
+    def _formId;
     
     def entity;
     def onAccept;
     def onReject;
     def _reportData;
+    def prevtxn;
+
+    def decFormat = new java.text.DecimalFormat('0.00'); 
     
-    def decFormat = new java.text.DecimalFormat('0.00');     
-    public Object getReportData() {
+    public Object getReportData() { 
         if( _reportData) return _reportData;
         
         _reportData = service.getReportData([ objid: entity.objid ]); 
+        prevtxn = _reportData.prevtxn; 
+        
         def list = _reportData.cashbreakdown; 
         list.each{
             it.indexno = ((Number) (it.denomination ? it.denomination : 0)).intValue(); 
@@ -39,10 +49,13 @@ class RemittanceApprovalModel extends com.rameses.seti2.models.SimpleFormReportM
             }
         } 
         _reportData.cashbreakdown = list; 
-        return _reportData;
+        return _reportData; 
     }
     
     void view() { 
+        _formId = 'remittance-'+ entity?.objid; 
+        _formTitle = 'Remittance - '+ entity?.controlno; 
+        
         def path = 'com/rameses/gov/treasury/remittance/report/rcd'; 
         def mainreport = path + '/rcd_main.jasper'; 
         def subreports = new SubReport[8]; 
@@ -101,4 +114,13 @@ class RemittanceApprovalModel extends com.rameses.seti2.models.SimpleFormReportM
         }
         Modal.show( "verify_submit_with_signature", [handler: h] );
     }
+    
+    void viewPrevious() { 
+        if ( !prevtxn?.objid ) return; 
+        
+        def op = Inv.lookupOpener("remittance:preview", [ entity: prevtxn ]);
+        op.properties.windowid = 'remittance-'+ prevtxn.objid;  
+        op.target = "popup"; 
+        Modal.show( op ); 
+    } 
 }

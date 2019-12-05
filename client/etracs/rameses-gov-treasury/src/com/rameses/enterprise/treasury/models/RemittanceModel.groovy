@@ -17,6 +17,9 @@ class RemittanceModel extends CrudFormModel {
     
     @Service("Var")
     def var;
+    
+    @SubWindow 
+    def subWin;
 
     //this is passed 
     def handler;
@@ -142,6 +145,7 @@ class RemittanceModel extends CrudFormModel {
     void remit() {
         if ( MsgBox.confirm('You are about to submit this for liquidation. Proceed?')) {
             entity = remSvc.submitForLiquidation( entity ); 
+            if ( subWin ) subWin.update(); 
         }
     }
     

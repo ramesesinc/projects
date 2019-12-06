@@ -19,16 +19,25 @@ from (
       (case when afd.issuedto_objid is null then 'AFO' else afd.issuedto_objid end) as ownerid, 
       (case when afd.issuedto_objid is null then 'AFO' else afd.issuedto_name end) as ownername, 
       (case when afd.txntype = 'SALE' then 1 else 0 end) as saled, 
-      (case when tmp3.beginstartseries > 0 then null else tmp3.receivedstartseries end) as receivedstartseries, 
-      (case when tmp3.beginstartseries > 0 then null else tmp3.receivedendseries end) as receivedendseries, 
+      tmp3.receivedstartseries, tmp3.receivedendseries, 
       case 
-        when tmp3.beginstartseries > 0 then 0  
-        else (tmp3.receivedendseries-tmp3.receivedstartseries)+1 
+        when tmp3.receivedstartseries > 0 
+        then (tmp3.receivedendseries-tmp3.receivedstartseries)+1 else 0
       end as qtyreceived, 
-      tmp3.beginstartseries, tmp3.beginendseries, 
       case 
-        when tmp3.beginstartseries > 0 
-        then (tmp3.beginendseries-tmp3.beginstartseries)+1 else 0 
+        when tmp3.issuedstartseries > 0 then tmp3.issuedstartseries 
+        when tmp3.receivedstartseries > 0 then null 
+        else tmp3.beginstartseries
+      end as beginstartseries, 
+      case 
+        when tmp3.issuedstartseries > 0 then afc.endseries  
+        when tmp3.receivedstartseries > 0 then null 
+        else tmp3.beginendseries
+      end as beginendseries, 
+      case 
+        when tmp3.issuedstartseries > 0 then (afc.endseries-tmp3.issuedstartseries)+1   
+        when tmp3.receivedstartseries > 0 then 0 
+        else (tmp3.beginendseries-tmp3.beginstartseries)+1 
       end as qtybegin, 
       tmp3.issuedstartseries, tmp3.issuedendseries, tmp3.qtyissued, 
       tmp3.endingstartseries, tmp3.endingendseries, 
@@ -100,7 +109,7 @@ from (
             min(case when afd.beginstartseries > 0 then afd.beginstartseries else null end) as beginstartseries, 
             min(case when afd.beginendseries > 0 then afd.beginendseries else null end) as beginendseries, 
             min(case when afd.issuedstartseries > 0 then afd.issuedstartseries else null end) as issuedstartseries, 
-            min(case when afd.issuedendseries > 0 then afd.issuedendseries else null end) as issuedendseries, 
+            max(case when afd.issuedendseries > 0 then afd.issuedendseries else null end) as issuedendseries, 
             sum(afd.qtyissued) as qtyissued 
           from af_control_detail afd, af_control afc  
           where afd.refdate >= $P{startdate} 

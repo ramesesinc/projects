@@ -65,7 +65,6 @@ public abstract class AbstractCashReceipt extends PageFlowController  {
     }
     
     public def loadInfo(def o ) {
-        MsgBox.alert("Please override the 'void loadInfo(def o)' method ");
         return super.start();
     }
     

@@ -119,3 +119,19 @@ from (
 	group by c.remittanceid, r.controlno, fund.objid, fund.title, fund.code
 )t1 
 group by remittanceid, controlno, fund_objid, fund_title, fund_code 
+
+
+[findPrevious]
+select top 1 
+	r.objid, r.state, r.controlno, r.controldate, r.dtposted, 
+	r.collector_objid, r.collector_name, r.amount, r.collectionvoucherid  
+from ( 
+	select dtposted, collector_objid 
+	from remittance 
+	where objid = $P{remittanceid} 
+		and state in ('OPEN','POSTED') 
+)t1, remittance r 
+where r.collector_objid = t1.collector_objid 
+	and r.dtposted < t1.dtposted 
+	and r.state in ('OPEN','POSTED') 
+order by r.dtposted desc, r.controldate desc, r.controlno desc 

@@ -4,10 +4,10 @@
  */
 package gov.zamboanga.support.views;
 
-/**
- *
- * @author jzamora
- */
+import com.rameses.osiris2.themes.FormPage;
+import com.rameses.rcp.ui.annotations.Template;
+
+@Template(FormPage.class)
 public class AssignTaxpayerPage extends javax.swing.JPanel {
 
     /**
@@ -57,7 +57,7 @@ public class AssignTaxpayerPage extends javax.swing.JPanel {
         xButton1.setName("assign"); // NOI18N
         xButton1.setCellPadding(new java.awt.Insets(10, 10, 0, 0));
         xButton1.setShowCaption(false);
-        xButton1.setText("Assign Taxpayer");
+        xButton1.setText("Assign");
         xFormPanel1.add(xButton1);
 
         xDataTable1.setHandler("listHandler");
@@ -82,7 +82,7 @@ public class AssignTaxpayerPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "owner.address"}
+                new Object[]{"name", "faas.owner.address"}
                 , new Object[]{"caption", "Address"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}

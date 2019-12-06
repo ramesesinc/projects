@@ -8,6 +8,8 @@ class AssignTaxpayerModel {
     @Service('ZamboangaLandTaxService')
     def svc;
     
+    String title = "Assing Property Owner";
+    
     def taxpayer;
     def items;
     def selectedItem;

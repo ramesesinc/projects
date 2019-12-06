@@ -1,8 +1,8 @@
 <workunit>
     <invokers>
         <invoker type="rptledger:taxpayer:mapping"
-            caption="Assign Property Owner" 
-            target="popup" />                
+            caption="Assign Property Owner" />      
+        <invoker type="formActions" action="_close" caption="Back" mnemomic="B" />
     </invokers>
     <code class="gov.zamboanga.support.models.AssignTaxpayerModel" />
     <pages>

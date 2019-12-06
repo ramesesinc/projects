@@ -76,6 +76,7 @@ FROM rptpayment rp
 	INNER JOIN sys_org pct ON pct.objid = md.parent_objid
 where rp.receiptid = $P{objid}  
 group by 
+	rl.objid,
 	rl.owner_name, 
 	rl.tdno,
 	rl.rputype,

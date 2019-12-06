@@ -3,6 +3,9 @@
         <invoker type="rptledger:taxpayer:mapping"
             caption="Assign Property Owner" />      
         <invoker type="formActions" action="_close" caption="Back" mnemomic="B" />
+        <invoker type="formActions" action="createEntity" tag="individual" caption="New Individual" mnemomic="I" />
+        <invoker type="formActions" action="createEntity" tag="juridical" caption="New Juridical" mnemomic="J" />
+        <invoker type="formActions" action="createEntity" tag="multiple" caption="New Multiple Ownership" mnemomic="O" />
     </invokers>
     <code class="gov.zamboanga.support.models.AssignTaxpayerModel" />
     <pages>

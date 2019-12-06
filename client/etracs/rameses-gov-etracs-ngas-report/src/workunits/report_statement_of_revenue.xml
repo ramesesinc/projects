@@ -1,0 +1,14 @@
+<workunit extends="wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/financial" 
+                 caption="Statement of Revenue" action="init" 
+                 role="REPORT" permission="statementofrevenue.viewreport" 
+                 target="window"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.ngas.models.StatementOfRevenueReportModel"/>
+
+    <pages>
+        <page template="com.rameses.gov.etracs.ngas.views.CriteriaPage" />
+    </pages> 
+</workunit>

@@ -25,7 +25,7 @@ from (
 )t1 
 	left join ( 
 		select a.objid, a.code, a.title, m.itemid 
-		from account a, account_item_mapping m 
+		from account a, vw_account_mapping m 
 		where a.maingroupid = $P{maingroupid} 
 			and m.acctid = a.objid 
 	)a on a.itemid = t1.item_objid 

@@ -1,8 +1,15 @@
 import com.rameses.annotations.*
 import com.rameses.common.*
 import com.rameses.services.extended.*
+import java.util.Calendar
 
 class ZamboangaCollectionMtopService {
+	@Service('DateService')
+	def dtSvc
+
+	@Service('NumberService')
+	def numSvc
+
 	@ActiveDB(value="zamboanga_collection_mtop", adapter="zamboanga_mtop")
 	def em_mtop
 
@@ -29,6 +36,7 @@ class ZamboangaCollectionMtopService {
 		mtop.items = em_mtop.getPayables(mtop)
 		if (!mtop.items) throw new Exception('There are no unpaid items for this franchise.')
 		mtop.operator = mtop.items.last().operator
+		computePenalties(mtop)
 		resolveItemAccounts(mtop)
 		return mtop
 	}
@@ -103,9 +111,76 @@ class ZamboangaCollectionMtopService {
 		mtop.items.each {
 			def vwacct = em_treasury.findViewAccount(it.fee)
 			if (!vwacct) throw new Exception('Cannot locate view mapping for ' + it.fee.description)
-			it.item = em_itemaccount.find([objid: vwacct.refid]).first()
+			it.item = em_itemaccount.select('objid,code,title,fund.*').find([objid: vwacct.refid]).first()
 			if (!it.item) throw new Exception('Assocaited item account for ' + it.fee.description + ' does not exist.')
 		}
+		mtop.items.sort{a, b -> 
+			a.cyear <=> b.cyear 
+		}
+	}
+
+	void computePenalties(mtop) {
+		def pdate = dtSvc.parseCurrentDate()
+		
+		def surchargeid = '214'
+		def interestid = '215'
+
+		def surchargerate = 0.0
+		def interestrate = 0.0
+
+		def yrgroup = mtop.items.groupBy{it.cyear}
+		yrgroup.each{yr, items -> 
+			if (isChargePenalty(yr, pdate)) {
+				surchargerate = 0.25 
+				interestrate = computeInterestRate(yr, pdate)
+				def amtforpenalty = items.findAll{it.fee.feeid.matches('001|002|003|004')}.amount.sum()
+				mtop.items << createItem(items, surchargeid, amtforpenalty, surchargerate)	
+				mtop.items << createItem(items, interestid, amtforpenalty, interestrate)	
+			}
+		}
+	}
+
+	def isChargePenalty(syr, pdate) {
+		def yr = Integer.parseInt(syr)
+		def charge = false
+		if ( yr < pdate.year) {
+			charge = true
+		} else {
+			def SUNDAY = 1
+			def SATURDAY = 7
+			def expiry = em_mtop.findExpiry([year: yr])
+			if (!expiry) expiry = java.sql.Date.valueOf(syr + '-01-20')
+			def currdate = java.sql.Date.valueOf(pdate.year + '-' + pdate.month + '-' + pdate.day)
+			if (currdate > expiry) {
+				charge = true 
+			} else if (currdate == expiry) {
+				if (expiry[Calendar.DAY_OF_WEEK] != SATURDAY && expiry[Calendar.DAY_OF_WEEK] != SUNDAY) {
+					charge = true
+				}
+			}
+		}
+		return charge
+	}
+
+	def computeInterestRate(syr, pdate) {
+		int currYear = pdate.year
+		int currMonth = pdate.month
+		int nmon = currMonth;
+		def yr = Integer.parseInt(syr)
+		if(yr < currYear) {
+			nmon = ( currYear - yr ) * 12 + currMonth
+		}
+
+		def rate = nmon * 0.02
+		return (rate > 0.72 ? 0.72 : rate)
+	}
+
+	def createItem(items, feeid, amtforpenalty, rate) {
+		def item = [:]
+		item.putAll(items[0])
+		item.amount = numSvc.round(amtforpenalty * rate)
+		item.fee = em_treasury.findViewAccountByAcctId([acctid: feeid])
+		return item
 	}
 
 }

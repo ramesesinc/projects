@@ -13,7 +13,7 @@ select
 	isnull(a.usercode, 'system') as postedby,
 	isnull(a.usercode, 'system') as postedbytitle,
 	a.ordate as dtposted,
-	b.calendaryear as year,
+	b.calendaryear as year, 
 	b.calendaryear as fromyear,
 	case 
 		when b.qtrind in (1, 5, 6, 10, 15) then 1

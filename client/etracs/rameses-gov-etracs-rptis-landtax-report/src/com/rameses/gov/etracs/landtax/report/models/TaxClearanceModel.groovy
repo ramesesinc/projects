@@ -64,6 +64,7 @@ class TaxClearanceModel
         entity.office = 'landtax';
         entity.ordate = dtSvc.getServerDate();
         entity.oramount = toDecimal(var.get('LANDTAX_TAXCLEARANCE_RATE'));
+        entity.properties = [:]
         listHandler.reload();
         addoption = 'bytd';
         printoption = 'single';
@@ -162,7 +163,7 @@ class TaxClearanceModel
             it.rptcertificationid = entity.objid;
         }
         entity.items = items;
-        entity.properties = [reporttype: entity.reporttype];
+        entity.properties.reporttype = entity.reporttype;
         entity.putAll(svc.createClearance(entity));
     }
     
@@ -365,13 +366,13 @@ class TaxClearanceModel
         return entity.items.findAll{it.included == true}.size();
     }
     
-    
-    
-    
-    
     def cancelPrint() {
         msg = null;
         mode = MODE_CREATE;
         return 'default';
+    }
+
+    def getShowTransferPayment() {
+        return entity.purpose.toString().matches('.*transfer.*');
     }
 }

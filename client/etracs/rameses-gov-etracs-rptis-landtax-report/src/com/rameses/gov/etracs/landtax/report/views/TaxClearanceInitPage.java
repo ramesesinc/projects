@@ -31,8 +31,9 @@ public class TaxClearanceInitPage extends javax.swing.JPanel {
 
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
-        xNumberField8 = new com.rameses.rcp.control.XNumberField();
-        xComboBox5 = new com.rameses.rcp.control.XComboBox();
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xNumberField9 = new com.rameses.rcp.control.XNumberField();
+        xComboBox6 = new com.rameses.rcp.control.XComboBox();
         xNumberField7 = new com.rameses.rcp.control.XNumberField();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
@@ -41,11 +42,16 @@ public class TaxClearanceInitPage extends javax.swing.JPanel {
         xTextField2 = new com.rameses.rcp.control.XTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         xTextArea2 = new com.rameses.rcp.control.XTextArea();
-        xTextField3 = new com.rameses.rcp.control.XTextField();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
-        xNumberField2 = new com.rameses.rcp.control.XNumberField();
         xTextField5 = new com.rameses.rcp.control.XTextField();
         xTextField6 = new com.rameses.rcp.control.XTextField();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
+        xTextField7 = new com.rameses.rcp.control.XTextField();
+        xDateField2 = new com.rameses.rcp.control.XDateField();
+        xNumberField3 = new com.rameses.rcp.control.XNumberField();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
+        xTextField8 = new com.rameses.rcp.control.XTextField();
+        xDateField3 = new com.rameses.rcp.control.XDateField();
+        xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
 
         formPanel1.setCaptionWidth(130);
         formPanel1.setPadding(new java.awt.Insets(5, 10, 5, 5));
@@ -56,29 +62,39 @@ public class TaxClearanceInitPage extends javax.swing.JPanel {
         xComboBox1.setName("entity.reporttype"); // NOI18N
         xComboBox1.setAllowNull(false);
         xComboBox1.setImmediate(true);
+        xComboBox1.setIndex(-10);
         xComboBox1.setPreferredSize(new java.awt.Dimension(150, 22));
         xComboBox1.setRequired(true);
         formPanel1.add(xComboBox1);
 
-        xNumberField8.setCaption("Clearance Year");
-        xNumberField8.setDepends(new String[] {"entity.reporttype"});
-        xNumberField8.setName("entity.year"); // NOI18N
-        xNumberField8.setCaptionWidth(130);
-        xNumberField8.setFieldType(Integer.class);
-        xNumberField8.setPattern("0000");
-        xNumberField8.setPreferredSize(new java.awt.Dimension(150, 19));
-        xNumberField8.setRequired(true);
-        formPanel1.add(xNumberField8);
+        xFormPanel1.setCaption("Clearance Year/Qtr");
+        xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel1.setRequired(true);
+        xFormPanel1.setShowCaption(false);
 
-        xComboBox5.setCaption("Clearance Qtr");
-        xComboBox5.setDepends(new String[] {"entity.reporttype"});
-        xComboBox5.setItems("quarters");
-        xComboBox5.setName("entity.qtr"); // NOI18N
-        xComboBox5.setAllowNull(false);
-        xComboBox5.setCaptionWidth(130);
-        xComboBox5.setPreferredSize(new java.awt.Dimension(150, 22));
-        xComboBox5.setRequired(true);
-        formPanel1.add(xComboBox5);
+        xNumberField9.setCaption("Clearance Year/Qtr");
+        xNumberField9.setDepends(new String[] {"entity.reporttype"});
+        xNumberField9.setName("entity.year"); // NOI18N
+        xNumberField9.setCaptionWidth(130);
+        xNumberField9.setFieldType(Integer.class);
+        xNumberField9.setPattern("0000");
+        xNumberField9.setPreferredSize(new java.awt.Dimension(88, 22));
+        xNumberField9.setRequired(true);
+        xFormPanel1.add(xNumberField9);
+
+        xComboBox6.setCaption("Clearance Qtr");
+        xComboBox6.setDepends(new String[] {"entity.reporttype"});
+        xComboBox6.setItems("quarters");
+        xComboBox6.setName("entity.qtr"); // NOI18N
+        xComboBox6.setAllowNull(false);
+        xComboBox6.setCaptionWidth(130);
+        xComboBox6.setPreferredSize(new java.awt.Dimension(60, 22));
+        xComboBox6.setRequired(true);
+        xComboBox6.setShowCaption(false);
+        xFormPanel1.add(xComboBox6);
+
+        formPanel1.add(xFormPanel1);
 
         xNumberField7.setCaption("Effectivity Year");
         xNumberField7.setDepends(new String[] {"entity.reporttype"});
@@ -94,7 +110,7 @@ public class TaxClearanceInitPage extends javax.swing.JPanel {
         xLookupField2.setExpression("#{entity.taxpayer.name}");
         xLookupField2.setHandler("lookupTaxpayer");
         xLookupField2.setName("taxpayer"); // NOI18N
-        xLookupField2.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
+        xLookupField2.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
         xLookupField2.setPreferredSize(new java.awt.Dimension(429, 19));
         xLookupField2.setRequired(true);
         formPanel1.add(xLookupField2);
@@ -137,27 +153,6 @@ public class TaxClearanceInitPage extends javax.swing.JPanel {
 
         formPanel1.add(jScrollPane2);
 
-        xTextField3.setCaption("O.R. No.");
-        xTextField3.setName("entity.orno"); // NOI18N
-        xTextField3.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
-        xTextField3.setPreferredSize(new java.awt.Dimension(150, 19));
-        xTextField3.setRequired(true);
-        formPanel1.add(xTextField3);
-
-        xDateField1.setCaption("Date");
-        xDateField1.setName("entity.ordate"); // NOI18N
-        xDateField1.setPreferredSize(new java.awt.Dimension(150, 19));
-        xDateField1.setRequired(true);
-        formPanel1.add(xDateField1);
-
-        xNumberField2.setCaption("Amount");
-        xNumberField2.setName("entity.oramount"); // NOI18N
-        xNumberField2.setFieldType(BigDecimal.class);
-        xNumberField2.setPattern("#,##0.00");
-        xNumberField2.setPreferredSize(new java.awt.Dimension(150, 19));
-        xNumberField2.setRequired(true);
-        formPanel1.add(xNumberField2);
-
         xTextField5.setCaption("<html><u>C</u>ertified By:<font color=\"red\">*</font></html>");
         xTextField5.setName("entity.certifiedby"); // NOI18N
         xTextField5.setPreferredSize(new java.awt.Dimension(429, 19));
@@ -169,6 +164,74 @@ public class TaxClearanceInitPage extends javax.swing.JPanel {
         xTextField6.setPreferredSize(new java.awt.Dimension(429, 19));
         xTextField6.setRequired(true);
         formPanel1.add(xTextField6);
+
+        xLabel2.setExpression("#{\"Certification Fee\"}");
+        xLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel2.setShowCaption(false);
+        formPanel1.add(xLabel2);
+
+        xTextField7.setCaption("O.R. No.");
+        xTextField7.setName("entity.orno"); // NOI18N
+        xTextField7.setCaptionWidth(110);
+        xTextField7.setCellPadding(new java.awt.Insets(5, 20, 0, 0));
+        xTextField7.setPreferredSize(new java.awt.Dimension(150, 19));
+        xTextField7.setRequired(true);
+        formPanel1.add(xTextField7);
+
+        xDateField2.setCaption("O.R. Date");
+        xDateField2.setName("entity.ordate"); // NOI18N
+        xDateField2.setCaptionWidth(110);
+        xDateField2.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        xDateField2.setPreferredSize(new java.awt.Dimension(150, 19));
+        xDateField2.setRequired(true);
+        formPanel1.add(xDateField2);
+
+        xNumberField3.setCaption("Amount");
+        xNumberField3.setName("entity.oramount"); // NOI18N
+        xNumberField3.setCaptionWidth(110);
+        xNumberField3.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        xNumberField3.setFieldType(BigDecimal.class);
+        xNumberField3.setPattern("#,##0.00");
+        xNumberField3.setPreferredSize(new java.awt.Dimension(150, 19));
+        xNumberField3.setRequired(true);
+        formPanel1.add(xNumberField3);
+
+        xLabel3.setDepends(new String[] {"entity.purpose"});
+        xLabel3.setExpression("#{\"Transfer Tax Payment\"}");
+        xLabel3.setVisibleWhen("#{showTransferPayment}");
+        xLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel3.setShowCaption(false);
+        formPanel1.add(xLabel3);
+
+        xTextField8.setCaption("O.R. No.");
+        xTextField8.setDepends(new String[] {"entity.purpose"});
+        xTextField8.setName("entity.properties.transferorno"); // NOI18N
+        xTextField8.setVisibleWhen("#{showTransferPayment}");
+        xTextField8.setCaptionWidth(110);
+        xTextField8.setCellPadding(new java.awt.Insets(5, 20, 0, 0));
+        xTextField8.setPreferredSize(new java.awt.Dimension(150, 19));
+        xTextField8.setRequired(true);
+        formPanel1.add(xTextField8);
+
+        xDateField3.setCaption("O.R. Date");
+        xDateField3.setDepends(new String[] {"entity.purpose"});
+        xDateField3.setName("entity.properties.transferordate"); // NOI18N
+        xDateField3.setVisibleWhen("#{showTransferPayment}");
+        xDateField3.setCaptionWidth(110);
+        xDateField3.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        xDateField3.setPreferredSize(new java.awt.Dimension(150, 19));
+        xDateField3.setRequired(true);
+        formPanel1.add(xDateField3);
+
+        xDecimalField1.setCaption("Amount");
+        xDecimalField1.setDepends(new String[] {"entity.purpose"});
+        xDecimalField1.setName("entity.properties.transferoramount"); // NOI18N
+        xDecimalField1.setVisibleWhen("#{showTransferPayment}");
+        xDecimalField1.setCaptionWidth(110);
+        xDecimalField1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        xDecimalField1.setPreferredSize(new java.awt.Dimension(150, 19));
+        xDecimalField1.setRequired(true);
+        formPanel1.add(xDecimalField1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -183,7 +246,7 @@ public class TaxClearanceInitPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -193,20 +256,26 @@ public class TaxClearanceInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.util.FormPanel formPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private com.rameses.rcp.control.XComboBox xComboBox1;
-    private com.rameses.rcp.control.XComboBox xComboBox5;
-    private com.rameses.rcp.control.XDateField xDateField1;
+    private com.rameses.rcp.control.XComboBox xComboBox6;
+    private com.rameses.rcp.control.XDateField xDateField2;
+    private com.rameses.rcp.control.XDateField xDateField3;
+    private com.rameses.rcp.control.XDecimalField xDecimalField1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLookupField xLookupField2;
-    private com.rameses.rcp.control.XNumberField xNumberField2;
+    private com.rameses.rcp.control.XNumberField xNumberField3;
     private com.rameses.rcp.control.XNumberField xNumberField7;
-    private com.rameses.rcp.control.XNumberField xNumberField8;
+    private com.rameses.rcp.control.XNumberField xNumberField9;
     private com.rameses.rcp.control.XTextArea xTextArea2;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
-    private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField4;
     private com.rameses.rcp.control.XTextField xTextField5;
     private com.rameses.rcp.control.XTextField xTextField6;
+    private com.rameses.rcp.control.XTextField xTextField7;
+    private com.rameses.rcp.control.XTextField xTextField8;
     // End of variables declaration//GEN-END:variables
     
 }

@@ -15,5 +15,6 @@
 		<field name="actor_title"/>
 		<field name="message"/>
 		<field name="signature"/>
+		<field name="returned" type="boolean" />
 	</element>	
 </schema>

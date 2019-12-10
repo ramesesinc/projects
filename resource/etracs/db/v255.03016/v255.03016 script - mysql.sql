@@ -54,3 +54,14 @@ alter table rptledger_redflag
 add constraint fk_rptledger_redflag_resolvedby foreign key (resolvedby_objid)
 references sys_user(objid)
 ;
+
+
+
+
+
+/*==================================================
+* RETURNED TASK 
+==================================================*/
+alter table faas_task add returned int
+;
+

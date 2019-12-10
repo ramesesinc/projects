@@ -27,6 +27,8 @@ class FAASWorkflowService extends ActiveWorkflowService
 	}
 
 	public void beforeCreateTask(task) {
+		// println 'task => ' + task 
+		// throw new Exception('test')
 		def assignee = [objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE]
 		if (task.assignee) {
 			assignee = task.assignee
@@ -37,6 +39,7 @@ class FAASWorkflowService extends ActiveWorkflowService
 			] 
 		}
 
+		println 'env.action => ' + env.action
 		if ( env.action?.matches('return.*')){
 			def returnto = findReturnToInfo(task)
 			if (!returnto) 
@@ -44,6 +47,7 @@ class FAASWorkflowService extends ActiveWorkflowService
 
 			env.returnto = returnto.assignee
 			task.assignee = assignee
+			task.returned = true
 		}
 		else if ( ! task.state.toLowerCase().matches('assign.*')){
 			task.assignee = assignee
@@ -72,6 +76,7 @@ class FAASWorkflowService extends ActiveWorkflowService
 
 		task.data = faasSvc.openFaas([objid:task.refid])
 		removeUserNotification(task)
+		env.task = task 
 	}
 
 	public void afterLoadTask(Object newTask) {
@@ -84,6 +89,7 @@ class FAASWorkflowService extends ActiveWorkflowService
 	}
 
 	public void afterSignal(Object result) {
+		println 'result => ' + result 
 		if (result && result.task && !result.data)
 			result.data = faasSvc.openFaas([objid:result.task.refid])
 	}

@@ -1,3 +1,4 @@
+
 import com.rameses.annotations.*
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
@@ -226,7 +227,11 @@ class CancelledFAASService
         def parentlgu = em.findParetLguByBarangayId(entity)
         if(parentlgu){
             if (parentlgu.iscity == 1){
-                entity.location += ', City of ' + parentlgu.cityprov
+                if (parentlgu.cityprov.toLowerCase().matches('.*city.*')) {
+                    entity.location += ', ' + parentlgu.cityprov
+                } else {
+                    entity.location += ', City of ' + parentlgu.cityprov
+                }
             }
             else {
                 entity.location += ', Municipality of ' + parentlgu.munidistrict 

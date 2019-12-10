@@ -343,7 +343,7 @@ class RPTLedgerService
         em_rptledger.find([objid:ledger.objid]).update([state:ledger.state])
         em_rptledger_item.find([parentid:ledger.objid]).delete() 
         em_rptbill_ledger.find([rptledgerid:ledger.objid]).delete() 
-        ledger._remarks = 'New State: ' + ledger.state 
+        ledger._remarks = 'New State: ' + ledger.state + ' (' + ledger.remarks + ')'
         return ledger 
     }
 

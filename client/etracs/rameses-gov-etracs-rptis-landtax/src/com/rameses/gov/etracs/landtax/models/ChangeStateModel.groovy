@@ -27,6 +27,7 @@ public class ChangeStateModel
     
     void init(){
         currentstate = entity.state;
+        states.remove(currentstate);
     }
     
     

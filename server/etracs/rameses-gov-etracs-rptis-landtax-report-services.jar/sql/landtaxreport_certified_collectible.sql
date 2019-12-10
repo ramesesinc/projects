@@ -29,10 +29,12 @@ from (
 		left join rpu r on f.rpuid = r.objid 
 		left join realproperty rp on f.realpropertyid = rp.objid 
 	where rl.state = 'APPROVED' 
-	and rl.taxable = 1 
-	and rp.barangayid like $P{barangayid}
-	and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')
-	and not exists(select * from rptledger_subledger where objid = rl.objid)
+	and (f.objid is null or f.state = 'CURRENT')
+    and rl.totalav > 0 
+    and rl.taxable = 1
+    and rl.barangayid like $P{barangayid}
+    and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')
+    and not exists(select * from rptledger_subledger where objid = rl.objid)
 )x
 where x.totalav > 0
 order by x.pin, x.suffix 
@@ -62,12 +64,19 @@ from (
 			and taxable = 1 
 		 ) as totalav
 	from rptledger rl 
+		inner join entity e on rl.taxpayer_objid = e.objid 
 		inner join barangay b on rl.barangayid = b.objid 
+		left join faas f on rl.faasid = f.objid 
+		left join rpu r on f.rpuid = r.objid 
+		left join realproperty rp on f.realpropertyid = rp.objid 
 	where rl.lguid = $P{lguid}
 	and rl.state = 'APPROVED' 
-	and rl.taxable = 1 
-	and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')
-	and not exists(select * from rptledger_subledger where objid = rl.objid)
+	and (f.objid is null or f.state = 'CURRENT')
+    and rl.totalav > 0 
+    and rl.taxable = 1
+    and rl.barangayid like $P{barangayid}
+    and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')
+    and not exists(select * from rptledger_subledger where objid = rl.objid)
 )x
 where x.totalav > 0
 group by x.pin, x.barangay 

@@ -2,14 +2,14 @@
 select 
   pc.name as classname, pc.orderno, pc.special,  
   sum(case when ri.revperiod='current' and ri.revtype = 'basic' then ri.amount else 0.0 end)  as basiccurrent,
-  sum(case when ri.revperiod='current' and ri.revtype = 'basic'  then ri.discount else 0.0 end)  as basicdisc,
+  sum(case when ri.revtype = 'basic' then ri.discount else 0.0 end)  as basicdisc,
   sum(case when ri.revperiod in ('previous', 'prior') and ri.revtype = 'basic'  then ri.amount else 0.0 end)  as basicprev,
   sum(case when ri.revperiod='current' and ri.revtype = 'basic'  then ri.interest else 0.0 end)  as basiccurrentint,
   sum(case when ri.revperiod in ('previous', 'prior') and ri.revtype = 'basic'  then ri.interest else 0.0 end)  as basicprevint,
   sum(case when ri.revtype = 'basic' then ri.amount - ri.discount+ ri.interest else 0 end) as basicnet, 
 
   sum(case when ri.revperiod='current' and ri.revtype = 'sef' then ri.amount else 0.0 end)  as sefcurrent,
-  sum(case when ri.revperiod='current' and ri.revtype = 'sef'  then ri.discount else 0.0 end)  as sefdisc,
+  sum(case when ri.revtype = 'sef' then ri.discount else 0.0 end)  as sefdisc,
   sum(case when ri.revperiod in ('previous', 'prior') and ri.revtype = 'sef'  then ri.amount else 0.0 end)  as sefprev,
   sum(case when ri.revperiod='current' and ri.revtype = 'sef'  then ri.interest else 0.0 end)  as sefcurrentint,
   sum(case when ri.revperiod in ('previous', 'prior') and ri.revtype = 'sef'  then ri.interest else 0.0 end)  as sefprevint,
@@ -17,13 +17,13 @@ select
 
   sum(case when ri.revperiod='current' and ri.revtype = 'basicidle' then ri.amount else 0.0 end)  as idlecurrent,
   sum(case when ri.revperiod in ('previous', 'prior') and ri.revtype = 'basicidle'  then ri.amount else 0.0 end)  as idleprev,
-  sum(case when ri.revperiod='current' and ri.revtype = 'basicidle'  then ri.discount else 0.0 end)  as idledisc,
+  sum(case when ri.revtype = 'basicidle' then ri.discount else 0.0 end)  as idledisc,
   sum(case when ri.revtype = 'basicidle' then ri.interest else 0 end )  as idleint, 
   sum(case when ri.revtype = 'basicidle'then ri.amount - ri.discount + ri.interest else 0 end) as idlenet, 
 
   sum(case when ri.revperiod='current' and ri.revtype = 'sh' then ri.amount else 0.0 end)  as shcurrent,
   sum(case when ri.revperiod in ('previous', 'prior') and ri.revtype = 'sh' then ri.amount else 0.0 end)  as shprev,
-  sum(case when ri.revperiod='current' and ri.revtype = 'sh' then ri.discount else 0.0 end)  as shdisc,
+  sum(case when ri.revtype = 'sh' then ri.discount else 0.0 end)  as shdisc,
   sum(case when ri.revtype = 'sh' then ri.interest else 0 end)  as shint, 
   sum(case when ri.revtype = 'sh' then ri.amount - ri.discount + ri.interest else 0 end) as shnet, 
 

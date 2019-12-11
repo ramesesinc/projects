@@ -34,10 +34,10 @@ class RealtyTaxCollectiblesModel extends AsyncReportModel
          getFormControls: {
              return [
                  new FormControl( "label", [caption:'Year', name:'entity.year', required:true, enabled:false, captionWidth:100]),
-                 new FormControl( "decimal", [caption:'Basic (%)', name:'entity.basicrate', required:true, captionWidth:100]),
-                 new FormControl( "decimal", [caption:'Discount(%)', name:'entity.basicdiscrate', required:true, captionWidth:100]),
-                 new FormControl( "decimal", [caption:'SEF (%)', name:'entity.sefrate', required:true, captionWidth:100]),
-                 new FormControl( "decimal", [caption:'Discount (%)', name:'entity.sefdiscrate', required:true, captionWidth:100]),
+                 new FormControl( "decimal", [caption:'Basic (%)', name:'entity.basicrate', required:true, captionWidth:100, scale:4, pattern:'##0.0000']),
+                 new FormControl( "decimal", [caption:'Discount(%)', name:'entity.basicdiscrate', required:true, captionWidth:100, scale:4, pattern:'##0.0000']),
+                 new FormControl( "decimal", [caption:'SEF (%)', name:'entity.sefrate', required:true, captionWidth:100, scale:4, pattern:'##0.0000']),
+                 new FormControl( "decimal", [caption:'Discount (%)', name:'entity.sefdiscrate', required:true, captionWidth:100, scale:4, pattern:'##0.0000']),
              ]    
          },
     ] as FormPanelModel;

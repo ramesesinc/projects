@@ -26,6 +26,7 @@ class LandTaxReportCollectiblePaymentSummaryService
 		}
 
 		params.lguid = params.lgu?.objid
+		params.barangayid = params.barangay ? params.barangay.objid : '%'
 
 		def brgys = em.getBarangayCollectibles(params)
 		if (!brgys) throw new Exception('Results not found.')

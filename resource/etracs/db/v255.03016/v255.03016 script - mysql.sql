@@ -62,6 +62,13 @@ references sys_user(objid)
 /*==================================================
 * RETURNED TASK 
 ==================================================*/
-alter table faas_task add returned int
+alter table faas_task add returnedby varchar(100)
 ;
-
+alter table subdivision_task add returnedby varchar(100)
+;
+alter table consolidation_task add returnedby varchar(100)
+;
+alter table cancelledfaas_task add returnedby varchar(100)
+;
+alter table resection_task add returnedby varchar(100)
+;

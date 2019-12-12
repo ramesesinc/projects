@@ -122,6 +122,11 @@ class LandTaxReportTaxClearanceService
         return em.getClearedLedgers(cert)
     }
 
+    @ProxyMethod
+    public def getTaxClearancesIssued(ledger) {
+        return em.getTaxClearancesIssued(ledger)
+    }
+
     void validate(cert) {
         if (!cert.items) {
             throw new Exception('At least one property must be included.')

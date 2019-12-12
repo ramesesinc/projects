@@ -1,0 +1,14 @@
+<workunit >
+    <invokers>
+        <invoker type="faas:actions" 
+            action="init" 
+            caption="List of Tax Clearances Issued" 
+            target="popup"
+            visibleWhen="#{entity.state=='CURRENT'}" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.models.FAASTaxClearanceIssuedModel">
+   </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.views.FAASTaxClearanceIssuedPage"/>
+    </pages>    
+</workunit>

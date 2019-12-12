@@ -4,6 +4,7 @@ CHANGELOG: v255.03016
 	- Workflow: support sendback to returning officer
 	- CancelFAAS: add request report support
 	- View list of payments from FAAS
+	- View list of issued tax clearances
 
 - LANDTAX
 	- Add redflag support

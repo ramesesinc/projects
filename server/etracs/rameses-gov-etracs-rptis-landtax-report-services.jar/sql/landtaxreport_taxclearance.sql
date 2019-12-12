@@ -100,3 +100,25 @@ GROUP BY rl.objid, rp.receiptno, rp.receiptdate, ri.year
 select objid, txnno
 from rptcertification 
 where orno = $P{orno}
+
+
+[getTaxClearancesIssued]
+select 
+	c.objid,
+	c.txnno,
+	c.txndate,
+	c.taxpayer_objid,
+	c.requestedby,
+	c.requestedbyaddress,
+	c.purpose,
+	c.official,
+	c.orno,
+	c.ordate,
+	c.oramount,
+	t.year, 
+	t.qtr 
+from rpttaxclearance t 
+inner join rptcertification c on t.objid = c.objid 
+inner join rptcertificationitem i on c.objid = i.rptcertificationid
+where i.refid = $P{objid}
+

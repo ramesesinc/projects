@@ -30,7 +30,7 @@ class FAASWorkflowService extends ActiveWorkflowService
 	}
 
 	public void beforeSignal(param) {
-		if (param.action.matches('send.*')) {
+		if (param.action?.matches('send.*')) {
 			def task = em_task.select('returnedby').find([objid: param.taskid]).first()
 			if (!task) throw new Exception('Task ' + param.taskid + ' does not exist or has been deleted.')
 			env.task = [returnedby: task.returnedby]

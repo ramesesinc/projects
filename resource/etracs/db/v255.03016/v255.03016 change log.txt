@@ -1,6 +1,8 @@
 CHANGELOG: v255.03016
 ==============================================
 - ASSESSOR	
-	
+	- Workflow: support sendback to returning officer
+	- CancelFAAS: add request report support
+
 - LANDTAX
 	- Add redflag support

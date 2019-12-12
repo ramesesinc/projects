@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudReport.xml"
+    reportName="com/rameses/gov/etracs/rpt/report/cancelledfaas/cancelledfaas_request.jasper"
+>
+    <invokers>
+        <invoker type="cancelledfaas:formActions" 
+                 action="view" 
+                 caption="Request for Cancellation" 
+                 index="100"/>
+   </invokers>
+   <code class="com.rameses.gov.etracs.rpt.report.cancelledfaas.CancelledFaasRequestReportModel" />
+</workunit>
+
+

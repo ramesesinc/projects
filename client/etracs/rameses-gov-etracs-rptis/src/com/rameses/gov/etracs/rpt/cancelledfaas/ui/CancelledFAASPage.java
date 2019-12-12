@@ -126,18 +126,19 @@ public class CancelledFAASPage extends javax.swing.JPanel {
         formPanel2.add(xTextField3);
 
         xIntegerField1.setCaption("Last Tax Year");
-        xIntegerField1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
         xIntegerField1.setName("entity.lasttaxyear"); // NOI18N
+        xIntegerField1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
+        xIntegerField1.setRequired(true);
         formPanel2.add(xIntegerField1);
 
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 120));
 
-        xTextArea1.setLineWrap(true);
-        xTextArea1.setWrapStyleWord(true);
         xTextArea1.setCaption("Remarks");
-        xTextArea1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        xTextArea1.setLineWrap(true);
         xTextArea1.setName("entity.remarks"); // NOI18N
+        xTextArea1.setWrapStyleWord(true);
+        xTextArea1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         xTextArea1.setPreferredSize(new java.awt.Dimension(164, 200));
         jScrollPane1.setViewportView(xTextArea1);
 

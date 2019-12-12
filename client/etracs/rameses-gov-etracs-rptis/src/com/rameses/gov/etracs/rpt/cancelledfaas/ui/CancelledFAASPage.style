@@ -10,7 +10,3 @@
 "entity.(faas|txnno|txndate)"[entity.online==1 || entity.online==true]{
     enabled:false;
 }
-
-"entity.lasttaxyear"[ledger != null]{
-    enabled:false;
-}

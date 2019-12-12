@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="faas:changeinfo" action="init" 
-            caption="Owner and Administrator" target="popup"  
-            role="ADMIN" permission="faas.change_owner_info" index="2" 
-            actiontype="change_owner_info"/>
+        <invoker type="faas:actions" action="init" 
+            caption="Modify Owner and Administrator" target="popup"  
+            role="ADMIN" permission="faas.change_owner_info" 
+            actiontype="change_owner_info"
+            visibleWhen="#{entity.state=='CURRENT'}" />
         
         <invoker type="faas:modifyinfo" action="init" 
             caption="Owner and Administrator" target="popup"  

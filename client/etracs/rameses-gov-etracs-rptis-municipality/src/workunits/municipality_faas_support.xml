@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="faas:info:remotetool" action="resendToProvince" caption="Resend to Province" target="process" index="100" role="ADMIN" />
+        <invoker type="faas:actions" 
+            action="resendToProvince" 
+            caption="Resend to Province" 
+            target="process" 
+            role="ADMIN" 
+            visibleWhen="#{entity.state == 'CURRENT'}" />
     </invokers>
     <code>
 <![CDATA[

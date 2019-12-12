@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="faas:changeinfo" action="init" 
-            caption="FAAS and RPU Information" target="popup"  
-            role="ADMIN" permission="faas.change_faas_info" index="2"
-            actiontype="change_faas_info"/>
+        <invoker type="faas:actions" action="init" 
+            caption="Modify FAAS and RPU Information" target="popup"  
+            role="ADMIN" permission="faas.change_faas_info" 
+            actiontype="change_faas_info"
+            visibleWhen="#{entity.state=='CURRENT'}" />
         
         <invoker type="faas:modifyinfo" action="init" 
             caption="FAAS and RPU Information" target="popup"  

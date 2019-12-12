@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="faas:changeinfo" action="init" 
-            caption="Superseded Information" target="popup"  
-            role="ADMIN" permission="faas.change_previous_info" index="5" 
-            actiontype="change_previous_info"/>
+        <invoker type="faas:actions " action="init" 
+            caption="Modify Superseded Information" target="popup"  
+            role="ADMIN" permission="faas.change_previous_info" 
+            actiontype="change_previous_info"
+            visibleWhen="#{entity.state=='CURRENT'}" />
         
         <invoker type="faas:redflag:action" action="init" 
             caption="Change Superseded Information" index="5" 

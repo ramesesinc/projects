@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit extends="rpt_wtemplates/TxnLogs.xml">
     <invokers>
-        <invoker type="faas:formActions" caption="Logs" index="100" visibleWhen="#{mode=='read'}" target="popup"/>
+        <invoker type="faas:actions" caption="View Logs" index="100" visibleWhen="#{mode=='read'}" target="popup"/>
     </invokers>
 </workunit>

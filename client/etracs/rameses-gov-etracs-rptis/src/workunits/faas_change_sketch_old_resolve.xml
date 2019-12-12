@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="faas:changeinfo" action="initChangeInfo" 
-            caption="Sketch" target="popup"  
-            role="ADMIN" permission="faas.change_faas_sketch" index="6" 
+        <invoker type="faas:actions" action="initChangeInfo" 
+            caption="Modify Sketch" target="popup"  
+            role="ADMIN" permission="faas.change_faas_sketch" 
             actiontype="change_faas_sketch"
-            visibleWhen="#{entity._showOldSketch == true}"/>
+            visibleWhen="#{entity.state=='CURRENT' &amp;&amp; entity._showOldSketch == true}"/>
         
         <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" visibleWhen="#{mode=='changeinfo'}"/>
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" visibleWhen="#{mode=='changeinfo'}"/>

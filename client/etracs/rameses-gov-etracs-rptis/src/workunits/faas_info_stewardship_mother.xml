@@ -7,7 +7,11 @@
         <invoker type="formActions" action="cancelEdit" caption="Cancel" mnemonic="c" visibleWhen="#{mode != 'read'}" immediate="true" />
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode != 'read'}" />
         <invoker type="formActions" caption="Recalculate"   action="recalc"  name="recalc" visibleWhen="#{mode=='edit' &amp;&amp; entity.state.matches('INTERIM|FORAPPROVAL')}" role="APPRAISER,ENCODER" index="2000"/>
-        <invoker type="formActions" caption="Modify" name="popupChangeInfo" visibleWhen="#{entity.state=='CURRENT'}" category="faas:changeinfo" index="1000" role="ADMIN" />
+
+        <invoker type="formActions" 
+                caption="Actions" 
+                name="popupActions" 
+                category="faas:actions" />
    </invokers>
    
    <code class="com.rameses.gov.etracs.rptis.models.FAASStewardshipParentModel">

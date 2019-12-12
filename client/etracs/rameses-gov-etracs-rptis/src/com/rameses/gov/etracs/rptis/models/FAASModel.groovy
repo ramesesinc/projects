@@ -399,4 +399,18 @@ public class FAASModel
         entity.rpu.exemptiontype = exemptions.find{it.objid == entity.rpu.exemptiontype?.objid}
     }
 
+
+    def popupActions(def inv) {
+        def popupMenu = new PopupMenuOpener();
+        def list = Inv.lookupOpeners( inv.properties.category, [entity: entity] ).findAll{
+            def vw = it.properties.visibleWhen;
+            return  ((!vw)  ||  ExpressionResolver.getInstance().evalBoolean(vw, [mode:mode, entity: entity]));
+        }
+        list.sort{a,b -> a.caption <=> b.caption }
+        list.each{
+            popupMenu.add( it );
+        }
+        return popupMenu;
+    }
+
 }

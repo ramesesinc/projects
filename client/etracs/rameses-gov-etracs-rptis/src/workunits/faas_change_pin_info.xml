@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="faas:changeinfo" action="init" 
-            caption="Property Info and Boundaries" target="popup"  
-            role="ADMIN" permission="faas.change_property_info" index="1" 
-            actiontype="change_property_info"/>
+        <invoker type="faas:actions" action="init" 
+            caption="Modify Property Info and Boundaries" target="popup"  
+            role="ADMIN" permission="faas.change_property_info" 
+            actiontype="change_property_info"
+            visibleWhen="#{entity.state=='CURRENT'}" />
         
         <invoker type="faas:modifyinfo" action="init" 
             caption="Property Info and Boundaries" target="popup"  

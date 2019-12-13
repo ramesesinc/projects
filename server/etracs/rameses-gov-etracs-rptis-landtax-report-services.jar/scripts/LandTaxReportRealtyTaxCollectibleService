@@ -23,10 +23,10 @@ class LandTaxReportRealtyTaxCollectibleService
 
 		list.each{
 			if (it.totalav == null) it.totalav = 0.0 
-			it.basic = numSvc.round( it.totalav * params.basicrate / 100.0 )
-			it.basicdisc = numSvc.round( it.basic * params.basicdiscrate / 100.0 )
-			it.sef = numSvc.round( it.totalav * params.sefrate / 100.0 )
-			it.sefdisc = numSvc.round( it.sef * params.sefdiscrate / 100.0 )
+			it.basic = numSvc.roundA( it.totalav * params.basicrate / 100.0, 4)
+			it.basicdisc = numSvc.roundA( it.basic * params.basicdiscrate / 100.0, 4)
+			it.sef = numSvc.roundA( it.totalav * params.sefrate / 100.0, 4)
+			it.sefdisc = numSvc.roundA( it.sef * params.sefdiscrate / 100.0, 4)
 			it.total = it.basic - it.basicdisc + it.sef  - it.sefdisc 
 		}
 		return [reportdata:list, parameters:params]

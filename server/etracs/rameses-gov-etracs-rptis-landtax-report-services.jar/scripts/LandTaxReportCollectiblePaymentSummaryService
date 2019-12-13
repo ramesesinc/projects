@@ -38,8 +38,8 @@ class LandTaxReportCollectiblePaymentSummaryService
 			if (pmt) {
 				brgy.putAll(pmt)
 			}
-			brgy.basic = numSvc.round( brgy.totalav * params.basicrate / 100.0 )
-			brgy.sef = numSvc.round( brgy.totalav * params.sefrate / 100.0 )
+			brgy.basic = numSvc.roundA( brgy.totalav * params.basicrate / 100.0, 4)
+			brgy.sef = numSvc.roundA( brgy.totalav * params.sefrate / 100.0, 4)
 			brgy.totaltax = brgy.basic + brgy.sef 
 
 			brgy.basicbal = brgy.basic - brgy.basicpmt

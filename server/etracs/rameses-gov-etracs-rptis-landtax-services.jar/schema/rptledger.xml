@@ -33,6 +33,10 @@
             required="true" orderBy="fromyear desc,fromqtr desc,tdno desc">
                 <key field="objid" target="rptledgerid" />
         </complex>
+        <complex name="faas" ref="faas" jointype="many-to-one" required="false"
+            includefields="owner.address">
+                <key field="faasid" target="objid" />
+        </complex>
         <complex name="taxpayer" ref="entity" jointype="many-to-one" required="false"
             includefields="entityno,name,address.text">
                 <key field="taxpayer_objid" target="objid" />

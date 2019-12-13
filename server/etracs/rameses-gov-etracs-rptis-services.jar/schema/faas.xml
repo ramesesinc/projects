@@ -17,7 +17,7 @@
 		<field name="fullpin" required="true"  caption="PIN" searchable="true" indexed="true"  width="150"/>
 		<field name="taxpayer_objid" />
 		<field name="owner_name" caption="Taxpayer" indexed="true"  width="250"/>
-		<field name="owner_address" />
+		<field name="owner_address" caption="Address" />
 		<field name="administrator_objid" />
 		<field name="administrator_name" />
 		<field name="administrator_address" />

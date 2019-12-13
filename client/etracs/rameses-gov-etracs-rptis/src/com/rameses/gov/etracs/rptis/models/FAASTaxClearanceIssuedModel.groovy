@@ -15,6 +15,8 @@ public class FAASTaxClearanceIssuedModel
     
     def entity;
     def clearances;
+
+    String title = 'List of Tax Clearances Issued'
     
     void init(){
         clearances = svc.getTaxClearancesIssued(getLedger());

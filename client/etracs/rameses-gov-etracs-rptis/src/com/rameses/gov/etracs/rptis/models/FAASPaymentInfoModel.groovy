@@ -19,6 +19,8 @@ public class FAASPaymentInfoModel
     def entity;
     def selectedItem;
     def payments;
+
+    String title = 'List of Payments'
     
     void init(){
         payments = svc.getPayments(getLedger());

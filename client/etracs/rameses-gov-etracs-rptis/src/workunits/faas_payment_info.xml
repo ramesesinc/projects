@@ -2,7 +2,7 @@
     <invokers>
         <invoker type="faas:actions" 
             action="init" 
-            caption="List of Payments" 
+            caption="View Payments" 
             target="popup"
             visibleWhen="#{entity.state=='CURRENT'}" />
     </invokers>

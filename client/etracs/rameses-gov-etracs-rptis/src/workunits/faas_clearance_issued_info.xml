@@ -2,7 +2,7 @@
     <invokers>
         <invoker type="faas:actions" 
             action="init" 
-            caption="List of Tax Clearances Issued" 
+            caption="View Tax Clearances Issued" 
             target="popup"
             visibleWhen="#{entity.state=='CURRENT'}" />
     </invokers>

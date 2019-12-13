@@ -92,3 +92,18 @@ group by
 	rp.fromqtr, 
 	rp.toyear,
 	rp.toqtr	
+
+
+[getPaidLedgers]
+select 
+	rl.objid, 
+	rl.tdno, 
+	rl.fullpin, 
+	rl.owner_name, 
+	rl.totalav,
+	rl.lastyearpaid,
+	rl.lastqtrpaid
+from rptpayment rp 
+inner join rptledger rl on rp.refid = rl.objid 
+where rp.receiptid = $P{objid}
+order by rl.tdno 

@@ -1,0 +1,19 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt:form:formActions" 
+        	action="init"
+        	caption="View Ledgers" 
+        	visibleWhen="#{entity.formno == '56'}" />
+
+    	<invoker type="formActions" 
+    		action="_close" 
+    		caption="Close" 
+    		mnemonic="c" 
+    		shortcut="ctrl X" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.CashReceiptPaidLedgerModel">
+    </code>
+    <pages>
+    	<page template="com.rameses.gov.etracs.landtax.views.CashReceiptPaidLedgerPage" />
+    </pages>
+</workunit>

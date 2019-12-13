@@ -131,6 +131,7 @@ public class BusinessAssessmentInfoUtil {
         caller.entity.totals = m.totals;
         caller.entity.expirydate = m.expirydate;
         caller.entity.grossinfos = m.grossinfos;
+        caller.entity.qtrdates = m.qtrdates; 
     }
 
     /***********************************************

@@ -54,6 +54,13 @@ class BusinessAssessmentReportController extends com.rameses.etracs.shared.Repor
             regfees: regfees?.sort{ it.sortindexno }, 
             charges: charges?.sort{ it.sortindexno }  
         ]; 
+
+        entity.qtrdateinfo = [:]; 
+        entity.qtrdates.each{ 
+            def sname = 'q'+ it.qtr.toString(); 
+            entity.qtrdateinfo.put( sname, it.duedate ); 
+        } 
+        
         afterReportData( entity ); 
         return entity; 
     } 

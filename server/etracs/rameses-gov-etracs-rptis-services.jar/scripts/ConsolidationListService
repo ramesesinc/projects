@@ -37,8 +37,8 @@ class ConsolidationListService extends ActiveListService
     public def getNodes(o) {
         def nodes = []
         nodes << [name:'all', caption:'All']
-        nodes += em.getNodes();
         nodes << [name:'mytask', caption:'My Tasks']
+        nodes += em.getNodes();
         nodes << [name:'unassigned', caption:'Unassigned Tasks']
 
         nodes.each{

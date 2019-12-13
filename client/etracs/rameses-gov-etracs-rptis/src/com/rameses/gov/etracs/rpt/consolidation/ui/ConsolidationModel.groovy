@@ -9,7 +9,7 @@ import com.rameses.common.*;
 import com.rameses.gov.etracs.rpt.consolidation.task.*;
 import com.rameses.util.MapBeanUtils;
 
-public class ConsolidationController extends com.rameses.gov.etracs.rpt.workflow.RPTWorkflowController
+public class ConsolidationModel extends com.rameses.gov.etracs.rpt.workflow.RPTWorkflowController
 {
     
     @Service('ConsolidationWorkflowService')
@@ -46,14 +46,14 @@ public class ConsolidationController extends com.rameses.gov.etracs.rpt.workflow
             
     public void afterSignal(Object result){
         super.afterSignal(result);
-        if (task && task.state.matches('approver|forprovsubmission')){
+        if (task && task.state.matches('cityapprover|provapprover|forprovsubmission')){
             autoposting = true;
         }
     }
     
     
     public Object findPage(Map o){
-         if (task && task.state.matches('approver|forprovsubmission')){
+         if (task && task.state.matches('cityapprover|provapprover|forprovsubmission')){
              info = null;
              if (autoposting)
                 doApprove();

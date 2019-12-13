@@ -1,6 +1,7 @@
 CHANGELOG: v255.03017
 ==============================================
 - ASSESSOR	
+	- Consolidation: Transfer creation of Consolidated Land to Taxmapping
 
 - LANDTAX
 	- Post realty tax shares asynchronously 

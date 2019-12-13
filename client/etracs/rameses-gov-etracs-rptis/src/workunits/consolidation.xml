@@ -5,7 +5,7 @@
         <invoker type="consolidationresent:open" action="openResent" caption="Consolidation" target="window"  />
    </invokers>
 
-   <code class="com.rameses.gov.etracs.rpt.consolidation.ui.ConsolidationController">
+   <code class="com.rameses.gov.etracs.rpt.consolidation.ui.ConsolidationModel">
        
    </code>
 

@@ -50,6 +50,10 @@ abstract class RPTWorkflowController extends WorkflowController
         if (result.data){
             entity.putAll(result.data)
         }
+        if (task) {
+            entity.taskstate = task.state
+            entity.assignee = task.assignee
+        }
         if (prevtask.action != 'delete'){
             loadSections();
         }

@@ -1,41 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="consolidation:info" action="init" caption="Consolidated FAAS"  index="20" />
+        <invoker type="consolidation:info" action="init" caption="Consolidated FAAS"  index="15" />
+        
+        <invoker type="formActions" action="createFaas" caption="Save" />
    </invokers>
    
-   <code>
-<![CDATA[       
-
-import com.rameses.rcp.annotations.* 
-import com.rameses.rcp.common.* 
-import com.rameses.osiris2.client.*
-import com.rameses.osiris2.common.*
-
-class ConsolidatedFaasController
-{
-    @Service('FAASService')
-    def faasSvc;
-    
-    def svc;
-    def entity;
-    def faas
-    
-    void init(){
-    }
-    
-    def getOpener(){
-        faas = [objid:entity.newfaasid];    
-        def params = [entity:faas, svc:faasSvc, taskstate:entity.taskstate, assignee:entity.assignee]
-        return InvokerUtil.lookupOpener('faasdata:open', params);
-    }
-}
-
-
-]]>
-
+   <code class="com.rameses.gov.etracs.rpt.consolidation.ui.ConsolidatedFaasModel" >
    </code>
     <pages>
+        <page name="init" template="com.rameses.gov.etracs.rpt.consolidation.ui.ConsolidatedFaasPage"/>
         <page template="com.rameses.gov.etracs.rpt.consolidation.ui.ConsolidatedFaasPage"/>
     </pages>    
 </workunit>

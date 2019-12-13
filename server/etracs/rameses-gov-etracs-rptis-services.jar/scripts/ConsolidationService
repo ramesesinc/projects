@@ -9,6 +9,9 @@ class ConsolidationService
 	@ActiveDB('consolidation')
    def em
 
+   @DataContext('consolidation')
+   def em_consolidation
+
 	@Env
 	def env
 	
@@ -125,10 +128,11 @@ class ConsolidationService
             consolidation.txnno = util.getNextSequence('CONSOLIDATION')
         if (!consolidation.lguid)
             consolidation.lguid = env.ORGID 
+        consolidation.state = STATE_DRAFT
         consolidation.originlguid = (consolidation.originlguid ? consolidation.originlguid : env.ORGID )
         consolidation.txndate = pdate.date 
         consolidation.txntype = faasSvc.getTxnType(TXNTYPE_CS)
-        createConsolidatedFaas(consolidation)
+        consolidation.ry = util.toInteger(var.current_ry)
         em.create(consolidation)
         return consolidation            
     }    
@@ -408,7 +412,8 @@ class ConsolidationService
     }    
 
 
-    void createConsolidatedFaas(consolidation){
+    @ProxyMethod
+    public def createConsolidatedFaas(consolidation){
         def info = consolidation._info 
         info.txntype = consolidation.txntype 
         def faas = faasSvc.initCapture(buildInitInfo(info))
@@ -418,6 +423,8 @@ class ConsolidationService
         consolidation.newrpuid = faas.rpu.objid
         consolidation.newfaasid = faas.objid 
         consolidation.lguid = faas.lguid 
+        em_consolidation.update(consolidation)
+        return [faas: faas, consolidation: open(consolidation)]
     }
 
     def buildInitInfo(info){

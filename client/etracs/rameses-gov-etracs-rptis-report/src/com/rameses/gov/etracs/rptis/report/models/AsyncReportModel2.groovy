@@ -38,6 +38,9 @@ abstract class AsyncReportModel2
     def showSection = false;
     def barangayRequired = false;
     def revisionyears = [];
+
+    def allowPrint = true;
+    def allowSave = true;
     
     
     abstract String getReportName();
@@ -213,6 +216,8 @@ abstract class AsyncReportModel2
     }
         
     def report = [
+        isAllowPrint : { allowPrint },
+        isAllowSave : { allowSave },
         getReportName : { return getReportName() }, 
         getReportData : { return reportdata },
         getSubReports : { return getSubReports() },

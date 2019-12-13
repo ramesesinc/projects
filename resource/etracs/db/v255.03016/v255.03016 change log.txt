@@ -8,3 +8,4 @@ CHANGELOG: v255.03016
 
 - LANDTAX
 	- Add redflag support
+	- Access to cancelled properties report

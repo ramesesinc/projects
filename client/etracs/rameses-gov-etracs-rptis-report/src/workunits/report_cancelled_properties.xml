@@ -5,6 +5,13 @@
                  caption="List of Cancelled Properties" 
                  target="window" 
                 role="ASSESSOR_REPORT,REPORT" />
+
+        <invoker folderid="/explorer/report/landtax" 
+                 action="initLandtax" 
+                 caption="List of Cancelled Properties" 
+                 target="window" 
+                 domain="LANDTAX"
+                role="REPORT" />
     </invokers>
     <code class="com.rameses.gov.etracs.rptis.report.models.CancelledPropertiesReportModel">
 

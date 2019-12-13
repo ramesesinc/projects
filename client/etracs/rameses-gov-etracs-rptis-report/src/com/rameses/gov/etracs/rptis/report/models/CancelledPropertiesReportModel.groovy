@@ -17,6 +17,12 @@ class CancelledPropertiesReportModel extends AsyncReportModel2
     String reportName = 'com/rameses/gov/etracs/rptis/reports/list_cancelled_properties.jasper';  
     
         
+    def initLandtax() {
+        allowPrint = false;
+        allowSave = false;
+        return super.init();
+    }
+
     def initReport(){
         entity.qtr = null;
         return 'default';

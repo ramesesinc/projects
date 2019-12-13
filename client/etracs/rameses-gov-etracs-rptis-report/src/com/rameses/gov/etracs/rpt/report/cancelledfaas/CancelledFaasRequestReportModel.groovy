@@ -6,7 +6,7 @@ import com.rameses.seti2.models.*;
 import com.rameses.gov.etracs.rptis.util.*;
 
 class CancelledFaasRequestReportModel extends CrudReportModel {
-    @Service('CancelledFaasService')
+    @Service('CancelledFAASService')
     def svc
     
     void view() {

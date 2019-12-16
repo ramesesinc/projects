@@ -71,7 +71,7 @@ public class RPTLedgerRuleService
 		def ledgerfact = new RPTLedgerFact(ledger)
 		facts << ledgerfact 
 
-		def faases = em_ledger_faas.select('fromyear,toyear,idleland,assessedvalue,classification.objid,actualuse.objid')
+		def faases = em_ledger_faas.select('tdno,fromyear,toyear,idleland,assessedvalue,classification.objid,actualuse.objid')
 						.find([rptledgerid: ledger.objid, state:'APPROVED'])
 						.list()
 

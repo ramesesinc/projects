@@ -17,6 +17,8 @@ public class RPTLedgerFact
     String barangayid
     String barangay
     String rputype
+    String tdno
+    String prevtdno
 
     //data reference
     def entity    
@@ -37,6 +39,8 @@ public class RPTLedgerFact
         this.barangayid             = ledger.barangayid
         this.barangay               = ledger.barangay
         this.rputype                = ledger.rputype
+        this.tdno                = ledger.tdno
+        this.prevtdno                = ledger.prevtdno
         this.missedpayment          = ledger.missedpayment
     }
 

@@ -6,6 +6,7 @@ import java.math.*
 public class RPTLedgerFaasFact
 {
     String objid 
+    String tdno
     String classificationid
     String actualuseid
     Integer fromyear
@@ -25,6 +26,7 @@ public class RPTLedgerFaasFact
     }
 
     public RPTLedgerFaasFact(ledgerfaas){
+        this.tdno = ledgerfaas.tdno
         this.classificationid = ledgerfaas.classification?.objid
         this.actualuseid = ledgerfaas.actualuse?.objid
         this.fromyear = ledgerfaas.fromyear;

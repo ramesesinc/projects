@@ -1220,7 +1220,12 @@ class RPTLedgerService
 
         def compromise = em_rptcompromise.select('txnno').find([rptledgerid: ledger.objid, state: 'APPROVED']).first()
         if (compromise) {
-            ledger._messagelist << 'Under Compromise #' + compromise.txnno + '.'
+            ledger._messagelist << 'Ledger is under compromise #' + compromise.txnno + '.'
+        }
+
+        def restrictions = em_faas_restriction.select('objid').find([ledger_objid: ledger.objid, state: 'ACTIVE']).first()
+        if (restrictions) {
+            ledger._messagelist = 'Ledger has active restrictions.'
         }
     }
 

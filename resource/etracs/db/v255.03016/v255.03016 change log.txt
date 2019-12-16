@@ -10,3 +10,4 @@ CHANGELOG: v255.03016
 	- Add redflag support
 	- Access to cancelled properties report
 	- View ledgers in Cash Receipt (56)
+	- Ledger Rule: add tdno 

@@ -184,7 +184,8 @@ class RPTCertificationOnlineService {
 		required('refdate', params.refdate);
 		required('purpose', params.purpose);
 
-		def year = dtSvc.getServerYear()
+		def currYear = dtSvc.getServerYear()
+		def currQtr = dtSvc.getServerQtr()
 		params.certid = 'RC' + new java.rmi.server.UID()
 
 		def reporttype = null;
@@ -230,9 +231,9 @@ class RPTCertificationOnlineService {
         	certifiedby      : 'SYSTEM',
         	certifiedbytitle : 'SYSTEM',
         	purpose          : params.purpose,
-			asofyear         : year,
-			year 			 : year,
-			qtr 			 : 4,
+			asofyear         : (currQtr == 1 ? currYear - 1 : currYear),
+			year 			 : (currQtr == 1 ? currYear - 1 : currYear),
+			qtr 			 : (currQtr == 1 ? 4 : currQtr - 1),
 			items 			 : params.faases,
         	oramount         : 0.0,
         	stampamount      : 0.0,

@@ -36,6 +36,8 @@
 	<parameter name="TREASURERNAME" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="TREASURERTITLE" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="TITLE" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="BRGYTITLE" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="LGUTITLE" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="brgyname" class="java.lang.String"/>
 	<field name="year" class="java.lang.Number"/>
@@ -45,9 +47,9 @@
 	<field name="brgybasic" class="java.lang.Number"/>
 	<field name="brgydisc" class="java.lang.Number"/>
 	<field name="brgyshare" class="java.lang.Number"/>
-	<field name="provmunibasic" class="java.lang.Number"/>
-	<field name="provmunidisc" class="java.lang.Number"/>
-	<field name="provmunishare" class="java.lang.Number"/>
+	<field name="lgubasic" class="java.lang.Number"/>
+	<field name="lgudisc" class="java.lang.Number"/>
+	<field name="lgushare" class="java.lang.Number"/>
 
 	<variable name="GRANDTOTAL" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{total}]]></variableExpression>
@@ -71,13 +73,13 @@
 		<variableExpression><![CDATA[$F{brgyshare}]]></variableExpression>
 	</variable>
 	<variable name="provmunibasic" class="java.lang.Number" resetType="Group" resetGroup="ADVYEAR" calculation="Sum">
-		<variableExpression><![CDATA[$F{provmunibasic}]]></variableExpression>
+		<variableExpression><![CDATA[$F{lgubasic}]]></variableExpression>
 	</variable>
 	<variable name="provmunidisc" class="java.lang.Number" resetType="Group" resetGroup="ADVYEAR" calculation="Sum">
 		<variableExpression><![CDATA[$F{basic}]]></variableExpression>
 	</variable>
 	<variable name="provmunishare" class="java.lang.Number" resetType="Group" resetGroup="ADVYEAR" calculation="Sum">
-		<variableExpression><![CDATA[$F{provmunishare}]]></variableExpression>
+		<variableExpression><![CDATA[$F{lgushare}]]></variableExpression>
 	</variable>
 
 		<group  name="ADVYEAR" isReprintHeaderOnEachPage="true" >
@@ -177,24 +179,6 @@
 				<staticText>
 					<reportElement
 						x="353"
-						y="2"
-						width="183"
-						height="20"
-						key="staticText-89"/>
-					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false"/>
-					</textElement>
-				<text><![CDATA[ 25% Barangay Share]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="353"
 						y="22"
 						width="61"
 						height="20"
@@ -245,24 +229,6 @@
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false"/>
 					</textElement>
 				<text><![CDATA[Total]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="536"
-						y="2"
-						width="184"
-						height="20"
-						key="staticText-93"/>
-					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false"/>
-					</textElement>
-				<text><![CDATA[Province/Municipality Share]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
@@ -318,6 +284,42 @@
 					</textElement>
 				<text><![CDATA[Total]]></text>
 				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="353"
+						y="2"
+						width="183"
+						height="20"
+						key="textField-92"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{BRGYTITLE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="536"
+						y="2"
+						width="184"
+						height="20"
+						key="textField-93"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{LGUTITLE}]]></textFieldExpression>
+				</textField>
 			</band>
 			</groupHeader>
 			<groupFooter>
@@ -798,7 +800,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{provmunibasic}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{lgubasic}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -816,7 +818,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{provmunidisc}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{lgudisc}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -834,7 +836,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{provmunishare}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{lgushare}]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>

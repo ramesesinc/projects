@@ -33,7 +33,6 @@ public class BarangayShareAdvanceInitPage extends javax.swing.JPanel {
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xNumberField2 = new com.rameses.rcp.control.XNumberField();
-        xComboBox6 = new com.rameses.rcp.control.XComboBox();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Initial Information");
@@ -48,17 +47,6 @@ public class BarangayShareAdvanceInitPage extends javax.swing.JPanel {
         xNumberField2.setPreferredSize(new java.awt.Dimension(125, 20));
         xNumberField2.setRequired(true);
         xFormPanel1.add(xNumberField2);
-
-        xComboBox6.setCaption("Summary Type");
-        xComboBox6.setDepends(new String[] {"entity.reporttype"});
-        xComboBox6.setExpression("#{item.caption}");
-        xComboBox6.setItems("summarytypes");
-        xComboBox6.setName("entity.summarytype"); // NOI18N
-        xComboBox6.setAllowNull(false);
-        xComboBox6.setImmediate(true);
-        xComboBox6.setPreferredSize(new java.awt.Dimension(125, 20));
-        xComboBox6.setRequired(true);
-        xFormPanel1.add(xComboBox6);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
@@ -95,7 +83,6 @@ public class BarangayShareAdvanceInitPage extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XNumberField xNumberField2;
     private com.rameses.rcp.control.XPanel xPanel1;

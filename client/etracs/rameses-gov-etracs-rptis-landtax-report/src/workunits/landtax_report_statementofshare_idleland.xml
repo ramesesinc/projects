@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/explorer/report/landtax" action="init" 
+        <invoker xfolderid="/explorer/report/landtax" action="init" 
                  caption="Statement of Share Report - Idle Land" 
                  target="window" role="REPORT"/>
         <invoker type="formActions"     action="_close" caption="Cancel" mnemonic="c"  icon="images/toolbars/cancel.png" immediate="true" visibleWhen="#{mode=='init'}"/>

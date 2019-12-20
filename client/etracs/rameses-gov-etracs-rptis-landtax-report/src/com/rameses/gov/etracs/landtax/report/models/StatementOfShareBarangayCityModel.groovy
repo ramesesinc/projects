@@ -6,7 +6,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 
-class BarangayCityShareModel extends com.rameses.gov.etracs.rpt.report.AsyncReportController 
+class StatementOfShareBarangayCityModel extends com.rameses.gov.etracs.rpt.report.AsyncReportController 
 {
     @Service('LandTaxReportBarangayCityShareService') 
     def svc

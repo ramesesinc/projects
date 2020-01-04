@@ -5,7 +5,6 @@ insert into report_rptdelinquency_forprocess(
 select rl.objid, rl.barangayid 
 from rptledger rl 
 where rl.state = 'APPROVED' 
-and rl.taxable = 1
 and rl.barangayid = $P{barangayid}
 and (rl.lastyearpaid < $P{cy} or (rl.lastyearpaid = $P{cy} and rl.lastqtrpaid < 4))
 and exists(select * from rptledgerfaas where state = 'APPROVED' and taxable = 1 and assessedvalue > 0)
@@ -38,4 +37,13 @@ delete from report_rptdelinquency_barangay
 
 [deleteDelinquency]
 delete from report_rptdelinquency
+
+
+[getBarangayCountInfo]
+select 
+	barangayid,
+	sum(case when ignored = 0 then 1 else 0 end) as errors,
+	sum(case when ignored = 1 then 1 else 0 end) as ignored
+from report_rptdelinquency_error
+group by barangayid
 

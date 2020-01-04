@@ -23,9 +23,10 @@ FROM (
 		SUM(basic - basicdisc + basicint) AS basicnet,
 		SUM(sef - sefdisc + sefint) AS sefnet,
 		SUM(basic - basicdisc + basicint  + sef - sefdisc + sefint ) AS total
-	FROM vw_landtax_report_rptdelinquency r
+	FROM vw_landtax_report_rptdelinquency_detail r
 	WHERE barangayid LIKE $P{barangayid} 
 	AND NOT EXISTS(select * from faas_restriction where ledger_objid = r.rptledgerid and state='ACTIVE')
+	AND NOT EXISTS(select * from rptledger_subledger where objid = r.rptledgerid)
 	${filter} 
 	GROUP BY rptledgerid 
 )x 
@@ -62,17 +63,17 @@ FROM (
 		SUM(basicint) AS basicint, SUM(sefint) AS sefint, 
 		SUM(basicdisc) as basicdisc, SUM(sefdisc) as sefdisc,
 		SUM(basic - basicdisc + basicint  + sef - sefdisc + sefint ) AS total
-	FROM vw_landtax_report_rptdelinquency r
+	FROM vw_landtax_report_rptdelinquency_detail r
 	WHERE barangayid LIKE $P{barangayid} 
 	AND NOT EXISTS(select * from faas_restriction where ledger_objid = r.rptledgerid and state='ACTIVE')
 	AND NOT EXISTS(select * from rptledger_subledger where objid = r.rptledgerid)
 	${filter} 
-	GROUP BY rptledgerid, year, case when year = $P{year} then 'A. CURRENT' else 'B. PREVIOUS' end
+	GROUP BY rptledgerid, case when year = $P{year} then 'A. CURRENT' else 'B. PREVIOUS' end
 )x 
 	INNER JOIN rptledger rl ON x.rptledgerid = rl.objid 
 	INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
 	INNER JOIN barangay b ON rl.barangayid = b.objid
-ORDER BY b.name, x.revperiod, (x.endyear - x.startyear + 1) desc 
+ORDER BY b.name, x.revperiod, (x.endyear - x.startyear + 1) desc, e.name  
 
 
 
@@ -98,13 +99,14 @@ from (
 		sum(sef) as sef, 
 		sum(sefint) as sefint,
 		sum(sef + sefint - sefdisc) as sefnet 
-	from vw_landtax_report_rptdelinquency rd 
+	from vw_landtax_report_rptdelinquency_detail rd 
 		inner join rptledger rl on rd.rptledgerid = rl.objid 
 		inner join barangay b on rl.barangayid = b.objid 
 		inner join rptledgerfaas rlf on rd.rptledgerid = rlf.rptledgerid
 		inner join propertyclassification pc on rlf.classification_objid = pc.objid 
 	where rd.barangayid LIKE $P{barangayid} 
 	 and not exists(select * from faas_restriction where ledger_objid = rd.rptledgerid and state='ACTIVE')
+	 AND NOT EXISTS(select * from rptledger_subledger where objid = rd.rptledgerid)
 	 and rd.year >= rlf.fromyear 
 	 and (rd.year <= rlf.toyear or rlf.toyear = 0 )
 	 and rlf.state = 'APPROVED' 
@@ -229,7 +231,6 @@ from (
     select c.receiptno, c.receiptdate
     from cashreceipt c 
         inner join rptpayment rp on c.objid = rp.receiptid 
-        inner join vw_rptpayment_item cro on rp.objid = cro.parentid
         left join cashreceipt_void cv on c.objid = cv.receiptid
     where rp.refid = $P{rptledgerid}
     and cv.objid is null 

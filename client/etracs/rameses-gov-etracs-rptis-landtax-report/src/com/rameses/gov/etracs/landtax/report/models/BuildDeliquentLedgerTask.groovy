@@ -47,7 +47,7 @@ class BuildDeliquentLedgerTask implements Runnable
     
     private void sleep(){
         try{
-            Thread.sleep(500);
+            Thread.sleep(50);
         }catch(e){
             //
         }

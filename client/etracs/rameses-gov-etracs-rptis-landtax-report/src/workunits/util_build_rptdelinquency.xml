@@ -3,16 +3,10 @@
         <invoker folderid="/explorer/txn/landtax/util" action="init" 
                  caption="Build Realty Tax Delinquency" target="window" index="101" 
                  role="ADMIN" permission="rptdelinquency.build" />
+                 
         <invoker type="quick_launcher" code="RBD01" action="init" 
                  caption="Build Realty Tax Delinquency" target="window" index="101" 
                  role="ADMIN" permission="rptdelinquency.build" />
-        
-        <!-- 
-        <invoker folderid="/menucategory/landtax/util" 
-                 action="init"  caption="Build Realty Tax Delinquency"  
-                 role="ADMIN" permission="rptdelinquency.build" 
-                 target="window" />
-            -->
         
         <invoker type="formActions" action="_close" caption="Cancel" visibleWhen="#{mode == 'init'}" />
         <invoker type="formActions" action="buildLedgers" caption="Next" visibleWhen="#{mode == 'init'}" />

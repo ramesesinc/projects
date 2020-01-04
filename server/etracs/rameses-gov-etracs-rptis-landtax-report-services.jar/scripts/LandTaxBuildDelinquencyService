@@ -70,13 +70,16 @@ class LandTaxBuildDelinquencyService
 	public def openBuild(){
 		def entity = em_delinquency.where('1=1').first()
 		if (entity){
+			closeBuild(entity)
 			entity = em_delinquency.read(entity)
+			entity.completedbrgys = entity.barangays.findAll{ it.count == it.processed + it.ignored }
+			entity.ignoredbrgys = entity.barangays.findAll{ it.ignored  > 0 }
+			entity.barangays.removeAll(entity.completedbrgys)
 		}
 		return entity
 	}
 
 	@ProxyMethod
-	@Async
 	public def delete(entity){
 		def retval = [status:'ok']
 		try{
@@ -115,7 +118,7 @@ class LandTaxBuildDelinquencyService
 
 	@ProxyMethod
 	public def closeBuild(build){
-		def error = em_delinquency_error.where('1=1').first()
+		def error = em_delinquency_error.find([ignored: 0]).first()
 		if (!error){
 			build.state = 'COMPLETED'	
 			em_delinquency.find([objid:build.objid]).update([state:build.state])
@@ -127,44 +130,41 @@ class LandTaxBuildDelinquencyService
 
 	@ProxyMethod
 	public def getLedgersForProcess( item ) {
-		return em_delinquency_forprocess.find([barangayid:item.barangayid]).list(0, 25)
+		return em_delinquency_forprocess.find([barangayid:item.barangayid]).list()
 	}		
 
 	@ProxyMethod
 	public def buildDelinquency( rptledger) {
-		def retval = [processed:0, errors:0, ignored:0]
-
+		def retval = [processed:0, errors:0]
 		def bitem = rptledger.builditem
 
 		try{
 			def items = getBillingByLedger(rptledger)
 			if (items){
-				def generatedby = [name:env.FULLNAME, title:env.JOBTITLE]
 				items.each{ item ->
 					item.parentid = rptledger.parentid 
 					item.rptledgerid = rptledger.objid 
 					item.barangayid = rptledger.barangayid
 					em_delinquency_item.create(item)
 				}
-
 				logProcessed(retval, rptledger, bitem)
 			}
 		}
-		catch(Warning be){
-			logProcessed(retval, rptledger, bitem)
-		}
 		catch(Exception ex){
-			retval.errors = 1
 			rptledger.error = getErrorMessage(ex)
-			rptledger.ignored = false
-			em_delinquency_forprocess.find([objid:rptledger.objid]).delete()
-			em_delinquency_error.create(rptledger)
-			em_delinquency_barangay.find([objid:bitem.objid]).update([errors:'{errors + 1}'])
+			if (rptledger.error.toString().matches('.*paid.*')) {
+				logProcessed(retval, rptledger, bitem)
+			} else {
+				retval.errors = 1
+				rptledger.ignored = 0
+				em_delinquency_forprocess.find([objid:rptledger.objid]).delete()
+				em_delinquency_error.create(rptledger)
+				em_delinquency_barangay.find([objid:bitem.objid]).update([errors:'{errors + 1}'])
+			}
 		}
 
 		return retval 
 	}	
-
 
 	void logProcessed(retval, rptledger, bitem) {
 		em_delinquency_barangay.find([objid:bitem.objid]).update([processed:'{processed + 1}'])
@@ -178,7 +178,9 @@ class LandTaxBuildDelinquencyService
 		items.each{error -> 
 			em_delinquency.rescheduleError(error)
 			em_delinquency_error.find([objid: error.objid]).delete()
-			em_delinquency_barangay.find([barangayid: error.barangayid]).update([errors:'{errors - 1}'])
+		}
+		em_delinquency.getBarangayCountInfo().each{
+			em_delinquency_barangay.find([barangayid: it.barangayid]).update(it)
 		}
 	}
 
@@ -186,9 +188,10 @@ class LandTaxBuildDelinquencyService
 	public def ignoreErrors(items){
 		items.each{ error ->
 			em_delinquency_error.find([objid: error.objid]).update([ignored:1])
+		}
 
-			em_delinquency_barangay.find([barangayid: error.barangayid])
-								   .update([errors:'{errors - 1}', ignored:'{ignored + 1}'])
+		em_delinquency.getBarangayCountInfo().each{
+			em_delinquency_barangay.find([barangayid: it.barangayid]).update(it)
 		}
 
 		def entity = [state:'PROCESSING']
@@ -245,31 +248,10 @@ class LandTaxBuildDelinquencyService
 
 	private def getErrorMessage(e){
 		def c = e;
-
 		while (c.cause){
 			c = c.cause 
 		}
-
 		return c.message 
-
-		/*
-
-		def sw = null 
-		def pw = null 
-		try {
-			sw = new StringWriter()
-			pw = new PrintWriter(sw)
-			c.printStackTrace( pw)
-			return sw.toString()
-		}
-		catch( ex ) {
-			return ex.message
-		}
-		finally{
-			if( sw ) try{ sw.close() } catch( ex ) {}
-			if( pw ) try{ pw.close() } catch( ex ){}
-		}
-		*/
 	}
 
 

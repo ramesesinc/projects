@@ -113,7 +113,22 @@ FROM subdivisionaffectedrpu sar
 WHERE sar.subdivisionid = $P{subdivisionid}	
 ORDER BY sar.prevpin
 
-
+[getAffectedRpusByLand]
+SELECT 
+	sar.*, 
+	f.owner_name, 
+	f.owner_address,
+	f.state AS prevstate,
+	f.owner_name,
+	f.owner_address,
+	f.lguid 
+FROM subdivisionaffectedrpu sar 
+	inner join faas_list nf on sar.newfaasid = nf.objid 
+	left join faas_list f on sar.prevfaasid = f.objid 
+WHERE sar.subdivisionid = $P{subdivisionid}	
+AND nf.realpropertyid LIKE $P{realpropertyid} 
+AND nf.rputype LIKE $P{rputype}
+ORDER BY sar.prevpin
 
 [getAffectedRpusForCreate]
 select distinct 

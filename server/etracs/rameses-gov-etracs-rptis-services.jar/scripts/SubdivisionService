@@ -209,6 +209,20 @@ class SubdivisionService
     }
 
     @ProxyMethod
+    public List getAffectedRpusByLand(params){
+        if (!params.realpropertyid) {
+            params.realpropertyid = '%'
+        }
+        if (!params.rputype) {
+            params.rputype = '%'
+        }
+
+        return em.getAffectedRpusByLand(params).each{
+            it.isnew = util.toBoolean(it.isnew, false)
+        }
+    }
+
+    @ProxyMethod
     public def getSubdividedLands( subdivisionid ) {
         return em.getSubdividedLands([subdivisionid:subdivisionid])
     }

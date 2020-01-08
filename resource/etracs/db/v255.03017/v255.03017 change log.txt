@@ -5,3 +5,4 @@ CHANGELOG: v255.03017
 
 - LANDTAX
 	- Post realty tax shares asynchronously 
+	- Abstract: fix missing paidby

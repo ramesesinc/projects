@@ -40,3 +40,14 @@ FOREIGN KEY (`rptledgerid`) REFERENCES `rptledger` (`objid`)
 alter table cashreceipt_rpt_share_forposting add CONSTRAINT `fk_cashreceipt_rpt_share_forposing_cashreceipt` 
 FOREIGN KEY (`receiptid`) REFERENCES `cashreceipt` (`objid`)
 ;
+
+
+
+
+/*==================================================
+**
+** BLDG DATE CONSTRUCTED SUPPORT 
+**
+===================================================*/
+
+alter table bldgrpu add dtconstructed date;

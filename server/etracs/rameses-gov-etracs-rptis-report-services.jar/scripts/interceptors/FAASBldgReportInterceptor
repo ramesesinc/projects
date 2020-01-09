@@ -134,6 +134,7 @@ class FaasBldgReportInterceptor
 	void buildFloorInfo(faas){
 		// faas.rpu.groundfloorarea = faas.rpu.structuraltypes?.basefloorarea.sum();
 		faas.rpu.groundfloorarea = 0.0;
+		faas.rpu.floor1area = 0.0;
 		faas.rpu.floor2area = 0.0;
 		faas.rpu.floor3area = 0.0;
 		faas.rpu.floor4area = 0.0;
@@ -142,6 +143,7 @@ class FaasBldgReportInterceptor
 				bu.floors.each{f ->
 					def floorno = Integer.parseInt(f.floorno)
 					if (floorno == 1) faas.rpu.groundfloorarea += f.area 
+					if (floorno == 1) faas.rpu.floor1area += f.area 
 					if (floorno == 2) faas.rpu.floor2area += f.area
 					if (floorno == 3) faas.rpu.floor3area += f.area
 					if (floorno == 4) faas.rpu.floor4area += f.area
@@ -152,12 +154,23 @@ class FaasBldgReportInterceptor
 		if (faas.rpu.floor3area == 0.0 ) faas.rpu.floor3area = null;
 		if (faas.rpu.floor4area == 0.0 ) faas.rpu.floor4area = null;
 
-		def additional = em.findTotalAdditionalArea(faas.rpu)
-		if (additional){
-			if (additional.area == null)
-				additional.area = 0.0 
-			faas.rpu.additionalarea = additional.area  
-			faas.rpu.totalareasqm += additional.area 
+		faas.rpu.groundflooraddlarea = 0.0;
+		faas.rpu.floor1addlarea = 0.0;
+		faas.rpu.floor2addlarea = 0.0;
+		faas.rpu.floor3addlarea = 0.0;
+		faas.rpu.floor4addlarea = 0.0;
+		faas.rpu.additionalarea = 0.0;
+
+		def floorAdditionals = em.getFloorAdditionalAreas(faas.rpu)
+		floorAdditionals.each{
+			def floorno = Integer.parseInt(it.floorno)
+			if (floorno == 1) faas.rpu.groundflooraddlarea += it.area 
+			if (floorno == 1) faas.rpu.floor1addlarea += it.area
+			if (floorno == 2) faas.rpu.floor2addlarea += it.area
+			if (floorno == 3) faas.rpu.floor3addlarea += it.area
+			if (floorno == 4) faas.rpu.floor4addlarea += it.area
+			faas.rpu.additionalarea += it.area
+			faas.rpu.totalareasqm += it.area
 		}
 	}
 
@@ -249,6 +262,7 @@ class FaasBldgReportInterceptor
 			}
 		}
 		
+		faas.additionalparams = em.getAdditionalItemParamDetails(faas.rpu)
 	}	
 
 	void sortAdditionalItems(faas){

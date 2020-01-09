@@ -3,6 +3,7 @@ CHANGELOG: v255.03017
 - ASSESSOR	
 	- Consolidation: Transfer creation of Consolidated Land to Taxmapping
 	- Subdivision: add affected rpu filter
+	- Bldg: add date constructed and additional floor areas
 
 - LANDTAX
 	- Post realty tax shares asynchronously 

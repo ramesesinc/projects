@@ -7,6 +7,7 @@ select
 	br.permitdate,
 	br.permitissuedby,
 	br.basevalue,
+	br.dtconstructed,
 	br.dtcompleted,
 	br.dtoccupied,
 	br.floorcount,
@@ -65,6 +66,7 @@ from bldgrpu_structuraltype stt
   inner join bldgkind bk on bucc.bldgkind_objid = bk.objid 
   inner join propertyclassification pc on stt.classification_objid = pc.objid 
 where stt.bldgrpuid = $P{objid}
+order by bt.code
 
 
 [getBldgUses]
@@ -84,6 +86,7 @@ select
 from bldguse bu
   inner join bldgassesslevel bal on bu.actualuse_objid = bal.objid 
 where bu.structuraltype_objid = $P{objid}
+order by bal.code 
 
 
 [getFloors]
@@ -99,6 +102,7 @@ select
 	f.marketvalue
 from bldgfloor f 
 where f.bldguseid = $P{objid}
+order by floorno
 
 
 
@@ -203,6 +207,21 @@ where bfa.bldgrpuid = $P{objid}
 and bi.addareatobldgtotalarea =  1 
 and p.name like '%AREA%'
 
+[getFloorAdditionalAreas]
+select 
+	bf.floorno, 
+	sum(bfa.decimalvalue) AS area 
+from bldgflooradditionalparam bfa
+	inner join rptparameter p on bfa.param_objid = p.objid 
+	inner join bldgflooradditional ba on bfa.bldgflooradditionalid = ba.objid 
+	inner join bldgfloor bf on ba.bldgfloorid = bf.objid 
+	inner join bldgadditionalitem bi on ba.additionalitem_objid = bi.objid 
+where bfa.bldgrpuid = $P{objid}
+and bi.addareatobldgtotalarea =  1 
+and p.name like '%AREA%'
+group by bf.floorno 
+
+
 
 [findBldgUseAdditionalInfo]
 select distinct addlinfo 
@@ -210,3 +229,19 @@ from bldguse
 where bldgrpuid = $P{rpuid} 
 and actualuse_objid = $P{actualuseid}
 and addlinfo is not null 
+
+
+[getAdditionalItemParamDetails]
+select 
+	bf.floorno, 
+	bi.name as addlitem,
+	p.name as paramname,
+	case when bfa.intvalue is not null then bfa.intvalue else bfa.decimalvalue end as paramvalue
+from bldgfloor bf
+	inner join bldgflooradditional ba on bf.objid = ba.bldgfloorid 
+	inner join bldgadditionalitem bi on ba.additionalitem_objid = bi.objid 
+	inner join bldgflooradditionalparam bfa on ba.objid = bfa.bldgflooradditionalid
+	inner join rptparameter p on bfa.param_objid = p.objid 	
+where bf.bldgrpuid = $P{objid}
+order by bf.floorno, bi.name, p.name 
+;

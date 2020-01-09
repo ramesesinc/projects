@@ -44,3 +44,14 @@ FOREIGN KEY (receiptid) REFERENCES cashreceipt (objid)
 go 
 
 
+
+
+/*==================================================
+**
+** BLDG DATE CONSTRUCTED SUPPORT 
+**
+===================================================*/
+
+alter table bldgrpu add dtconstructed date
+go 
+

@@ -156,7 +156,7 @@ public class BatchGRModel
     
     def showStatus = {
         msg = it;
-        binding?.refresh('msg|itemActions');
+        binding?.refresh('msg');
     }
     
     def onRevise = {info ->
@@ -178,12 +178,14 @@ public class BatchGRModel
     
     def task = [
         run : {
-            while(!cancelled && itemsforrevision) {
+            def size = itemsforrevision.size();
+            while(!cancelled && size > 0) {
                 def item = itemsforrevision.remove(0);
                 showStatus('Revising TD No. ' + item.tdno);
                 onRevise(svc.revise(item));
+                size = itemsforrevision.size();
                 try{
-                    Thread.sleep(250);
+                    Thread.sleep(100);
                 }catch(e) {
                     //
                 }

@@ -598,6 +598,8 @@ class FAASService
 
 	@ProxyMethod
     public void updateSignatoryInfo(task) {
+    	if (t!task)
+    		return
         if (task.state.matches('assign.*') || env.action?.matches('return.*'))
             return 
         if (!task.state.matches('taxmapper|taxmapper_chief|appraiser|appraiser_chief|provrecommender|recommender|approver|provtaxmapper|provtaxmapperchief|provappraiser|provappraiserchief|reviewer'))

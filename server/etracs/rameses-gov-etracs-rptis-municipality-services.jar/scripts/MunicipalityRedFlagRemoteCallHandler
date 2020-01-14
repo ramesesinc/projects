@@ -26,7 +26,7 @@ class MunicipalityRedFlagRemoteCallHandler
 
 		def msg = [
             objid     : redflag.refid,
-            recipientid : (currtask.assignee.objid ? currtask.assignee.objid : '-'),
+            recipientid : (currtask.assignee?.objid ? currtask.assignee?.objid : '-'),
             recipienttype : 'user',
             senderid  : (redflag.filedby.objid ? redflag.filedby.objid : '-'),
             sender    : redflag.filedby.name,

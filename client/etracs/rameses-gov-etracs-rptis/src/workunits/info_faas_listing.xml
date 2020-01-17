@@ -4,6 +4,7 @@
         <invoker type="subdivisionfromcs:info" action="init" caption="FAAS Listing" visibleWhen="#{entity.state == 'APPROVED'}" index="450"/>
         <invoker type="consolidation:info" action="init" caption="FAAS Listing" visibleWhen="#{entity.state == 'APPROVED'}" index="450"/>
         <invoker type="resection:info" action="init" caption="FAAS Listing" index="450"/>
+        <invoker type="batchgr:info" action="init" caption="FAAS Listing" index="450"/>
     </invokers>
     <code >
     <![CDATA[

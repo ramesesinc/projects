@@ -58,6 +58,26 @@ class GeneralRevisionService
 	}
 
 
+	@ProxyMethod
+	public def createDataCaptureGeneralRevision( info ) {
+		info._checkTxnRef = true 
+		def faas = initGeneralRevision( info )
+		def entity = faasSvc.createFaas(faas)
+		insertSketch(faas)
+		return entity 
+	}	
+
+	@ProxyMethod
+	public def createOnlineGeneralRevision( info ) {
+		info._checkTxnRef = true 
+		def faas = initGeneralRevision( info )
+		faas.datacapture = false
+		faas.state = 'PENDING'
+		def entity = faasSvc.createFaas(faas)
+		insertSketch(faas)
+		return entity 
+	}	
+
 
 	@ProxyMethod
 	public def initGeneralRevision( info ) {
@@ -126,16 +146,6 @@ class GeneralRevisionService
 		faas.recommender = (info.batchgr ? info.batchgr.recommender : [:])
 		faas.approver = (info.batchgr ? info.batchgr.approver : [:])
 	}
-
-	@ProxyMethod
-	public def createDataCaptureGeneralRevision( info ) {
-		info._checkTxnRef = true 
-		def faas = initGeneralRevision( info )
-		def entity = faasSvc.createFaas(faas)
-		insertSketch(faas)
-		return entity 
-	}	
-
 
 	void insertSketch(faas){
 		def param = [:]

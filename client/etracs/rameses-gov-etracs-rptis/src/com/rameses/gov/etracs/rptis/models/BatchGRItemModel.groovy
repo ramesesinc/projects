@@ -5,12 +5,11 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 
-public class BatchGRModel 
+public class BatchGRItemModel 
 {
     @Binding
     def binding;
     
-    @Service('BatchGRService')
     def svc; 
     
     @Service('FAASLookupService')
@@ -28,24 +27,13 @@ public class BatchGRModel
     String title = 'General Revision';
     String entityName = 'batchgr';
     
-    void open() {
-        entity.putAll(svc.open(entity));
+    void init() {
         refreshCounts();
         loadItems();
-        if (entity.state == 'DRAFT') {
-            updateItemStatus();
-        }
-    }
-    
-    def delete() {
-        if (MsgBox.confirm('Delete batch record?')) {
-            svc.delete(entity);
-            return '_close';
-        }
     }
     
     void refresh() {
-        open();
+        init();
     }
     
     void revise() {
@@ -61,18 +49,21 @@ public class BatchGRModel
         cancelled = true;
         processing = false;
     }
-    
-    def getShowDelete() {
-        if (processing) return false;
-        if (entity.state != 'FORREVISION') return false;
-        if (items && items.find{it.newfaasid != null}) return false;
-        return true;
-    }
-    
+        
     def getShowRevise() {
         if (processing) return false;
-        if (entity.state != 'FORREVISION') return false;
+        if (entity.state != 'DRAFT') return false;
+        if (!entity.taskstate.matches('provtaxmapper|taxmapper')) return false;
+        if (entity.assignee?.objid != OsirisContext.env.USERID) return false;
         if (items && items.find{it.state == 'FORREVISION'} == null) return false;
+        return true;
+    }
+
+    def getShowExclude() {
+        if (processing) return false;
+        if (entity.state != 'DRAFT') return false;
+        if (!entity.taskstate.matches('provtaxmapper|taxmapper|appraiser|provappraiser')) return false;
+        if (entity.assignee?.objid != OsirisContext.env.USERID) return false;
         return true;
     }
     
@@ -115,35 +106,6 @@ public class BatchGRModel
     ] as BasicListModel
  
    
-    
-    /*---------------------------------------------------------
-     * UPDATE ITEM STATUS TASK 
-    ---------------------------------------------------------*/
-    /* The batch items status are not fully sync. 
-     * Sync the state and newfaasid for items that 
-     * are already revised 
-     */
-    void updateItemStatus(){
-        processing = true;
-        new Thread(updateItemTask).start();
-    }
-    
-    def updateItemTask = [
-        run: {
-            showStatus('Updating item status. Pleas wait...');
-            items.each{
-                showStatus('Updating item status: ' + it.tdno);
-            }
-            entity.state = 'FORREVISION';
-            svc.update(entity);
-            
-            loadItems();
-            
-            onComplete();
-        }
-    ] as Runnable;
-    
-    
     
     /*---------------------------------------------------------
      * BATCH REVISION TASK 
@@ -222,6 +184,11 @@ public class BatchGRModel
                 afterUpdate: reloadItem,
                 afterDelete: reloadItem,
         ]);
+    }
+
+    def openFaas() {
+    	def faas = [objid: selectedItem.objid];
+    	return Inv.lookupOpener('faas:capture:open', [entity: faas]);
     }
     
     void excludeFaas() {

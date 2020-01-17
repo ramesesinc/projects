@@ -598,7 +598,7 @@ class FAASService
 
 	@ProxyMethod
     public void updateSignatoryInfo(task) {
-    	if (t!task)
+    	if (!task)
     		return
         if (task.state.matches('assign.*') || env.action?.matches('return.*'))
             return 

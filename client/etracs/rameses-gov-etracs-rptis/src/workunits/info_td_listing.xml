@@ -4,6 +4,7 @@
         <invoker type="subdivisionfromcs:info" action="init" caption="Tax Declarations" visibleWhen="#{entity.state == 'APPROVED'}" index="451"/>
         <invoker type="consolidation:info" action="init" caption="Tax Declarations" visibleWhen="#{entity.state == 'APPROVED'}" index="451"/>
         <invoker type="resection:info" action="init" caption="Tax Declarations" index="451"/>
+        <invoker type="batchgr:info" action="init" caption="Tax Declarations" index="451"/>
     </invokers>
     <code >
     <![CDATA[

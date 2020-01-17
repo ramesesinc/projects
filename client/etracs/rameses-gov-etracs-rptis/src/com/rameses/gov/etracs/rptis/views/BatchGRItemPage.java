@@ -6,10 +6,10 @@ import com.rameses.rcp.ui.annotations.Template;
 
 @StyleSheet
 @Template(FormPage.class)
-public class BatchGRPage extends javax.swing.JPanel {
+public class BatchGRItemPage extends javax.swing.JPanel {
     
     /** Creates new form FAASNewPage */
-    public BatchGRPage() {
+    public BatchGRItemPage() {
         initComponents();
     }
     
@@ -40,19 +40,6 @@ public class BatchGRPage extends javax.swing.JPanel {
         xFormPanel7 = new com.rameses.rcp.control.XFormPanel();
         xLabel6 = new com.rameses.rcp.control.XLabel();
         xLabel7 = new com.rameses.rcp.control.XLabel();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xFormPanel8 = new com.rameses.rcp.control.XFormPanel();
-        xLabel8 = new com.rameses.rcp.control.XLabel();
-        xDateField5 = new com.rameses.rcp.control.XDateField();
-        xFormPanel9 = new com.rameses.rcp.control.XFormPanel();
-        xLabel9 = new com.rameses.rcp.control.XLabel();
-        xDateField6 = new com.rameses.rcp.control.XDateField();
-        xFormPanel10 = new com.rameses.rcp.control.XFormPanel();
-        xLabel10 = new com.rameses.rcp.control.XLabel();
-        xDateField7 = new com.rameses.rcp.control.XDateField();
-        xFormPanel11 = new com.rameses.rcp.control.XFormPanel();
-        xLabel11 = new com.rameses.rcp.control.XLabel();
-        xDateField8 = new com.rameses.rcp.control.XDateField();
         jPanel3 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         jPanel5 = new javax.swing.JPanel();
@@ -192,108 +179,6 @@ public class BatchGRPage extends javax.swing.JPanel {
         formPanel1.add(xFormPanel7);
 
         jPanel4.add(formPanel1, java.awt.BorderLayout.CENTER);
-
-        xFormPanel2.setCaptionWidth(100);
-        xFormPanel2.setPadding(new java.awt.Insets(5, 5, 5, 5));
-        xFormPanel2.setPreferredSize(new java.awt.Dimension(500, 100));
-
-        xFormPanel8.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel8.setPadding(new java.awt.Insets(0, 0, 2, 0));
-        xFormPanel8.setPreferredSize(new java.awt.Dimension(0, 22));
-        xFormPanel8.setShowCaption(false);
-
-        xLabel8.setCaption("Taxmapper");
-        xLabel8.setExpression("#{entity.taxmapper.name}");
-        xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel8.setCaptionWidth(95);
-        xLabel8.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
-        xLabel8.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel8.add(xLabel8);
-
-        xDateField5.setCaption("Signed");
-        xDateField5.setName("entity.taxmapper.dtsigned"); // NOI18N
-        xDateField5.setCaptionWidth(60);
-        xDateField5.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xDateField5.setEnabled(false);
-        xDateField5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xFormPanel8.add(xDateField5);
-
-        xFormPanel2.add(xFormPanel8);
-
-        xFormPanel9.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel9.setPadding(new java.awt.Insets(0, 0, 2, 0));
-        xFormPanel9.setPreferredSize(new java.awt.Dimension(0, 22));
-        xFormPanel9.setShowCaption(false);
-
-        xLabel9.setCaption("Appraiser");
-        xLabel9.setExpression("#{entity.appraiser.name}");
-        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel9.setCaptionWidth(95);
-        xLabel9.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
-        xLabel9.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xLabel9.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel9.add(xLabel9);
-
-        xDateField6.setCaption("Signed");
-        xDateField6.setName("entity.appraiser.dtsigned"); // NOI18N
-        xDateField6.setCaptionWidth(60);
-        xDateField6.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xDateField6.setEnabled(false);
-        xDateField6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xFormPanel9.add(xDateField6);
-
-        xFormPanel2.add(xFormPanel9);
-
-        xFormPanel10.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel10.setPadding(new java.awt.Insets(0, 0, 2, 0));
-        xFormPanel10.setPreferredSize(new java.awt.Dimension(0, 22));
-        xFormPanel10.setShowCaption(false);
-
-        xLabel10.setCaption("Recommender");
-        xLabel10.setExpression("#{entity.recommender.name}");
-        xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel10.setCaptionWidth(95);
-        xLabel10.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
-        xLabel10.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xLabel10.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel10.add(xLabel10);
-
-        xDateField7.setCaption("Signed");
-        xDateField7.setName("entity.recommender.dtsigned"); // NOI18N
-        xDateField7.setCaptionWidth(60);
-        xDateField7.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xDateField7.setEnabled(false);
-        xDateField7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xFormPanel10.add(xDateField7);
-
-        xFormPanel2.add(xFormPanel10);
-
-        xFormPanel11.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel11.setPadding(new java.awt.Insets(0, 0, 2, 0));
-        xFormPanel11.setPreferredSize(new java.awt.Dimension(0, 22));
-        xFormPanel11.setShowCaption(false);
-
-        xLabel11.setCaption("Approver");
-        xLabel11.setExpression("#{entity.approver.name}");
-        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel11.setCaptionWidth(95);
-        xLabel11.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
-        xLabel11.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xLabel11.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel11.add(xLabel11);
-
-        xDateField8.setCaption("Signed");
-        xDateField8.setName("entity.approver.dtsigned"); // NOI18N
-        xDateField8.setCaptionWidth(60);
-        xDateField8.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xDateField8.setEnabled(false);
-        xDateField8.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xFormPanel11.add(xDateField8);
-
-        xFormPanel2.add(xFormPanel11);
-
-        jPanel4.add(xFormPanel2, java.awt.BorderLayout.EAST);
 
         jPanel1.add(jPanel4, java.awt.BorderLayout.NORTH);
 
@@ -526,28 +411,17 @@ public class BatchGRPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel5;
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
-    private com.rameses.rcp.control.XDateField xDateField5;
-    private com.rameses.rcp.control.XDateField xDateField6;
-    private com.rameses.rcp.control.XDateField xDateField7;
-    private com.rameses.rcp.control.XDateField xDateField8;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel10;
-    private com.rameses.rcp.control.XFormPanel xFormPanel11;
-    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XFormPanel xFormPanel6;
     private com.rameses.rcp.control.XFormPanel xFormPanel7;
-    private com.rameses.rcp.control.XFormPanel xFormPanel8;
-    private com.rameses.rcp.control.XFormPanel xFormPanel9;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XIntegerField xIntegerField3;
     private com.rameses.rcp.control.XIntegerField xIntegerField4;
     private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLabel xLabel10;
-    private com.rameses.rcp.control.XLabel xLabel11;
     private com.rameses.rcp.control.XLabel xLabel12;
     private com.rameses.rcp.control.XLabel xLabel13;
     private com.rameses.rcp.control.XLabel xLabel14;
@@ -557,8 +431,6 @@ public class BatchGRPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
-    private com.rameses.rcp.control.XLabel xLabel8;
-    private com.rameses.rcp.control.XLabel xLabel9;
     // End of variables declaration//GEN-END:variables
     
 }

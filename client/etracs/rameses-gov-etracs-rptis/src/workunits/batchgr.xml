@@ -1,54 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="batchgr:open"
-                 action="open"  caption="Batch General Revision" 
-                 role="RECOMMENDER,APPROVER,APPRAISER" 
-                 permission="batchgr.read" />
-        
-        <invoker type="formActions" 
-                 action="_close" caption="Close" 
-                 immediate="true" visibleWhen="#{processing == false}"/>
-        
-        <invoker type="formActions" 
-                 action="refresh" caption="Refresh" 
-                 visibleWhen="#{processing == false}"/>
+        <invoker type="batchgr:open" action="open" caption="Batch GR" target="window"  />
+        <invoker type="batchgrresent:open" action="openResent" caption="Batch GR" target="window"  />
+   </invokers>
 
-        <invoker type="formActions" 
-                 action="delete" caption="Delete" 
-                 visibleWhen="#{showDelete}"/>
-        
-        <invoker type="formActions" 
-                 action="revise" caption="Revise" 
-                 visibleWhen="#{showRevise}"/>
-                 
-        <invoker type="formActions" 
-                 action="cancel" caption="Cancel" 
-                 visibleWhen="#{processing == true}"/>
-        
-        <!-- ITEM ACTIONS -->
-        <invoker type="itemActions" 
-                 action="openRevisedFaas" caption="Open Revised FAAS" 
-                 visibleWhen="#{selectedItem  &amp;&amp; selectedItem.newfaasid != null}" />
-        
-        <invoker type="itemActions" 
-                 action="reviseItem" caption="Revise" 
-                 visibleWhen="#{selectedItem  &amp;&amp; selectedItem.state == 'ERROR' &amp;&amp; selectedItem.newfaasid == null }" />
-        
-        <invoker type="itemActions" 
-                 action="excludeFaas" caption="Exclude" 
-                 visibleWhen="#{selectedItem  &amp;&amp; selectedItem.state == 'FORREVISION' }" />
-                 
-        <invoker type="itemActions" 
-                 action="modifyPin" caption="Modify PIN" 
-                 visibleWhen="#{selectedItem &amp;&amp; selectedItem.rputype == 'land' &amp;&amp; selectedItem.state == 'REVISED' }" />
-        
-    </invokers>
-    
-    <code class="com.rameses.gov.etracs.rptis.models.BatchGRModel" >
-    </code>
-    
-    <pages>
-        <page template="com.rameses.gov.etracs.rptis.views.BatchGRPage" />
+   <code class="com.rameses.gov.etracs.rptis.models.BatchGRModel">
+   </code>
+
+   <pages> 
+        <page template="com.rameses.gov.etracs.rpt.workflow.InfoPage"/>
+        <page name="completed" template="com.rameses.gov.etracs.rpt.workflow.InfoPage"/>
+         <page name="wait" template="com.rameses.gov.etracs.rpt.util.WaitInfoPage"/>
     </pages>
 </workunit>
+
+

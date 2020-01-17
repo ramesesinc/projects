@@ -4,6 +4,7 @@
         <invoker type="faas:info" action="init" caption="Red Flags" index="1005" />
         <invoker type="subdivision:info" action="init" caption="Red Flags" index="1005" />
         <invoker type="consolidation:info" action="init" caption="Red Flags" index="1005" />
+        <invoker type="batchgr:info" action="init" caption="Red Flags" index="1005" />
         
         <!-- 
         <invoker type="subdivisionfromcs:info" action="init" caption="Red Flags" index="1005" />

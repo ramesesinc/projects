@@ -8,6 +8,7 @@
         <invoker type="resection:info" action="init" doctype="resection" caption="Examination Findings" index="10" />
         <invoker type="mcsettlement:info" action="init" doctype="mcsettlement" caption="Examination Findings" index="10" />
         <invoker type="cancelledfaas:info" action="init" doctype="cancelledfaas" caption="Examination Findings" index="10" />
+        <invoker type="batchgr:info" action="init" doctype="batchgr" caption="Examination Findings" index="10" />
         
         <invoker type="formActions" action="refresh" caption="Refresh" mnemonic="r" />
         

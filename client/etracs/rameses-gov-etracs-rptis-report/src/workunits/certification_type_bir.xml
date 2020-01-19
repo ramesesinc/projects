@@ -12,8 +12,8 @@
         <invoker type="formActions" action="issue" caption="Issue" />
         
     </invokers>
-    <code class="com.rameses.gov.etracs.rptis.report.models.CertificationBirInitModel" />
+    <code class="com.rameses.gov.etracs.rptis.report.models.CertificationSelectBirModel" />
     <pages>
-        <page template="com.rameses.gov.etracs.rptis.report.views.CertificationInitPage" />
+        <page template="com.rameses.gov.etracs.rptis.report.views.CertificationSelectPage" />
     </pages>
 </workunit>

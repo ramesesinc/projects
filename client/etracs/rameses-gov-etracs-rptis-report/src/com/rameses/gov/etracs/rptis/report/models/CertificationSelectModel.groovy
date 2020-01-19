@@ -5,7 +5,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.client.*;
 
-class CertificationInitModel {
+class CertificationSelectModel {
     def openers;
     def opener;
     

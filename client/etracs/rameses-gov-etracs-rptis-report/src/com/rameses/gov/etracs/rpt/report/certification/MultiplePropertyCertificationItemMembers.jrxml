@@ -2,7 +2,7 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="MultiplePropertyCertificationItem"
+		 name="MultiplePropertyCertificationItemMembers"
 		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
@@ -39,25 +39,16 @@
 	<field name="totalareaha" class="java.lang.String"/>
 	<field name="owner.name" class="java.lang.String"/>
 
-		<background>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</background>
-		<title>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</title>
-		<pageHeader>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</pageHeader>
-		<columnHeader>
-			<band height="13"  isSplitAllowed="true" >
+
+		<group  name="OWNER" >
+			<groupExpression><![CDATA[$F{owner.name}]]></groupExpression>
+			<groupHeader>
+			<band height="25"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						mode="Transparent"
 						x="341"
-						y="0"
+						y="12"
 						width="69"
 						height="13"
 						forecolor="#000000"
@@ -79,7 +70,7 @@
 					<reportElement
 						mode="Transparent"
 						x="410"
-						y="0"
+						y="12"
 						width="69"
 						height="13"
 						forecolor="#000000"
@@ -101,7 +92,7 @@
 					<reportElement
 						mode="Transparent"
 						x="479"
-						y="0"
+						y="12"
 						width="69"
 						height="13"
 						forecolor="#000000"
@@ -123,7 +114,7 @@
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="0"
+						y="12"
 						width="25"
 						height="13"
 						forecolor="#000000"
@@ -145,7 +136,7 @@
 					<reportElement
 						mode="Transparent"
 						x="25"
-						y="0"
+						y="12"
 						width="66"
 						height="13"
 						forecolor="#000000"
@@ -167,7 +158,7 @@
 					<reportElement
 						mode="Transparent"
 						x="91"
-						y="0"
+						y="12"
 						width="26"
 						height="13"
 						forecolor="#000000"
@@ -189,7 +180,7 @@
 					<reportElement
 						mode="Transparent"
 						x="159"
-						y="0"
+						y="12"
 						width="45"
 						height="13"
 						forecolor="#000000"
@@ -211,7 +202,7 @@
 					<reportElement
 						mode="Transparent"
 						x="270"
-						y="0"
+						y="12"
 						width="71"
 						height="13"
 						forecolor="#000000"
@@ -233,7 +224,7 @@
 					<reportElement
 						mode="Transparent"
 						x="117"
-						y="0"
+						y="12"
 						width="42"
 						height="13"
 						forecolor="#000000"
@@ -255,7 +246,7 @@
 					<reportElement
 						mode="Transparent"
 						x="204"
-						y="0"
+						y="12"
 						width="66"
 						height="13"
 						forecolor="#000000"
@@ -273,6 +264,40 @@
 					</textElement>
 				<text><![CDATA[Survey No.]]></text>
 				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="612"
+						height="11"
+						key="textField"/>
+					<box></box>
+					<textElement>
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="8" isBold="true" isUnderline="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{owner.name}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="8"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
 			</band>
 		</columnHeader>
 		<detail>
@@ -364,19 +389,6 @@
 						<font fontName="Arial" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rputype}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="549"
-						y="1"
-						width="17"
-						height="11"
-						key="textField"/>
-					<box></box>
-					<textElement textAlignment="Left">
-						<font fontName="Arial" size="7"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{footnote}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

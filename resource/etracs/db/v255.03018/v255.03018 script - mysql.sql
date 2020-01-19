@@ -280,3 +280,92 @@ alter table batchgr
 ;  
 
 
+
+
+/*===========================================
+*
+*  ENTITY MAPPING (PROVINCE)
+*
+============================================*/
+
+DROP TABLE IF EXISTS `entity_mapping`
+;
+
+CREATE TABLE `entity_mapping` (
+  `objid` varchar(50) NOT NULL,
+  `parent_objid` varchar(50) NOT NULL,
+  `org_objid` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+;
+
+
+drop view if exists vw_entity_mapping
+;
+
+create view vw_entity_mapping
+as 
+select 
+  r.*,
+  e.entityno,
+  e.name, 
+  e.address_text as address_text,
+  a.province as address_province,
+  a.municipality as address_municipality
+from entity_mapping r 
+inner join entity e on r.objid = e.objid 
+left join entity_address a on e.address_objid = a.objid
+left join sys_org b on a.barangay_objid = b.objid 
+left join sys_org m on b.parent_objid = m.objid 
+;
+
+
+
+
+/*===========================================
+*
+*  CERTIFICATION UPDATES
+*
+============================================*/
+drop view if exists vw_rptcertification_item
+;
+
+create view vw_rptcertification_item
+as 
+SELECT 
+  rci.rptcertificationid,
+  f.objid as faasid,
+  f.fullpin, 
+  f.tdno,
+  e.objid as taxpayerid,
+  e.name as taxpayer_name, 
+  f.owner_name, 
+  f.administrator_name,
+  f.titleno,  
+  f.rpuid, 
+  pc.code AS classcode, 
+  pc.name AS classname,
+  so.name AS lguname,
+  b.name AS barangay, 
+  r.rputype, 
+  r.suffix,
+  r.totalareaha AS totalareaha,
+  r.totalareasqm AS totalareasqm,
+  r.totalav,
+  r.totalmv, 
+  rp.street,
+  rp.blockno,
+  rp.cadastrallotno,
+  rp.surveyno,
+  r.taxable,
+  f.effectivityyear,
+  f.effectivityqtr
+FROM rptcertificationitem rci 
+  INNER JOIN faas f ON rci.refid = f.objid 
+  INNER JOIN rpu r ON f.rpuid = r.objid 
+  INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
+  INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
+  INNER JOIN barangay b ON rp.barangayid = b.objid 
+  INNER JOIN sys_org so on f.lguid = so.objid 
+  INNER JOIN entity e on f.taxpayer_objid = e.objid 
+;

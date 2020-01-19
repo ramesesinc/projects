@@ -63,13 +63,13 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         formPanel1.setBorder(xTitledBorder1);
         formPanel1.setIndex(100);
 
-        xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Report Type");
-        xComboBox1.setCaptionWidth(135);
         xComboBox1.setExpression("#{item.caption}");
-        xComboBox1.setImmediate(true);
         xComboBox1.setItems("certificationTypes");
         xComboBox1.setName("entity.certtype"); // NOI18N
+        xComboBox1.setAllowNull(false);
+        xComboBox1.setCaptionWidth(135);
+        xComboBox1.setImmediate(true);
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
         xComboBox1.setRequired(true);
         formPanel1.add(xComboBox1);
@@ -115,15 +115,15 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xLookupField1.setRequired(true);
         formPanel1.add(xLookupField1);
 
+        xLabel3.setCaption("Address");
+        xLabel3.setDepends(new String[] {"entity.taxpayer", "entity.tdno", "entity.certtype"});
+        xLabel3.setExpression("#{entity.taxpayer.address}");
+        xLabel3.setName("entity.taxpayeraddress"); // NOI18N
         com.rameses.rcp.control.border.XLineBorder xLineBorder2 = new com.rameses.rcp.control.border.XLineBorder();
         xLineBorder2.setLineColor(new java.awt.Color(153, 153, 153));
         xLabel3.setBorder(xLineBorder2);
-        xLabel3.setCaption("Address");
         xLabel3.setCaptionWidth(135);
-        xLabel3.setDepends(new String[] {"entity.taxpayer", "entity.tdno", "entity.certtype"});
-        xLabel3.setExpression("#{entity.taxpayer.address}");
         xLabel3.setIndex(5);
-        xLabel3.setName("entity.taxpayeraddress"); // NOI18N
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 21));
         formPanel1.add(xLabel3);
 

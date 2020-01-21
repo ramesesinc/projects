@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptledger:form:reports" 
+            action="preview" 
+            caption="RPTAR" 
+            target="popup" 
+            role="LANDTAX"  
+            visibleWhen="#{entity.state == 'APPROVED'}" />       
+             
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/toolbars/cancel.png" immediate="true"/>            
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.report.models.RptarModel">
+    </code>
+    <pages>
+        <page name="preview" template="com.rameses.gov.etracs.rpt.report.PreviewPage"/>
+    </pages>
+</workunit>

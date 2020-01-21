@@ -6,5 +6,8 @@ CHANGELOG: v255.03018
 	- Certification support for entity members
 	- Non-Depreciated Building Additional Items (supported in rule)
 
+- LANDTAX
+	- RPTAR report 
+
 	
 	

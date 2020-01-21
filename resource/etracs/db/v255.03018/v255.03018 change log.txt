@@ -4,4 +4,7 @@ CHANGELOG: v255.03018
 	- Online Batch GR
 	- Mapping of LGU Entities (Province)
 	- Certification support for entity members
+	- Non-Depreciated Building Additional Items (supported in rule)
+
+	
 	

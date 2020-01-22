@@ -5,6 +5,7 @@ CHANGELOG: v255.03018
 	- Mapping of LGU Entities (Province)
 	- Certification support for entity members
 	- Non-Depreciated Building Additional Items (supported in rule)
+	- Subdivision: Fix the cancellation of affected improvment
 
 - LANDTAX
 	- RPTAR report 

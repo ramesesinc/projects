@@ -791,11 +791,15 @@ class SubdivisionService
         if (cancelledimprovement.cancelledbytdnos){
             cancelledbytdnos = cancelledimprovement.cancelledbytdnos
         }
+        def cancelreason = subdivision.txntype.objid
+        if (cancelledimprovement.reason?.code) {
+            cancelreason = cancelledimprovement.reason.code
+        }
         def params = [
             objid               : faas.objid,
             rpuid               : faas.rpuid, 
             txntype             : faas.txntype,
-            cancelreason        : subdivision.txntype.objid,
+            cancelreason        : cancelreason,
             canceldate          : dtSvc.serverDate,
             cancelledbytdnos    : cancelledbytdnos,
         ]

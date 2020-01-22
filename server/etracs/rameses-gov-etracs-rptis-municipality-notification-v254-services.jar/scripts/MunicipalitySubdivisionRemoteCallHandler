@@ -74,6 +74,9 @@ class MunicipalitySubdivisionRemoteCallHandler
 		em_subdivision_task.where('refid = :objid and enddate is null', subdivision).delete()
 		svc.insertFaasSignatories(subdivision)
 		svc.approve(subdivision)
+		svc.getCancelledImprovements(subdivision.objid).each{ci ->
+			svc.approveCancelledImprovement(subdivision, ci)
+		}
 	}
 
 

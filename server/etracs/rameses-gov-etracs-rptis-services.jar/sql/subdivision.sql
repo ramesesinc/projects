@@ -524,7 +524,7 @@ and enddate is null
 #-------------------------------------------------
 
 [getCancelledImprovements]
-select cf.*, r.rputype, f.tdno, f.fullpin, f.owner_name, cr.name as reason_name
+select cf.*, r.rputype, f.tdno, f.fullpin, f.owner_name, cr.name as reason_name, cr.code as reason_code
 from subdivision_cancelledimprovement cf 
 	inner join faas f on cf.faasid = f.objid 
 	inner join rpu r on f.rpuid = r.objid 

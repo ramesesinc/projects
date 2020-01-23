@@ -206,7 +206,7 @@ public class BatchGRItemModel
         def landfaas = faases[0];
         
         return Inv.lookupOpener('faas:modifypin', [
-                faas: landfaas,
+                entity: landfaas,
                 onUpdate: { refresh(); },
         ]);
     }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="subdivision:assist:assignee" 
+            action="init" 
+            caption="Assistance (New)" 
+            target="popup"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.models.SubdivisionAssistItemModel">
+    </code>
+    <pages> 
+        <page template="com.rameses.gov.etracs.rptis.views.SubdivisionAssistItemPage"/>
+    </pages>
+</workunit>
+
+

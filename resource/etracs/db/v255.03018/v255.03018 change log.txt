@@ -6,6 +6,7 @@ CHANGELOG: v255.03018
 	- Certification support for entity members
 	- Non-Depreciated Building Additional Items (supported in rule)
 	- Subdivision: Fix the cancellation of affected improvment
+	- Subdivision: Add assistance support
 
 - LANDTAX
 	- RPTAR report 

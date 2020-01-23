@@ -467,3 +467,84 @@ FROM rptcertificationitem rci
 go
 
 
+
+
+/*===========================================
+*
+*  SUBDIVISION ASSISTANCE
+*
+============================================*/
+if exists(select * from sysobjects where id = object_id('subdivision_assist_item')) 
+begin 
+  drop view subdivision_assist_item
+end 
+go 
+
+if exists(select * from sysobjects where id = object_id('subdivision_assist')) 
+begin 
+  drop view subdivision_assist
+end 
+go 
+
+
+
+
+CREATE TABLE subdivision_assist (
+  objid varchar(50) NOT NULL,
+  parent_objid varchar(50) NOT NULL,
+  taskstate varchar(50) NOT NULL,
+  assignee_objid varchar(50) NOT NULL,
+  PRIMARY KEY (objid)
+)
+go
+
+alter table subdivision_assist 
+add constraint fk_subdivision_assist_subdivision foreign key(parent_objid)
+references subdivision(objid)
+go
+
+alter table subdivision_assist 
+add constraint fk_subdivision_assist_user foreign key(assignee_objid)
+references sys_user(objid)
+go
+
+create index ix_parent_objid on subdivision_assist(parent_objid)
+go
+
+create index ix_assignee_objid on subdivision_assist(assignee_objid)
+go
+
+create unique index ux_parent_assignee on subdivision_assist(parent_objid, taskstate, assignee_objid)
+go
+
+
+CREATE TABLE subdivision_assist_item (
+  objid varchar(50) NOT NULL,
+  subdivision_objid varchar(50) NOT NULL,
+  parent_objid varchar(50) NOT NULL,
+  pintype varchar(10) NOT NULL,
+  section varchar(5) NOT NULL,
+  startparcel int NOT NULL,
+  endparcel int NOT NULL,
+  parcelcount int NOT NULL,
+  PRIMARY KEY (objid)
+)
+go
+
+alter table subdivision_assist_item 
+add constraint fk_subdivision_assist_item_subdivision foreign key(subdivision_objid)
+references subdivision(objid)
+go
+
+alter table subdivision_assist_item 
+add constraint fk_subdivision_assist_item_subdivision_assist foreign key(parent_objid)
+references subdivision_assist(objid)
+go
+
+create index ix_subdivision_objid on subdivision_assist_item(subdivision_objid)
+go
+
+create index ix_parent_objid on subdivision_assist_item(parent_objid)
+go
+
+

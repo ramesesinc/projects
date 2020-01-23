@@ -369,3 +369,75 @@ FROM rptcertificationitem rci
   INNER JOIN sys_org so on f.lguid = so.objid 
   INNER JOIN entity e on f.taxpayer_objid = e.objid 
 ;
+
+
+
+/*===========================================
+*
+*  SUBDIVISION ASSISTANCE
+*
+============================================*/
+drop table if exists subdivision_assist_item
+; 
+
+drop table if exists subdivision_assist
+; 
+
+CREATE TABLE `subdivision_assist` (
+  `objid` varchar(50) NOT NULL,
+  `parent_objid` varchar(50) NOT NULL,
+  `taskstate` varchar(50) NOT NULL,
+  `assignee_objid` varchar(50) NOT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+;
+
+alter table subdivision_assist 
+add constraint fk_subdivision_assist_subdivision foreign key(parent_objid)
+references subdivision(objid)
+;
+
+alter table subdivision_assist 
+add constraint fk_subdivision_assist_user foreign key(assignee_objid)
+references sys_user(objid)
+;
+
+create index ix_parent_objid on subdivision_assist(parent_objid)
+;
+
+create index ix_assignee_objid on subdivision_assist(assignee_objid)
+;
+
+create unique index ux_parent_assignee on subdivision_assist(parent_objid, taskstate, assignee_objid)
+;
+
+
+CREATE TABLE `subdivision_assist_item` (
+  `objid` varchar(50) NOT NULL,
+  `subdivision_objid` varchar(50) NOT NULL,
+  `parent_objid` varchar(50) NOT NULL,
+  `pintype` varchar(10) NOT NULL,
+  `section` varchar(5) NOT NULL,
+  `startparcel` int(255) NOT NULL,
+  `endparcel` int(255) NOT NULL,
+  `parcelcount` int(255) NOT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+;
+
+alter table subdivision_assist_item 
+add constraint fk_subdivision_assist_item_subdivision foreign key(subdivision_objid)
+references subdivision(objid)
+;
+
+alter table subdivision_assist_item 
+add constraint fk_subdivision_assist_item_subdivision_assist foreign key(parent_objid)
+references subdivision_assist(objid)
+;
+
+create index ix_subdivision_objid on subdivision_assist_item(subdivision_objid)
+;
+
+create index ix_parent_objid on subdivision_assist_item(parent_objid)
+;
+

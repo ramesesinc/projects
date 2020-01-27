@@ -34,6 +34,5 @@ class LandTaxLogger
         def remarks = 'Tag: ' + tag.tag 
         logSvc.logA( evt.methodName, 'rptledger', tag.parent.objid, remarks)
     }
-
 }
 

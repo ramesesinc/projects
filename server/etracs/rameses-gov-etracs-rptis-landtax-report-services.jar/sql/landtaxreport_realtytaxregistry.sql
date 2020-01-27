@@ -45,6 +45,7 @@ from rptpayment rp
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
 where rp.refid = $P{objid}
     and cv.objid is null    
+    and rp.voided = 0
 group by 
     rp.receiptno,
     rp.receiptdate,
@@ -140,7 +141,8 @@ from (
     inner join rptpayment rp on rl.objid = rp.refid 
     inner join vw_rptpayment_item rpi on rp.objid = rpi.parentid
     inner join rptledgerfaas rlf on rpi.rptledgerfaasid = rlf.objid 
-    where rl.objid = $P{objid}
+    where rl.objid = $P{objid} 
+    and rp.voided = 0
 ) x 
 group by 
     x.tdno, 

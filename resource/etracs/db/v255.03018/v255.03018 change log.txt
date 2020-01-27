@@ -10,6 +10,7 @@ CHANGELOG: v255.03018
 
 - LANDTAX
 	- RPTAR report 
+	- Realty Tax Credit support
 
 	
 	

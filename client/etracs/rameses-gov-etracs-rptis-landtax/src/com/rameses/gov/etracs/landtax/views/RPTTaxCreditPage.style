@@ -1,0 +1,25 @@
+"entity.srcledger.*|entity.ref" [entity.type != 'WRONG_LEDGER'] {
+    visible:false;
+}
+
+"entity.(refno|refdate|amount)" [entity.type != 'WRONG_LEDGER' && mode != 'read'] {
+    visible:true;
+    enabled:true;
+}
+
+"entity.srcledger.*|entity.ref" [entity.type == 'WRONG_LEDGER'] {
+    visible:true;
+}
+
+"entity.(refdate|amount)" [entity.type == 'WRONG_LEDGER'] {
+    enabled:false;
+}
+
+"entity.(refno)" [entity.type == 'WRONG_LEDGER'] {
+    visible:false;
+}
+
+"entity.dtapproved" [ true ] {
+    enabled:false;
+}
+

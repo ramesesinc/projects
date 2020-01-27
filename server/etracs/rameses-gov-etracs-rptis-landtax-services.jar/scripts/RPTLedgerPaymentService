@@ -21,6 +21,9 @@ class RPTLedgerPaymentService
     @DataContext('rptledger_credit')
     def em_rptledger_credit
 
+    @DataContext('rptledger')
+    def em_rptledger
+
 
 
     @ProxyMethod
@@ -37,9 +40,7 @@ class RPTLedgerPaymentService
 
     @ProxyMethod
     public def getPayments(entity) {
-        return em_rptpayment.find([refid:entity.objid, voided:0])
-                        .orderBy('receiptdate desc,receiptno desc, fromyear desc,fromqtr desc')
-                        .list()
+        return em_rptledger.getLedgerPayments(entity)
     }
 
     @ProxyMethod

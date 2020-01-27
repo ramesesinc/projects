@@ -121,20 +121,25 @@ class RealtyTaxRegistryReportService
         bill.ledgers = [[objid:ledger.objid]]
         bill._save = false      // not save billing information
         bill._forpayment = true     // computes postingitems 
-        billSvc.generateBill(bill)
-        def dues = bill.ledgers[0].postingitems
-        if (dues) {
-            def yrgroup = dues.groupBy{it.year}
-            yrgroup.each{yr, yrlist ->
-                def bal = [taxyear: yr, rptledgerfaasid: yrlist.first().rptledgerfaasid]
-                def revtypegroup = yrlist.groupBy{it.revtype}
-                revtypegroup.each{revtype, list ->
-                    bal[revtype] = list.amount.sum()
-                    bal[revtype+'int'] = list.interest.sum()
-                    bal[revtype+'disc'] = list.discount.sum()
+        try {
+            billSvc.generateBill(bill)
+            def dues = bill.ledgers[0].postingitems
+            if (dues) {
+                def yrgroup = dues.groupBy{it.year}
+                yrgroup.each{yr, yrlist ->
+                    def bal = [taxyear: yr, rptledgerfaasid: yrlist.first().rptledgerfaasid]
+                    def revtypegroup = yrlist.groupBy{it.revtype}
+                    revtypegroup.each{revtype, list ->
+                        bal[revtype] = list.amount.sum()
+                        bal[revtype+'int'] = list.interest.sum()
+                        bal[revtype+'disc'] = list.discount.sum()
+                    }
+                    balances << bal
                 }
-                balances << bal
             }
+        } catch( e ) {
+            //ignore current year billing errors 
+            e.printStackTrace()
         }
         return balances
     }       

@@ -486,7 +486,8 @@ class RPTReceiptService
 	// partial sef   : 40 * 100/128 = 31.25
 	// partial int   : 40 - 31.25   =  8.75
 	=================================================================================*/
-	void distributePartial(partialamt, items){
+	@ProxyMethod
+	public void distributePartial(partialamt, items){
 		if (items.size() == 1){
 			distributePartialProportionally(partialamt, items.first())
 		} 

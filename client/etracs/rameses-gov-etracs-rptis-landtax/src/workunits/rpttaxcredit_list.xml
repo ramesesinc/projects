@@ -1,0 +1,21 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
+    schemaName="rpttaxcredit"
+    cols="state,type,txnno,txndate,reftype,refno,refdate,amount,balance,rptledger.tdno,rptledger.fullpin,rptledger.owner.name"
+    allowDelete="#{entity?.state != 'CLOSED' &amp;&amp; entity.balance == 0}"
+    surroundSearch="false" 
+>
+    <invokers>
+        <invoker folderid="/menucategory/landtax/mgmt" 
+                action="init" caption="Realty Tax Credits"  
+                 target="window" index="100"  
+                 role="SHARED" permission="rpttaxcredit.list"/>
+                
+         <invoker type="quick_launcher" 
+                 action="init" code="RTC00" caption="Realty Tax Credits"  
+                 role="SHARED"  permission="rpttaxcredit.list"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.RPTTaxCreditListModel" />
+    <pages>
+        <page name="queryForm" template="com.rameses.gov.etracs.landtax.views.StateQueryPage"/>
+    </pages>
+</workunit>

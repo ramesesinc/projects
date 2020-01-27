@@ -441,3 +441,77 @@ create index ix_subdivision_objid on subdivision_assist_item(subdivision_objid)
 create index ix_parent_objid on subdivision_assist_item(parent_objid)
 ;
 
+
+
+/*==================================================
+**
+** REALTY TAX CREDIT
+**
+===================================================*/
+
+drop table if exists rpttaxcredit
+;
+
+
+
+CREATE TABLE `rpttaxcredit` (
+  `objid` varchar(50) NOT NULL,
+  `state` varchar(25) NOT NULL,
+  `type` varchar(25) NOT NULL,
+  `txnno` varchar(25) DEFAULT NULL,
+  `txndate` datetime DEFAULT NULL,
+  `reftype` varchar(25) DEFAULT NULL,
+  `refid` varchar(50) DEFAULT NULL,
+  `refno` varchar(25) NOT NULL,
+  `refdate` date NOT NULL,
+  `amount` decimal(16,2) NOT NULL,
+  `amtapplied` decimal(16,2) NOT NULL,
+  `rptledger_objid` varchar(50) NOT NULL,
+  `srcledger_objid` varchar(50) DEFAULT NULL,
+  `remarks` varchar(255) DEFAULT NULL,
+  `approvedby_objid` varchar(50) DEFAULT NULL,
+  `approvedby_name` varchar(150) DEFAULT NULL,
+  `approvedby_title` varchar(75) DEFAULT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+;
+
+
+create index ix_state on rpttaxcredit(state)
+;
+
+create index ix_type on rpttaxcredit(type)
+;
+
+create unique index ux_txnno on rpttaxcredit(txnno)
+;
+
+create index ix_reftype on rpttaxcredit(reftype)
+;
+
+create index ix_refid on rpttaxcredit(refid)
+;
+
+create index ix_refno on rpttaxcredit(refno)
+;
+
+create index ix_rptledger_objid on rpttaxcredit(rptledger_objid)
+;
+
+create index ix_srcledger_objid on rpttaxcredit(srcledger_objid)
+;
+
+alter table rpttaxcredit
+add constraint fk_rpttaxcredit_rptledger foreign key (rptledger_objid)
+references rptledger (objid)
+;
+
+alter table rpttaxcredit
+add constraint fk_rpttaxcredit_srcledger foreign key (srcledger_objid)
+references rptledger (objid)
+;
+
+alter table rpttaxcredit
+add constraint fk_rpttaxcredit_sys_user foreign key (approvedby_objid)
+references sys_user(objid)
+;

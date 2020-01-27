@@ -1,0 +1,17 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+      schemaName="rptpayment" 
+      windowTitle="Credits"
+      allowCreate="false"
+      allowEdit="false" 
+      allowDelete="false" 
+      cols="type,receiptno,fromyear,fromqtr,toyear,toqtr,amount" 
+      orderBy="fromyear,fromqtr" >
+    <invokers>
+        <invoker type="rpttaxcredit:section" 
+                 action="init" caption="Credits"  
+                 index="100" 
+                 role="ADMIN" 
+                 permission="rpttaxcredit.view" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.RPTTaxCreditItemSectionModel" />
+</workunit>

@@ -29,7 +29,9 @@ and rpi.revperiod <> 'advance'
 and rpi.amount > 0
 group by 
 	rl.lguid,
+	o.parent_objid,
 	rl.barangayid,
+	rp.receiptid,
 	rp.objid,
 	rpi.revtype,
 	rpi.revperiod
@@ -58,7 +60,9 @@ and rpi.revperiod = 'advance'
 and rpi.amount > 0
 group by 
 	rl.lguid,
+	o.parent_objid,
 	rl.barangayid,
+	rp.receiptid,
 	rp.objid,
 	rpi.revtype,
 	rpi.revperiod,

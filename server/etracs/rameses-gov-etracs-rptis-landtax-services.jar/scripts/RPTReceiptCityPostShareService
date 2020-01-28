@@ -4,6 +4,9 @@ import com.rameses.services.extended.*;
 
 class RPTReceiptCityPostShareService
 {
+	@Service('Var')
+	def var 
+
 	@Service('NumberService')
 	def numSvc
 
@@ -136,7 +139,9 @@ class RPTReceiptCityPostShareService
 			ms.amount -= bs.amount 
 			ms.discount -= bs.discount
 			bs.refitem = ms.item 
-			commonshares += createCommonShares(mappings, bs)
+			if (var.landtax_realty_tax_post_common_shares) {
+				commonshares += createCommonShares(mappings, bs)
+			}
 		}
 
 		return  [mainshares: mainshares, brgyshares: brgyshares, commonshares: commonshares]
@@ -154,7 +159,7 @@ class RPTReceiptCityPostShareService
 		brgyshare.actualamt = mainshare
 		
 		//find all brgy accounts and create share for each
-		def brgys = mappings.findAll {it.org.class.equalsIgnoreCase('barangay') && it.item.tag == brgyshare.tag }
+		def brgys = mappings.findAll {'barangay'.equalsIgnoreCase(it.org?.class?.toString()) && it.item.tag == brgyshare.tag }
 
 		def commonshare = amount - mainshare
 		def commondisc = discount - maindisc
@@ -191,7 +196,7 @@ class RPTReceiptCityPostShareService
 		share.revperiod = item.revperiod
 		share.year = item.year 
 		share.sharetype = sharetype
-		share.item = mappings.find{it.org.class.equalsIgnoreCase(sharetype) && it.org.objid == lguid && it.item.tag == tag }?.item
+		share.item = mappings.find{sharetype.equalsIgnoreCase(it.org?.class?.toString()) && it.org.objid == lguid && it.item.tag == tag }?.item
 		if (!share.item) {
 			println 'lguid: ' + lguid
 			println 'tag  : ' + tag 

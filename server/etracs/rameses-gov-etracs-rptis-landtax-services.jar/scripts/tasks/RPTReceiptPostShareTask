@@ -40,7 +40,7 @@ class RPTReceiptPostShareTask
 			try {
 				svc.postShares(it)
 				em.delete(it)
-				println 'Receipt ' + it.objid + ' tax share successfully posted.'
+				println 'Receipt ' + it.objid + ' tax share posted.'
 			} catch(e) {
 				e.printStackTrace()
 				it.error = 1 

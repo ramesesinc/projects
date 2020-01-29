@@ -33,7 +33,7 @@
                  
         <invoker type="itemActions" 
                  action="modifyPin" caption="Modify PIN" 
-                 visibleWhen="#{selectedItem &amp;&amp; selectedItem.rputype == 'land' &amp;&amp; selectedItem.state == 'REVISED' }" />
+                 visibleWhen="#{selectedItem &amp;&amp; selectedItem.state == 'REVISED' }" />
    </invokers>
    
    <code class="com.rameses.gov.etracs.rptis.models.BatchGRItemModel" >

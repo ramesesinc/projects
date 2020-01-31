@@ -1,12 +1,21 @@
 import com.rameses.annotations.*
 import com.rameses.common.*
-import com.rameses.eserver.*;
-import java.rmi.server.UID;
+import com.rameses.services.extended.*
 
 public class MachRYSettingLookupService
 {
 	@PersistenceContext('main')
 	def em
+
+    @Service('RPTParameterService')
+    def paramSvc
+
+    @ActiveDB('machrysettinglookup')
+    def em_db
+
+    @DataContext('rysetting_mach_smv')
+    def em_mach_smv
+
      
 
     @ProxyMethod
@@ -22,6 +31,27 @@ public class MachRYSettingLookupService
         return em.sqlContext.createNamedQuery('machrysettinglookup:lookupAssessLevelByPrevId')
                 .setParameter('previd', previd).singleResult
     }
+
+    @ProxyMethod
+    public def lookupMachineSmvs(params) {
+        params.searchtext = (params.searchtext ? params.searchtext : '') + '%'
+        def filters = []
+        if (params.ry) {
+            filters << 'rs.ry = $P{ry}'
+        }
+        if (params.lguid) {
+            filters << 'l.lguid = $P{lguid}'
+        }
+
+        params.filters = ''
+        if (filters) {
+            params.filters = ' AND ' + filters.join(' AND ')
+        }
+
+        def list = em_db.getMachineSmvs(params)
+        return filterByBarangay(params, list)   
+    }
+
 
 
     @ProxyMethod
@@ -51,6 +81,11 @@ public class MachRYSettingLookupService
                 .setParameter('previd', previd).singleResult
     }
 
+    @ProxyMethod
+    public def lookupMachineSmvsByPrevId(previd){
+        return em_mach_smv.find([previd: previd]).first()
+    }
+
     def filterByBarangay(params, list){
         def res = list.findAll{it.barangayid == params.barangayid}
         if ( res )
@@ -58,4 +93,8 @@ public class MachRYSettingLookupService
         return list.findAll{it.barangayid == null} 
     }
 
+    @ProxyMethod
+    public def getVariables() {
+        return paramSvc.getRPTParameters([:])    
+    }
 }

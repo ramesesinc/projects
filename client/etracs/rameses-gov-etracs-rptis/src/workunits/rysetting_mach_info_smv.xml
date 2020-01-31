@@ -1,0 +1,18 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+      entitySchemaName="rysetting_mach_smv" 
+      schemaName="vw_machine_smv"
+      windowTitle="Machine Schedules"
+      allowShowCols="false"
+      allowPrint="false"
+      allowViewReport="false"
+      allowClose="false"
+      cols="code,name,expr" 
+      orderBy="code" >
+    <invokers>
+        <invoker type="machrysetting:info" 
+                 action="init" 
+                 caption="Machine Schedules" 
+                 index="15"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.rysetting.models.MachSmvInfoModel"/>
+</workunit>

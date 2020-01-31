@@ -515,3 +515,80 @@ alter table rpttaxcredit
 add constraint fk_rpttaxcredit_sys_user foreign key (approvedby_objid)
 references sys_user(objid)
 ;
+
+
+
+
+
+/*==================================================
+**
+** MACHINE SMV
+**
+===================================================*/
+
+CREATE TABLE `machine_smv` (
+  `objid` varchar(50) NOT NULL,
+  `parent_objid` varchar(50) NOT NULL,
+  `machine_objid` varchar(50) NOT NULL,
+  `expr` varchar(255) NOT NULL,
+  `previd` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+;
+
+create index ix_parent_objid on machine_smv(parent_objid)
+;
+create index ix_machine_objid on machine_smv(machine_objid)
+;
+create index ix_previd on machine_smv(previd)
+;
+create unique index ux_parent_machine on machine_smv(parent_objid, machine_objid)
+;
+
+
+
+alter table machine_smv
+add constraint fk_machinesmv_machrysetting foreign key (parent_objid)
+references machrysetting (objid)
+;
+
+alter table machine_smv
+add constraint fk_machinesmv_machine foreign key (machine_objid)
+references machine(objid)
+;
+
+
+alter table machine_smv
+add constraint fk_machinesmv_machinesmv foreign key (previd)
+references machine_smv(objid)
+;
+
+
+create view vw_machine_smv 
+as 
+select 
+  ms.*, 
+  m.code,
+  m.name
+from machine_smv ms 
+inner join machine m on ms.machine_objid = m.objid 
+;
+
+alter table machdetail 
+  add smvid varchar(50),
+  add params text
+;
+
+update machdetail set params = '[]' where params is null
+;
+
+create index ix_smvid on machdetail(smvid)
+;
+
+
+alter table machdetail 
+add constraint fk_machdetail_machine_smv foreign key(smvid)
+references machine_smv(objid)
+;
+
+

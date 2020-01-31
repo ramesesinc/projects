@@ -52,7 +52,7 @@ public class BldgAdditionalItemPage extends javax.swing.JPanel {
         add(jPanel2, java.awt.BorderLayout.SOUTH);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Real Property Information");
+        xTitledBorder1.setTitle("General Information");
         jPanel3.setBorder(xTitledBorder1);
 
         xTextField1.setCaption("Code");

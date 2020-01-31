@@ -39,3 +39,19 @@ FROM machassesslevelrange
 WHERE machassesslevelid = $P{machassesslevelid}
   AND $P{mv} >= mvfrom
   AND ( $P{mv} < mvto OR mvto = 0)
+
+
+[getMachineSmvs]
+SELECT
+	m.*,
+	ms.expr,
+	ms.objid as smv_objid,
+	ms.expr as smv_expr,
+	ms.previd as smv_previd
+FROM machine m
+LEFT JOIN machine_smv ms ON m.objid = ms.machine_objid
+LEFT JOIN machrysetting rs ON ms.parent_objid = rs.objid 
+LEFT JOIN rysetting_lgu l ON rs.objid = l.rysettingid 
+WHERE (m.code LIKE $P{searchtext} OR m.name LIKE $P{searchtext})	
+ ${filters}
+ORDER BY m.code 

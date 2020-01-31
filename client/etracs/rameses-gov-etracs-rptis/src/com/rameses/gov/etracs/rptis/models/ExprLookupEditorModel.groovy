@@ -30,7 +30,7 @@ abstract class ExprLookupEditorModel extends LookupController
         params = [];
         getVariables().each{
             def expr = selectedItem.item.expr;
-            if (expr.indexOf(it.name) >= 0 ) {
+            if (expr && expr.indexOf(it.name) >= 0 ) {
                 if (!params.contains(it))
                     params << [param:it];
             }

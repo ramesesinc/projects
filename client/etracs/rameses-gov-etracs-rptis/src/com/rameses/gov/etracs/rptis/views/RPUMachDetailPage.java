@@ -30,7 +30,9 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel4 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xCheckBox2 = new com.rameses.rcp.control.XCheckBox();
@@ -70,28 +72,32 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
         xCheckBox4 = new com.rameses.rcp.control.XCheckBox();
         formPanel6 = new com.rameses.rcp.util.FormPanel();
         xDecimalField15 = new com.rameses.rcp.control.XDecimalField();
+        jPanel5 = new javax.swing.JPanel();
+        xDataTable1 = new com.rameses.rcp.control.XDataTable();
 
-        setPreferredSize(new java.awt.Dimension(596, 510));
         setLayout(new java.awt.BorderLayout());
+
+        jPanel1.setPreferredSize(new java.awt.Dimension(632, 572));
 
         formPanel1.setCaptionWidth(90);
         formPanel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        formPanel1.setPreferredSize(new java.awt.Dimension(90, 21));
 
-        xLookupField1.setCaption("Machine Code");
-        xLookupField1.setExpression("#{item.code}");
-        xLookupField1.setHandler("machine:lookup");
-        xLookupField1.setIndex(-100);
+        xLookupField1.setCaption("Machine");
+        xLookupField1.setExpression("#{item.name}");
+        xLookupField1.setHandler("lookupMachineSmv");
         xLookupField1.setName("machine"); // NOI18N
-        xLookupField1.setPreferredSize(new java.awt.Dimension(100, 19));
+        xLookupField1.setIndex(-100);
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 19));
         xLookupField1.setRequired(true);
         formPanel1.add(xLookupField1);
 
-        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel2.setCaption("Machine Name");
-        xLabel2.setDepends(new String[] {"machine"});
-        xLabel2.setName("machine.name"); // NOI18N
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 19));
-        formPanel1.add(xLabel2);
+        xLabel1.setCaption("Computation");
+        xLabel1.setDepends(new String[] {"machine"});
+        xLabel1.setExpression("#{machdetail.smv.expr}");
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel1.add(xLabel1);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Machine Information");
@@ -111,14 +117,14 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
         formPanel2.setCaptionWidth(110);
 
         xDecimalField1.setCaption("Price Index");
-        xDecimalField1.setCaptionWidth(80);
         xDecimalField1.setName("conversionfactor"); // NOI18N
+        xDecimalField1.setCaptionWidth(80);
         xDecimalField1.setPreferredSize(new java.awt.Dimension(0, 20));
         formPanel2.add(xDecimalField1);
 
         xTextField1.setCaption("Brand");
-        xTextField1.setCaptionWidth(100);
         xTextField1.setName("machdetail.brand"); // NOI18N
+        xTextField1.setCaptionWidth(100);
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 18));
         formPanel3.add(xTextField1);
 
@@ -152,7 +158,7 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
         xSeparator1.setLayout(xSeparator1Layout);
         xSeparator1Layout.setHorizontalGroup(
             xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 256, Short.MAX_VALUE)
+            .add(0, 246, Short.MAX_VALUE)
         );
         xSeparator1Layout.setVerticalGroup(
             xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -236,10 +242,10 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(formPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE))
+                        .add(formPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel2Layout.createSequentialGroup()
                         .add(26, 26, 26)
-                        .add(formPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
+                        .add(formPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .add(xCheckBox2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -249,15 +255,14 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jPanel2Layout.createSequentialGroup()
-                        .add(xCheckBox1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
+                        .add(xCheckBox1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
                         .add(100, 100, 100))
                     .add(jPanel2Layout.createSequentialGroup()
-                        .add(xCheckBox5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
-                        .addContainerGap())))
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
-                .add(0, 0, Short.MAX_VALUE)
-                .add(xCheckBox3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(72, 72, 72))
+                        .add(xCheckBox5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(xCheckBox3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(0, 0, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -272,9 +277,9 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
                 .add(formPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(formPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(xCheckBox3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -412,8 +417,8 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
             .add(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(xCheckBox4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(153, Short.MAX_VALUE))
-            .add(formPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
+                .addContainerGap(174, Short.MAX_VALUE))
+            .add(formPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -424,6 +429,88 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(formPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jPanel4Layout.createSequentialGroup()
+                        .add(formPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 323, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Appraisal", jPanel4);
+
+        xDataTable1.setDepends(new String[] {"machine"});
+        xDataTable1.setHandler("paramListHandler");
+        xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "param.caption"}
+                , new Object[]{"caption", "Parameter"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "value"}
+                , new Object[]{"caption", "Value"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            })
+        });
+
+        org.jdesktop.layout.GroupLayout jPanel5Layout = new org.jdesktop.layout.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 587, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Parameter Values", jPanel5);
+
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -431,28 +518,18 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel1Layout.createSequentialGroup()
-                        .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(formPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE))
+                    .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jTabbedPane1))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 41, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(jPanel1Layout.createSequentialGroup()
-                        .add(formPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 335, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .add(jTabbedPane1)
+                .addContainerGap())
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -468,11 +545,15 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XCheckBox xCheckBox2;
     private com.rameses.rcp.control.XCheckBox xCheckBox3;
     private com.rameses.rcp.control.XCheckBox xCheckBox4;
     private com.rameses.rcp.control.XCheckBox xCheckBox5;
+    private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField10;
@@ -489,7 +570,7 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDecimalField xDecimalField7;
     private com.rameses.rcp.control.XDecimalField xDecimalField8;
     private com.rameses.rcp.control.XDecimalField xDecimalField9;
-    private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XNumberField xNumberField1;
     private com.rameses.rcp.control.XNumberField xNumberField2;

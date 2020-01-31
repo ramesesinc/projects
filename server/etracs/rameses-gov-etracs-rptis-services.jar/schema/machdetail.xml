@@ -1,21 +1,5 @@
-<schema adapter="main">
-	<element name="machrpu" tablename="machrpu">
-		<field name="objid" primary="true"/>
-        <field name="landrpuid" required="true"/>
-		<field name="bldgmaster_objid" />
-	</element>
-
-    <element name="machuse" tablename="machuse">
-		<field name="objid" primary="true"  />
-		<field name="machrpuid" required="true"  />
-        <field name="basemarketvalue" required="true" type="decimal" />
-        <field name="marketvalue" required="true" type="decimal" />
-        <field name="assesslevel" required="true" type="decimal" />
-        <field name="assessedvalue" required="true" type="decimal" />
-        <field name="actualuse_objid" required="true" />
-	</element>
-    
-    <element name="machdetail" tablename="machdetail">
+<schema>
+	<element name="machdetail" tablename="machdetail">
         <field name="objid" primary="true"  />
         <field name="machuseid" required="true"  />
         <field name="machrpuid" required="true"  />
@@ -58,7 +42,15 @@
         <field name="newlyinstalled"  type="boolean" />
         <field name="autodepreciate"  type="boolean" />
         <field name="taxable"  type="boolean" />
-        <field name="smvid"/>
+        <field name="smvid" />
         <complex name="params" serializer="default" />
+
+        <complex name="machine" ref="machine" jointype="many-to-one">
+            <key field="machine_objid" target="objid" />
+        </complex>
+        
+        <complex name="smv" ref="rysetting_mach_smv" jointype="many-to-one" required="false">
+            <key field="smvid" target="objid" />
+        </complex>
     </element>
 </schema>

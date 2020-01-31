@@ -7,6 +7,8 @@ CHANGELOG: v255.03018
 	- Non-Depreciated Building Additional Items (supported in rule)
 	- Subdivision: Fix the cancellation of affected improvment
 	- Subdivision: Add assistance support
+	- Additional building FAAS info 
+	- Machine SMV Support
 
 - LANDTAX
 	- RPTAR report 
@@ -14,3 +16,7 @@ CHANGELOG: v255.03018
 
 	
 	
+
+NOTES:
+=============================================
+- Update rameses-seti	

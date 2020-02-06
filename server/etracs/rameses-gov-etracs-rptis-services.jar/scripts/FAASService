@@ -878,7 +878,7 @@ class FAASService
 	}
 
     void checkTxnReference(faas){
-		if (faas.previousfaases && ! faas.txntype.objid.matches('SD|CS') && (faas._checkTxnRef == null || faas._checkTxnRef == true)){
+		if (faas.previousfaases && ! faas.txntype.objid.matches('SD|CS|DP') && (faas._checkTxnRef == null || faas._checkTxnRef == true)){
 			def prevfaasid = faas.previousfaases[0].prevfaasid
 			txnRef.checkReference(prevfaasid)
 		}
@@ -886,7 +886,7 @@ class FAASService
 
 
 	void insertTxnReference(faas){
-		if (faas.previousfaases &&  ! faas.txntype.objid.matches('SD|CS')){
+		if (faas.previousfaases &&  ! faas.txntype.objid.matches('SD|CS|DP')){
 			def prevfaasid = faas.previousfaases[0].prevfaasid
 			if (prevfaasid){
 				def refno = ( faas.tdno == null ? 'Doc No. ' + faas.utdno : 'TD No. ' + faas.tdno  ) 

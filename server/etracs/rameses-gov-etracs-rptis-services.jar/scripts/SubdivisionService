@@ -100,6 +100,7 @@ class SubdivisionService
     def STATE_PENDING           = 'PENDING'
 
     def TXNTYPE_SD = 'SD'
+    def TXNTYPE_DP = 'DP'
 
     @ProxyMethod
     public def create(info) {
@@ -350,11 +351,14 @@ class SubdivisionService
     public def deleteAffectedRpuFaas(arpu){
         def faasid = arpu.newfaasid
         arpu.newfaasid = null
+        arpu.newrpuid = null
+        arpu.newrpid = null
         arpu.newsuffix = null
         arpu.newpin = null
         arpu.subdividedlandid = null
         saveAffectedRpu(arpu)
         faasSvc.deleteFaasById(faasid)
+        txnRef.deleteByObjid(arpu.subdivisionid, faasid)
         return arpu 
     }
 
@@ -666,7 +670,13 @@ class SubdivisionService
         faas.objid = 'F' + arpu.objid 
         faas.state = STATE_PENDING
         faas.datacapture = false
-        faas.txntype  = faasSvc.getTxnType(TXNTYPE_SD)
+
+        if ( util.toBoolean(var.faas_affected_rpu_txntype_dp, false) == true) {
+            faas.txntype  = faasSvc.getTxnType(TXNTYPE_DP)
+        } else {
+            faas.txntype  = faasSvc.getTxnType(TXNTYPE_SD)
+        }
+        
         faas.effectivityyear = subdivision.effectivityyear
         faas.effectivityqtr = subdivision.effectivityqtr
         faas.datacapture = 0

@@ -73,6 +73,7 @@ class ConsolidationService
     def STATE_INTERIM               = 'INTERIM'
     
     def TXNTYPE_CS = 'CS'
+    def TXNTYPE_DP = 'DP'
 
 	@ProxyMethod
     public def getList( params ) {
@@ -561,7 +562,13 @@ class ConsolidationService
         faas.objid = 'F' + arpu.objid 
         faas.previousfaases = faasSvc.buildPreviousFaases(faas, [pf])
         faas.state = STATE_PENDING
-        faas.txntype  = faasSvc.getTxnType(TXNTYPE_CS)
+
+        if ( util.toBoolean(var.faas_affected_rpu_txntype_dp, false) == true) {
+            faas.txntype  = faasSvc.getTxnType(TXNTYPE_DP)
+        } else {
+            faas.txntype  = faasSvc.getTxnType(TXNTYPE_CS)
+        }
+
         faas.effectivityyear = pdate.year
         faas.effectivityqtr = pdate.qtr
         faas.datacapture = 0

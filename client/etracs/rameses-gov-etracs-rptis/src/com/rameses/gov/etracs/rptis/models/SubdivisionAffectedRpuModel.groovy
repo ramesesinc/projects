@@ -106,10 +106,10 @@ class SubdivisionAffectedRpuModel
                 
         validate : { li -> 
             def arpu = li.item;
-            RPTUtil.required('New PIN', arpu.newpin);
-            RPTUtil.required('New Suffix', arpu.newsuffix)
-            validateNewPin(arpu)
-            arpu.putAll(svc.saveAffectedRpuAndFaas(arpu));
+            if (arpu.newpin && arpu.newsuffix) {
+                validateNewPin(arpu)
+                arpu.putAll(svc.saveAffectedRpuAndFaas(arpu));    
+            }
         }
         
     ] as EditorListModel 

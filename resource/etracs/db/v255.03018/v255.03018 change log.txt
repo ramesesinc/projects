@@ -9,14 +9,15 @@ CHANGELOG: v255.03018
 	- Subdivision: Add assistance support
 	- Additional building FAAS info 
 	- Machine SMV Support
+	- Subdivision: option to set affected FAAS txntype to DP
 
 - LANDTAX
 	- RPTAR report 
 	- Realty Tax Credit support
 
 	
-	
-
 NOTES:
 =============================================
 - Update rameses-seti	
+- Subdivision: Affected FAAS Txntype
+	* set sys_var option faas_affected_rpu_txntype_dp to 1

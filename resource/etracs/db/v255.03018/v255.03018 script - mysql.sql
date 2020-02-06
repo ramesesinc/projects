@@ -592,3 +592,14 @@ references machine_smv(objid)
 ;
 
 
+
+
+/*==================================================
+**
+** AFFECTED FAS TXNTYPE (DP)
+**
+===================================================*/
+
+INSERT INTO `sys_var` (`name`, `value`, `description`, `datatype`, `category`) 
+VALUES ('faas_affected_rpu_txntype_dp', '0', 'Set affected improvements FAAS txntype to DP e.g. SD and CS', 'checkbox', 'ASSESSOR')
+;

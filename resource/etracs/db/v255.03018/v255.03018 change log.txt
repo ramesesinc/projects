@@ -12,6 +12,7 @@ CHANGELOG: v255.03018
 	- Subdivision: option to set affected FAAS txntype to DP
 	- Report: Add barangay filter to Agriland Actual Use Summary
 	- Report: Comparative Report on Real Property Assessment
+	- RedFlag: Add state filter
 
 - LANDTAX
 	- RPTAR report 

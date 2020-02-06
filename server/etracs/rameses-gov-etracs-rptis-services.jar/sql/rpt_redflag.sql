@@ -2,6 +2,7 @@
 select * 
 from rpt_redflag 
 where parentid = $P{parentid}
+and state like $P{state}
 order by filedby_date desc 
 
 [getLookup]
@@ -25,6 +26,7 @@ from (
 		where sl.subdivisionid = $P{parentid}
 		 and sl.newfaasid = f.objid 
 	)
+	and state like $P{state}
 
 	union 
 
@@ -35,6 +37,7 @@ from (
 		where sar.subdivisionid = $P{parentid}
 		 and sar.newfaasid = f.objid 
 	)
+	and state like $P{state}
 )x
 order by filedby_date desc 
 
@@ -50,6 +53,7 @@ from (
 		where c.objid = $P{parentid}
 		 and c.newfaasid = f.objid 
 	)
+	and state like $P{state}
 
 	union 
 
@@ -60,6 +64,7 @@ from (
 		where ca.consolidationid = $P{parentid}
 		 and ca.newfaasid = f.objid 
 	)
+	and state like $P{state}
 )x
 order by filedby_date desc 
 

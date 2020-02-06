@@ -203,4 +203,7 @@ public abstract class TransmittalModel extends PageFlowController
     void onClose(){
         if (oncomplete) oncomplete();
     }
+
+    def view() {
+    }
 }

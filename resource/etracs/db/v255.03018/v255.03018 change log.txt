@@ -10,6 +10,8 @@ CHANGELOG: v255.03018
 	- Additional building FAAS info 
 	- Machine SMV Support
 	- Subdivision: option to set affected FAAS txntype to DP
+	- Report: Add barangay filter to Agriland Actual Use Summary
+	- Report: Comparative Report on Real Property Assessment
 
 - LANDTAX
 	- RPTAR report 

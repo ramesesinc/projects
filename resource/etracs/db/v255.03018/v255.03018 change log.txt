@@ -13,6 +13,7 @@ CHANGELOG: v255.03018
 	- Report: Add barangay filter to Agriland Actual Use Summary
 	- Report: Comparative Report on Real Property Assessment
 	- RedFlag: Add state filter
+	- RedFlag: Add tdno/txnno column
 
 - LANDTAX
 	- RPTAR report 

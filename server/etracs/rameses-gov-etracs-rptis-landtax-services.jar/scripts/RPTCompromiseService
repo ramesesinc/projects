@@ -217,6 +217,8 @@ class RPTCompromiseService {
 		utilSvc.required('Compromise startyear', compromise.startyear)
 		utilSvc.required('Compromise endyear', compromise.endyear)
 
+		em_rptledger_item.find([parentid: compromise.rptledgerid]).delete()
+		
 		em_compromise.getUnpaidLedgerItems(compromise).each{
 			em_rptledger_item.create(it)
 		}

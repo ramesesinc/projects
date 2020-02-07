@@ -339,7 +339,8 @@ class RPUBldgInfoAppraisalModel extends SubPageModel
                 bu.floors.each{bf -> 
                     bf.actualusecode = bu.actualuse.code;
                     bf.actualusename = bu.actualuse.name;
-                    bf.bldgtypecode = stt.bldgtype.code
+                    bf.bldgtypecode = stt.bldgtype.code;
+                    bf.bldgkindname = stt.bldgkindbucc.bldgkind.name;
                 }
                 list += bu.floors;
             }

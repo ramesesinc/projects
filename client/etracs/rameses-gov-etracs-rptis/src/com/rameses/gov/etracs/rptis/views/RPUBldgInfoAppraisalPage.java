@@ -384,14 +384,14 @@ public class RPUBldgInfoAppraisalPage extends javax.swing.JPanel {
 
         xFormPanel2.setPadding(new java.awt.Insets(0, 0, 0, 0));
 
-        xComboBox2.setAllowNull(false);
         xComboBox2.setCaption("Floor");
         xComboBox2.setDepends(new String[] {"selectedStructuralType", "selectedFloor"});
-        xComboBox2.setDynamic(true);
-        xComboBox2.setExpression("#{item.floorno} - (#{item.bldgtypecode}) - #{item.actualusename}");
-        xComboBox2.setImmediate(true);
+        xComboBox2.setExpression("#{item.floorno} - (#{item.bldgtypecode}) - #{item.actualusename} - #{item.bldgkindname}");
         xComboBox2.setItems("floors");
         xComboBox2.setName("floor"); // NOI18N
+        xComboBox2.setAllowNull(false);
+        xComboBox2.setDynamic(true);
+        xComboBox2.setImmediate(true);
         xComboBox2.setPreferredSize(new java.awt.Dimension(250, 22));
         xFormPanel2.add(xComboBox2);
 

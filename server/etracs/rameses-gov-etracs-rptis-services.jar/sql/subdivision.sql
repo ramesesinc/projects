@@ -130,6 +130,7 @@ from faas mf
 	LEFT JOIN rptledger rl ON f.objid = rl.faasid 
 where mf.realpropertyid = $P{realpropertyid}
 and mrp.pin = rp.pin 
+and mrp.ry = rp.ry
 and r.rputype <> 'land' 
 AND f.state NOT IN ('CANCELLED', 'PENDING')
   AND NOT EXISTS(SELECT * FROM subdivisionaffectedrpu WHERE prevfaasid = f.objid )

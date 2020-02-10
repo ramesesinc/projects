@@ -100,6 +100,7 @@ class ResectionWorkflowService extends ActiveWorkflowService
 
 	public void beforeCloseTask(task) {
 		if (env.data.manualapprover){
+			task.enddate = env.data.manualapprover.dtsigned
 			task.actor = env.data.manualapprover
 		}
 	}

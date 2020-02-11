@@ -277,6 +277,18 @@ abstract class AsyncReportController
         Calendar cal = new GregorianCalendar(yr, mon, day);
         return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
+
+    def getRpuTypes() {
+        return ['land', 'bldg', 'mach', 'planttree', 'misc'];
+    }
+
+    def getTaxabilities() {
+        return ['TAXABLE', 'EXEMPT'];
+    }
+
+    def getStates() {
+        return ['CURRENT', 'CANCELLED'];
+    }
     
     
 }

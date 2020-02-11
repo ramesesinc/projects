@@ -10,7 +10,6 @@ class RPTReportMasterListService
 
     @ActiveDB('rptreport_masterlist')
     def em
-
     
     @DataContext('propertyclassification')
     def propertyclassification

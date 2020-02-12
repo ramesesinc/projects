@@ -32,6 +32,7 @@ class LandTaxReportNoticeOfDelinquencyService
 	@ProxyMethod
 	public def generateNoticeOfDelinquency( params ) {
 		validateDateComputed(params.billdate)
+		params.billdate = dtSvc.parse('yyyy-MM-dd', params.billdate)
 		def bill = billSvc.initBill()
 		bill.billdate = params.billdate 
 		bill.taxpayer = params.taxpayer 
@@ -42,7 +43,11 @@ class LandTaxReportNoticeOfDelinquencyService
 		if (params.includecy == true){
 			bill.billtoyear = bill.cy
 		}
-		
+
+		//set advancebill flag
+		def currdate = dtSvc.serverDate
+		bill.advancebill = params.billdate > currdate
+
 		bill.ledgers = billSvc.getOpenLedgers(bill)
 		bill = billSvc.generateBill(bill)
 		bill.ledgers.each{
@@ -72,14 +77,8 @@ class LandTaxReportNoticeOfDelinquencyService
 			params.administrator = params.ledgers.first().administrator
 		}
 
-		if (params.billdate){
-			params.billdate = dtSvc.parse('yyyy-MM-dd', params.billdate)
-		}
-		else {
-			params.billdate = dtSvc.serverDate
-		}
-
 		params.validuntil = bill.validuntil
+		
 		params.empowered = 'Municipal Treasurer'
 		params.legaloffice = 'Municipal Legal Office'
 		if (env.ORGCLASS.equalsIgnoreCase('city')){

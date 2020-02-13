@@ -16,13 +16,16 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="xFormPanel1" pref="346" max="32767" attributes="0"/>
-                  <Component id="xSubFormPanel1" pref="346" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="xSubFormPanel1" pref="433" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Component id="xFormPanel1" min="-2" pref="346" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="87" max="32767" attributes="0"/>
+                  </Group>
               </Group>
-              <EmptySpace pref="97" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -32,8 +35,8 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="xFormPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xSubFormPanel1" min="-2" pref="226" max="-2" attributes="0"/>
-              <EmptySpace pref="104" max="32767" attributes="0"/>
+              <Component id="xSubFormPanel1" pref="319" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -63,8 +66,8 @@
             <StringItem index="0" value="opener"/>
           </StringArray>
         </Property>
-        <Property name="dynamic" type="boolean" value="true"/>
         <Property name="handler" type="java.lang.String" value="opener"/>
+        <Property name="dynamic" type="boolean" value="true"/>
       </Properties>
 
       <Layout>
@@ -75,7 +78,7 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="226" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="319" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>

@@ -21,8 +21,9 @@ class MunicipalityRPTTransmittalImportSubdivisionInterceptor
 		def subdivisiondata = evt.args[1].subdivisiondata 
 		if ('APPROVED'.equalsIgnoreCase(transmittalitem.status)){
 			try{
+				subdivisiondata._transmittal = true
 				if (subdivisiondata.originlguid == env.ORGID)
-					svc.approveSubdivisionTransmittalByProvince(subdivisiondata)
+					svc.approveSubdivisionByProvince(subdivisiondata)
 				else 
 					svc.postApprovedSubdivisionFromProvince(subdivisiondata)	
 
@@ -45,6 +46,7 @@ class MunicipalityRPTTransmittalImportSubdivisionInterceptor
 		def transmittalitem = evt.args[1].transmittalitem
 		def subdivisiondata = evt.args[1].subdivisiondata 
 		try{
+			subdivisiondata._transmittal = true
 			svc.postApprovedSubdivisionFromProvince(subdivisiondata)	
 			transmittalitem.status = 'SUCCESS'
 			importSvc.log(transmittalitem)

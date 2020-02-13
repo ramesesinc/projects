@@ -10,8 +10,12 @@ class MunicipalitySubdivisionRemoteCallHandler
 	@Service('SubdivisionService')
 	def svc
 
-	@Service('SubdivisionSupport2Service')
+	@Service('SubdivisionSupportService')
 	def supportSvc 
+
+	@Service('SubdivisionSupport2Service')
+	def support2Svc 
+
 
 	@Service('FAASService')
 	def faasSvc
@@ -33,10 +37,14 @@ class MunicipalitySubdivisionRemoteCallHandler
 			state = 'FORAPPROVAL'
 			subdivision.state = state
 			subdivision.faases.each{
-				def fstate = em_faas.select('state').find([objid:faas.objid]).first()?.state
+				def fstate = em_faas.select('state').find([objid:it.objid]).first()?.state
 				it.state = (fstate == null ? 'PENDING' : fstate.state)
 			}
-			supportSvc.postSubdivisionData(subdivision)
+			if (subdivision._transmittal) {
+				supportSvc.postSubdivisionData(subdivision)
+			} else {
+				support2Svc.postSubdivisionData(subdivision)
+			}
 			subdivision.tasks = em_subdivision_task.where('refid = :objid and enddate is not null', subdivision).list()
 			doApproveSubdivision(subdivision)
 			println 'Subdivision ' + subdivision.txnno + ' created from Province has been successfully posted and approved.'
@@ -47,7 +55,9 @@ class MunicipalitySubdivisionRemoteCallHandler
 	public void approveSubdivisionByProvince(subdivision){
 		def state = svc.getState( subdivision )
 		if (state  && ! state.equalsIgnoreCase('APPROVED')){
-			// supportSvc.updateFaasesData(subdivision)
+			if (subdivision._transmittal) {
+				supportSvc.updateFaasesData(subdivision)
+			}
 			doApproveSubdivision(subdivision)
 			notifyRecommender(subdivision)
 			println 'Subdivision ' + subdivision.txnno + ' has been successfully approved.'
@@ -60,7 +70,7 @@ class MunicipalitySubdivisionRemoteCallHandler
 		def currfaas = em_faas.select('state').find([objid:faas.objid]).first()
 		if (currfaas && currfaas.state == 'CURRENT') return
 		faas.state = 'PENDING';
-		supportSvc.postFaasData(faas)
+		support2Svc.postFaasData(faas)
 		faasSvc.approveFaas(faas)
 		println 'Subdivision FAAS ' + faas.tdno + ' has been successfully approved.'
 	}

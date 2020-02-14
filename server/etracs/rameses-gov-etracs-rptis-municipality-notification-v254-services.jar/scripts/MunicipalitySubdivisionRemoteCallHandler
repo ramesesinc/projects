@@ -37,17 +37,22 @@ class MunicipalitySubdivisionRemoteCallHandler
 			state = 'FORAPPROVAL'
 			subdivision.state = state
 			subdivision.faases.each{
-				def fstate = em_faas.select('state').find([objid:it.objid]).first()?.state
-				it.state = (fstate == null ? 'PENDING' : fstate.state)
+				if (!subdivision._transmittal) {
+					def fstate = em_faas.select('state').find([objid:it.objid]).first()?.state
+					it.state = (fstate == null ? 'PENDING' : fstate)
+				}
 			}
 			if (subdivision._transmittal) {
 				supportSvc.postSubdivisionData(subdivision)
+				cancelPreviousAffectedRpus(subdivision)
 			} else {
 				support2Svc.postSubdivisionData(subdivision)
 			}
 			subdivision.tasks = em_subdivision_task.where('refid = :objid and enddate is not null', subdivision).list()
 			doApproveSubdivision(subdivision)
 			println 'Subdivision ' + subdivision.txnno + ' created from Province has been successfully posted and approved.'
+		} else {
+			cancelPreviousAffectedRpus(subdivision)
 		}
 	}
 
@@ -110,6 +115,13 @@ class MunicipalitySubdivisionRemoteCallHandler
 	        ]
 	        notifySvc.addMessage(msg)
 		}		
+	}
+
+	void cancelPreviousAffectedRpus(subdivision) {
+		svc.getAffectedRpus(subdivision.objid).each {arpu ->
+			def faas = faasSvc.openFaas([objid: arpu.newfaasid])
+			faasSvc.cancelPreviousFaases(faas)
+		}
 	}
 
 }

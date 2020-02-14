@@ -58,7 +58,7 @@ public class MachineSmvPage extends javax.swing.JPanel {
 
         formPanel2.add(jScrollPane1);
 
-        xButton1.setDisableWhen("#{mode!='edit'}");
+        xButton1.setDisableWhen("#{mode == 'read' }");
         xButton1.setMnemonic('f');
         xButton1.setName("editExpression"); // NOI18N
         xButton1.setShowCaption(false);

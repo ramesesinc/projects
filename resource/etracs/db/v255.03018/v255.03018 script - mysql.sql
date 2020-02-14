@@ -413,14 +413,15 @@ create unique index ux_parent_assignee on subdivision_assist(parent_objid, tasks
 
 
 CREATE TABLE `subdivision_assist_item` (
-  `objid` varchar(50) NOT NULL,
+`objid` varchar(50) NOT NULL,
   `subdivision_objid` varchar(50) NOT NULL,
   `parent_objid` varchar(50) NOT NULL,
   `pintype` varchar(10) NOT NULL,
   `section` varchar(5) NOT NULL,
   `startparcel` int(255) NOT NULL,
   `endparcel` int(255) NOT NULL,
-  `parcelcount` int(255) NOT NULL,
+  `parcelcount` int(11) DEFAULT NULL,
+  `parcelcreated` int(11) DEFAULT NULL,
   PRIMARY KEY (`objid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 ;

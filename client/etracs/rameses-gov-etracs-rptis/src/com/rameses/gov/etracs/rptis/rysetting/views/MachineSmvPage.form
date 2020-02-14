@@ -101,7 +101,7 @@
             </Container>
             <Component class="com.rameses.rcp.control.XButton" name="xButton1">
               <Properties>
-                <Property name="disableWhen" type="java.lang.String" value="#{mode!=&apos;edit&apos;}"/>
+                <Property name="disableWhen" type="java.lang.String" value="#{mode == &apos;read&apos; }"/>
                 <Property name="mnemonic" type="int" value="102"/>
                 <Property name="name" type="java.lang.String" value="editExpression" noResource="true"/>
                 <Property name="showCaption" type="boolean" value="false"/>

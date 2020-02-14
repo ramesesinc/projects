@@ -14,6 +14,8 @@ public class MachineSmvModel extends CrudFormModel
     @Service('RPTParameterService')
     def paramSvc 
 
+    boolean isShowConfirm() { return false; }
+
     void afterSave() {
         caller?.reload();
     }

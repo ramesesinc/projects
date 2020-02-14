@@ -527,6 +527,7 @@ CREATE TABLE subdivision_assist_item (
   startparcel int NOT NULL,
   endparcel int NOT NULL,
   parcelcount int NOT NULL,
+  parcelcreated int NULL,
   PRIMARY KEY (objid)
 )
 go

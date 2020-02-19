@@ -260,6 +260,7 @@ class RPTBillingModel
         if (bill.taxpayer) {
             items = svc.getOpenLedgers(bill).each{ it.bill = true }
             listHandler.reload();
+            binding.refresh('selectByTdNo');
         }
     }
     
@@ -292,5 +293,24 @@ class RPTBillingModel
 
     void logPrint() {
         logSvc.log('printbill', 'rptledger', bill.taxpayer.objid)
+    }
+
+    def selectByTdNo() {
+        def onselect = { item ->
+            items.remove(item);
+            def lastSelectedIdx = items.findAll{it.bill == true}.size();
+            items.add(lastSelectedIdx, item);
+            listHandler.reload();
+        }
+        return Inv.lookupOpener('rptbilling:selectbytdno', [
+            onselect: onselect, 
+            items: items
+        ]);
+    }
+
+    def getShowSelectByTdno() {
+        if (items && items.size() > 5) 
+            return true;
+        return false;
     }
 } 

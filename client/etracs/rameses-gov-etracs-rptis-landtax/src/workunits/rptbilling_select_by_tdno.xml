@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptbilling:selectbytdno" 
+            caption="Select Ledger for Billing" 
+            target="popup"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.RPTBillingSelectByTdModel">
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.RPTBillingSelectByTdPage" />
+    </pages>
+</workunit>

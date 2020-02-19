@@ -112,11 +112,6 @@ class RPTUtil
         def sectionlen = getSectionLength(varSvc?.get('pin_section_length'), entity.pintype)
         def parcellen = getParcelLength(varSvc?.get('pin_parcel_length'), entity.pintype)
         
-        if (entity.pintype == 'old'){
-            sectionlen = 2;
-            parcellen = 3;
-        }
-        
         if( entity.isection > 0 ) {
             ssection = entity.isection.toString();
             ssection = ssection.padLeft(sectionlen,'0');

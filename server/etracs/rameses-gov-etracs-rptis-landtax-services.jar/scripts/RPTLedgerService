@@ -250,17 +250,9 @@ class RPTLedgerService
 
     def getFaasesForPosting(faashistory, yr, qtr) {
         return faashistory.findAll{ 
-            def pass = false
-            if ( yr >= it.fromyear && (yr <= it.toyear || it.toyear == 0) &&
-                 qtr >= it.fromqtr && (qtr <= it.toqtr || it.toqtr == 0)) {
-                    pass = true
-            } else if (yr > it.fromyear && it.toyear == 0) {
-                pass = true
-            } else if ( it.toyear == 0 && qtr >= it.fromqtr) {
-                pass = true
-            }
-            return pass
-        }
+                    yr >= it.fromyear && (yr <= it.toyear || it.toyear == 0) &&
+                    qtr >= it.fromqtr && (qtr <= it.toqtr || it.toqtr == 0) 
+                }
     }
 
     @ProxyMethod

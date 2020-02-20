@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml"
     schemaName="rptledger"
-    cols="state,tdno,prevtdno,fullpin,owner.name,administrator.name,beneficiary.name,totalareasqm,totalmv,totalav,lastyearpaid,lastqtrpaid,barangay.name,titleno,cadastrallotno,blockno,ismanual"
+    cols="state,tdno,prevtdno,fullpin,taxpayer.entityno,owner.name,administrator.name,beneficiary.name,totalareasqm,totalmv,totalav,lastyearpaid,lastqtrpaid,barangay.name,titleno,cadastrallotno,blockno,ismanual"
     hiddenCols="taxpayer.objid,taxpayer.entityno,taxpayer.name,taxpayer.address.text,faasid,barangayid,rputype,txntype.objid,classification.objid,taxable"
     allowDelete="#{entity &amp;&amp; entity.state == 'PENDING' &amp;&amp; entity.faasid == null}"
     surroundSearch="false" 

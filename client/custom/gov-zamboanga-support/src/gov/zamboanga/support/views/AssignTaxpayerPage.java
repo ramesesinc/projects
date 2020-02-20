@@ -30,10 +30,13 @@ public class AssignTaxpayerPage extends javax.swing.JPanel {
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xButton1 = new com.rameses.rcp.control.XButton();
-        jSplitPane1 = new javax.swing.JSplitPane();
+        jPanel1 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        xTextArea1 = new com.rameses.rcp.control.XTextArea();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        xTextArea2 = new com.rameses.rcp.control.XTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        xTextArea3 = new com.rameses.rcp.control.XTextArea();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("New Property Owner");
@@ -63,8 +66,8 @@ public class AssignTaxpayerPage extends javax.swing.JPanel {
         xButton1.setText("Assign");
         xFormPanel1.add(xButton1);
 
-        jSplitPane1.setDividerLocation(300);
-        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
         xDataTable1.setHandler("listHandler");
         xDataTable1.setName("selectedItem"); // NOI18N
@@ -73,8 +76,23 @@ public class AssignTaxpayerPage extends javax.swing.JPanel {
         xDataTable1.setBorder(xTitledBorder2);
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "taxpayer.entityno"}
+                , new Object[]{"caption", "Enttiy No."}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "owner.name"}
-                , new Object[]{"caption", "Owner"}
+                , new Object[]{"caption", "Declared Owner"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -133,16 +151,37 @@ public class AssignTaxpayerPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        jSplitPane1.setTopComponent(xDataTable1);
+        jPanel1.add(xDataTable1, java.awt.BorderLayout.CENTER);
 
-        xTextArea1.setDepends(new String[] {"selectedItem"});
-        xTextArea1.setEditable(false);
-        xTextArea1.setLineWrap(true);
-        xTextArea1.setName("selectedItem.owner.name"); // NOI18N
-        xTextArea1.setWrapStyleWord(true);
-        jScrollPane1.setViewportView(xTextArea1);
+        xFormPanel2.setCaptionWidth(120);
 
-        jSplitPane1.setRightComponent(jScrollPane1);
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(0, 60));
+
+        xTextArea2.setCaption("Property Owner");
+        xTextArea2.setDepends(new String[] {"selectedItem"});
+        xTextArea2.setEditable(false);
+        xTextArea2.setLineWrap(true);
+        xTextArea2.setName("selectedItem.taxpayer.name"); // NOI18N
+        xTextArea2.setWrapStyleWord(true);
+        xTextArea2.setPreferredSize(new java.awt.Dimension(105, 50));
+        jScrollPane2.setViewportView(xTextArea2);
+
+        xFormPanel2.add(jScrollPane2);
+
+        jScrollPane3.setPreferredSize(new java.awt.Dimension(0, 60));
+
+        xTextArea3.setCaption("Declared Owner");
+        xTextArea3.setDepends(new String[] {"selectedItem"});
+        xTextArea3.setEditable(false);
+        xTextArea3.setLineWrap(true);
+        xTextArea3.setName("selectedItem.owner.name"); // NOI18N
+        xTextArea3.setWrapStyleWord(true);
+        xTextArea3.setPreferredSize(new java.awt.Dimension(105, 60));
+        jScrollPane3.setViewportView(xTextArea3);
+
+        xFormPanel2.add(jScrollPane3);
+
+        jPanel1.add(xFormPanel2, java.awt.BorderLayout.SOUTH);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -151,8 +190,8 @@ public class AssignTaxpayerPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
-                    .addComponent(jSplitPane1))
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 745, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -161,18 +200,21 @@ public class AssignTaxpayerPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLookupField xLookupField1;
-    private com.rameses.rcp.control.XTextArea xTextArea1;
+    private com.rameses.rcp.control.XTextArea xTextArea2;
+    private com.rameses.rcp.control.XTextArea xTextArea3;
     // End of variables declaration//GEN-END:variables
 }

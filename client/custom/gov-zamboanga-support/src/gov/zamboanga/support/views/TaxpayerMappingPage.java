@@ -50,8 +50,12 @@ public class TaxpayerMappingPage extends javax.swing.JPanel {
         jSplitPane1 = new javax.swing.JSplitPane();
         jPanel5 = new javax.swing.JPanel();
         listPanel1 = new com.rameses.seti2.components.ListPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        xTextArea1 = new com.rameses.rcp.control.XTextArea();
+        jPanel7 = new javax.swing.JPanel();
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        xTextArea2 = new com.rameses.rcp.control.XTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        xTextArea3 = new com.rameses.rcp.control.XTextArea();
         jPanel4 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         xButton3 = new com.rameses.rcp.control.XButton();
@@ -73,7 +77,7 @@ public class TaxpayerMappingPage extends javax.swing.JPanel {
         jPanel1.add(xLabel1, java.awt.BorderLayout.NORTH);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 0, 0));
-        jPanel2.setPreferredSize(new java.awt.Dimension(400, 28));
+        jPanel2.setPreferredSize(new java.awt.Dimension(400, 30));
         jPanel2.setLayout(new java.awt.BorderLayout());
 
         xPanel2.setLayout(new com.rameses.rcp.control.layout.XLayout());
@@ -178,7 +182,7 @@ public class TaxpayerMappingPage extends javax.swing.JPanel {
             jPanel6.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(1, 5, 5, 5), javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204))));
             jPanel6.setLayout(new java.awt.BorderLayout());
 
-            jSplitPane1.setDividerLocation(280);
+            jSplitPane1.setDividerLocation(320);
             jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
             jPanel5.setLayout(new java.awt.BorderLayout());
@@ -186,17 +190,39 @@ public class TaxpayerMappingPage extends javax.swing.JPanel {
             listPanel1.setPreferredSize(new java.awt.Dimension(425, 300));
             jPanel5.add(listPanel1, java.awt.BorderLayout.CENTER);
 
-            jScrollPane1.setPreferredSize(new java.awt.Dimension(19, 60));
+            jPanel7.setLayout(new java.awt.BorderLayout());
 
-            xTextArea1.setDepends(new String[] {"selectedItem"});
-            xTextArea1.setEditable(false);
-            xTextArea1.setLineWrap(true);
-            xTextArea1.setName("selectedItem.owner.name"); // NOI18N
-            xTextArea1.setWrapStyleWord(true);
-            xTextArea1.setPreferredSize(new java.awt.Dimension(105, 60));
-            jScrollPane1.setViewportView(xTextArea1);
+            xFormPanel1.setCaptionWidth(120);
 
-            jPanel5.add(jScrollPane1, java.awt.BorderLayout.SOUTH);
+            jScrollPane2.setPreferredSize(new java.awt.Dimension(0, 50));
+
+            xTextArea2.setCaption("Property Owner");
+            xTextArea2.setDepends(new String[] {"selectedItem"});
+            xTextArea2.setEditable(false);
+            xTextArea2.setLineWrap(true);
+            xTextArea2.setName("selectedItem.taxpayer.name"); // NOI18N
+            xTextArea2.setWrapStyleWord(true);
+            xTextArea2.setPreferredSize(new java.awt.Dimension(105, 50));
+            jScrollPane2.setViewportView(xTextArea2);
+
+            xFormPanel1.add(jScrollPane2);
+
+            jScrollPane3.setPreferredSize(new java.awt.Dimension(0, 50));
+
+            xTextArea3.setCaption("Declared Owner");
+            xTextArea3.setDepends(new String[] {"selectedItem"});
+            xTextArea3.setEditable(false);
+            xTextArea3.setLineWrap(true);
+            xTextArea3.setName("selectedItem.owner.name"); // NOI18N
+            xTextArea3.setWrapStyleWord(true);
+            xTextArea3.setPreferredSize(new java.awt.Dimension(105, 60));
+            jScrollPane3.setViewportView(xTextArea3);
+
+            xFormPanel1.add(jScrollPane3);
+
+            jPanel7.add(xFormPanel1, java.awt.BorderLayout.CENTER);
+
+            jPanel5.add(jPanel7, java.awt.BorderLayout.SOUTH);
 
             jSplitPane1.setLeftComponent(jPanel5);
 
@@ -208,7 +234,7 @@ public class TaxpayerMappingPage extends javax.swing.JPanel {
             xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
                 new com.rameses.rcp.common.Column(new Object[]{
                     new Object[]{"name", "owner.name"}
-                    , new Object[]{"caption", "Owner"}
+                    , new Object[]{"caption", "Declared Owner"}
                     , new Object[]{"width", 100}
                     , new Object[]{"minWidth", 0}
                     , new Object[]{"maxWidth", 0}
@@ -341,7 +367,7 @@ public class TaxpayerMappingPage extends javax.swing.JPanel {
                         .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
                     .addContainerGap())
             );
 
@@ -362,7 +388,9 @@ public class TaxpayerMappingPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
@@ -376,10 +404,12 @@ public class TaxpayerMappingPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton5;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XPanel xPanel2;
-    private com.rameses.rcp.control.XTextArea xTextArea1;
+    private com.rameses.rcp.control.XTextArea xTextArea2;
+    private com.rameses.rcp.control.XTextArea xTextArea3;
     // End of variables declaration//GEN-END:variables
 }

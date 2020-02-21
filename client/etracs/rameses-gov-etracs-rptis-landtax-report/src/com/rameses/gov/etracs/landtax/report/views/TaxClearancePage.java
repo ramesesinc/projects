@@ -54,6 +54,7 @@ public class TaxClearancePage extends javax.swing.JPanel {
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         formPanel7 = new com.rameses.rcp.util.FormPanel();
+        xLabel13 = new com.rameses.rcp.control.XLabel();
         xLabel9 = new com.rameses.rcp.control.XLabel();
         xLabel10 = new com.rameses.rcp.control.XLabel();
         xLabel11 = new com.rameses.rcp.control.XLabel();
@@ -413,7 +414,7 @@ public class TaxClearancePage extends javax.swing.JPanel {
                     .add(formPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
@@ -425,38 +426,49 @@ public class TaxClearancePage extends javax.swing.JPanel {
 
         formPanel7.setPadding(new java.awt.Insets(5, 10, 5, 5));
 
-        xLabel9.setCaption("Clearance Type");
-        xLabel9.setExpression("#{entity.reporttype.title}");
+        xLabel13.setCaption("Clearance No.");
+        xLabel13.setExpression("#{entity.txnno}");
+        xLabel13.setVisibleWhen("#{manualCertificationNo}");
         com.rameses.rcp.control.border.XLineBorder xLineBorder4 = new com.rameses.rcp.control.border.XLineBorder();
         xLineBorder4.setLineColor(new java.awt.Color(153, 153, 153));
-        xLabel9.setBorder(xLineBorder4);
+        xLabel13.setBorder(xLineBorder4);
+        xLabel13.setCaptionWidth(110);
+        xLabel13.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        xLabel13.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel7.add(xLabel13);
+
+        xLabel9.setCaption("Clearance Type");
+        xLabel9.setExpression("#{entity.reporttype.title}");
+        com.rameses.rcp.control.border.XLineBorder xLineBorder5 = new com.rameses.rcp.control.border.XLineBorder();
+        xLineBorder5.setLineColor(new java.awt.Color(153, 153, 153));
+        xLabel9.setBorder(xLineBorder5);
         xLabel9.setCaptionWidth(110);
         xLabel9.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel7.add(xLabel9);
 
         xLabel10.setCaption("Taxpayer");
         xLabel10.setExpression("#{entity.taxpayer.name}");
-        com.rameses.rcp.control.border.XLineBorder xLineBorder5 = new com.rameses.rcp.control.border.XLineBorder();
-        xLineBorder5.setLineColor(new java.awt.Color(153, 153, 153));
-        xLabel10.setBorder(xLineBorder5);
+        com.rameses.rcp.control.border.XLineBorder xLineBorder6 = new com.rameses.rcp.control.border.XLineBorder();
+        xLineBorder6.setLineColor(new java.awt.Color(153, 153, 153));
+        xLabel10.setBorder(xLineBorder6);
         xLabel10.setCaptionWidth(110);
         xLabel10.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel7.add(xLabel10);
 
         xLabel11.setCaption("Requested By");
         xLabel11.setExpression("#{entity.requestedby}");
-        com.rameses.rcp.control.border.XLineBorder xLineBorder6 = new com.rameses.rcp.control.border.XLineBorder();
-        xLineBorder6.setLineColor(new java.awt.Color(153, 153, 153));
-        xLabel11.setBorder(xLineBorder6);
+        com.rameses.rcp.control.border.XLineBorder xLineBorder7 = new com.rameses.rcp.control.border.XLineBorder();
+        xLineBorder7.setLineColor(new java.awt.Color(153, 153, 153));
+        xLabel11.setBorder(xLineBorder7);
         xLabel11.setCaptionWidth(110);
         xLabel11.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel7.add(xLabel11);
 
         xLabel12.setCaption("Purpose");
         xLabel12.setExpression("#{entity.purpose}");
-        com.rameses.rcp.control.border.XLineBorder xLineBorder7 = new com.rameses.rcp.control.border.XLineBorder();
-        xLineBorder7.setLineColor(new java.awt.Color(153, 153, 153));
-        xLabel12.setBorder(xLineBorder7);
+        com.rameses.rcp.control.border.XLineBorder xLineBorder8 = new com.rameses.rcp.control.border.XLineBorder();
+        xLineBorder8.setLineColor(new java.awt.Color(153, 153, 153));
+        xLabel12.setBorder(xLineBorder8);
         xLabel12.setCaptionWidth(110);
         xLabel12.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel7.add(xLabel12);
@@ -478,11 +490,14 @@ public class TaxClearancePage extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(formPanel7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(formPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 87, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(16, 16, 16)
+                        .add(formPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 87, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(formPanel7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 115, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -507,6 +522,7 @@ public class TaxClearancePage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel10;
     private com.rameses.rcp.control.XLabel xLabel11;
     private com.rameses.rcp.control.XLabel xLabel12;
+    private com.rameses.rcp.control.XLabel xLabel13;
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;

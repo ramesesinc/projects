@@ -35,27 +35,39 @@ public class RPTLedgerBillInitPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xDateField1 = new com.rameses.rcp.control.XDateField();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setPadding(new java.awt.Insets(25, 10, 5, 5));
+        xTitledBorder1.setPadding(new java.awt.Insets(25, 10, 10, 10));
         xTitledBorder1.setTitle("Initial Information");
         xFormPanel1.setBorder(xTitledBorder1);
+        xFormPanel1.setCaptionWidth(110);
 
         xIntegerField1.setCaption("Year to Bill");
         xIntegerField1.setName("bill.billtoyear"); // NOI18N
         xIntegerField1.setRequired(true);
         xFormPanel1.add(xIntegerField1);
 
-        xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Qtr to Bill");
         xComboBox1.setItems("qtrs");
         xComboBox1.setName("bill.billtoqtr"); // NOI18N
+        xComboBox1.setAllowNull(false);
         xComboBox1.setPreferredSize(new java.awt.Dimension(100, 20));
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
+
+        xComboBox2.setCaption("Report Format");
+        xComboBox2.setExpression("#{item.title}");
+        xComboBox2.setItems("reportFormats");
+        xComboBox2.setName("bill.reportformat"); // NOI18N
+        xComboBox2.setAllowNull(false);
+        xComboBox2.setEmptyText("STANDARD");
+        xComboBox2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xComboBox2.setRequired(true);
+        xFormPanel1.add(xComboBox2);
 
         xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
 
@@ -63,7 +75,7 @@ public class RPTLedgerBillInitPage extends javax.swing.JPanel {
         xSeparator1.setLayout(xSeparator1Layout);
         xSeparator1Layout.setHorizontalGroup(
             xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 344, Short.MAX_VALUE)
+            .addGap(0, 339, Short.MAX_VALUE)
         );
         xSeparator1Layout.setVerticalGroup(
             xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -109,6 +121,7 @@ public class RPTLedgerBillInitPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
+    private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;

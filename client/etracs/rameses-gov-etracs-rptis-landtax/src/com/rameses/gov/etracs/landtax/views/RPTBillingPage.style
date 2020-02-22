@@ -1,4 +1,4 @@
-"bill.*|loadProperties|selectAll|deselectAll|selectedItem" [processing == false]{
+"bill.*|loadProperties|selectAll|deselectAll|selectedItem|selectByTdNo" [processing == false]{
     enabled:true;
 }
 
@@ -14,7 +14,7 @@
     enabled:false;
 }
 
-"bill.*|loadProperties|selectAll|deselectAll|selectedItem" [processing == true]{
+"bill.*|loadProperties|selectAll|deselectAll|selectedItem|selectByTdNo" [processing == true]{
     enabled:false;
 }
 

@@ -56,7 +56,7 @@ class RPTBillingModel
     def reportFormats  = [
         [code: 'STANDARD', title: 'STANDARD', reportname: 'rptbilling.jasper'],
         [code: 'SUMMARY', title: 'SUMMARY', reportname: 'rptbilling_summary.jasper'],
-        
+        [code: 'SIMPLIFIED', title: 'SIMPLIFIED', reportname: 'rptbilling_simplified.jasper'],
     ]
     
     def reportpath = 'com/rameses/gov/etracs/landtax/reports/'

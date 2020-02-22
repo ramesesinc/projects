@@ -48,6 +48,11 @@ class RPTLedgerBillModel
         bill.ledgers << [objid: entityContext.objid, bill:true];
         return 'init';
     }
+
+    def getReportFormats() {
+        def model = new RPTBillingModel();
+        return model.reportFormats;
+    }
         
     def preview(){
         def inv = InvokerUtil.lookupOpener('bill:rptledger:preview', [bill:bill, caller:this])

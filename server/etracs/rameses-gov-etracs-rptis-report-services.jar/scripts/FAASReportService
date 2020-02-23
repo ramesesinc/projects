@@ -9,6 +9,9 @@ import javax.imageio.ImageIO;
 
 class FAASReportService
 {
+	@Env 
+	def env 
+
 	@ActiveDB('faasreport')
 	def em
 	
@@ -171,7 +174,11 @@ class FAASReportService
 		// by the provincial assessor to approve the faas record 
 		if (isRecommenderAuthorized(faas)){
 			faas.authorized = true
-			faas.byauthority = 'By Authority of the Provincial Assessor.'
+			if ('MUNICIPALITY'.equalsIgnoreCase(env.ORGCLASS)) {
+				faas.byauthority = 'By Authority of the Provincial Assessor.'
+			} else if ('CITY'.equalsIgnoreCase(env.ORGCLASS)) {
+				faas.byauthority = 'By Authority of the City Assessor.'
+			}
 		}
 
 		faas.signatories = [:]
@@ -190,8 +197,7 @@ class FAASReportService
 			return true 
 		}
 
-		// check the if approver has MUNICIPAL_ASSESSOR role 
-		if (faas.approver && userHasRole(faas.approver.objid, 'MUNICIPAL_ASSESSOR')){
+		if (faas.approver && userHasRole(faas.approver.objid, 'RECOMMENDER')){
 			return true 
 		}
 

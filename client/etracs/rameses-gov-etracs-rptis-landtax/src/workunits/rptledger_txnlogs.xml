@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit extends="rpt_wtemplates/TxnLogs.xml">
     <invokers>
-        <invoker type="rptledger:form:formActions" caption="Logs" index="1000" visibleWhen="#{mode=='read'}" target="popup"/>
+        <invoker type="rptledger:form:formActions" 
+        	caption="Logs" index="1000" 
+        	visibleWhen="#{mode=='read'}" target="popup"/>
+    	<invoker type="rpttaxclearance:formActions" 
+        	caption="Logs" index="1000" 
+        	visibleWhen="#{mode=='preview'}" target="popup"/>
     </invokers>
 </workunit>

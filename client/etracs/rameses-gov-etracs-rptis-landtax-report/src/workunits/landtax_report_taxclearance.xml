@@ -18,6 +18,12 @@
         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode=='preview'}"  immediate="true"/>
         <invoker type="formActions" action="doNew" caption="New" mnemonic="n" icon="images/toolbars/create.png" visibleWhen="#{mode=='preview'}"/>
         
+        <invoker type="formActions" 
+            action="edit" caption="Edit" 
+            role="RECORD_ADMIN" permission="edit"
+            mnemonic="e" 
+            visibleWhen="#{mode=='preview'}"/>
+        
         <!-- print -->
         <invoker type="formActions" action="cancelPrint" caption="Cancel" visibleWhen="#{mode=='print'}" />
     </invokers>

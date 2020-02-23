@@ -114,6 +114,11 @@ class LandTaxReportTaxClearanceService
         return cert 
     }
 
+    @ProxyMethod
+    public def update(entity) {
+        return certSvc.update(entity)
+    }
+
 
     @ProxyMethod
     public def getClearedLedgers(cert) {

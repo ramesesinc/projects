@@ -8,7 +8,7 @@ class RPTCertificationService
     @PersistenceContext('main')
     def em;
 
-    @ActiveDB('rptcertification')
+    @DataContext('rptcertification')
     def em_certification;
     
     @Env
@@ -109,6 +109,18 @@ class RPTCertificationService
 		cert.includemembers = cert.properties?.includemembers ? cert.properties.includemembers : false
 		makeHtmlSafe(cert)
 		return cert 
+	}
+
+	@ProxyMethod
+	public def update(cert) {
+		if (!cert.txnno) throw new Exception('Certification No. is required.')
+		def entity =  em_certification.read([objid: cert.objid])
+		if (!entity) throw new Exception('Record does not exist or has been deleted.')
+		validate(entity, cert)
+
+		entity.putAll(cert)
+		em_certification.update(entity)
+		return entity
 	}
 
 	@ProxyMethod
@@ -245,6 +257,44 @@ class RPTCertificationService
 			idlist += em_member.select('memberid: {member_objid}').find([entityid: it]).list().memberid
 		}
 		return idlist.unique()
+	}
+
+
+	void validate(entity, cert) {
+		checkDuplicate(entity, cert)
+
+		def ordate = dtSvc.parse('yyyy-MM-dd', cert.ordate)
+		if (ordate > dtSvc.serverDate) {
+			throw new Exception('O.R. Date must be on or before current date')
+		}
+
+		if (cert.properties?.transferordate) {
+			def transferordate = dtSvc.parse('yyyy-MM-dd', cert.properties.transferordate)
+			if (transferordate > dtSvc.serverDate) {
+				throw new Exception('Transfer Tax O.R. Date must be on or before current date')
+			}
+		}
+
+		if (cert.oramount <= 0) {
+			throw new Exception('O.R. Amount should be greater than zero')
+		}
+
+		if (entity.properties?.transferorno) {
+			if (entity.properties.transferoramount <= 0) {
+				throw new Exception('Transfer Tax O.R. Amount should be greater than zero')
+			}
+		}
+	}
+
+	void checkDuplicate(entity, cert) {
+		if (!entity.txnno.equalsIgnoreCase(cert.txnno)) {
+			def dupCert = em_certification.select('objid').find([txnno: cert.txnno]).first()
+			if (dupCert) {
+				def msg = 'Certification No. ' + cert.txnno + ' is already assigned.\n'
+				msg += 'Verify the log book or the number you entered.'
+				throw new Exception(msg)
+			}
+		}
 	}
 
 }

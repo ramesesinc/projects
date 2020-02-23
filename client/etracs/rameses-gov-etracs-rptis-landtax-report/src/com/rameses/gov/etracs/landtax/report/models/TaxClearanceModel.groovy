@@ -47,6 +47,7 @@ class TaxClearanceModel
     def reportTypes;
     
     String title = 'Realty Tax Clearance'
+    String entityName = 'rpttaxclearance';
             
                 
     @PropertyChangeListener
@@ -360,5 +361,19 @@ class TaxClearanceModel
 
     def getShowTransferPayment() {
         return RPTUtil.toBoolean(var.get('landtax_taxclearance_show_transfer_payment_info'), false);
+    }
+
+    def afterEdit = {
+        open();
+        report.reload();   
+    }
+
+    def edit() {
+        return Inv.lookupOpener('rpttaxclearance:edit', [
+            entity: entity,
+            manualCertificationNo: getManualCertificationNo(),
+            showTransferPayment: getShowTransferPayment(),
+            afterEdit: afterEdit,
+        ])
     }
 }

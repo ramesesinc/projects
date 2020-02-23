@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="PlantTreesAppraisal"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="552"
+		 pageHeight="842"
+		 columnWidth="552"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="AllSectionsNoDetail"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+
+	<field name="planttreename" class="java.lang.String"/>
+	<field name="nonproductive" class="java.math.BigDecimal"/>
+	<field name="productive" class="java.math.BigDecimal"/>
+	<field name="unitvalue" class="java.math.BigDecimal"/>
+	<field name="basemarketvalue" class="java.math.BigDecimal"/>
+	<field name="areacovered" class="java.math.BigDecimal"/>
+	<field name="nonproductiveage" class="java.lang.String"/>
+
+	<variable name="TOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Nothing">
+		<variableExpression><![CDATA[$F{nonproductive}.add($F{productive})]]></variableExpression>
+	</variable>
+	<variable name="TOTALBASEMV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{basemarketvalue}]]></variableExpression>
+	</variable>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="29"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="0"
+						width="181"
+						height="29"
+						forecolor="#009900"
+						key="staticText-6"
+						positionType="Float"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Kind]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="403"
+						y="0"
+						width="56"
+						height="29"
+						forecolor="#009900"
+						key="staticText-8"
+						positionType="Float"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Unit Value]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="459"
+						y="0"
+						width="93"
+						height="29"
+						forecolor="#009900"
+						key="staticText-9"
+						positionType="Float"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Base Market Value]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="241"
+						y="0"
+						width="117"
+						height="16"
+						forecolor="#009900"
+						key="staticText-10"
+						positionType="Float"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[TOTAL NUMBER]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="181"
+						y="0"
+						width="60"
+						height="29"
+						forecolor="#009900"
+						key="staticText-19"
+						positionType="Float"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Area
+Covered (ha)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="358"
+						y="0"
+						width="45"
+						height="29"
+						forecolor="#009900"
+						key="staticText-20"
+						positionType="Float"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="6" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Age for 
+Non-
+Productive]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="241"
+						y="16"
+						width="56"
+						height="13"
+						forecolor="#009900"
+						key="staticText-21"
+						positionType="Float"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="6" isBold="true"/>
+					</textElement>
+				<text><![CDATA[PRODUCTIVE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="297"
+						y="16"
+						width="61"
+						height="13"
+						forecolor="#009900"
+						key="staticText-22"
+						positionType="Float"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="6" isBold="true"/>
+					</textElement>
+				<text><![CDATA[NON-PRODUCTIVE]]></text>
+				</staticText>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="14"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="358"
+						y="0"
+						width="45"
+						height="14"
+						key="textField-2"/>
+					<box rightPadding="2">					<pen lineWidth="0.0" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{nonproductiveage}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="181"
+						height="14"
+						key="textField"/>
+					<box leftPadding="3">					<pen lineWidth="0.0" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{planttreename}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="403"
+						y="0"
+						width="56"
+						height="14"
+						key="textField"/>
+					<box rightPadding="2">					<pen lineWidth="0.0" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{unitvalue}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="459"
+						y="0"
+						width="93"
+						height="14"
+						key="textField"/>
+					<box rightPadding="2">					<pen lineWidth="0.0" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{basemarketvalue}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.0000" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="181"
+						y="0"
+						width="60"
+						height="14"
+						key="textField-1"/>
+					<box rightPadding="2">					<pen lineWidth="0.0" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{areacovered}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="241"
+						y="0"
+						width="56"
+						height="14"
+						key="textField-3"/>
+					<box rightPadding="2">					<pen lineWidth="0.0" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{productive}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="297"
+						y="0"
+						width="61"
+						height="14"
+						key="textField-4"/>
+					<box rightPadding="2">					<pen lineWidth="0.0" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{nonproductive}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="14"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="403"
+						y="0"
+						width="56"
+						height="14"
+						forecolor="#009900"
+						key="staticText-5">
+							<printWhenExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() > 0)]]></printWhenExpression>
+						</reportElement>
+					<box>					<pen lineWidth="0.0" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[TOTAL]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="459"
+						y="0"
+						width="93"
+						height="14"
+						key="textField">
+							<printWhenExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() > 0)]]></printWhenExpression>
+						</reportElement>
+					<box rightPadding="2">					<pen lineWidth="0.0" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTALBASEMV}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="0"
+						y="0"
+						width="403"
+						height="14"
+						key="staticText-13"
+						positionType="Float"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma"/>
+					</textElement>
+				<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+		</summary>
+</jasperReport>

@@ -7,9 +7,12 @@ import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.reports.*;
 import com.rameses.util.*;
 import java.util.concurrent.*;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.math.RoundingMode
 
 
-class RPTReceiptBatchModel extends PageFlowController
+class CashReceiptBatchModel extends PageFlowController
 {
     @Binding
     def binding;
@@ -53,8 +56,9 @@ class RPTReceiptBatchModel extends PageFlowController
     def BARCODE_KEY = '56001';
     
     def init(){
-        entity.putAll([payoption:PAYOPTION_TAXPAYER, itemsperreceipt:5, totalcash:0.0, totalnoncash:0.0, amount:0.0]);
-        entity.showprinterdialog = true;
+        entity.putAll([payoption:PAYOPTION_TAXPAYER, itemsperreceipt:5, totalcash:0.0, totalnoncash:0.0, cashtendered:0.0, change:0.0, amount:0.0]);
+        entity.confirmbeforeprint = true;
+        entity.showprinterdialog = false;
         bill = billSvc.initBill();
         bill._forpayment = true;
         itemsforpayment = [];
@@ -108,7 +112,7 @@ class RPTReceiptBatchModel extends PageFlowController
         processing = false;
         msg = null;
         calcReceiptAmount();
-        binding.refresh('entity.*|msg|msgpnl');
+        binding?.refresh('entity.*|msg|msgpnl');
     }
 
 
@@ -330,29 +334,27 @@ class RPTReceiptBatchModel extends PageFlowController
         getRows : { issuedreceipts.size() + 1 },
         fetchList: { return issuedreceipts },
     ] as BasicListModel
-    
-    def getChange(){
-        entity.cashchange = 0;
-        entity.balance = entity.amount - entity.totalnoncash;
-        if (entity.totalcash >= entity.balance){
-            entity.cashchange = entity.totalcash - entity.balance;
+
+    def updateChange() {
+        entity.change = 0;
+        if (entity.totalcash + check.amount <= 0) {
+            return;
         }
-        else if(entity.totalcash > 0.0 ){
-            entity.totalcash = 0.0 ;
-            binding.refresh('entity.totalcash');
-            MsgBox.alert('Cash Tendered must be more than or equal to ' + entity.balance + '.');
+        entity.balance = entity.amount - check.amount;
+        if (entity.cashtendered > entity.balance){
+            entity.totalcash = entity.balance;
+            entity.change = entity.cashtendered - entity.balance;
         }
-        else{
-            throw new Exception('Cash tendered must be specified.');
-        }
-        return entity.cashchange;
+        binding.refresh('entity.change');
     }
     
     void validate(){
         if (entity.itemsperreceipt < 1 || entity.itemsperreceipt > 5){
             throw new Exception('Items per Receipt must be between 1 and 5.');
         }
-        getChange();
+        if (entity.totalcash + check.amount != entity.amount) {
+            throw new Exception('Total cash and check must be more or equal to ' + entity.amount + '.');
+        }
     }
     
     
@@ -363,12 +365,17 @@ class RPTReceiptBatchModel extends PageFlowController
         buildPaymentList();
         
         mode = MODE_PAYMENT;
+
+        entity.cashbalance = entity.totalcash;
+        entity.checkbalance = check.amount;
         
         while(true){
             try{
                 createReceipt();
                 receipt.putAll(receiptSvc.post(receipt));
-                MsgBox.alert('Insert Receipt No. ' + receipt.receiptno + ' into the printer.');
+                if (entity.confirmbeforeprint) {
+                    MsgBox.alert('Insert Receipt No. ' + receipt.receiptno + ' into the printer.');
+                }
                 issuedreceipts << [objid:receipt.objid, receiptno:receipt.receiptno, amount:receipt.amount];
                 receiptHandler.reload();
                 print(receipt);
@@ -435,17 +442,13 @@ class RPTReceiptBatchModel extends PageFlowController
         receipt.paidbyaddress = entity.paidbyaddress
         receipt.ledgers = paymentlist[0];
         receipt.amount = receipt.ledgers.total.sum();
-        receipt.totalcash = receipt.amount;
-        receipt.totalnoncash = 0.0;
-        receipt.cashchange = 0.0;
-        receipt.totalcredit = 0.0;
-
+        
         receipt.sharing = [] 
         receipt.items = []
         receipt.ledgers.each {
-            receipt.sharing += it.shares 
             receipt.items += it.billitems 
         }
+        buildPaymentInfo(receipt)
         return receipt;
     }
     
@@ -502,6 +505,157 @@ class RPTReceiptBatchModel extends PageFlowController
         b.barcode = bill.barcode;
         b.maxadvanceyear = bill.maxadvanceyear;
         return b;
+    }
+
+
+    /*============================================
+    *
+    * payment support
+    *
+    ============================================*/
+
+    def check = [amount: 0];
+
+    void clearPayments() {
+        entity.totalcash = 0;
+        check.amount = 0;
+        entity.change = 0;
+        entity.cashtendered = 0;
+        updateChange();
+        binding.refresh('entity.*cash.*|check.*|add.*');
+    }
+
+    def addCash() {
+        def onadd = {
+            entity.cashtendered = it.cash;
+            entity.change = it.change;
+            entity.totalcash = it.cash - it.change;
+            updateChange();
+            binding.refresh('entity.*cash.*|add.*');
+        }
+        return Inv.lookupOpener('cashreceipt:payment-cash', [saveHandler: onadd]);
+    }
+
+    def addCheck() {
+        def onsave = {chk ->
+            check = chk;
+            entity.totalnoncash = check.amount;
+            updateChange();
+            binding.refresh('entity.*cash.*|check.*|add.*');
+        }
+
+        return Inv.lookupOpener('cashreceipt:payment-check', [saveHandler: onsave, fundList: [], exitOnSplitCheck: true]);
+    }
+
+    void buildPaymentInfo(receipt) {
+        if (entity.cashbalance > 0 && entity.checkbalance == 0) {
+            //cash payment only
+            receipt.totalcash = receipt.amount;
+            receipt.totalnoncash = 0.0;
+        } else if (entity.cashbalance == 0 && entity.checkbalance > 0) {
+            //check payment only
+            receipt.totalnoncash = receipt.amount;
+            receipt.totalcash = 0.0;
+            receipt.paymentitems = createCheckPayments(receipt)
+        } else {
+            // cash and checkpayment
+            buildMixPaymentInfo(receipt)
+        }
+        receipt.change = 0.0;
+        receipt.totalcredit = 0.0;
+    }
+
+    /*=================================================
+    * for mix payment:
+    *       if taxdue is less than both cash and check 
+    *              distribute cash first
+    *       then distribute the remaining cash 
+    *           for partial (with remaining cash)
+    *              distribute check proportionately
+    ==================================================*/
+    void buildMixPaymentInfo(receipt) {
+        if (entity.cashbalance >= receipt.amount) {
+            entity.cashbalance =  round(entity.cashbalance - receipt.amount);
+            receipt.totalcash = receipt.amount;
+            receipt.totalnoncash = 0.0;
+        } else {
+            receipt.totalcash = entity.cashbalance;
+            receipt.totalnoncash = round(receipt.amount - receipt.totalcash);
+            entity.cashbalance = 0.0;
+            println 'receipt.totalcash => ' + receipt.totalcash;
+            println 'receipt.totalnoncash => ' + receipt.totalnoncash;
+            receipt.paymentitems = createCheckPayments(receipt)
+        }
+    }
+
+
+    def createCheckPayments(receipt) {
+        def pmts = [];
+
+        def grpbyfunds = receipt.items.groupBy{ it.item.fund.objid } 
+        def fundtotals = getFundTotals(receipt, grpbyfunds)
+        println 'fundtotals => ' + fundtotals;
+
+        grpbyfunds.each{fundid, items ->
+            def pmt = [:]
+            pmt.objid = 'PMT' + new java.rmi.server.UID();
+            pmt.check = check;
+            pmt.receiptid = receipt.objid;
+            pmt.refid = check.objid;
+            pmt.refno = check.refno;
+            pmt.refdate = check.refdate;
+            pmt.reftype = 'CHECK';
+            pmt.amount = fundtotals[fundid].total;
+            pmt.voidamount = 0.0;
+            pmt.particulars = check.refno + ' (' + check.bank?.name + ') dated ' + check.refdate ;
+            pmt.fund = [objid: fundid]
+            pmts << pmt;
+        }
+        return pmts;
+    }
+
+    def getFundTotals(receipt, grpbyfunds) {
+        def fundtotals = [:]
+        grpbyfunds.each{fundid, items ->
+            fundtotals[fundid] = [total: items.amount.sum()];
+        }
+        if (receipt.totalcash > 0) {
+            //adjust fund totals proportionally (partial)
+            def partial = receipt.amount - receipt.totalcash;
+            def runningtotal = 0.0;
+            def idx = 0;
+            fundtotals.each{ fundid, fund ->
+                ++idx;
+                if (idx == grpbyfunds.size()) {
+                    fund.total = round(partial - runningtotal);
+                } else {
+                    fund.total = round(partial * fund.total / receipt.amount);
+                }
+                runningtotal = round(runningtotal + fund.total);
+            }
+
+            if (runningtotal != receipt.totalnoncash){
+                println 'fundTotals ==================';
+                fundtotals.each{ 
+                    println '   >>> ' + it;
+                }
+                throw new Exception('Total check payment items does not match check amount.');
+            }
+        }
+
+        return fundtotals;
+    }
+
+    def round(amount) {
+        if( amount instanceof Number ) amount = format('0.00000000',amount)
+        def bd = new BigDecimal( amount )
+        return bd.setScale(2, RoundingMode.HALF_UP)
+    }
+
+    def format( pattern, value ) {
+        if( ! value ) value = 0
+        def df = new DecimalFormat( pattern )
+        return df.format( value )
     }
 }
 

@@ -204,7 +204,7 @@ class TaxClearanceModel
         return InvokerUtil.lookupOpener('rptledger:lookup', [
             query: query,
             onselect : { ledger ->
-                if (! entity.items.find{it.faasid == ledger.faasid}) {
+                if (! entity.items.find{it.objid == ledger.objid}) {
                     validateLedger(ledger);
                     ledger.refid   = ledger.objid
                     ledger.barangay = ledger.barangay.name;
@@ -221,6 +221,13 @@ class TaxClearanceModel
         def msg = '';
         
         validateState(ledger);
+
+        def allowSpecialCaseLedger = RPTUtil.toBoolean(var.get('landtax_taxclearance_allow_special_case_ledger'), false);
+        if (allowSpecialCaseLedger) {
+            if (ledger.totalav == 0) return;
+            if (!ledger.taxable) return;
+            if (ledger.effectivityyear == entity.effectivityyear) return;
+        }
         
         if ('fullypaid' == entity.reporttype.name) {
             if (ledger.lastyearpaid < entity.year || 

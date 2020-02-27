@@ -139,7 +139,9 @@ class LandTaxReportTaxClearanceService
             throw new Exception('At least one property must be included.')
         }
 
-        if ('fullypaid' == cert.reporttype.name) {
+        def isSpecialCase = util.toBoolean(var.landtax_taxclearance_allow_special_case_ledger, false)
+
+        if ('fullypaid' == cert.reporttype.name && !isSpecialCase) {
             cert.items.each{
                 if (it.lastyearpaid < cert.year) 
                     throw new Exception('TD No. ' + it.tdno + ' is not cleared for the year ' + cert.year + '.')

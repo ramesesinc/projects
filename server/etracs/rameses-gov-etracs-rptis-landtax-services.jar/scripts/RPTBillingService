@@ -115,6 +115,9 @@ public class RPTBillingService
 
 		bill.collectiontype = em_collectiontype.find([formno:'56', barcodekey:BARCODE_KEY]).first()
 		if (!bill.collectiontype){
+			bill.collectiontype = em_collectiontype.find([formno:'56CON', barcodekey:BARCODE_KEY]).first()
+		}
+		if (!bill.collectiontype){
 			bill.collectiontype = em_collectiontype.find([formno:'5156', barcodekey:BARCODE_KEY]).first()
 		}
 		if (!bill.collectiontype) {

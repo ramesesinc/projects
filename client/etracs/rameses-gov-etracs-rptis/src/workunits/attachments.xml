@@ -10,10 +10,18 @@
             action="init" caption="Attachments" 
             folderFieldName="txnno"
             index="1010" />
-        
-        <invoker type="attachment:view" 
-            action="init" caption="Attachments" />
-        
+
+        <invoker type="faas:info" 
+            action="init" caption="Attachments" 
+            alwaysOnTop="true"
+            index="1010" />
+
+        <invoker type="faaslist:formActions"
+                  action="init" caption="Attachments" 
+                  target="popup" 
+                  index="100000" 
+                  alwaysOnTop="true"
+                  visibleWhen="#{selectedEntity != null}" />            
                  
    </invokers>
    <code class="com.rameses.gov.etracs.rptis.models.AttachmentModel">

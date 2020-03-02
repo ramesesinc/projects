@@ -1,0 +1,11 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
+          schemaName="attachment"
+          allowCreate="false"
+          allowDelete="false"
+          orderBy="title">
+   <invokers>
+         <invoker type="attachment:lookup" caption="Attachment Lookup" 
+                  action="init" target="popup" width="650" height="450"
+                  cols="title,docrefno" />
+   </invokers>
+</workunit>

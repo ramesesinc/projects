@@ -4,15 +4,25 @@
     <invokers>
         <invoker type="rptrequirementtype:handler" action="init" name="default" caption="Default Handler" />
         
-        <invoker type="formActions" action="complied" caption="Complied" mnemonic="c"  role="RECEIVER,EXAMINER" visibleWhen="#{mode == 'read' &amp;&amp; !caller?.entity.state.matches('CURRENT|CANCELLED') &amp;&amp; !entity.complied}"/>
-        <invoker type="formActions" action="uncomplied" caption="Uncomplied" mnemonic="u"  role="RECEIVER,EXAMINER" visibleWhen="#{mode == 'read' &amp;&amp; !caller?.entity.state.matches('CURRENT|CANCELLED') &amp;&amp; entity.complied}"/>
-        
-        <invoker type="supportActions" action="addImage" caption="Add" role="RECORD,RECEIVER"/>
-        <invoker type="supportActions" action="deleteImage" caption="Delete" role="RECORD,RECEIVER" visibleWhen="#{selectedItem != null  &amp;&amp; !caller?.entity.state.matches('CURRENT|CANCELLED')}"/>
-        <invoker type="supportActions" action="viewImage" caption="View" visibleWhen="#{selectedItem != null}"/>
+        <invoker type="formActions" action="complied" 
+            caption="Complied" 
+            mnemonic="c"  
+            role="RECEIVER,EXAMINER" 
+            visibleWhen="#{mode == 'read' &amp;&amp; !caller?.entity.state.matches('CURRENT|CANCELLED') &amp;&amp; !entity.complied}"/>
+
+        <invoker type="formActions" action="uncomplied" 
+            caption="Uncomply" 
+            mnemonic="u"  
+            role="RECEIVER,EXAMINER" 
+            visibleWhen="#{mode == 'read' &amp;&amp; !caller?.entity.state.matches('CURRENT|CANCELLED') &amp;&amp; entity.complied}"/>
+
+        <invoker type="formActions" action="deleteTxnAttachment" 
+            caption="Delete Attachment" 
+            role="RECEIVER,EXAMINER" 
+            visibleWhen="#{mode == 'read' &amp;&amp; !caller?.entity.state.matches('CURRENT|CANCELLED')}"/>
     </invokers>
         
-    <code class="com.rameses.gov.etracs.rpt.requirement.ui.RPTRequirementTypeDefaultHandler" >
+    <code class="com.rameses.gov.etracs.rptis.models.RPTRequirementTypeDefaultHandlerModel" >
     </code>
     
     <pages>

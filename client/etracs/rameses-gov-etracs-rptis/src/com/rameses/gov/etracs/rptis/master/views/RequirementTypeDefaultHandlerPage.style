@@ -4,3 +4,12 @@
 
 "entity.*" [mode != 'read'] {
     enabled:true;
+}
+
+"attachment" [true] {
+    visible:true;
+}
+
+"attachment" [caller.entity.state.toLowerCase().matches('current|cancelled')] {
+    visible:false;
+}

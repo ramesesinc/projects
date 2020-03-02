@@ -10,7 +10,9 @@
         <invoker type="cancelledfaas:info" action="init" caption="Requirements" index="5" />
         <invoker type="batchgr:info" action="init" caption="Requirements" index="5" />
         <invoker type="formActions" action="refresh" caption="Refresh" mnemonic="r" />
+        <!-- 
         <invoker type="formActions" action="openViewer" caption="Open Viewer" visibleWhen="#{showViewer==true}" />
+    -->
    </invokers>
    <code class="com.rameses.gov.etracs.rptis.models.FAASRequirementsModel">
 

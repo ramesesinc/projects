@@ -1,0 +1,40 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.util.*
+import com.rameses.services.extended.*
+
+class FAASHistoryService {
+	@Env 
+	def env
+
+	@DataContext('faas')
+	def em_faas
+
+	@DataContext('faas_previous')
+	def em_previous
+
+
+	@ProxyMethod
+	public def getHistory(faas) {
+		def history = []
+		buildFaasHistory(history, faas)
+		return history
+	}
+
+	void buildFaasHistory(history, faas) {
+		if (!faas.tdno) faas.tdno = 'NEW'
+		history << faas
+		def prevfaases = getPreviousFaases(faas)
+		prevfaases.each{ pf ->
+			buildFaasHistory(history, pf)
+		}
+	}
+
+	def getPreviousFaases(faas) {
+		return em_previous.select('objid:{prevfaasid}, tdno:{prevtdno}')
+					.find([faasid: faas.objid])
+					.orderBy('prevtdno')
+					.list()
+	}
+}
+

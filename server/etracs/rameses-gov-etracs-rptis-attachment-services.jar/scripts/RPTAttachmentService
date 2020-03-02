@@ -1,0 +1,50 @@
+import com.rameses.annotations.*;
+import java.io.*;
+
+class RPTAttachmentService {
+
+    @DataContext("attachment")
+    def em_attachment
+
+    @DataContext("attachment_txn")
+    def em_attachment_txn
+
+
+    @ProxyMethod
+    public def create(entity) {
+    	em_attachment.create(entity)
+    	return entity
+    }
+
+    @ProxyMethod
+    public def createTxnAttachment(txn) {
+        em_attachment_txn.create(txn)
+        return txn
+    }
+
+    @ProxyMethod
+    public void deleteAttachment(attachment) {
+        em_attachment_txn.find([attachmentid: attachment.objid]).delete()
+        em_attachment.find([objid: attachment.objid]).delete()
+    }
+
+    @ProxyMethod
+    public void deleteTxnAttachment(txn) {
+        def param = [
+            attachmentid: txn.attachmentid,
+            refid: txn.refid
+        ]
+        em_attachment_txn.find(param).delete()
+    }
+
+    @ProxyMethod
+    public def getAttachments(docref) {
+    	return em_attachment.find([docrefid: docref.objid]).orderBy('title').list()
+    }
+
+    @ProxyMethod
+    public def getTxnAttachments(ref) {
+        def items = em_attachment_txn.find([refid: ref.objid]).orderBy('attachment.title').list()
+        return items.attachment
+    }
+}

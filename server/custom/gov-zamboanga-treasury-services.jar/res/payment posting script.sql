@@ -87,3 +87,13 @@ create index ix_tdn on zz_etracs_afor56_posted(tdn)
 go 
 
 
+
+
+insert into zz_etracs_afor56_forposting(orno, ordate, tdn)
+select distinct a.orno, a.ordate, b.tdn, b.calendaryear
+from AF56ORA a  
+inner join AF56ORB b on a.orno = b.orno 
+where a.ordate >= '2019-11-29' and a.ordate <= '2019-11-30'
+and a.orstatus <> 'c'
+order by a.ordate, a.orno, b.calendaryear
+go 

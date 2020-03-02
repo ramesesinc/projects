@@ -1,0 +1,12 @@
+import com.rameses.annotations.*;
+import java.io.*;
+
+class RPTAttachmentInterceptor {
+	@Service('RPTAttachmentService')
+	def svc
+
+    @Before(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname=='sys_file'}")
+    public void beforeDeleteAttachment(evt) {
+    	svc.deleteAttachment(evt.args[0])
+    }
+}

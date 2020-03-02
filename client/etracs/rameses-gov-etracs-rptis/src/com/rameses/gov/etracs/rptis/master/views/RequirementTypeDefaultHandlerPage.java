@@ -31,125 +31,76 @@ public class RequirementTypeDefaultHandlerPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
-        jSplitPane1 = new javax.swing.JSplitPane();
+        jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
-        xTextField1 = new com.rameses.rcp.control.XTextField();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        xTextArea1 = new com.rameses.rcp.control.XTextArea();
+        xTextField2 = new com.rameses.rcp.control.XTextField();
+        xDateField2 = new com.rameses.rcp.control.XDateField();
         jPanel4 = new javax.swing.JPanel();
-        xActionBar1 = new com.rameses.rcp.control.XActionBar();
-        xDataTable2 = new com.rameses.rcp.control.XDataTable();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        fileViewPanel1 = new com.rameses.filemgmt.components.FileViewPanel();
 
         setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.BorderLayout());
-
-        jSplitPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        jSplitPane1.setDividerLocation(320);
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
         xFormPanel1.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        xFormPanel1.setPadding(new java.awt.Insets(0, 10, 5, 5));
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel1.setPadding(new java.awt.Insets(10, 5, 10, 5));
 
-        xCheckBox1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
         xCheckBox1.setName("entity.complied"); // NOI18N
         xCheckBox1.setShowCaption(false);
         xCheckBox1.setText("Complied?");
         xFormPanel1.add(xCheckBox1);
 
-        xTextField1.setCaption("Ref. No.");
-        xTextField1.setCellPadding(new java.awt.Insets(2, 0, 0, 0));
-        xTextField1.setName("entity.value.txnno"); // NOI18N
-        xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xTextField1);
+        xTextField2.setCaption("Ref. No.");
+        xTextField2.setName("entity.value.txnno"); // NOI18N
+        xTextField2.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        xFormPanel1.add(xTextField2);
 
-        xDateField1.setCaption("Ref. Date");
-        xDateField1.setName("entity.value.txndate"); // NOI18N
-        xDateField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xDateField1);
+        xDateField2.setCaption("Ref. Date");
+        xDateField2.setName("entity.value.txndate"); // NOI18N
+        xDateField2.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
+        xFormPanel1.add(xDateField2);
 
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 85));
+        jPanel1.add(xFormPanel1, java.awt.BorderLayout.CENTER);
 
-        xTextArea1.setLineWrap(true);
-        xTextArea1.setWrapStyleWord(true);
-        xTextArea1.setCaption("Remarks");
-        xTextArea1.setName("entity.value.remarks"); // NOI18N
-        jScrollPane1.setViewportView(xTextArea1);
+        add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
-        xFormPanel1.add(jScrollPane1);
-
-        jSplitPane1.setLeftComponent(xFormPanel1);
-
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setPadding(new java.awt.Insets(25, 10, 10, 10));
-        xTitledBorder1.setTitle("Support Documents");
-        jPanel4.setBorder(xTitledBorder1);
+        jPanel4.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)), javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)));
         jPanel4.setLayout(new java.awt.BorderLayout());
 
-        xActionBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        xActionBar1.setDepends(new String[] {"selectedItem"});
-        xActionBar1.setName("supportActions"); // NOI18N
-        xActionBar1.setUseToolBar(false);
-        jPanel4.add(xActionBar1, java.awt.BorderLayout.NORTH);
+        xFormPanel2.setCaptionWidth(100);
+        xFormPanel2.setPadding(new java.awt.Insets(0, 0, 5, 0));
 
-        xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "title"}
-                , new Object[]{"caption", "Title"}
-                , new Object[]{"width", 200}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "filesize"}
-                , new Object[]{"caption", "Filesize"}
-                , new Object[]{"width", 120}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
-            })
-        });
-        xDataTable2.setHandler("listHandler");
-        xDataTable2.setName("selectedItem"); // NOI18N
-        jPanel4.add(xDataTable2, java.awt.BorderLayout.CENTER);
+        xLookupField1.setCaption("Add Attachment");
+        xLookupField1.setExpression("#{item.title}");
+        xLookupField1.setHandler("lookupAttachment");
+        xLookupField1.setName("attachment"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(200, 20));
+        xFormPanel2.add(xLookupField1);
 
-        jSplitPane1.setRightComponent(jPanel4);
+        jPanel4.add(xFormPanel2, java.awt.BorderLayout.PAGE_START);
 
-        jPanel2.add(jSplitPane1, java.awt.BorderLayout.CENTER);
+        fileViewPanel1.setHandler("attachmentHandler");
+        jPanel4.add(fileViewPanel1, java.awt.BorderLayout.CENTER);
 
-        add(jPanel2, java.awt.BorderLayout.CENTER);
+        add(jPanel4, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel2;
+    private com.rameses.filemgmt.components.FileViewPanel fileViewPanel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSplitPane jSplitPane1;
-    private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
-    private com.rameses.rcp.control.XDataTable xDataTable2;
-    private com.rameses.rcp.control.XDateField xDateField1;
+    private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XTextArea xTextArea1;
-    private com.rameses.rcp.control.XTextField xTextField1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
+    private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables
     
 }

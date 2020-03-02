@@ -10,78 +10,56 @@ class AttachmentModel
     @Binding
     def binding;
 
-    @Invoker 
-    def invoker;
+    @Service('FAASHistoryService')
+    def historySvc;
 
-    @Service('Var')
-    def var;
+    @Service('RPTAttachmentService')
+    def attachmentSvc;
 
-    @Service('QueryService')
-    def querySvc;
-
-    def listeners = [];    
     def entity;
-    def files;
-    def folderName;
-    def callerEntity;
-    def selectedAttachment;
-    def isMultiSelect = false;
-    def width = 150;
-    def height = 150;
-    def adapter;
-    def scaler = new ImageScaler(); 
+    def attachments;
+    def historyList;
+    def selectedFaas;
     
     void init() {
-        callerEntity = entity;
-        entity = [:]; 
-        files = [];
-        loadAdapter();
-        adapter.loadFolders(files);
+        historyList = historySvc.getHistory([objid: entity.objid, tdno: entity.tdno]); 
+        attachments = getAttachments([objid: entity.objid]);
     }
 
-    def createThumbnail(file) {
-        try {
-            return scaler.createThumbnail( file, width, height  ); 
-        } catch(Throwable t){
-            return null;
-        } 
+    def getAttachments(docref) {
+         return attachmentSvc.getAttachments(docref);
     }
-    
+
+    void setSelectedHistory(faas) {
+        selectedFaas = faas;
+        reloadAttachments();
+    }
+
+    void reloadAttachments() {
+        attachments = getAttachments([objid: selectedFaas.objid]);
+        attachmentHandler.reload();
+    }
+
+    def getSelectedHistory() {
+        return selectedFaas;
+    }
+
+    def getDocRefNo() {
+        return (entity.tdno ? entity.tdno : entity.fullpin);
+    }
+
+    def historyListHandler = [
+        fetchList: { historyList },
+        getRows: { historyList.size() },
+    ] as BasicListModel
+
     def attachmentHandler = [
-        isAllowAdd: { false },
-        isAllowRemove: { false },
-        isMultiSelect: { isMultiSelect },
-        getCellWidth: { width },
-        getCellHeight: { height },
-        fetchList: {
-            return files; 
-        }, 
-        getItem: { o->
-            adapter.loadItems( o ); 
-            return o; 
+        fetchList: { attachments },
+        addItem: { o ->
+            o.docrefid = entity.objid;
+            o.docrefno = getDocRefNo();
+            attachmentSvc.create(o)
         },
-        openItem: { o-> 
-            if ( listeners ) {
-                listeners.each{ ls-> 
-                    ls(o);
-                } 
-                throw new com.rameses.util.BreakException(); 
-            } 
-            
-            return Inv.lookupOpener('attachment:preview', [entity: o, listeners: listeners]); 
-        }
     ] as FileViewModel;
-
-
-    void loadAdapter() {
-        def varname = 'file_server_path';
-        def serverPath = var.get(varname);
-        if (serverPath) {
-            adapter = new AttachmentFileAdapter(model: this);
-        } else {
-            adapter = new AttachmentDatabaseAdapter(model: this);
-        }
-    }
-
 }
 

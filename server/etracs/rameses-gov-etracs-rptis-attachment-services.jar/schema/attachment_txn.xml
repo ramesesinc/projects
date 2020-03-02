@@ -1,0 +1,11 @@
+<schema adapter="attachment">
+	<element  tablename="attachment_txn">
+		<field name="objid" primary="true" prefix="AT"/>
+		<field name="attachmentid" required="true" caption="Attachment ID"/>
+		<field name="refid" required="true" caption="Reference ID"/>
+
+		<complex name="attachment" ref="attachment" required="false" jointype="many-to-one">
+			<key field="attachmentid" target="objid" />
+		</complex>
+	</element>
+</schema>

@@ -1,0 +1,10 @@
+<schema adapter="attachment">
+	<element  tablename="attachment">
+		<field name="objid" primary="true" prefix="A"/>
+		<field name="docrefid" caption="Doc ID" indexed="true" />
+		<field name="docrefno" caption="Doc Ref No." searchable="true" indexed="true" />
+		<field name="title" required="true" caption="Title" searchable="true" indexed="true" />
+		<field name="keywords" searchable="true" indexed="true" />
+		<field name="description"/>
+	</element>
+</schema>

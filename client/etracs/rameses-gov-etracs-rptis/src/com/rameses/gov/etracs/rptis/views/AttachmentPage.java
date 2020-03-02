@@ -26,11 +26,38 @@ public class AttachmentPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jSplitPane1 = new javax.swing.JSplitPane();
+        xDataTable1 = new com.rameses.rcp.control.XDataTable();
         fileViewPanel1 = new com.rameses.filemgmt.components.FileViewPanel();
 
-        fileViewPanel1.setCellSize(new java.awt.Dimension(100, 100));
+        jSplitPane1.setDividerLocation(150);
+        jSplitPane1.setDividerSize(4);
+
+        xDataTable1.setHandler("historyListHandler");
+        xDataTable1.setName("selectedHistory"); // NOI18N
+        xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "tdno"}
+                , new Object[]{"caption", "FAAS History"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            })
+        });
+        xDataTable1.setOpaque(false);
+        xDataTable1.setShowRowHeader(false);
+        jSplitPane1.setLeftComponent(xDataTable1);
+
         fileViewPanel1.setHandler("attachmentHandler");
-        fileViewPanel1.setName("selectedAttachment"); // NOI18N
+        jSplitPane1.setRightComponent(fileViewPanel1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -38,18 +65,20 @@ public class AttachmentPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(fileViewPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(fileViewPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.filemgmt.components.FileViewPanel fileViewPanel1;
+    private javax.swing.JSplitPane jSplitPane1;
+    private com.rameses.rcp.control.XDataTable xDataTable1;
     // End of variables declaration//GEN-END:variables
 }

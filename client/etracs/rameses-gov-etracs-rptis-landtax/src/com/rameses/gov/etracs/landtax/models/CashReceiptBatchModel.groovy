@@ -37,6 +37,7 @@ class CashReceiptBatchModel extends PageFlowController
     def var;
 
     def mainProcessHandler;
+    def afcontrol;
     
     def MODE_INIT = 'init';
     def MODE_SELECT = 'select';
@@ -468,7 +469,11 @@ class CashReceiptBatchModel extends PageFlowController
     void print(receipt) {
         def u = new CashReceiptPrintUtil( binding: binding ); 
         u.showPrinterDialog = entity.showprinterdialog;
-        def template_name = "cashreceipt-form:" + entity.formno; 
+
+        def template_name = afcontrol?.afunit?.cashreceiptprintout; 
+        if ( !template_name ) {
+            template_name = "cashreceipt-form:" + entity.formno; 
+        }
         u.print( template_name, receipt );
     }    
     

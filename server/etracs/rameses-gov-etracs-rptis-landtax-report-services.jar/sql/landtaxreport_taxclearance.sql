@@ -12,6 +12,7 @@ VALUES
 SELECT 
 	rci.*,
 	rl.objid as rptledgerid, 
+	rl.faasid,
 	rl.tdno,
 	rl.rputype,
 	rl.fullpin ,
@@ -28,6 +29,7 @@ SELECT
 	rl.classcode,
 	pc.name as classification, 
 	rl.titleno,
+	rl.taxable,
 	rp.surveyno,
 	f.effectivityyear
 FROM rptcertificationitem rci 

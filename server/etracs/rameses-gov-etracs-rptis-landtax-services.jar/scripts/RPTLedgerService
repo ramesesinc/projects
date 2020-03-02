@@ -1293,6 +1293,12 @@ class RPTLedgerService
             em_rptledger_item.find([objid: it.objid]).update([amtpaid: amtpaid])
         }
     }
+
+
+    @ProxyMethod
+    public void clearLedgerEntries(ledger) {
+        em_rptledger_item.find([parentid: ledger.objid]).delete()
+    }
 }
 
 

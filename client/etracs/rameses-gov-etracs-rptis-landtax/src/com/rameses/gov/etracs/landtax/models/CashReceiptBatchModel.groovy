@@ -10,6 +10,7 @@ import java.util.concurrent.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.math.RoundingMode
+import com.rameses.enterprise.treasury.util.CashReceiptPrintUtil;
 
 
 class CashReceiptBatchModel extends PageFlowController
@@ -32,6 +33,9 @@ class CashReceiptBatchModel extends PageFlowController
     @Service('QueryService')
     def qrySvc;
 
+    @Service('Var')
+    def var;
+
     def mainProcessHandler;
     
     def MODE_INIT = 'init';
@@ -52,11 +56,13 @@ class CashReceiptBatchModel extends PageFlowController
     def msg;
     def cancelled;
     def quarters = [1,2,3,4];
+    def maxreceiptitemcount = 5;
     
     def BARCODE_KEY = '56001';
-    
+
     def init(){
-        entity.putAll([payoption:PAYOPTION_TAXPAYER, itemsperreceipt:5, totalcash:0.0, totalnoncash:0.0, cashtendered:0.0, change:0.0, amount:0.0]);
+        loadMaxReceiptItemCount();
+        entity.putAll([payoption:PAYOPTION_TAXPAYER, itemsperreceipt:maxreceiptitemcount, totalcash:0.0, totalnoncash:0.0, cashtendered:0.0, change:0.0, amount:0.0]);
         entity.confirmbeforeprint = true;
         entity.showprinterdialog = false;
         bill = billSvc.initBill();
@@ -82,21 +88,6 @@ class CashReceiptBatchModel extends PageFlowController
         processing = false;
         listHandler.load();
         mode = MODE_SELECT;
-    }
-
-    void loadItemsByTaxpayer(){
-        if (mode == MODE_INIT || mode == MODE_SELECT) {
-            processing = true;
-            bill.taxpayer = entity.taxpayer;
-            entity.paidby = bill.taxpayer.name;
-            if (bill.taxpayer.address instanceof String) {
-                entity.paidbyaddress = bill.taxpayer.address;
-            } else {
-                entity.paidbyaddress = bill.taxpayer.address.text;
-            }
-            loadItemsForPaymentAsync();
-            calcReceiptAmount();
-        }
     }
 
     /*===================================
@@ -127,6 +118,21 @@ class CashReceiptBatchModel extends PageFlowController
         }
         binding.focus('ledger');
     }
+
+    void loadItemsByTaxpayer(){
+        if (mode == MODE_INIT || mode == MODE_SELECT) {
+            processing = true;
+            bill.taxpayer = entity.taxpayer;
+            entity.paidby = bill.taxpayer.name;
+            if (bill.taxpayer.address instanceof String) {
+                entity.paidbyaddress = bill.taxpayer.address;
+            } else {
+                entity.paidbyaddress = bill.taxpayer.address.text;
+            }
+            loadItemsForPaymentAsync();
+            calcReceiptAmount();
+        }
+    }    
         
 
     def loadLedgerTask = {
@@ -157,13 +163,20 @@ class CashReceiptBatchModel extends PageFlowController
     void loadItemsByBarcode(){
         def res = svc.initReceiptFromBarcode([barcodeid:entity.barcodeid]);
         bill = res.remove('bill');
-        itemsforpayment = bill.remove('ledgers');
+        billedLedgers = bill.remove('ledgers');
+        // itemsforpayment = bill.remove('ledgers');
         entity.taxpayer = bill.taxpayer 
         entity.paidby = bill.taxpayer.name;
-        entity.paidbyaddress = bill.taxpayer.address;
-        calcReceiptAmount();
+        if (bill.taxpayer.address instanceof String) {
+            entity.paidbyaddress = bill.taxpayer.address;
+        } else {
+            entity.paidbyaddress = bill.taxpayer.address.text;
+        }
         entity.barcodeid = null;
-        binding.refresh('entity.barcodeid');
+        loadItemsForPaymentAsync();
+        // calcReceiptAmount();
+        // calcReceiptAmount();
+        // binding.refresh('entity.barcodeid');
     }
 
     void reloadProperties() {
@@ -349,8 +362,8 @@ class CashReceiptBatchModel extends PageFlowController
     }
     
     void validate(){
-        if (entity.itemsperreceipt < 1 || entity.itemsperreceipt > 5){
-            throw new Exception('Items per Receipt must be between 1 and 5.');
+        if (entity.itemsperreceipt < 1 || entity.itemsperreceipt > maxreceiptitemcount){
+            throw new Exception('Items per Receipt must be between 1 and ' + maxreceiptitemcount + '.');
         }
         if (entity.totalcash + check.amount != entity.amount) {
             throw new Exception('Total cash and check must be more or equal to ' + entity.amount + '.');
@@ -453,10 +466,10 @@ class CashReceiptBatchModel extends PageFlowController
     }
     
     void print(receipt) {
-        def bc = new com.rameses.enterprise.treasury.cashreceipt.BasicCashReceipt();
-        bc.entity = receipt
-        bc.entity._options = [canShowPrinterDialog:entity.showprinterdialog]
-        bc.print();
+        def u = new CashReceiptPrintUtil( binding: binding ); 
+        u.showPrinterDialog = entity.showprinterdialog;
+        def template_name = "cashreceipt-form:" + entity.formno; 
+        u.print( template_name, receipt );
     }    
     
     def getReceiptcount(){
@@ -539,7 +552,7 @@ class CashReceiptBatchModel extends PageFlowController
     def addCheck() {
         def onsave = {chk ->
             check = chk;
-            entity.totalnoncash = check.amount;
+            entity.totalnoncash = check.amount - check.amtused;
             updateChange();
             binding.refresh('entity.*cash.*|check.*|add.*');
         }
@@ -656,6 +669,18 @@ class CashReceiptBatchModel extends PageFlowController
         if( ! value ) value = 0
         def df = new DecimalFormat( pattern )
         return df.format( value )
+    }
+
+    void loadMaxReceiptItemCount() {
+        def cnt = var.get('landtax_receipt_item_printout_count');
+        if (cnt) {
+            try {
+                maxreceiptitemcount = (new BigDecimal(cnt.toString())).intValue();
+            } catch( e ) {
+                //ignore 
+            }
+        }
+        println 'maxreceiptitemcount => ' + maxreceiptitemcount;
     }
 }
 

@@ -108,7 +108,6 @@ public class CashReceiptBatchPaymentPage extends javax.swing.JPanel {
         xDecimalField9.setCaption("Change");
         xDecimalField9.setDepends(new String[] {"entity.totalcash", "check", "entity.amount"});
         xDecimalField9.setName("entity.change"); // NOI18N
-        xDecimalField9.setText("entity.change");
         xDecimalField9.setCaptionFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xDecimalField9.setCellPadding(new java.awt.Insets(0, 30, 0, 0));
         xDecimalField9.setDisabledTextColor(new java.awt.Color(204, 0, 0));
@@ -170,7 +169,6 @@ public class CashReceiptBatchPaymentPage extends javax.swing.JPanel {
         xButton4.setText("Cash");
 
         xButton5.setDepends(new String[] {"check", "entity.totalcash", "entity.amount"});
-        xButton5.setDisableWhen("#{entity.totalcash == 0 && check.amount == 0}");
         xButton5.setName("clearPayments"); // NOI18N
         xButton5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xButton5.setText("Clear Payments");

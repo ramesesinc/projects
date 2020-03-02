@@ -32,6 +32,7 @@
         
         <invoker type="reportActions" action="_close" caption="Close" mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode=='view'}"/>
         <invoker type="reportActions" action="back" caption="Back" shortcut="ctrl b" mnemonic="b" icon="images/toolbars/back.png" visibleWhen="#{mode=='view' &amp;&amp; showBack==true}"/>
+        <invoker type="reportActions" action="newBill" caption="New Bill" shortcut="ctrl s" mnemonic="s"  visibleWhen="#{mode=='view' &amp;&amp; showBack==true}"/>
     </invokers>
     
     <code class="com.rameses.gov.etracs.landtax.models.RPTBillingModel">

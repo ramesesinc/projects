@@ -7,6 +7,9 @@ class RPTCertificationService
 {
     @PersistenceContext('main')
     def em;
+
+    @DataContext('rptcertification')
+    def em_certification;
     
     @Env
     def env 
@@ -25,6 +28,12 @@ class RPTCertificationService
 
     @DataContext('sys_org')
     def em_org
+
+    @DataContext('entitymember')
+    def em_member
+
+    @DataContext('entity_mapping')
+    def em_mapping
 
 	
 
@@ -72,6 +81,8 @@ class RPTCertificationService
 		cert.givenday = util.formalizeDate(cert.txndate, 'd' )
 		cert.givenmonth = util.formalizeDate(cert.txndate, 'MMMMM' )
 		cert.givenyear = util.formalizeDate(cert.txndate, 'yyyy' )
+		if (!cert.properties) cert.properties = [:]
+		cert.properties.includemembers = (cert.includemembers ? cert.includemembers : false)
 		validate(cert)
 		em.create(SCHEMA_NAME, cert)
 		return openCertification(cert.objid)
@@ -87,6 +98,7 @@ class RPTCertificationService
 	public def openCertification(objid) {
 		def cert = em.read(SCHEMA_NAME, [objid:objid])
 		if (!cert) throw new Exception('Record does not exist or has already been deleted.')
+		cert.taxpayerid = cert.taxpayer?.objid
 		cert.official = util.toBoolean(cert.official, false)
 		cert.givenday = util.formalizeDate(cert.txndate, 'd' )
 		cert.givenmonth = util.formalizeDate(cert.txndate, 'MMMMM' )
@@ -94,8 +106,21 @@ class RPTCertificationService
 		if (cert.ordate){
 			cert.ordate = dtSvc.parse('yyyy-MM-dd', cert.ordate)
 		}
+		cert.includemembers = cert.properties?.includemembers ? cert.properties.includemembers : false
 		makeHtmlSafe(cert)
 		return cert 
+	}
+
+	@ProxyMethod
+	public def update(cert) {
+		if (!cert.txnno) throw new Exception('Certification No. is required.')
+		def entity =  em_certification.read([objid: cert.objid])
+		if (!entity) throw new Exception('Record does not exist or has been deleted.')
+		validate(entity, cert)
+
+		entity.putAll(cert)
+		em_certification.update(entity)
+		return entity
 	}
 
 	@ProxyMethod
@@ -132,14 +157,9 @@ class RPTCertificationService
 
 	@ProxyMethod
 	public void buildFilter(cert) {
-		cert.taxpayerid = cert.taxpayer.objid
-		cert.asoffilter = " and f.state = 'CURRENT' "
-		/*
-		if (cert.asofyear != dtSvc.serverYear){
-			cert.asoffilter = " and f.state in ('CURRENT', 'CANCELLED') "
-			cert.asoffilter += ' and f.year = $P{asofyear} '
-		}
-		*/
+		cert.taxpayerid = cert.taxpayer?.objid
+		cert.taxpayerids = getTaxpayerIds(cert)
+		cert.asoffilter = " AND f.state = 'CURRENT' "
 	}
 
 	void validate(cert){
@@ -204,4 +224,79 @@ class RPTCertificationService
 		}
 		return val
 	}
+
+
+	def getTaxpayerIds(cert) {
+		def ids = []
+		if (cert.taxpayer && cert.taxpayer.objid) {
+			ids << cert.taxpayer.objid
+			ids += em_mapping.select('objid').find([parent_objid: cert.taxpayer.objid]).list().objid
+			ids += getMultipleOwnershipIds(ids)
+			if (cert.includemembers) {
+				ids += getMemberIds(ids)
+			}
+		} 
+		def idsfilter = '';
+		if (ids) {
+			idsfilter = "'" + ids.unique().join("','") + "'"
+		}
+		return idsfilter
+	}
+
+	def getMultipleOwnershipIds(ids) {
+		def idlist = []
+		ids.each {
+			idlist += em_member.select('entityid').find([member_objid: it]).list().entityid
+		} 
+		return idlist.unique()
+	}
+
+	def getMemberIds(ids) {
+		def idlist = []
+		ids.each{
+			idlist += em_member.select('memberid: {member_objid}').find([entityid: it]).list().memberid
+		}
+		return idlist.unique()
+	}
+
+
+	void validate(entity, cert) {
+		checkDuplicate(entity, cert)
+
+		def ordate = dtSvc.parse('yyyy-MM-dd', cert.ordate)
+		if (ordate > dtSvc.serverDate) {
+			throw new Exception('O.R. Date must be on or before current date')
+		}
+
+		if (cert.properties?.transferordate) {
+			def transferordate = dtSvc.parse('yyyy-MM-dd', cert.properties.transferordate)
+			if (transferordate > dtSvc.serverDate) {
+				throw new Exception('Transfer Tax O.R. Date must be on or before current date')
+			}
+		}
+
+		if (cert.oramount <= 0) {
+			throw new Exception('O.R. Amount should be greater than zero')
+		}
+
+		if (entity.properties?.transferorno) {
+			if (entity.properties.transferoramount <= 0) {
+				throw new Exception('Transfer Tax O.R. Amount should be greater than zero')
+			}
+		}
+	}
+
+	void checkDuplicate(entity, cert) {
+		if (!entity.txnno.equalsIgnoreCase(cert.txnno)) {
+			def dupCert = em_certification.select('objid').find([txnno: cert.txnno]).first()
+			if (dupCert) {
+				def msg = 'Certification No. ' + cert.txnno + ' is already assigned.\n'
+				msg += 'Verify the log book or the number you entered.'
+				throw new Exception(msg)
+			}
+		}
+	}
+
 }
+
+

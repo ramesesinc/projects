@@ -30,6 +30,9 @@ class RPTUtilityService
 	@DataContext('realproperty')
 	def em_realproperty
 
+	@DataContext('rptledger')
+	def em_ledger
+
 
 	
 	 //info: faasid, oldpin, tdno, pintype, municipality, barangay, 
@@ -161,5 +164,28 @@ class RPTUtilityService
 	@ProxyMethod
 	public void deleteTableData(params){
 		em.deleteTableData(params)
+	}
+
+	@ProxyMethod
+	public def getLedgerByFaas(faas) {
+		def hasledger = true;
+		def ledger = em_ledger.find([faasid: faas.objid]).first()
+		if (!ledger) {
+			hasledger = false;
+			ledger = em_ledger.find([tdno: faas.tdno]).first()
+		}
+		return [hasledger: hasledger, ledger: ledger]
+	}
+
+	@ProxyMethod
+	public def changeFAASLedgerMapping(params) {
+		if (!params.faasid) throw new Exception('faasid must be specified')
+		if (!params.rptledgerid) throw new Exception('rptledgerid must be specified')
+		def ledger = em_ledger.select('faasid').find([objid: params.rptledgerid]).first()
+		if (!ledger) throw new Exception('Ledger does not exist or has been deleted.')
+		def oldfaasid = (ledger.faasid ? ledger.faasid : '<none>')
+		em_ledger.find([objid: params.rptledgerid]).update([faasid: params.faasid])
+		logSvc.logA('change_ledger_mapping', 'FAAS', params.faasid, 'Change ledger mapping from ' + oldfaasid + ' to ' +  params.faasid);
+		return getLedgerByFaas([objid: params.faasid])
 	}
 }

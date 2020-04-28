@@ -1,0 +1,16 @@
+<workunit extends="landtax_templates/ReportController.xml" >
+    <invokers>
+
+        <invoker type="statementofshare:report" action="init" 
+                 caption="Barangay Share - Common Share" 
+                 visibleWhen="#{'city'.equalsIgnoreCase(context.env.ORGCLASS)}" 
+                 role="REPORT"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.landtax.report.models.StatementOfShareBarangayCityModel" >
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.report.views.ReportInitPage"/>
+    </pages>    
+</workunit>

@@ -20,6 +20,9 @@ public class MachRYSettingService
     @DataContext('rysetting_mach_forex')
     def em_forex
 
+    @DataContext('rysetting_mach_smv')
+    def em_smv
+
     @DataContext('rysetting_lgu')
     def em_rysettinglgu 
 
@@ -182,6 +185,11 @@ public class MachRYSettingService
     public List getForexes(setting)  {
         return  em_forex.find([machrysettingid:setting.objid]).orderBy('year').list()
     }
+
+    @ProxyMethod
+    public List getMachineSmvs(setting)  {
+        return  em_smv.find([parent_objid:setting.objid]).list()
+    }
     
 
 
@@ -200,6 +208,7 @@ public class MachRYSettingService
         em_mach.create( newsetting )
         copyAssessLevels( newsetting, setting, false )
         copyForexes(newsetting, setting, false)
+        copyMachineSmvs(newsetting, setting, false)
         return open( setting )
     }
     
@@ -220,6 +229,7 @@ public class MachRYSettingService
             em_mach.create(newsetting )
             copyAssessLevels( newsetting, setting, true )
             copyForexes(newsetting, setting, true)
+            copyMachineSmvs(newsetting, setting, true)
             copyLgus(newsetting, setting)
         }
         return [:];
@@ -255,6 +265,15 @@ public class MachRYSettingService
         }
     }
 
+    void copyMachineSmvs(newsetting, setting, updateprevid) {
+        getMachineSmvs( setting ).each{
+            it.previd           = (updateprevid ? it.objid : null)
+            it.objid            = util.generateId('MS')
+            it.parent  = [objid: newsetting.objid]
+            em_smv.save(it)
+        }
+    }
+
     void copyLgus(newsetting, setting){
         def lgus = em_rysettinglgu.find([rysettingid:setting.objid]).list()
         lgus.each{
@@ -281,6 +300,7 @@ public class MachRYSettingService
         }
         setting.forexes = getForexes(setting);
         setting.lgus = em_rysettinglgu.find([rysettingid:setting.objid]).list()
+        setting.smvs = em_smv.find([parent_objid: setting.objid]).list()
         return setting
     }
 
@@ -296,6 +316,7 @@ public class MachRYSettingService
         setting.ranges.each{ saveRange(it) }
         setting.forexes.each{ saveForex(it) }
         setting.lgus.each{em_rysettinglgu.save(it)}
+        setting.smvs.each{em_smv.save(it)}
         return [:]
     }
 
@@ -334,6 +355,10 @@ public class MachRYSettingService
 
             setting.forexes.each{
                 saveForex(it)
+            }
+
+            setting.smvs.each{
+                em_smv.save(it)
             }
         }
     }

@@ -154,38 +154,50 @@ class RPTUtil
 
     @ProxyMethod
     public def toDecimal(value){
-        if (value instanceof BigDecimal ) 
-            return value;
-        return new BigDecimal(value.toString())
+        return toDecimal2(value, 0)
     }
 
     @ProxyMethod
     public def toDecimal2(value, defvalue){
-        if (value == null)
+        if (value == null) {
             value = defvalue 
-        if (value instanceof BigDecimal ) 
-            return value;
-        return new BigDecimal(value.toString())
+        }
+        if (value instanceof BigDecimal ) {
+            return value
+        }
+        def val = defvalue
+        try {
+            val = new BigDecimal(value.toString())
+        } catch (e) {
+            e.printStackTrace()
+        }
+        return val
     }
     
 
     @ProxyMethod
     public def toInteger(value){
-        if (value instanceof Integer)
-            return value;
-        def bd = new BigDecimal(value.toString())
-        return bd.intValue();
+        return toInteger2(value, 0)
     }
 
     @ProxyMethod
     public def toInteger2(value, defvalue){
-        if (value == null)
+        if (value == null) {
             value = defvalue
-        if (value instanceof Integer)
-            return value;
-        def bd = new BigDecimal(value.toString())
-        return bd.intValue();
+        }
+        if (value instanceof Integer) {
+            return value
+        }
+
+        def val = defvalue
+        try {
+            val = new BigDecimal(value.toString()).intValue();
+        } catch (e) {
+            e.printStackTrace()
+        }
+        return val
     }
+
 
 
     /*-------------------------------------------
@@ -638,11 +650,6 @@ class RPTUtil
 
         def sectionlen = getSectionLength(varSvc.pin_section_length, entity.pintype)
         def parcellen = getParcelLength(varSvc.pin_parcel_length, entity.pintype)
-        
-        if (entity.pintype == 'old'){
-            sectionlen = 2;
-            parcellen = 3;
-        }
         
         if( entity.isection > 0 ) {
             ssection = entity.isection.toString();

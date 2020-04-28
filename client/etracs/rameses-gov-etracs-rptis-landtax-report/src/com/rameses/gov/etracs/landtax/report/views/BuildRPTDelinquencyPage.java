@@ -44,16 +44,25 @@ public class BuildRPTDelinquencyPage extends javax.swing.JPanel {
         xDateField4 = new com.rameses.rcp.control.XDateField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel12 = new javax.swing.JPanel();
+        xDataTable2 = new com.rameses.rcp.control.XDataTable();
+        jPanel13 = new javax.swing.JPanel();
+        xFormPanel8 = new com.rameses.rcp.control.XFormPanel();
+        xIntegerField7 = new com.rameses.rcp.control.XIntegerField();
+        xIntegerField8 = new com.rameses.rcp.control.XIntegerField();
+        xIntegerField9 = new com.rameses.rcp.control.XIntegerField();
+        xIntegerField10 = new com.rameses.rcp.control.XIntegerField();
+        xActionBar3 = new com.rameses.rcp.control.XActionBar();
         jPanel1 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         jPanel5 = new javax.swing.JPanel();
         panel1 = new java.awt.Panel();
-        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
-        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
-        xIntegerField3 = new com.rameses.rcp.control.XIntegerField();
-        xIntegerField4 = new com.rameses.rcp.control.XIntegerField();
-        xIntegerField6 = new com.rameses.rcp.control.XIntegerField();
+        jPanel11 = new javax.swing.JPanel();
+        xButton6 = new com.rameses.rcp.control.XButton();
         xButton4 = new com.rameses.rcp.control.XButton();
+        xFormPanel9 = new com.rameses.rcp.control.XFormPanel();
+        xIntegerField11 = new com.rameses.rcp.control.XIntegerField();
+        xActionBar4 = new com.rameses.rcp.control.XActionBar();
         jPanel2 = new javax.swing.JPanel();
         xActionBar1 = new com.rameses.rcp.control.XActionBar();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -76,6 +85,7 @@ public class BuildRPTDelinquencyPage extends javax.swing.JPanel {
         xIntegerField5 = new com.rameses.rcp.control.XIntegerField();
         jScrollPane3 = new javax.swing.JScrollPane();
         xList2 = new com.rameses.rcp.control.XList();
+        xActionBar2 = new com.rameses.rcp.control.XActionBar();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -159,11 +169,11 @@ public class BuildRPTDelinquencyPage extends javax.swing.JPanel {
 
         xFormPanel2.add(xFormPanel6);
 
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        jPanel12.setLayout(new java.awt.BorderLayout());
 
-        xDataTable1.setHandler("listHandler");
-        xDataTable1.setName("selectedItem"); // NOI18N
-        xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
+        xDataTable2.setHandler("completedListHandler");
+        xDataTable2.setName("selectedItem"); // NOI18N
+        xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "barangay.name"}
                 , new Object[]{"caption", "Barangay"}
@@ -238,10 +248,149 @@ public class BuildRPTDelinquencyPage extends javax.swing.JPanel {
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler("#,##0", -1, -1)}
+            })
+        });
+        jPanel12.add(xDataTable2, java.awt.BorderLayout.CENTER);
+
+        jPanel13.setLayout(new java.awt.BorderLayout());
+
+        xFormPanel8.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        xFormPanel8.setCaptionWidth(100);
+        xFormPanel8.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel8.setPadding(new java.awt.Insets(2, 5, 5, 5));
+        xFormPanel8.setPreferredSize(new java.awt.Dimension(654, 35));
+
+        xIntegerField7.setCaption("No. of Records");
+        xIntegerField7.setName("ledgerCount"); // NOI18N
+        xIntegerField7.setPattern("#,##0");
+        xIntegerField7.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
+        xIntegerField7.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xIntegerField7.setEnabled(false);
+        xIntegerField7.setPreferredSize(new java.awt.Dimension(80, 20));
+        xFormPanel8.add(xIntegerField7);
+
+        xIntegerField8.setCaption("Processed");
+        xIntegerField8.setName("totalProcessed"); // NOI18N
+        xIntegerField8.setPattern("#,##0");
+        xIntegerField8.setCaptionWidth(70);
+        xIntegerField8.setCellPadding(new java.awt.Insets(5, 10, 0, 0));
+        xIntegerField8.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xIntegerField8.setEnabled(false);
+        xIntegerField8.setPreferredSize(new java.awt.Dimension(80, 20));
+        xFormPanel8.add(xIntegerField8);
+
+        xIntegerField9.setCaption("Errors");
+        xIntegerField9.setName("totalErrors"); // NOI18N
+        xIntegerField9.setPattern("#,##0");
+        xIntegerField9.setCaptionWidth(50);
+        xIntegerField9.setCellPadding(new java.awt.Insets(5, 10, 0, 0));
+        xIntegerField9.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xIntegerField9.setEnabled(false);
+        xIntegerField9.setPreferredSize(new java.awt.Dimension(80, 20));
+        xFormPanel8.add(xIntegerField9);
+
+        xIntegerField10.setCaption("Ignored");
+        xIntegerField10.setName("totalIgnored"); // NOI18N
+        xIntegerField10.setPattern("#,##0");
+        xIntegerField10.setCaptionWidth(60);
+        xIntegerField10.setCellPadding(new java.awt.Insets(5, 10, 0, 0));
+        xIntegerField10.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xIntegerField10.setEnabled(false);
+        xIntegerField10.setPreferredSize(new java.awt.Dimension(80, 20));
+        xFormPanel8.add(xIntegerField10);
+
+        jPanel13.add(xFormPanel8, java.awt.BorderLayout.EAST);
+
+        jPanel12.add(jPanel13, java.awt.BorderLayout.SOUTH);
+
+        xActionBar3.setName("errorActions"); // NOI18N
+        jPanel12.add(xActionBar3, java.awt.BorderLayout.PAGE_START);
+
+        jTabbedPane1.addTab("Completed Delinquencies", jPanel12);
+
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        xDataTable1.setHandler("listHandler");
+        xDataTable1.setName("selectedItem"); // NOI18N
+        xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "barangay.name"}
+                , new Object[]{"caption", "Barangay"}
+                , new Object[]{"width", 200}
+                , new Object[]{"minWidth", 200}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "count"}
+                , new Object[]{"caption", "Record Count"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler("#,##0", -1, -1)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "processed"}
+                , new Object[]{"caption", "Processed"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler("#,##0", -1, -1)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "errors"}
+                , new Object[]{"caption", "Errors"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler("#,##0", -1, -1)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "ignored"}
+                , new Object[]{"caption", "Ignored"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "completed"}
-                , new Object[]{"caption", "Completed?"}
+                , new Object[]{"caption", "Completed"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -259,63 +408,53 @@ public class BuildRPTDelinquencyPage extends javax.swing.JPanel {
 
         jPanel5.setLayout(new java.awt.BorderLayout());
 
+        panel1.setBackground(new java.awt.Color(240, 240, 240));
         panel1.setLayout(new java.awt.BorderLayout());
 
-        xFormPanel3.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        xFormPanel3.setCaptionWidth(100);
-        xFormPanel3.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        jPanel11.setPreferredSize(new java.awt.Dimension(210, 35));
 
-        xIntegerField2.setCaption("No. of Records");
-        xIntegerField2.setName("ledgerCount"); // NOI18N
-        xIntegerField2.setPattern("#,##0");
-        xIntegerField2.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
-        xIntegerField2.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xIntegerField2.setEnabled(false);
-        xIntegerField2.setPreferredSize(new java.awt.Dimension(80, 20));
-        xFormPanel3.add(xIntegerField2);
+        xButton6.setDepends(new String[] {"selectedItem"});
+        xButton6.setDisableWhen("#{entity.barangays.size() == 0}");
+        xButton6.setName("selectAllBarangay"); // NOI18N
+        xButton6.setVisibleWhen("#{!processing}");
+        xButton6.setText("Select All");
+        jPanel11.add(xButton6);
 
-        xIntegerField3.setCaption("Processed");
-        xIntegerField3.setName("totalProcessed"); // NOI18N
-        xIntegerField3.setPattern("#,##0");
-        xIntegerField3.setCaptionWidth(70);
-        xIntegerField3.setCellPadding(new java.awt.Insets(5, 10, 0, 0));
-        xIntegerField3.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xIntegerField3.setEnabled(false);
-        xIntegerField3.setPreferredSize(new java.awt.Dimension(80, 20));
-        xFormPanel3.add(xIntegerField3);
-
-        xIntegerField4.setCaption("Errors");
-        xIntegerField4.setName("totalErrors"); // NOI18N
-        xIntegerField4.setPattern("#,##0");
-        xIntegerField4.setCaptionWidth(50);
-        xIntegerField4.setCellPadding(new java.awt.Insets(5, 10, 0, 0));
-        xIntegerField4.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xIntegerField4.setEnabled(false);
-        xIntegerField4.setPreferredSize(new java.awt.Dimension(80, 20));
-        xFormPanel3.add(xIntegerField4);
-
-        xIntegerField6.setCaption("Ignored");
-        xIntegerField6.setName("totalIgnored"); // NOI18N
-        xIntegerField6.setPattern("#,##0");
-        xIntegerField6.setCaptionWidth(60);
-        xIntegerField6.setCellPadding(new java.awt.Insets(5, 10, 0, 0));
-        xIntegerField6.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xIntegerField6.setEnabled(false);
-        xIntegerField6.setPreferredSize(new java.awt.Dimension(80, 20));
-        xFormPanel3.add(xIntegerField6);
-
-        panel1.add(xFormPanel3, java.awt.BorderLayout.EAST);
-
-        xButton4.setName("moveToTop"); // NOI18N
+        xButton4.setDepends(new String[] {"selectedItem"});
+        xButton4.setDisableWhen("#{entity.barangays.size() == 0}");
+        xButton4.setName("deselectAllBarangay"); // NOI18N
         xButton4.setVisibleWhen("#{!processing}");
-        xButton4.setText("Move to Top");
-        panel1.add(xButton4, java.awt.BorderLayout.WEST);
+        xButton4.setText("Deselect All");
+        jPanel11.add(xButton4);
+
+        panel1.add(jPanel11, java.awt.BorderLayout.WEST);
+
+        xFormPanel9.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        xFormPanel9.setCaptionWidth(100);
+        xFormPanel9.setOpaque(true);
+        xFormPanel9.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel9.setPadding(new java.awt.Insets(5, 5, 5, 5));
+        xFormPanel9.setPreferredSize(new java.awt.Dimension(200, 35));
+
+        xIntegerField11.setCaption("No. of Records");
+        xIntegerField11.setName("ledgerCountToBuild"); // NOI18N
+        xIntegerField11.setPattern("#,##0");
+        xIntegerField11.setCellPadding(new java.awt.Insets(2, 0, 0, 0));
+        xIntegerField11.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xIntegerField11.setEnabled(false);
+        xIntegerField11.setPreferredSize(new java.awt.Dimension(80, 20));
+        xFormPanel9.add(xIntegerField11);
+
+        panel1.add(xFormPanel9, java.awt.BorderLayout.EAST);
 
         jPanel5.add(panel1, java.awt.BorderLayout.CENTER);
 
         jPanel1.add(jPanel5, java.awt.BorderLayout.SOUTH);
 
-        jTabbedPane1.addTab("Delinquency Detail", jPanel1);
+        xActionBar4.setName("errorActions"); // NOI18N
+        jPanel1.add(xActionBar4, java.awt.BorderLayout.PAGE_START);
+
+        jTabbedPane1.addTab("Delinquencies to Build", jPanel1);
 
         jPanel2.setLayout(new java.awt.BorderLayout());
 
@@ -337,22 +476,6 @@ public class BuildRPTDelinquencyPage extends javax.swing.JPanel {
         xDataTable4.setHandler("errorListHandler");
         xDataTable4.setName("selectedError"); // NOI18N
         xDataTable4.setColumns(new com.rameses.rcp.common.Column[]{
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "selected"}
-                , new Object[]{"caption", "?"}
-                , new Object[]{"width", 40}
-                , new Object[]{"minWidth", 40}
-                , new Object[]{"maxWidth", 40}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.CheckBoxColumnHandler(java.lang.Boolean.class, true, false)}
-            }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "rptledger.tdno"}
                 , new Object[]{"caption", "TD No."}
@@ -384,7 +507,6 @@ public class BuildRPTDelinquencyPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable4.setDynamic(true);
         jPanel9.add(xDataTable4, java.awt.BorderLayout.CENTER);
 
         xFormPanel7.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
@@ -510,6 +632,9 @@ public class BuildRPTDelinquencyPage extends javax.swing.JPanel {
 
         jPanel6.add(jScrollPane3, java.awt.BorderLayout.LINE_START);
 
+        xActionBar2.setName("errorActions"); // NOI18N
+        jPanel6.add(xActionBar2, java.awt.BorderLayout.PAGE_START);
+
         jTabbedPane1.addTab("Ignored Errors", jPanel6);
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
@@ -518,12 +643,12 @@ public class BuildRPTDelinquencyPage extends javax.swing.JPanel {
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 691, Short.MAX_VALUE)
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 839, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel10Layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 691, Short.MAX_VALUE)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 839, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         jPanel10Layout.setVerticalGroup(
@@ -546,6 +671,9 @@ public class BuildRPTDelinquencyPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -559,29 +687,36 @@ public class BuildRPTDelinquencyPage extends javax.swing.JPanel {
     private javax.swing.JTabbedPane jTabbedPane1;
     private java.awt.Panel panel1;
     private com.rameses.rcp.control.XActionBar xActionBar1;
+    private com.rameses.rcp.control.XActionBar xActionBar2;
+    private com.rameses.rcp.control.XActionBar xActionBar3;
+    private com.rameses.rcp.control.XActionBar xActionBar4;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XButton xButton4;
+    private com.rameses.rcp.control.XButton xButton6;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
+    private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XDataTable xDataTable3;
     private com.rameses.rcp.control.XDataTable xDataTable4;
     private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XDateField xDateField4;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
-    private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XFormPanel xFormPanel6;
     private com.rameses.rcp.control.XFormPanel xFormPanel7;
+    private com.rameses.rcp.control.XFormPanel xFormPanel8;
+    private com.rameses.rcp.control.XFormPanel xFormPanel9;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
-    private com.rameses.rcp.control.XIntegerField xIntegerField2;
-    private com.rameses.rcp.control.XIntegerField xIntegerField3;
-    private com.rameses.rcp.control.XIntegerField xIntegerField4;
+    private com.rameses.rcp.control.XIntegerField xIntegerField10;
+    private com.rameses.rcp.control.XIntegerField xIntegerField11;
     private com.rameses.rcp.control.XIntegerField xIntegerField5;
-    private com.rameses.rcp.control.XIntegerField xIntegerField6;
+    private com.rameses.rcp.control.XIntegerField xIntegerField7;
+    private com.rameses.rcp.control.XIntegerField xIntegerField8;
+    private com.rameses.rcp.control.XIntegerField xIntegerField9;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel5;

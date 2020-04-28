@@ -1,9 +1,11 @@
 import com.rameses.annotations.*
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
-import java.rmi.server.UID
 
 class LandTaxReportStatementOfShareService{
+    @Env 
+    def env 
+
     @ActiveDB('landtaxreport_statementofshare')
     def em
 
@@ -12,6 +14,20 @@ class LandTaxReportStatementOfShareService{
 
     @Service('NumberService')
     def numSvc
+
+    @DataContext('barangay')
+    def em_barangay
+    
+
+    /* to be intercepted for specific report implementations */
+    @ProxyMethod
+    public def getReportData(params) {
+        def data = [:]
+        return data
+    }
+
+
+
 
     @ProxyMethod
     def generateIdleLandSharesAbstract(params){
@@ -86,6 +102,7 @@ class LandTaxReportStatementOfShareService{
             it.brgytotal = it.brgycurr + it.brgyprev + it.brgypenalty
             it.brgytotalshare = it.brgycurrshare + it.brgyprevshare + it.brgypenaltyshare 
             it.provmunitotalshare = it.provmunicurrshare + it.provmuniprevshare + it.provmunipenaltyshare
+            it.citytotalshare = it.citycurrshare + it.cityprevshare + it.citypenaltyshare
         }
 
         return [
@@ -116,6 +133,7 @@ class LandTaxReportStatementOfShareService{
             it.brgytotal = it.brgycurr + it.brgyprev + it.brgypenalty
             it.munitotalshare = it.municurrshare + it.muniprevshare + it.munipenaltyshare 
             it.provtotalshare = it.provcurrshare + it.provprevshare + it.provpenaltyshare 
+            it.citytotalshare = it.citycurrshare + it.cityprevshare + it.citypenaltyshare 
         }
 
         return [
@@ -186,7 +204,7 @@ class LandTaxReportStatementOfShareService{
             params.filter = ' rem.controldate >= $P{fromdate} AND rem.controldate < $P{todate} '
         }
 
-        def shares = em.getStandardBrgyShares( params) 
+        def shares = em.getBrgyShares( params) 
         if(! shares )  throw new Exception('Records not found.')
         
         return [
@@ -198,36 +216,69 @@ class LandTaxReportStatementOfShareService{
     @ProxyMethod
     public def getBarangayAdvanceShares(params) {
         params.filter = ' rpi.year = $P{advanceyear} '
-        
-        def shares = []
+        def brgyCollections = em.getAdvanceCollectionsByBrgy( params) 
+        if(! brgyCollections )  throw new Exception('Records not found.')
 
-        if ('QTRLY' == params.summarytype.name) {
-            shares = em.getAdvanceBrgySharesQtrly( params) 
-        } else {
-            shares = em.getAdvanceBrgySharesAnnual( params) 
-        }
+        def shares = buildShares(params, brgyCollections)
 
-        if(! shares )  throw new Exception('Records not found.')
-        
-        buildBarangayShares(shares)
+        def rate = ( env.ORGCLASS.equalsIgnoreCase('city') ? 0.30 :  0.25)
+        def lgutitle  = ( env.ORGCLASS.equalsIgnoreCase('city') ? 'CITY' :  'MUNICIPALITY') + ' SHARE'
+        def brgytitle  = (rate * 100) + '% BARANGAY SHARE' 
 
         return [
-            params : [PERIOD : 'For the Year ' + params.advanceyear],  
+            params : [PERIOD : 'For the Year ' + params.advanceyear, RATE: rate, LGUTITLE: lgutitle, BRGYTITLE: brgytitle],  
             shares : shares
         ]
     }
 
-    void buildBarangayShares(shares) {
-        def rate = 0.25
-
-        shares.each {
-            it.brgybasic = numSvc.round( it.basic * rate)
-            it.brgydisc = numSvc.round( it.disc * rate)
-            it.brgyshare = it.brgybasic - it.brgydisc 
-
-            it.provmunibasic = it.basic - it.brgybasic 
-            it.provmunidisc = it.disc - it.brgydisc 
-            it.provmunishare = it.total - it.brgyshare
+    def buildShares(params, brgyCollections) {
+        def shares = initShares()
+        brgyCollections.each{bc ->
+            def share = shares.find{it.objid == bc.brgyid}
+            if (!share) throw new Exception('Barangay ' + bc.brgyid + ' does not exist or has been deleted.')
+            share.basic += bc.basic
+            share.disc += bc.disc
+            share.total += bc.total
         }
+
+        params.filter = ' rps.year = $P{advanceyear} '
+        def brgyShares = em.getAdvanceBrgySharesAnnual(params)
+        brgyShares.each{bs->
+            def share = shares.find{it.objid == bs.brgyid}
+            if (!share) throw new Exception('Barangay ' + bs.brgyid + ' does not exist or has been deleted.')
+            share.brgybasic += bs.brgybasic
+            share.brgydisc += bs.brgydisc
+            share.brgyshare += bs.brgyshare
+        }
+
+        params.filter = ' rps.year = $P{advanceyear} '
+        def lguShares = em.getAdvanceLguSharesAnnual(params)
+        lguShares.each{ls->
+            def share = shares.find{it.objid == ls.brgyid}
+            if (!share) throw new Exception('Barangay ' + ls.brgyid + ' does not exist or has been deleted.')
+            share.lgubasic += ls.lgubasic
+            share.lgudisc += ls.lgudisc
+            share.lgushare += ls.lgushare
+        }
+
+        return shares
+    }
+
+    def initShares() {
+        def shares = em_barangay.where('1=1').select('objid, brgyname:{name}').orderBy('indexno').list()
+        shares.each {
+            it.basic = 0.0
+            it.disc = 0.0
+            it.total = 0.0
+
+            it.brgybasic = 0.0
+            it.brgydisc = 0.0
+            it.brgyshare = 0.0
+
+            it.lgubasic = 0.0
+            it.lgudisc = 0.0
+            it.lgushare = 0.0
+        }
+        return shares 
     }
 }

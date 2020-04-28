@@ -2,61 +2,15 @@
 <workunit extends="rpt_wtemplates/CertificationController.xml">
     <invokers>
         <invoker type="rptcertification" 
-                 action="init" caption="Land Holding" 
-                 opener="landholding" index="1" 
+                 action="init" 
+                 caption="Land Holding" 
+                 opener="landholding" 
+                 index="1" 
                  role="CERTIFICATION_ISSUER,RECORD" 
                  permission="certification.landholding"/>
             
         <invoker type="landholding:open" action="open" caption="Land Holding" /> 
     </invokers>
-    
-    <code>
-        
-<![CDATA[        
-
-
-package com.rameses.gov.etracs.rpt.report.certification;
-
-
-import com.rameses.rcp.annotations.*
-import com.rameses.rcp.common.*
-import com.rameses.osiris2.client.*
-import com.rameses.osiris2.reports.*;
-
-public class RPTCertificationsLandHoldingController extends com.rameses.gov.etracs.rpt.report.certification.AbstractCertificationController
-{
-    @Service('RPTCertificationLandHoldingService')
-    def svc;
-    
-    
-    def getService(){
-        return svc;
-    }
-    
-    def reportPath = 'com/rameses/gov/etracs/rpt/report/certification/'
-    String reportName = reportPath + 'LandHoldingCertification.jasper'
-
-    SubReport[] getSubReports() {
-        return [
-            new SubReport('LandHoldingCertificationItem', reportPath + 'LandHoldingCertificationItem.jasper'),
-            new SubReport('FootNoteItem', reportPath + 'FootNoteItem.jasper'),
-        ] as SubReport[]
-    }
-    
-    Map getParameters(){
-        return [REPORTTITLE:'Land Holdings']
-    }
-    
-    def getCertificationTypes(){
-        return [
-            [type:'bytaxpayer', caption:'By Taxpayer'],
-        ]
-    }
-    
-}
-
-
-]]>
-
+    <code class="com.rameses.gov.etracs.rptis.report.models.LandHoldingCertificationModel">
     </code>
 </workunit>

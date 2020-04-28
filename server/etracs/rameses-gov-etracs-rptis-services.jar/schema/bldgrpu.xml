@@ -10,6 +10,7 @@
 		<field name="bldgtype_objid" />
 		<field name="bldgkindbucc_objid" />
 		<field name="basevalue" type="decimal" />
+		<field name="dtconstructed" />
 		<field name="dtcompleted" />
 		<field name="dtoccupied" />
 		<field name="floorcount" required="true" type="integer" />

@@ -115,6 +115,9 @@ public class RPTBillingService
 
 		bill.collectiontype = em_collectiontype.find([formno:'56', barcodekey:BARCODE_KEY]).first()
 		if (!bill.collectiontype){
+			bill.collectiontype = em_collectiontype.find([formno:'56CON', barcodekey:BARCODE_KEY]).first()
+		}
+		if (!bill.collectiontype){
 			bill.collectiontype = em_collectiontype.find([formno:'5156', barcodekey:BARCODE_KEY]).first()
 		}
 		if (!bill.collectiontype) {
@@ -326,12 +329,14 @@ public class RPTBillingService
 		
 		def rptledger = tmpbill.rptledger
 		if (!bill.reportformat || 'STANDARD'.equalsIgnoreCase(bill.reportformat.code)) {
-			rptledger.items = buildItemsForReport(tmpbill)
+			rptledger.items = buildStandardItemsReport(tmpbill)
+		} else if ('SIMPLIFIED'.equalsIgnoreCase(bill.reportformat.code)) {
+			rptledger.items = buildSimplifiedItemsReport(tmpbill)
 		} else {
-			rptledger.items = buildAnnualItemsForReport(tmpbill)
+			rptledger.items = buildAnnualItemsReport(tmpbill)
 		}
 
-		if (bill._forpayment && bill._forpayment == true){
+		if (bill._forpayment && bill._forpayment == true) {
         	rptledger.pay = true
         	rptledger.billitems = tmpbill.billitems
         	rptledger.billitems.each {
@@ -416,7 +421,28 @@ public class RPTBillingService
 		} 
 	}
 
-	def buildItemsForReport(bill){
+
+	void sortItems(items) {
+		items.sort{a, b ->
+			def ayrq = a.year + '-' + (a.qtr ? a.qtr : 0) + '-' + a.originalav
+			def byrq = b.year + '-' + (b.qtr ? b.qtr : 0) + '-' + b.originalav
+			return ayrq <=> byrq
+		}
+	}
+
+    def getQuarterIndicators(fromqtr, toqtr, addIndicator) {
+        def speriod = new StringBuffer();
+        (fromqtr..toqtr).each{
+            speriod.append(it)
+        }
+        if (addIndicator) {
+            speriod.append('Q,')
+        }
+        return speriod.toString()
+    }   
+
+
+	def buildStandardItemsReport(bill){
 		bill.totals = [total:0.0]
 		def items = []
 		def minyear = bill.items.year.min() 
@@ -429,6 +455,7 @@ public class RPTBillingService
 			item.originalav = first.rptledgerfaas.assessedvalue 
 			item.taxdifference = first.taxdifference
 			item.period = buildPeriod(bill, list, minyear)
+			item.periodqtrs = buildPeriodQuarters(bill, list, minyear)
 			item.total = 0.0 
 			item.flag = ''
 			list.each{
@@ -448,24 +475,67 @@ public class RPTBillingService
 			}
 			items << item
 		}
-		items.sort{a, b ->
-			def ayrq = a.year + '-' + (a.qtr ? a.qtr : 0) + '-' + a.originalav
-			def byrq = b.year + '-' + (b.qtr ? b.qtr : 0) + '-' + b.originalav
-			return ayrq <=> byrq
-		}
+		sortItems(items)
 		return items
 	}
 
-	def buildAnnualItemsForReport(bill){
+	def buildSimplifiedItemsReport(bill){
 		bill.totals = [total:0.0]
 		def items = []
 		def minyear = bill.items.year.min() 
-		def maxyear = bill.items.year.max()
-		def first = bill.items.first()
+		def groups = bill.items.groupBy{ it.year }
+		groups.each{k, list ->
+			def first = list.first() 
+			def item = [:]
+			item.year = first.year 
+			item.qtr = first.qtr 
+			item.originalav = first.rptledgerfaas.assessedvalue 
+			item.taxdifference = first.taxdifference
+			item.period = buildPeriod(bill, list, minyear)
+			item.periodqtrs = buildPeriodQuarters(bill, list, minyear)
+			item.total = 0.0 
+			item.flag = ''
+			list.each{
+				if (!item[it.revtype]) {
+					item[it.revtype] = 0.0
+					item[it.revtype+'int'] = 0.0
+					item[it.revtype+'disc'] = 0.0
+					item[it.revtype+'net'] = 0.0
+					item[it.revtype+'dp'] = 0.0
+				}
+				item.linetotal = numSvc.round(it.amtdue - it.discount + it.interest)
+				item[it.revtype] += numSvc.round(it.amtdue)
+				item[it.revtype+'int'] += numSvc.round(it.interest)
+				item[it.revtype+'disc'] += numSvc.round(it.discount)
+				item[it.revtype+'net'] +=  item.linetotal
+				item[it.revtype+'dp'] += numSvc.round(it.interest - it.discount)
+				item.total += item.linetotal
+				if (!item.flag && !it.revtype.matches('basic|sef')) {
+					item.flag = '*'
+				}
+				calcSimplifiedBillTotals(it.revtype, bill, item)
+			}
+
+			if (item.taxdifference){
+				item.flag = '*'
+			}
+			items << item
+		}
+		sortItems(items)
+		return items
+	}	
+
+	def buildAnnualItemsReport(bill){
+		bill.totals = [total:0.0]
+		def items = []
+
+		sortItems(bill.items)
+
+		def currentItem = bill.items.last()
 		def item = [:]
-		item.originalav = first.rptledgerfaas.assessedvalue 
+		item.originalav = currentItem.rptledgerfaas.assessedvalue 
 		item.taxdifference = 0
-		item.period = buildPeriod(bill, bill.items, minyear)
+		item.period = buildAnnualPeriod(bill)
 		item.total = 0.0
 		bill.items.each{
 			if (item[it.revtype] == null) {
@@ -488,42 +558,80 @@ public class RPTBillingService
 		return items
 	}
 
-	def buildPeriod(bill, list, minyear){
-		def firstitem = list.first()
-		def period = firstitem.year 
 
-		if (firstitem.qtr == null) {
-			def startqtr = (bill.rptledger.lastqtrpaid + 1)
-			def endqtr = (firstitem.year == bill.billtoyear ? bill.billtoqtr : 4)
-			if (endqtr == startqtr) endqtr = ''
-			if (firstitem.year == bill.rptledger.lastyearpaid) {
-				period += '-' + startqtr + '' +  endqtr
-			} else if (firstitem.year == bill.billtoyear){
-				if (bill.billtoqtr != 4){
-					period += '-1' + (bill.billtoqtr == 1 ? '' : bill.billtoqtr)
-				}
+	def getStartEndQtr(bill, list, minyear) {
+        def firstitem = list.first()
+
+        def startqtr = 1
+        def endqtr = 4
+
+        if (minyear < bill.rptledger.lastyearpaid ) {
+            //taxcredit
+            if (firstitem.qtr != null) {
+                startqtr = firstitem.qtr
+            }            
+        } else if (bill.billtoyear == firstitem.year) {
+            if (firstitem.qtr == null) {
+                if (firstitem.year == minyear) {
+                    startqtr = (bill.rptledger.lastqtrpaid == 4 ? 1 : bill.rptledger.lastqtrpaid + 1)
+                } 
+                endqtr = bill.billtoqtr
+            } else {
+                startqtr = firstitem.qtr 
+                endqtr = list.last().qtr
+            }
+        } else if (firstitem.year == minyear) {
+            if (firstitem.qtr == null) {
+                startqtr = (bill.rptledger.lastqtrpaid == 4 ? 1 : bill.rptledger.lastqtrpaid + 1)
+            } else {
+                startqtr = firstitem.qtr
+            }
+        } 
+        return [startqtr: startqtr, endqtr: endqtr]
+    }
+
+	def buildPeriod(bill, list, minyear){
+		def qtr = getStartEndQtr(bill, list, minyear)
+
+        def period = list.first().year
+        if (qtr.startqtr == qtr.endqtr )
+            period = period + '-' + qtr.startqtr
+        else if (qtr.startqtr != 1 || qtr.endqtr != 4)
+            period = period + '-' + qtr.startqtr + '' + qtr.endqtr
+        return period
+    }    
+
+    def buildPeriodQuarters(bill, list, minyear){
+    	def qtr = getStartEndQtr(bill, list, minyear)
+        return getQuarterIndicators(qtr.startqtr, qtr.endqtr, false)
+    }    
+
+
+	def buildAnnualPeriod(bill){
+		def firstitem = bill.items.first()
+		def lastitem = bill.items.last()
+		def speriod = new StringBuffer()
+		if (firstitem.year == lastitem.year) {
+			if (firstitem.qtr != null && (firstitem.qtr != 1 || bill.billtoqtr != 4)) {
+				speriod.append(getQuarterIndicators(firstitem.qtr, bill.billtoqtr, true))
+			} else if (firstitem.qtr == null && bill.billtoqtr != 4) {
+				speriod.append(getQuarterIndicators(1, bill.billtoqtr, true))
 			}
-		} else if (!firstitem.qtrly  && firstitem.year == minyear) {
-			def startqtr = (bill.rptledger.lastqtrpaid == 4 ? 1 : bill.rptledger.lastqtrpaid + 1)
-			if (startqtr != 4) {
-				period += '-' + startqtr + '4'
-			} else {
-				period += '-4'
-			}
+			speriod.append(firstitem.year)
 		} else {
-			def minqtr = list.qtr.min()
-			def maxqtr = list.qtr.max()
-			if ((minqtr && minqtr != 1) || (maxqtr && maxqtr != 4)){
-				if (minqtr == maxqtr){
-					period += '-' + minqtr 
-				}
-				else {
-					period += '-' + minqtr + '' + maxqtr
-				}
+			if (firstitem.qtr != null && firstitem.qtr != 1) {
+				speriod.append(getQuarterIndicators(firstitem.qtr, 4, true))
 			}
-		}
-		return period 
+			speriod.append(firstitem.year)
+			speriod.append('-')
+			if (lastitem.qtr != null && bill.billtoqtr != 4) {
+				speriod.append(getQuarterIndicators(1, bill.billtoqtr, true))
+			}
+			speriod.append(lastitem.year)
+		}        
+		return speriod 
 	}
+
 
 	void calcBillTotals(revtype, bill, item){
 		def keys = [revtype]
@@ -561,6 +669,25 @@ public class RPTBillingService
 			bill.totals[it] += item[it]
 		}
 		bill.totals.total += item.subtotal 
+	}
+
+	void calcSimplifiedBillTotals(revtype, bill, item){
+		def keys = [revtype]
+		keys << revtype + 'int'
+		keys << revtype + 'disc'
+		keys << revtype + 'net'
+		keys << revtype + 'dp'
+
+		if (!bill.totals[revtype]){
+			keys.each{
+				bill.totals[it] = 0.0
+			}
+		}
+
+		keys.each{
+			bill.totals[it] += item[it]
+		}
+		bill.totals.total += item.linetotal
 	}
 	
 }

@@ -31,57 +31,26 @@ class LandTaxReportBarangayCityShareService{
             throw new Exception('Records not found.')
         }
 
-        def shares = em.getBarangays()
-        shares.each { s ->
-            def col = collections.find{it.brgyindex == s.brgyindex}
-            if (col) {
-                col.brgyshare = numSvc.round(col.basic30 * 0.50)
-                s.putAll(col)
-            }
+        def shares = em.getBarangays()        
+        collections.each{c ->
+            def share = shares.find{it.brgyindex == c.brgyindex}
+            share.putAll(c)
         }
 
-        calcBrgyAndCommonShares(shares)
+        em.getBarangayMainShare(params).each{c->
+            def share = shares.find{it.brgyindex == c.brgyindex}
+            share.putAll(c)
+        }
+
+        em.getBarangayCommonShare(params).each{c->
+            def share = shares.find{it.brgyindex == c.brgyindex}
+            share.putAll(c)
+        }
 
         return [
             params : [PERIOD : period],  
             reportdata  : [items: shares]
         ]
     }
-
-
-    void calcBrgyAndCommonShares(shares) {
-        def total30 = shares.basic30.sum() 
-        def totalcommonshare = numSvc.round(total30 / 2) 
-        def totalbrgyshare = total30 - totalcommonshare
-        def commonshare = numSvc.round(totalcommonshare / shares.size()) + (-0.01)
-        
-        def actualtotalcommonshare = commonshare * shares.size();
-        def actualtotalbrgyshare = shares.brgyshare.sum()
-
-        def commonsharediff = actualtotalcommonshare - totalcommonshare
-        def brgysharediff = actualtotalbrgyshare - totalbrgyshare
-
-        shares.each {
-            it.commonshare = commonshare
-            if (commonsharediff > 0) {
-                it.commonshare -= 0.01
-                commonsharediff -= 0.01
-            } else if (commonsharediff < 0) {
-                it.commonshare += 0.01
-                commonsharediff += 0.01
-            }
-
-            if (it.brgyshare > 0) {
-                if (brgysharediff > 0) {
-                    it.brgyshare -= 0.01
-                    brgysharediff -= 0.01
-                } else if (brgysharediff < 0) {
-                    it.brgyshare += 0.01
-                    brgysharediff += 0.01
-                }
-            }
-
-        }
-    }
-   
+  
 }

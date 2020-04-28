@@ -23,6 +23,7 @@ public class RPTRedFlagService
 
 	@ProxyMethod
 	public def getList(params) {
+		if (!params.state) params.state = '%'
 		def results = []
 
 		def list = em.getList(params)	

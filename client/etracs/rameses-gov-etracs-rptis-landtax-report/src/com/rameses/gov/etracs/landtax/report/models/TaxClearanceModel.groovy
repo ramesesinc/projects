@@ -6,6 +6,7 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.reports.*;
 import com.rameses.etracs.shared.*;
+import com.rameses.gov.etracs.rptis.util.RPTUtil;
 
 class TaxClearanceModel
 {
@@ -46,6 +47,7 @@ class TaxClearanceModel
     def reportTypes;
     
     String title = 'Realty Tax Clearance'
+    String entityName = 'rpttaxclearance';
             
                 
     @PropertyChangeListener
@@ -202,7 +204,7 @@ class TaxClearanceModel
         return InvokerUtil.lookupOpener('rptledger:lookup', [
             query: query,
             onselect : { ledger ->
-                if (! entity.items.find{it.faasid == ledger.faasid}) {
+                if (! entity.items.find{it.objid == ledger.objid}) {
                     validateLedger(ledger);
                     ledger.refid   = ledger.objid
                     ledger.barangay = ledger.barangay.name;
@@ -218,26 +220,14 @@ class TaxClearanceModel
     void validateLedger(ledger) {
         def msg = '';
         
-//        if (!equalTaxpayerId(ledger)) {
-//            if (!entity.items) {
-//                msg = 'The Owner of the selected ledger is not equal to Taxpayer.\n';
-//                msg += 'Proceeding will replace the Taxpayer that you selected with the ledger owner.\n\nContinue?'
-//                if (MsgBox.confirm(msg)) {
-//                    taxpayer = null;
-//                    initTaxpayer(ledger.taxpayer)
-//                } else {
-//                    return;
-//                }
-//            } else  {
-//                msg = 'The selected ledger Owner account #' + ledger.taxpayer.entityno + ' is not equal to the Taxpayer account #' + entity.taxpayer.entityno + '.\n';
-//                msg += 'Verify that this ledger is currently owned by this taxpayer and if this \n';
-//                msg += 'is the case, kindly request the Assessor to modify the Property Owner \n';
-//                msg += 'of the FAAS before including this ledger in the certification.';
-//                throw new Exception(msg);
-//            }
-//        }
-        
         validateState(ledger);
+
+        def allowSpecialCaseLedger = RPTUtil.toBoolean(var.get('landtax_taxclearance_allow_special_case_ledger'), false);
+        if (allowSpecialCaseLedger) {
+            if (ledger.totalav == 0) return;
+            if (!ledger.taxable) return;
+            if (ledger.effectivityyear == entity.effectivityyear) return;
+        }
         
         if ('fullypaid' == entity.reporttype.name) {
             if (ledger.lastyearpaid < entity.year || 
@@ -372,7 +362,25 @@ class TaxClearanceModel
         return 'default';
     }
 
+    def getManualCertificationNo() {
+        return RPTUtil.toBoolean(var.get('landtax_taxclearance_numbering_manual'), false);
+    }
+
     def getShowTransferPayment() {
-        return entity.purpose.toString().matches('.*transfer.*');
+        return RPTUtil.toBoolean(var.get('landtax_taxclearance_show_transfer_payment_info'), false);
+    }
+
+    def afterEdit = {
+        open();
+        report.reload();   
+    }
+
+    def edit() {
+        return Inv.lookupOpener('rpttaxclearance:edit', [
+            entity: entity,
+            manualCertificationNo: getManualCertificationNo(),
+            showTransferPayment: getShowTransferPayment(),
+            afterEdit: afterEdit,
+        ])
     }
 }

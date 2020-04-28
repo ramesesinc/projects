@@ -9,6 +9,9 @@ class ConsolidationService
 	@ActiveDB('consolidation')
    def em
 
+   @DataContext('consolidation')
+   def em_consolidation
+
 	@Env
 	def env
 	
@@ -70,6 +73,7 @@ class ConsolidationService
     def STATE_INTERIM               = 'INTERIM'
     
     def TXNTYPE_CS = 'CS'
+    def TXNTYPE_DP = 'DP'
 
 	@ProxyMethod
     public def getList( params ) {
@@ -125,10 +129,11 @@ class ConsolidationService
             consolidation.txnno = util.getNextSequence('CONSOLIDATION')
         if (!consolidation.lguid)
             consolidation.lguid = env.ORGID 
+        consolidation.state = STATE_DRAFT
         consolidation.originlguid = (consolidation.originlguid ? consolidation.originlguid : env.ORGID )
         consolidation.txndate = pdate.date 
         consolidation.txntype = faasSvc.getTxnType(TXNTYPE_CS)
-        createConsolidatedFaas(consolidation)
+        consolidation.ry = util.toInteger(var.current_ry)
         em.create(consolidation)
         return consolidation            
     }    
@@ -408,7 +413,8 @@ class ConsolidationService
     }    
 
 
-    void createConsolidatedFaas(consolidation){
+    @ProxyMethod
+    public def createConsolidatedFaas(consolidation){
         def info = consolidation._info 
         info.txntype = consolidation.txntype 
         def faas = faasSvc.initCapture(buildInitInfo(info))
@@ -418,6 +424,8 @@ class ConsolidationService
         consolidation.newrpuid = faas.rpu.objid
         consolidation.newfaasid = faas.objid 
         consolidation.lguid = faas.lguid 
+        em_consolidation.update(consolidation)
+        return [faas: faas, consolidation: open(consolidation)]
     }
 
     def buildInitInfo(info){
@@ -554,7 +562,13 @@ class ConsolidationService
         faas.objid = 'F' + arpu.objid 
         faas.previousfaases = faasSvc.buildPreviousFaases(faas, [pf])
         faas.state = STATE_PENDING
-        faas.txntype  = faasSvc.getTxnType(TXNTYPE_CS)
+
+        if ( util.toBoolean(var.faas_affected_rpu_txntype_dp, false) == true) {
+            faas.txntype  = faasSvc.getTxnType(TXNTYPE_DP)
+        } else {
+            faas.txntype  = faasSvc.getTxnType(TXNTYPE_CS)
+        }
+
         faas.effectivityyear = pdate.year
         faas.effectivityqtr = pdate.qtr
         faas.datacapture = 0

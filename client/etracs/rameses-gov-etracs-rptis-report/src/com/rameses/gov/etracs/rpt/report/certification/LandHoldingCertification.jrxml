@@ -3,7 +3,8 @@
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
 		 name="LandHoldingCertification"
-		 columnCount="1"
+
+		 language="groovy"		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
 		 pageWidth="612"
@@ -70,12 +71,14 @@
 	<field name="givenmonth" class="java.lang.String"/>
 	<field name="givenday" class="java.lang.String"/>
 	<field name="addlinfo" class="java.lang.String"/>
+	<field name="includemembers" class="java.lang.Boolean"/>
 
 
 		<group  name="GRP_LANDHOLDING" >
 			<groupExpression><![CDATA[null]]></groupExpression>
 			<groupHeader>
-			<band height="25"  isSplitAllowed="true" >
+			<band height="29"  isSplitAllowed="true" >
+				<printWhenExpression><![CDATA[$F{includemembers} == false]]></printWhenExpression>
 				<subreport  isUsingCache="true">
 					<reportElement
 						mode="Opaque"
@@ -88,7 +91,33 @@
 						key="subreport-1"
 						positionType="Float"/>
 					<dataSourceExpression><![CDATA[$F{items}]]></dataSourceExpression>
-					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{LandHoldingCertificationItem}]]></subreportExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["LandHoldingCertificationItem.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="GRP_MEMBERS" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="25"  isSplitAllowed="true" >
+				<printWhenExpression><![CDATA[$F{includemembers} == true]]></printWhenExpression>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="544"
+						height="25"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="subreport-3"
+						positionType="Float"/>
+					<dataSourceExpression><![CDATA[$F{items}]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["LandHoldingCertificationItemMembers.jasper"]]></subreportExpression>
 				</subreport>
 			</band>
 			</groupHeader>
@@ -101,6 +130,7 @@
 			<groupExpression><![CDATA[null]]></groupExpression>
 			<groupHeader>
 			<band height="25"  isSplitAllowed="true" >
+				<printWhenExpression><![CDATA[$F{includemembers} == false]]></printWhenExpression>
 				<subreport  isUsingCache="true">
 					<reportElement
 						mode="Opaque"

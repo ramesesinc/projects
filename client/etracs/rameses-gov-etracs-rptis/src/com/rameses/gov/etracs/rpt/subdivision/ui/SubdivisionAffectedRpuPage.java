@@ -21,6 +21,11 @@ public class SubdivisionAffectedRpuPage extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        xActionBar1 = new com.rameses.rcp.control.XActionBar();
+        jPanel4 = new javax.swing.JPanel();
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
@@ -30,7 +35,6 @@ public class SubdivisionAffectedRpuPage extends javax.swing.JPanel {
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
-        xActionBar1 = new com.rameses.rcp.control.XActionBar();
         xSubFormPanel1 = new com.rameses.rcp.control.XSubFormPanel();
 
         setLayout(new java.awt.BorderLayout());
@@ -38,6 +42,41 @@ public class SubdivisionAffectedRpuPage extends javax.swing.JPanel {
         jPanel1.setPreferredSize(new java.awt.Dimension(380, 100));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
+        xActionBar1.setName("formActions"); // NOI18N
+        xActionBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jPanel1.add(xActionBar1, java.awt.BorderLayout.NORTH);
+
+        jPanel4.setLayout(new java.awt.BorderLayout());
+
+        com.rameses.rcp.control.border.XSeparatorBorder xSeparatorBorder1 = new com.rameses.rcp.control.border.XSeparatorBorder();
+        xSeparatorBorder1.setColor(new java.awt.Color(153, 153, 153));
+        xFormPanel1.setBorder(xSeparatorBorder1);
+        xFormPanel1.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel1.setPreferredSize(new java.awt.Dimension(100, 40));
+
+        xComboBox1.setCaption("Land PIN");
+        xComboBox1.setExpression("#{item.newpin}");
+        xComboBox1.setItems("lands");
+        xComboBox1.setName("landpin"); // NOI18N
+        xComboBox1.setCaptionWidth(70);
+        xComboBox1.setCellPadding(new java.awt.Insets(10, 10, 0, 0));
+        xComboBox1.setEmptyText("ALL");
+        xComboBox1.setPreferredSize(new java.awt.Dimension(165, 20));
+        xFormPanel1.add(xComboBox1);
+
+        xComboBox2.setCaption("Kind");
+        xComboBox2.setItems("rputypes");
+        xComboBox2.setName("rputype"); // NOI18N
+        xComboBox2.setCaptionWidth(45);
+        xComboBox2.setCellPadding(new java.awt.Insets(10, 10, 0, 0));
+        xComboBox2.setEmptyText("ALL");
+        xFormPanel1.add(xComboBox2);
+
+        jPanel4.add(xFormPanel1, java.awt.BorderLayout.NORTH);
+
+        xDataTable2.setHandler("listHandler");
+        xDataTable2.setName("selectedItem"); // NOI18N
         xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "prevpin"}
@@ -49,6 +88,8 @@ public class SubdivisionAffectedRpuPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -63,6 +104,8 @@ public class SubdivisionAffectedRpuPage extends javax.swing.JPanel {
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", true}
                 , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -77,14 +120,16 @@ public class SubdivisionAffectedRpuPage extends javax.swing.JPanel {
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", true}
                 , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler("0000", -1, -1)}
             })
         });
-        xDataTable2.setHandler("listHandler");
         xDataTable2.setImmediate(true);
-        xDataTable2.setName("selectedItem"); // NOI18N
-        jPanel1.add(xDataTable2, java.awt.BorderLayout.CENTER);
+        jPanel4.add(xDataTable2, java.awt.BorderLayout.CENTER);
+
+        jPanel1.add(jPanel4, java.awt.BorderLayout.CENTER);
 
         jPanel2.setLayout(new java.awt.BorderLayout());
 
@@ -140,17 +185,13 @@ public class SubdivisionAffectedRpuPage extends javax.swing.JPanel {
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.SOUTH);
 
-        xActionBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        xActionBar1.setName("formActions"); // NOI18N
-        jPanel1.add(xActionBar1, java.awt.BorderLayout.PAGE_START);
-
         add(jPanel1, java.awt.BorderLayout.WEST);
 
-        xSubFormPanel1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0), javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153))));
         xSubFormPanel1.setDepends(new String[] {"selectedItem"});
-        xSubFormPanel1.setDynamic(true);
         xSubFormPanel1.setHandler("opener");
         xSubFormPanel1.setName("opener"); // NOI18N
+        xSubFormPanel1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0), javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153))));
+        xSubFormPanel1.setDynamic(true);
         add(xSubFormPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     
@@ -159,8 +200,12 @@ public class SubdivisionAffectedRpuPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private com.rameses.rcp.control.XActionBar xActionBar1;
+    private com.rameses.rcp.control.XComboBox xComboBox1;
+    private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDataTable xDataTable2;
+    private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XIntegerField xIntegerField2;

@@ -42,6 +42,19 @@
         </Property>
       </Properties>
       <SubComponents>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField3">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Clearance No."/>
+            <Property name="name" type="java.lang.String" value="entity.txnno" noResource="true"/>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Tahoma" size="12" style="1"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[150, 20]"/>
+            </Property>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
         <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox1">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Clearance Type"/>
@@ -325,7 +338,6 @@
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 19]"/>
             </Property>
-            <Property name="required" type="boolean" value="true"/>
           </Properties>
         </Component>
         <Component class="com.rameses.rcp.control.XDateField" name="xDateField3">
@@ -345,7 +357,6 @@
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 19]"/>
             </Property>
-            <Property name="required" type="boolean" value="true"/>
           </Properties>
         </Component>
         <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField1">
@@ -365,7 +376,6 @@
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 19]"/>
             </Property>
-            <Property name="required" type="boolean" value="true"/>
           </Properties>
         </Component>
       </SubComponents>

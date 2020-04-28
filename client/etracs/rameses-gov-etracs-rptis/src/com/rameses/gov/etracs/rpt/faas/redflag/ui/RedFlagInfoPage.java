@@ -36,6 +36,8 @@ public class RedFlagInfoPage extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         xTextArea2 = new com.rameses.rcp.control.XTextArea();
 
+        xDataTable1.setHandler("listHandler");
+        xDataTable1.setName("selectedItem"); // NOI18N
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "state"}
@@ -47,6 +49,8 @@ public class RedFlagInfoPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -60,6 +64,23 @@ public class RedFlagInfoPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "refno"}
+                , new Object[]{"caption", "Ref. No."}
+                , new Object[]{"width", 120}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -73,6 +94,8 @@ public class RedFlagInfoPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, null, null)}
             }),
@@ -86,6 +109,8 @@ public class RedFlagInfoPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -99,6 +124,8 @@ public class RedFlagInfoPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, null, null)}
             }),
@@ -112,6 +139,8 @@ public class RedFlagInfoPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -125,12 +154,12 @@ public class RedFlagInfoPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable1.setHandler("listHandler");
-        xDataTable1.setName("selectedItem"); // NOI18N
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Message");
@@ -138,11 +167,13 @@ public class RedFlagInfoPage extends javax.swing.JPanel {
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 100));
 
-        xTextArea1.setEditable(false);
         xTextArea1.setDepends(new String[] {"selectedItem"});
+        xTextArea1.setEditable(false);
+        xTextArea1.setLineWrap(true);
+        xTextArea1.setName("selectedItem.message"); // NOI18N
+        xTextArea1.setWrapStyleWord(true);
         xTextArea1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         xTextArea1.setForeground(new java.awt.Color(0, 0, 204));
-        xTextArea1.setName("selectedItem.message"); // NOI18N
         xTextArea1.setShowCaption(false);
         jScrollPane1.setViewportView(xTextArea1);
 
@@ -154,11 +185,13 @@ public class RedFlagInfoPage extends javax.swing.JPanel {
 
         jScrollPane2.setPreferredSize(new java.awt.Dimension(0, 100));
 
-        xTextArea2.setEditable(false);
         xTextArea2.setDepends(new String[] {"selectedItem"});
+        xTextArea2.setEditable(false);
+        xTextArea2.setLineWrap(true);
+        xTextArea2.setName("selectedItem.remarks"); // NOI18N
+        xTextArea2.setWrapStyleWord(true);
         xTextArea2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         xTextArea2.setForeground(new java.awt.Color(204, 0, 0));
-        xTextArea2.setName("selectedItem.remarks"); // NOI18N
         xTextArea2.setShowCaption(false);
         jScrollPane2.setViewportView(xTextArea2);
 

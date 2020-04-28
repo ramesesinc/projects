@@ -4,6 +4,7 @@
         <invoker type="faas:info" action="init" caption="Red Flags" index="1005" />
         <invoker type="subdivision:info" action="init" caption="Red Flags" index="1005" />
         <invoker type="consolidation:info" action="init" caption="Red Flags" index="1005" />
+        <invoker type="batchgr:info" action="init" caption="Red Flags" index="1005" />
         
         <!-- 
         <invoker type="subdivisionfromcs:info" action="init" caption="Red Flags" index="1005" />
@@ -39,15 +40,18 @@ class RedFlagsInfoController
     def redflags;
     def selectedItem;
     String formName = 'rptredflag:list';
-        
-        
+
+    def states = ['OPEN', 'RESOLVED']
+    def selectedState;
+
     @PropertyChangeListener
     def listener = [
-        'selectedItem' : {  binding.refresh('formActions')}
+        'selectedItem' : {  binding.refresh('formActions')},
+        'selectedState': {refresh()},
     ] 
             
     void init(){
-        redflags = redflagSvc.getList([parentid:entity.objid]);
+        redflags = redflagSvc.getList([parentid:entity.objid, state: selectedState]);
         listHandler?.load();
     }
     
@@ -96,6 +100,12 @@ class RedFlagsInfoController
         if (OsirisContext.env.ORGCLASS != 'PROVINCE') return false;
         return true;
     }
+
+    def getQueryForm() {
+        return new Opener(outcome:'queryForm')
+    }
+
+
 }
        
 ]]>       
@@ -103,6 +113,7 @@ class RedFlagsInfoController
     
     <pages> 
         <page template="com.rameses.gov.etracs.rpt.faas.redflag.ui.RedFlagInfoPage"/>
+        <page name="queryForm" template="com.rameses.gov.etracs.rptis.views.StateQueryPage"/>
     </pages>
 </workunit>
 

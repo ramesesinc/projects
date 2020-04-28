@@ -98,7 +98,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <PropertyBean type="com.rameses.rcp.control.border.XTitledBorder">
-                <Property name="title" type="java.lang.String" value="Real Property Information"/>
+                <Property name="title" type="java.lang.String" value="General Information"/>
               </PropertyBean>
             </Property>
           </Properties>

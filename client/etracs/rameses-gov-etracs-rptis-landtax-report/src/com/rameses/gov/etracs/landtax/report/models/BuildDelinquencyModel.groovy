@@ -25,7 +25,6 @@ class BuildDelinquencyModel
     def MODE_INIT = 'init';
     def MODE_BUILD = 'build';
     def MODE_LOAD_LEDGERS = 'loadledger';
-    def MODE_DELETE = 'delete';
     def MODE_COMPLETED = 'completed';
     
     
@@ -44,6 +43,8 @@ class BuildDelinquencyModel
     def init(){
         entity = svc.openBuild();
         if (entity){
+            listHandler?.load();
+            completedListHandler?.load();
             showErrorMsg();
             mode = MODE_BUILD;
             return 'default';
@@ -88,16 +89,16 @@ class BuildDelinquencyModel
     def afterLoadLedgers = {
         task = null;
         processing = false;
+        mode = MODE_BUILD;
         msg = null;
         entity.putAll(svc.openBuild());
         listHandler.reload();
         binding.refresh();
-        buildDelinquency();
     }
     
     def updateStatus = {barangay ->
         listHandler.refreshItem(barangay);
-        binding.refresh('ledgerCount|totalProcessed|totalErrors|selectedErrorBrgy|selectedIgnoredBrgy|selectAll|deselectAll');
+        binding.refresh('selectedErrorBrgy|selectedIgnoredBrgy|selectAll|deselectAll');
     }
     
     def onComplete = {
@@ -105,55 +106,62 @@ class BuildDelinquencyModel
         msg = null;
         processing = false;
         showErrorMsg();
+        init();
         binding.refresh();
     }
     
     def selectedItem;
 
+    def completedListHandler = [
+        getRows  : { entity.completedbrgys ? entity.completedbrgys.size() : 0},
+        fetchList : { entity.completedbrgys },
+    ] as BasicListModel
+
     def listHandler = [
         getRows  : { entity.barangays ? entity.barangays.size() : 0},
         fetchList : { entity.barangays },
+        isMultiSelect: { true },
     ] as BasicListModel
 
-
-    void moveToTop() {
-        if (!selectedItem) return;
-        def idx = entity.barangays.indexOf(selectedItem);
-        def brgy = entity.barangays.remove(idx);
-        entity.barangays.add(0, brgy);
-        renumberBarangays();
-        listHandler.reload();
+    void selectAllBarangay() {
+        listHandler.selectAll();
     }
 
-    void renumberBarangays() {
-        entity.barangays.eachWithIndex{brgy, idx ->
-            brgy.idx = (idx + 1)
-            brgy._schemaname = 'report_rptdelinquency_barangay'
-            persistence.update(brgy);
-        }
+    void deselectAllBarangay() {
+        listHandler.deselectAll();
     }
-    
+
     
     def getLedgerCount(){
-        return entity.barangays.count.sum();
+        return entity.completedbrgys.count.sum();
+    }
+
+    def getLedgerCountToBuild() {
+        return entity.barangays.count.sum();   
     }
     
     def getTotalProcessed(){
-        return entity.barangays.processed.sum();
+        return entity.completedbrgys.processed.sum();
     }
     
     def getTotalErrors(){
-        return entity.barangays.errors.sum();
+        return entity.completedbrgys.errors.sum();
     }
     
     def getTotalIgnored(){
-        return entity.barangays.ignored.sum();
+        return entity.completedbrgys.ignored.sum();
     }
     
     void buildDelinquency(){
+        def selectedItems = listHandler.selectedValue.findAll{!it.completed};
+        if (!selectedItems) {
+            throw new Exception('Barangays to build should be selected.')
+        }
+
         task = new BuildDelinquencyTask([
                 svc           : svc,
                 entity        : entity,
+                barangays     : selectedItems,
                 updateStatus  : updateStatus,
                 onComplete    : onComplete,
                 threadCount   : threadCount,
@@ -166,32 +174,19 @@ class BuildDelinquencyModel
         binding.refresh();
     }
     
-    def afterDelete = {
-        listHandler.reload();
-        refreshErrors();
-        refreshIgnoredErrors();
-        def outcome = init();
-        binding.fireNavigation(outcome);
-    }
-    
     def delete(){
         if (MsgBox.confirm('Delete delinquency records?')){
-            task = new DeleteDelinquencyTask([
-                    svc     : svc,
-                    entity  : entity,
-                    afterDelete : afterDelete,
-            ]);
-            msg = 'Deleting delinquency records...';
-            task.start();
-            mode = MODE_DELETE;
-            binding.refresh();
+            svc.delete([entity:[objid: entity.objid]]);
+            binding.fireNavigation("_close");
         }
     }    
     
     void cancel(){
         task.cancel();
+        task = null;
         processing = false;
         showErrorMsg();
+        init();
     }
     
     
@@ -204,23 +199,20 @@ class BuildDelinquencyModel
     def selectedErrorBrgy;
     def selectedError;
     def errorCount = 0;
-    def selectDeselect = false;
-    
     
     def errorListHandler = [
         getRows  : { errors.size() },
         fetchList : { errors },
+        isMultiSelect: { true },
     ] as EditorListModel
     
     
     void setSelectedErrorBrgy(selectedErrorBrgy){
-        if (!selectDeselect){
-            this.selectedErrorBrgy = selectedErrorBrgy;
-            errors = svc.getBuildErrors([objid: entity.objid, barangayid: selectedErrorBrgy?.barangayid]);
-            errorCount = errors.size();
-            binding.refresh('errorCount|errorActions');
-        }
-        selectDeselect = false;
+        this.selectedErrorBrgy = selectedErrorBrgy;
+        errors = svc.getBuildErrors([objid: entity.objid, barangayid: selectedErrorBrgy?.barangayid]);
+        errorCount = errors.size();
+        binding.refresh('errorCount|errorActions|selectAll|deselectAll');
+        errorListHandler.reload();
     }
     
     void refreshErrors(){
@@ -235,21 +227,22 @@ class BuildDelinquencyModel
     
     
     void rescheduleError(){
-        def selecteditems = errors.findAll{it.selected}
+        def selecteditems = errorListHandler.selectedValue;
         if (!selecteditems){
             MsgBox.alert("Select at least one item to reschedule.");
         }else {
             if (MsgBox.confirm('Reschedule selected errors for build?')){
                 svc.rescheduleErrors(selecteditems);
                 entity.putAll(svc.openBuild());
-                listHandler.reload();
+                listHandler.load();
+                completedListHandler.load();
                 refreshErrors();
             }
         }
     }
     
     void ignoreError(){
-        def selecteditems = errors.findAll{it.selected}
+        def selecteditems = errorListHandler.selectedValue;
         if (!selecteditems){
             MsgBox.alert("Select at least one item to ignore.");
         }else {
@@ -260,6 +253,7 @@ class BuildDelinquencyModel
                 svc.ignoreErrors(selecteditems);
                 entity.putAll(svc.openBuild());
                 listHandler.reload();
+                completedListHandler.reload();
                 refreshErrors();
                 refreshIgnoredErrors();
                 binding.refresh();
@@ -271,17 +265,13 @@ class BuildDelinquencyModel
         def disable = false;
         if (processing || errorCount == 0){
             disable = true;
-        }else if (errors.find{ !it.selected } == null){
+        } else if (errorListHandler.selectedValue.size() == errors.size()){
             disable = true;
         }
         return disable;
     }
     
     void selectAll(){
-        errors.each{
-            it.selected = true;
-        }
-        selectDeselect = true;
         errorListHandler.selectAll();
     }
         
@@ -289,7 +279,7 @@ class BuildDelinquencyModel
         def disable = false;
         if (processing || errorCount == 0){
             disable = true;
-        }else if (errors.find{ it.selected } == null){
+        } else if (!errorListHandler.selectedValue){
             disable = true;
         }
         return disable;
@@ -297,10 +287,6 @@ class BuildDelinquencyModel
     
     
     void deselectAll(){
-        errors.each{
-            it.selected = false;
-        }
-        selectDeselect = true;
         errorListHandler.deselectAll();
     }
     
@@ -343,7 +329,7 @@ class BuildDelinquencyModel
     }
     
     def getBarangaysWithIgnoredErrors(){
-        return entity.barangays.findAll{it.ignored > 0 };
+        return entity.ignoredbrgys;
     }
     
 }

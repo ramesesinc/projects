@@ -41,29 +41,31 @@ public class CashReceiptBatchCompletedPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         xFormPanel1.setCaptionWidth(110);
 
-        xDecimalField3.setCaption("Amount Due");
+        xDecimalField3.setCaption("Amount Paid");
+        xDecimalField3.setName("entity.amount"); // NOI18N
         xDecimalField3.setCaptionFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xDecimalField3.setCaptionWidth(160);
         xDecimalField3.setCellPadding(new java.awt.Insets(5, 30, 0, 0));
         xDecimalField3.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField3.setEnabled(false);
         xDecimalField3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        xDecimalField3.setName("entity.amount"); // NOI18N
         xDecimalField3.setPreferredSize(new java.awt.Dimension(230, 35));
         xFormPanel1.add(xDecimalField3);
 
         xDecimalField8.setCaption("Change");
+        xDecimalField8.setDepends(new String[] {"entity.totalcash"});
+        xDecimalField8.setName("entity.change"); // NOI18N
         xDecimalField8.setCaptionFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xDecimalField8.setCaptionWidth(160);
         xDecimalField8.setCellPadding(new java.awt.Insets(0, 30, 0, 0));
-        xDecimalField8.setDepends(new String[] {"entity.totalcash"});
         xDecimalField8.setDisabledTextColor(new java.awt.Color(204, 0, 0));
         xDecimalField8.setEnabled(false);
         xDecimalField8.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
-        xDecimalField8.setName("change"); // NOI18N
         xDecimalField8.setPreferredSize(new java.awt.Dimension(230, 35));
         xFormPanel1.add(xDecimalField8);
 
+        xDataTable1.setHandler("receiptHandler");
+        xDataTable1.setName("receiptHandler"); // NOI18N
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("List of Issued Receipts");
         xDataTable1.setBorder(xTitledBorder2);
@@ -99,12 +101,10 @@ public class CashReceiptBatchCompletedPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })
         });
-        xDataTable1.setHandler("receiptHandler");
-        xDataTable1.setName("receiptHandler"); // NOI18N
 
+        xIntegerField1.setName("receiptcount"); // NOI18N
         xIntegerField1.setEnabled(false);
         xIntegerField1.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
-        xIntegerField1.setName("receiptcount"); // NOI18N
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel1.setText("Total No. of Receipts:");

@@ -28,15 +28,20 @@ public class CashReceiptBatchPaymentPage extends javax.swing.JPanel {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
-        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xSeparator2 = new com.rameses.rcp.control.XSeparator();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField7 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField8 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField7 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField9 = new com.rameses.rcp.control.XDecimalField();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
+        xButton2 = new com.rameses.rcp.control.XButton();
+        xCheckBox2 = new com.rameses.rcp.control.XCheckBox();
+        xCheckBox3 = new com.rameses.rcp.control.XCheckBox();
+        xButton4 = new com.rameses.rcp.control.XButton();
+        xButton5 = new com.rameses.rcp.control.XButton();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
@@ -47,21 +52,13 @@ public class CashReceiptBatchPaymentPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionWidth(190);
 
         xIntegerField1.setCaption("Items per Receipt");
-        xIntegerField1.setCaptionFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        xIntegerField1.setCellPadding(new java.awt.Insets(10, 30, 0, 0));
-        xIntegerField1.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
         xIntegerField1.setName("entity.itemsperreceipt"); // NOI18N
+        xIntegerField1.setCaptionFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        xIntegerField1.setCellPadding(new java.awt.Insets(5, 30, 0, 0));
+        xIntegerField1.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
         xIntegerField1.setPreferredSize(new java.awt.Dimension(230, 35));
         xIntegerField1.setRequired(true);
         xFormPanel1.add(xIntegerField1);
-
-        xCheckBox1.setCaption("Show Printer Dialog?");
-        xCheckBox1.setCellPadding(new java.awt.Insets(0, 30, 0, 0));
-        xCheckBox1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        xCheckBox1.setName("entity.showprinterdialog"); // NOI18N
-        xCheckBox1.setShowCaption(false);
-        xCheckBox1.setText(" Show printer dialog?");
-        xFormPanel1.add(xCheckBox1);
 
         xSeparator2.setPreferredSize(new java.awt.Dimension(0, 20));
 
@@ -69,7 +66,7 @@ public class CashReceiptBatchPaymentPage extends javax.swing.JPanel {
         xSeparator2.setLayout(xSeparator2Layout);
         xSeparator2Layout.setHorizontalGroup(
             xSeparator2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 699, Short.MAX_VALUE)
+            .addGap(0, 651, Short.MAX_VALUE)
         );
         xSeparator2Layout.setVerticalGroup(
             xSeparator2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -79,33 +76,45 @@ public class CashReceiptBatchPaymentPage extends javax.swing.JPanel {
         xFormPanel1.add(xSeparator2);
 
         xDecimalField3.setCaption("Amount Due");
+        xDecimalField3.setName("entity.amount"); // NOI18N
         xDecimalField3.setCaptionFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xDecimalField3.setCellPadding(new java.awt.Insets(0, 30, 0, 0));
         xDecimalField3.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField3.setEnabled(false);
         xDecimalField3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        xDecimalField3.setName("entity.amount"); // NOI18N
         xDecimalField3.setPreferredSize(new java.awt.Dimension(230, 35));
         xFormPanel1.add(xDecimalField3);
 
+        xDecimalField8.setCaption("Check Amount");
+        xDecimalField8.setDepends(new String[] {"entity.totalcash"});
+        xDecimalField8.setName("check.amount"); // NOI18N
+        xDecimalField8.setCaptionFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        xDecimalField8.setCellPadding(new java.awt.Insets(0, 30, 0, 0));
+        xDecimalField8.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField8.setEnabled(false);
+        xDecimalField8.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        xDecimalField8.setPreferredSize(new java.awt.Dimension(230, 35));
+        xFormPanel1.add(xDecimalField8);
+
         xDecimalField7.setCaption("Cash Tendered");
+        xDecimalField7.setName("entity.cashtendered"); // NOI18N
         xDecimalField7.setCaptionFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xDecimalField7.setCellPadding(new java.awt.Insets(0, 30, 0, 0));
+        xDecimalField7.setEnabled(false);
         xDecimalField7.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
-        xDecimalField7.setName("entity.totalcash"); // NOI18N
         xDecimalField7.setPreferredSize(new java.awt.Dimension(230, 35));
         xFormPanel1.add(xDecimalField7);
 
-        xDecimalField8.setCaption("Change");
-        xDecimalField8.setCaptionFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        xDecimalField8.setCellPadding(new java.awt.Insets(0, 30, 0, 0));
-        xDecimalField8.setDepends(new String[] {"entity.totalcash"});
-        xDecimalField8.setDisabledTextColor(new java.awt.Color(204, 0, 0));
-        xDecimalField8.setEnabled(false);
-        xDecimalField8.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
-        xDecimalField8.setName("change"); // NOI18N
-        xDecimalField8.setPreferredSize(new java.awt.Dimension(230, 35));
-        xFormPanel1.add(xDecimalField8);
+        xDecimalField9.setCaption("Change");
+        xDecimalField9.setDepends(new String[] {"entity.totalcash", "check", "entity.amount"});
+        xDecimalField9.setName("entity.change"); // NOI18N
+        xDecimalField9.setCaptionFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        xDecimalField9.setCellPadding(new java.awt.Insets(0, 30, 0, 0));
+        xDecimalField9.setDisabledTextColor(new java.awt.Color(204, 0, 0));
+        xDecimalField9.setEnabled(false);
+        xDecimalField9.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        xDecimalField9.setPreferredSize(new java.awt.Dimension(230, 35));
+        xFormPanel1.add(xDecimalField9);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
@@ -136,6 +145,34 @@ public class CashReceiptBatchPaymentPage extends javax.swing.JPanel {
         xTextField2.setRequired(true);
         xFormPanel2.add(xTextField2);
 
+        xButton2.setDepends(new String[] {"check"});
+        xButton2.setDisableWhen("#{check.amount > 0}");
+        xButton2.setName("addCheck"); // NOI18N
+        xButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        xButton2.setText("Check");
+
+        xCheckBox2.setName("entity.confirmbeforeprint"); // NOI18N
+        xCheckBox2.setCellPadding(new java.awt.Insets(0, 30, 0, 0));
+        xCheckBox2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        xCheckBox2.setShowCaption(false);
+        xCheckBox2.setText(" Confirm before printing receipt?");
+
+        xCheckBox3.setName("entity.showprinterdialog"); // NOI18N
+        xCheckBox3.setCellPadding(new java.awt.Insets(0, 30, 0, 0));
+        xCheckBox3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        xCheckBox3.setShowCaption(false);
+        xCheckBox3.setText(" Show printer dialog?");
+
+        xButton4.setDepends(new String[] {"check"});
+        xButton4.setName("addCash"); // NOI18N
+        xButton4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        xButton4.setText("Cash");
+
+        xButton5.setDepends(new String[] {"check", "entity.totalcash", "entity.amount"});
+        xButton5.setName("clearPayments"); // NOI18N
+        xButton5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        xButton5.setText("Clear Payments");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -143,25 +180,47 @@ public class CashReceiptBatchPaymentPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 671, Short.MAX_VALUE)
                     .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 719, Short.MAX_VALUE))
-                .addContainerGap(36, Short.MAX_VALUE))
+                    .addComponent(xCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xCheckBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(xButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(74, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(xCheckBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(23, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XCheckBox xCheckBox1;
+    private com.rameses.rcp.control.XButton xButton2;
+    private com.rameses.rcp.control.XButton xButton4;
+    private com.rameses.rcp.control.XButton xButton5;
+    private com.rameses.rcp.control.XCheckBox xCheckBox2;
+    private com.rameses.rcp.control.XCheckBox xCheckBox3;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XDecimalField xDecimalField7;
     private com.rameses.rcp.control.XDecimalField xDecimalField8;
+    private com.rameses.rcp.control.XDecimalField xDecimalField9;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;

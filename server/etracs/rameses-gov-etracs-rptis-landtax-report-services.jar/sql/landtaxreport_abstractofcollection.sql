@@ -12,7 +12,7 @@ from (
     max(rp.toqtr) as maxqtr,
     'BASIC' AS type, 
     cr.receiptdate AS ordate, 
-    CASE WHEN cv.objid IS NULL THEN cr.payer_name ELSE '*** VOIDED ***' END AS taxpayername, 
+    CASE WHEN cv.objid IS NULL THEN cr.paidby ELSE '*** VOIDED ***' END AS taxpayername, 
     CASE WHEN cv.objid IS NULL THEN rl.tdno ELSE '' END AS tdno, 
     cr.receiptno AS orno, 
     CASE WHEN m.name IS NULL THEN c.name ELSE m.name END AS municityname, 
@@ -60,7 +60,7 @@ from (
     left join municipality m on b.parentid = m.objid 
   where ${filter} 
     and cr.collector_objid LIKE $P{collectorid} 
-  GROUP BY cr.objid, cr.receiptdate, cr.payer_name, cr.receiptno, rl.objid, rl.fullpin, rl.tdno, b.name, 
+  GROUP BY cr.objid, cr.receiptdate, cr.paidby, cr.receiptno, rl.objid, rl.fullpin, rl.tdno, b.name, 
             rl.classcode, cv.objid, m.name, c.name , rl.totalav, rl.titleno, rl.cadastrallotno, rl.rputype, rl.totalmv
    
   union all  
@@ -76,7 +76,7 @@ from (
     max(rp.toqtr) as maxqtr,
     'SEF' AS type, 
     cr.receiptdate AS ordate, 
-    CASE WHEN cv.objid IS NULL THEN cr.payer_name ELSE '*** VOIDED ***' END AS taxpayername, 
+    CASE WHEN cv.objid IS NULL THEN cr.paidby ELSE '*** VOIDED ***' END AS taxpayername, 
     CASE WHEN cv.objid IS NULL THEN rl.tdno ELSE '' END AS tdno, 
     cr.receiptno AS orno, 
     CASE WHEN m.name IS NULL THEN c.name ELSE m.name END AS municityname, 
@@ -121,7 +121,7 @@ from (
     left join municipality m on b.parentid = m.objid 
   where ${filter} 
     and cr.collector_objid LIKE $P{collectorid} 
-  GROUP BY cr.objid, cr.receiptdate, cr.payer_name, cr.receiptno, rl.objid, rl.fullpin, rl.tdno, b.name, 
+  GROUP BY cr.objid, cr.receiptdate, cr.paidby, cr.receiptno, rl.objid, rl.fullpin, rl.tdno, b.name, 
             rl.classcode, cv.objid, m.name, c.name , rl.totalav, rl.titleno, rl.cadastrallotno, rl.rputype, rl.totalmv
    
 ) t
@@ -145,7 +145,7 @@ from (
     max(rp.toqtr) as maxqtr,
     'BASIC' AS type, 
     cr.receiptdate AS ordate, 
-    CASE WHEN cv.objid IS NULL THEN cr.payer_name ELSE '*** VOIDED ***' END AS taxpayername, 
+    CASE WHEN cv.objid IS NULL THEN cr.paidby ELSE '*** VOIDED ***' END AS taxpayername, 
     CASE WHEN cv.objid IS NULL THEN rl.tdno ELSE '' END AS tdno, 
     cr.receiptno AS orno, 
     CASE WHEN m.name IS NULL THEN c.name ELSE m.name END AS municityname, 
@@ -194,7 +194,7 @@ from (
    where ${filter} 
      and cr.collector_objid LIKE $P{collectorid} 
     and rpi.year > $P{year}
-  GROUP BY cr.objid, cr.receiptdate, cr.payer_name, cr.receiptno, rl.objid, rl.fullpin, rl.tdno, b.name, 
+  GROUP BY cr.objid, cr.receiptdate, cr.paidby, cr.receiptno, rl.objid, rl.fullpin, rl.tdno, b.name, 
             rl.classcode, cv.objid, m.name, c.name , rl.totalav, rl.titleno, rl.cadastrallotno, rl.rputype, rl.totalmv
    
   union all  
@@ -210,7 +210,7 @@ from (
     max(rp.toqtr) as maxqtr,
     'SEF' AS type, 
     cr.receiptdate AS ordate, 
-    CASE WHEN cv.objid IS NULL THEN cr.payer_name ELSE '*** VOIDED ***' END AS taxpayername, 
+    CASE WHEN cv.objid IS NULL THEN cr.paidby ELSE '*** VOIDED ***' END AS taxpayername, 
     CASE WHEN cv.objid IS NULL THEN rl.tdno ELSE '' END AS tdno, 
     cr.receiptno AS orno, 
     CASE WHEN m.name IS NULL THEN c.name ELSE m.name END AS municityname, 
@@ -256,7 +256,7 @@ from (
   where ${filter} 
     and cr.collector_objid LIKE $P{collectorid} 
     and rpi.year > $P{year}
-  GROUP BY cr.objid, cr.receiptdate, cr.payer_name, cr.receiptno, rl.objid, rl.fullpin, rl.tdno, b.name, 
+  GROUP BY cr.objid, cr.receiptdate, cr.paidby, cr.receiptno, rl.objid, rl.fullpin, rl.tdno, b.name, 
             rl.classcode, cv.objid, m.name, c.name , rl.totalav, rl.titleno, rl.cadastrallotno, rl.rputype, rl.totalmv
    
 ) t

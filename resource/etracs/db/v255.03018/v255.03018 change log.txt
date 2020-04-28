@@ -1,0 +1,28 @@
+CHANGELOG: v255.03018
+==============================================
+- ASSESSOR	
+	- Online Batch GR
+	- Mapping of LGU Entities (Province)
+	- Certification support for entity members
+	- Non-Depreciated Building Additional Items (supported in rule)
+	- Subdivision: Fix the cancellation of affected improvment
+	- Subdivision: Add assistance support
+	- Additional building FAAS info 
+	- Machine SMV Support
+	- Subdivision: option to set affected FAAS txntype to DP
+	- Report: Add barangay filter to Agriland Actual Use Summary
+	- Report: Comparative Report on Real Property Assessment
+	- RedFlag: Add state filter
+	- RedFlag: Add tdno/txnno column
+	- Transmittal: View faas 
+
+- LANDTAX
+	- RPTAR report 
+	- Realty Tax Credit support
+
+	
+NOTES:
+=============================================
+- Update rameses-seti	
+- Subdivision: Affected FAAS Txntype
+	* set sys_var option faas_affected_rpu_txntype_dp to 1

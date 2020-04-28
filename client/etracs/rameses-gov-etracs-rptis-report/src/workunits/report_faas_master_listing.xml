@@ -41,12 +41,15 @@ class MasterListingController extends com.rameses.gov.etracs.rpt.report.AsyncRep
         getFormControls: {
             return [
                 new FormControl( "combo", [captionWidth:100, caption:'Report Type', name:'entity.reporttype', emptyText:'ALL', items:'reporttypes', preferredSize:'0,21']),
-                new FormControl( "label", [captionWidth:100, caption:'Year', name:'entity.year', required:true, preferredSize:'100,19']),
-                new FormControl( "combo", [captionWidth:100, caption:'LGU', name:'entity.lgu', items:'lgus', expression:'#{item.name}', emptyText:'ALL', allowNull:true]),
-                new FormControl( "combo", [captionWidth:100, caption:'Barangay', name:'entity.barangay', items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true, preferredSize:'0,21', emptyText:'ALL']),
-                new FormControl( "combo", [captionWidth:100, caption:'Classification', name:'entity.classification', items:'classifications', required:true, immediate:true, expression:'#{item.name}']),
-                new FormControl( "combo", [captionWidth:100, caption:'Order By', name:'entity.orderby', items:'orderbyColumns', expression:'#{item.caption}']),
-                new FormControl( "text", [captionWidth:100, caption:'Section', name:'entity.section', depends:'entity.barangay', visibleWhen:'#{entity.barangay != null}']),
+new FormControl( "label", [captionWidth:100, caption:'Year', name:'entity.year', required:true, preferredSize:'100,19']),
+new FormControl( "combo", [captionWidth:100, caption:'LGU', name:'entity.lgu', items:'lgus', expression:'#{item.name}', emptyText:'ALL', allowNull:true]),
+new FormControl( "combo", [captionWidth:100, caption:'Barangay', name:'entity.barangay', items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true, preferredSize:'0,21', emptyText:'ALL']),
+new FormControl( "combo", [captionWidth:100, caption:'Property Type', name:'entity.rputype', items:'rpuTypes', required:false, immediate:true, emptyText:'ALL']),
+new FormControl( "combo", [captionWidth:100, caption:'Classification', name:'entity.classification', items:'classifications', immediate:true, expression:'#{item.name}', emptyText:'ALL']),
+new FormControl( "combo", [captionWidth:100, caption:'Taxability', name:'entity.taxability', items:'taxabilities', immediate:true, emptyText:'ALL']),
+new FormControl( "combo", [captionWidth:100, caption:'State', name:'entity.state', items:'states', immediate:true, emptyText:'ALL']),
+new FormControl( "text", [captionWidth:100, caption:'Section', name:'entity.section', depends:'entity.barangay', visibleWhen:'#{entity.barangay != null}']),
+new FormControl( "combo", [captionWidth:100, caption:'Order By', name:'entity.orderby', items:'orderbyColumns', expression:'#{item.caption}']),
             ]    
         },
    ] as FormPanelModel;

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml">
+    <invokers>
+        <invoker type="rysetting_mach_smv:create" 
+            action="create" 
+            caption="Machine Schedule (New)" 
+            target="popup" />
+
+        <invoker type="rysetting_mach_smv:open" 
+            action="open" 
+            caption="Machine Schedule" 
+            target="popup"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.rysetting.models.MachineSmvModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.rysetting.views.MachineSmvPage"/>
+    </pages>
+</workunit>

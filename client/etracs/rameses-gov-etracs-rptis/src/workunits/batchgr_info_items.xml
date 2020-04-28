@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="batchgr:info" action="init" caption="Revision Items" index="1"/>
+        
+        <invoker type="formActions" 
+                 action="refresh" caption="Refresh" 
+                 visibleWhen="#{processing == false}"/>
+
+        <invoker type="formActions" 
+                 action="revise" caption="Revise" 
+                 visibleWhen="#{showRevise}"/>
+                 
+        <invoker type="formActions" 
+                 action="cancel" caption="Cancel" 
+                 visibleWhen="#{processing == true}"/>
+
+         <!-- ITEM ACTIONS -->
+         <invoker type="itemActions" 
+                 action="openFaas" caption="View FAAS" />
+
+        <invoker type="itemActions" 
+                 action="openRevisedFaas" caption="View Revised FAAS" 
+                 visibleWhen="#{selectedItem  &amp;&amp; selectedItem.newfaasid != null}" />
+        
+        <invoker type="itemActions" 
+                 action="reviseItem" caption="Revise" 
+                 visibleWhen="#{selectedItem  &amp;&amp; selectedItem.state == 'ERROR' &amp;&amp; selectedItem.newfaasid == null }" />
+        
+        <invoker type="itemActions" 
+                 action="excludeFaas" caption="Exclude" 
+                 visibleWhen="#{showExclude}" />
+                 
+        <invoker type="itemActions" 
+                 action="modifyPin" caption="Modify PIN" 
+                 visibleWhen="#{selectedItem &amp;&amp; selectedItem.state == 'REVISED' }" />
+   </invokers>
+   
+   <code class="com.rameses.gov.etracs.rptis.models.BatchGRItemModel" >
+    </code>
+    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rptis.views.BatchGRItemPage" />
+    </pages>
+</workunit>
+
+

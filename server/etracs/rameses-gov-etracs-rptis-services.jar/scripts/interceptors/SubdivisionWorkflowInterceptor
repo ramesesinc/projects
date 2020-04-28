@@ -1,6 +1,7 @@
 import com.rameses.annotations.*
 import com.rameses.eserver.*;
 import com.rameses.common.*;
+import com.rameses.services.extended.*;
 
 class SubdivisionWorkflowInterceptor
 {
@@ -37,6 +38,9 @@ class SubdivisionWorkflowInterceptor
 
 	@Service('RPTLedgerService')
 	def ledgerSvc 
+
+	@DataContext('subdivision_assist_item')
+	def em_assist_item
 
 
 	@After(pattern='SubdivisionService.create')
@@ -112,6 +116,8 @@ class SubdivisionWorkflowInterceptor
 	public void validateTaxmappingInfo( evt ) {
 		def subdivision = evt.args[0].data
 
+		subdivisionSvc.checkCompletedAssistance([objid: subdivision.objid, taskstate: 'taxmapper'])
+
 		//check landpin count, at least 2
 		def lands = em.getSubdividedLands([subdivisionid:subdivision.objid])
 		if (lands.size() <= 1)
@@ -122,16 +128,32 @@ class SubdivisionWorkflowInterceptor
 		def nopinRpus = em.getAffectedRpuWithNoPin(subdivision)
 		if (nopinRpus)
 			throw new Exception('Affected RPU with TD No. ' + nopinRpus[0].tdno + ' is not assigned with a new PIN.');
-
 	}
 
 	@Before(pattern="SubdivisionWorkflowService.signal", eval="#{args[0].state.matches('appraiser|provappraiser') &&  ! args[0].action?.matches('return.*')}", index=15)
 	public void validateAppraisalInfo( evt ) {
 		def subdivision = evt.args[0].data
+		subdivisionSvc.checkCompletedAssistance([objid: subdivision.objid, taskstate: 'appraiser'])
 		subdivisionSvc.validateSubdividedLands(subdivision)
 		validateSubdividedLand(subdivision)
 		validateAffectedRpu(subdivision)
 
+	}
+
+
+	@After(pattern="FAASService.(updateFaas)") 
+	public void afterFaasUpdate( evt ) {
+		def faas = evt.args[0]
+		updateAssistantItemStatus(faas)
+	}
+
+	void updateAssistantItemStatus(faas) {
+		if (!faas.assistant) return
+		def item = em.findAssistItemStatus([subdivisionid: faas.assistant.parent.objid, assistid: faas.assistant.objid])
+		if (item) {
+			item.parcelcreated = item.appraisedcount
+			em_assist_item.update(item)
+		}
 	}
 
 	void validateSubdividedLand(subdivision){

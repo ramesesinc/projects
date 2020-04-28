@@ -84,7 +84,7 @@ class RPTLedgerInterceptor
                 svc.postLedgerFaasData(faas)
             }
         } else {
-            if (util.isTrue(faas.datacapture) && (faas.previousfaases.size() == 0 || faas.previousfaases.findAll{it.prevfaasid != null}.size() == 0 )) {
+            if (util.isTrue(faas.datacapture)) {
                 postNewLedger(faas)
             }
             else if ((faas.txntype.objid.matches('SD|CS') || isFAASFromSubdivision(faas)) && faas.rpu.rputype == 'land'){
@@ -101,17 +101,6 @@ class RPTLedgerInterceptor
             }   
         }
     }
-
-    // @After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{env && env?.ORGCLASS?.equalsIgnoreCase('province')}")
-    // public void postToProvinceLedger(evt){
-    //     def faas = evt.result 
-
-    //     println 'postToProvinceLedger...'
-
-    //     if (isLedgerExisting(faas)){
-    //         svc.postLedgerFaasData(faas)
-    //     }
-    // }
 
     def isLedgerExisting(faas){
         def ledger = em_ledger.select('objid').find([faasid:faas.objid]).first() 

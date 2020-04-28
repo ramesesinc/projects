@@ -60,4 +60,12 @@ class RPTLedgerEntryModel
             faases = svc.getTaxableFaases(ledger);
         }
     }
+
+    void clearEntries() {
+        if (MsgBox.confirm('Clear ledger entries?')) {
+            svc.clearLedgerEntries(ledger);
+            entries = [];
+            listHandler.reload();
+        }
+    }
 }

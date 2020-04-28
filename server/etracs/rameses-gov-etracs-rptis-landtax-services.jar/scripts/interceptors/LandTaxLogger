@@ -35,5 +35,14 @@ class LandTaxLogger
         logSvc.logA( evt.methodName, 'rptledger', tag.parent.objid, remarks)
     }
 
+    @After(pattern="LandTaxReportTaxClearanceService.(createClearance|update)") 
+    public void logClearanceActions( evt ) {
+        def cert = evt.result 
+        def remarks = 'Create Tax Clearance ' + cert.txnno + '.'
+        if ('update'.equalsIgnoreCase(evt.methodName)) {
+            remarks = 'Update Tax Clearance ' + cert.txnno + ' information.'
+        }
+        logSvc.logA( evt.methodName, 'rpttaxclearance', cert.objid, remarks)
+    }
 }
 

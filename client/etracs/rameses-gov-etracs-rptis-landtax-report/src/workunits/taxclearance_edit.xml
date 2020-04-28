@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rpttaxclearance:edit" 
+            caption="Realty Tax Clearance (Edit)" 
+            role="RECORD_ADMIN" permission="edit" 
+            target="popup" />
+
+        <invoker type="formActions"
+            action="_close" caption="Cancel" 
+            immediate="true" />
+
+        <invoker type="formActions"
+            action="save" caption="Save" />
+    </invokers>
+
+    <code class="com.rameses.gov.etracs.landtax.report.models.TaxClearanceEditModel">
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.report.views.TaxClearanceEditPage" />
+    </pages>
+</workunit>

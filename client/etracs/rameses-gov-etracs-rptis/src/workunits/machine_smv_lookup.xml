@@ -1,0 +1,11 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="machinesmv:lookup" caption="Machine Lookups" target="popup" />
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.rptis.models.MachineSmvLookupModel">
+    </code>
+    <pages>
+        <page name="info" template="com.rameses.gov.etracs.rptis.views.VariableInfoPage" />
+    </pages>    
+</workunit>

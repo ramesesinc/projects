@@ -30,6 +30,7 @@ public class TaxClearanceInitPage extends javax.swing.JPanel {
     private void initComponents() {
 
         formPanel1 = new com.rameses.rcp.util.FormPanel();
+        xTextField3 = new com.rameses.rcp.control.XTextField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xNumberField9 = new com.rameses.rcp.control.XNumberField();
@@ -55,6 +56,13 @@ public class TaxClearanceInitPage extends javax.swing.JPanel {
 
         formPanel1.setCaptionWidth(130);
         formPanel1.setPadding(new java.awt.Insets(5, 10, 5, 5));
+
+        xTextField3.setCaption("Clearance No.");
+        xTextField3.setName("entity.txnno"); // NOI18N
+        xTextField3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        xTextField3.setPreferredSize(new java.awt.Dimension(150, 20));
+        xTextField3.setRequired(true);
+        formPanel1.add(xTextField3);
 
         xComboBox1.setCaption("Clearance Type");
         xComboBox1.setExpression(" #{item.title}");
@@ -210,7 +218,6 @@ public class TaxClearanceInitPage extends javax.swing.JPanel {
         xTextField8.setCaptionWidth(110);
         xTextField8.setCellPadding(new java.awt.Insets(5, 20, 0, 0));
         xTextField8.setPreferredSize(new java.awt.Dimension(150, 19));
-        xTextField8.setRequired(true);
         formPanel1.add(xTextField8);
 
         xDateField3.setCaption("O.R. Date");
@@ -220,7 +227,6 @@ public class TaxClearanceInitPage extends javax.swing.JPanel {
         xDateField3.setCaptionWidth(110);
         xDateField3.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
         xDateField3.setPreferredSize(new java.awt.Dimension(150, 19));
-        xDateField3.setRequired(true);
         formPanel1.add(xDateField3);
 
         xDecimalField1.setCaption("Amount");
@@ -230,7 +236,6 @@ public class TaxClearanceInitPage extends javax.swing.JPanel {
         xDecimalField1.setCaptionWidth(110);
         xDecimalField1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
         xDecimalField1.setPreferredSize(new java.awt.Dimension(150, 19));
-        xDecimalField1.setRequired(true);
         formPanel1.add(xDecimalField1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -271,6 +276,7 @@ public class TaxClearanceInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XTextArea xTextArea2;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
+    private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField4;
     private com.rameses.rcp.control.XTextField xTextField5;
     private com.rameses.rcp.control.XTextField xTextField6;

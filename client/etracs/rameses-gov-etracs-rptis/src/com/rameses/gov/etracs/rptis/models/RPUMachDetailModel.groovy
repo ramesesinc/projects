@@ -5,6 +5,7 @@ import com.rameses.rcp.common.*
 import com.rameses.osiris2.client.* 
 import com.rameses.osiris2.common.* 
 import com.rameses.gov.etracs.rptis.util.RPTUtil;
+import com.rameses.common.ExpressionResolver;
 
 public class RPUMachDetailModel
 {
@@ -60,6 +61,10 @@ public class RPUMachDetailModel
         mode = 'view';
         initInfo()
     }
+
+    def paramListHandler = [
+        fetchList: { machdetail.params }
+    ] as BasicListModel
     
     def save() {
         machdetail.machine = machine;
@@ -102,7 +107,35 @@ public class RPUMachDetailModel
         }
         loading = false;
     }
-    
+
+    def getLookupMachineSmv() {
+        return Inv.lookupOpener('machinesmv:lookup', [
+            lguid: entity.lguid,
+            barangayid: entity.rp.barangayid,
+            ry: rpu.ry,
+
+            onselect: {
+                machine = it;
+                machdetail.smv = it.smv;
+                machdetail.smvid = it.smv?.objid;
+                machdetail.params = (it.params ? it.params : []);
+                computeOriginalCost(it);
+                paramListHandler.reload();
+            },
+            onempty: {
+                machine = null;
+                paramListHandler.reload();
+            },
+        ]);
+    }
+
+    void computeOriginalCost(mach) {
+        if (!mach.smv || !mach.smv.expr) {
+            return;
+        }
+        def cost = svc.computeOriginalCost(mach);
+        setOriginalcost(cost);
+    }
     
     /*---------------------------------------------------------------
     *

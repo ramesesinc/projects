@@ -20,6 +20,7 @@ class ConsolidationListService extends ActiveListService
     @ProxyMethod
     public def getColumns(params) {
         return [
+          [name:"state", caption:"State", width:100],
           [name:"txnno", caption:"Txn No.", width:100],
           [name:"txndate", caption:"Txn Date", width:100],
           [name:"ry", caption:"RY", width:50, type:'integer', format:'0000'],
@@ -29,7 +30,6 @@ class ConsolidationListService extends ActiveListService
           [name:"owner.address", caption:"New Owner Address", width:250],
           [name:"rpu.totalareasqm", caption:"New Area (sqm)", width:120, type:'decimal', format:'#,##0.00'],
           [name:"rpu.totalareaha", caption:"New Area (ha)", width:120, type:'decimal', format:'#,##0.0000'],
-          [name:"state", caption:"State", width:100],
         ]
     }
 
@@ -37,8 +37,8 @@ class ConsolidationListService extends ActiveListService
     public def getNodes(o) {
         def nodes = []
         nodes << [name:'all', caption:'All']
-        nodes += em.getNodes();
         nodes << [name:'mytask', caption:'My Tasks']
+        nodes += em.getNodes();
         nodes << [name:'unassigned', caption:'Unassigned Tasks']
 
         nodes.each{

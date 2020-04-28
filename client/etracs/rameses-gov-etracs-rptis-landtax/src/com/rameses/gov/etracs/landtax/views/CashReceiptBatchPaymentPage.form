@@ -16,13 +16,22 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="xFormPanel1" pref="671" max="32767" attributes="0"/>
                   <Component id="xFormPanel2" max="32767" attributes="0"/>
-                  <Component id="xFormPanel1" pref="719" max="32767" attributes="0"/>
+                  <Component id="xCheckBox3" min="-2" max="-2" attributes="0"/>
+                  <Component id="xCheckBox2" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="xButton4" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="xButton2" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="xButton5" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
-              <EmptySpace pref="36" max="32767" attributes="0"/>
+              <EmptySpace pref="40" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -30,10 +39,20 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xFormPanel2" min="-2" pref="131" max="-2" attributes="0"/>
+              <Component id="xFormPanel2" min="-2" pref="121" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xFormPanel1" min="-2" pref="269" max="-2" attributes="0"/>
-              <EmptySpace pref="74" max="32767" attributes="0"/>
+              <Component id="xFormPanel1" min="-2" pref="262" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="xButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="xButton4" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="xButton5" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="xCheckBox2" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xCheckBox3" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="23" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -61,34 +80,20 @@
         <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField1">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Items per Receipt"/>
+            <Property name="name" type="java.lang.String" value="entity.itemsperreceipt" noResource="true"/>
             <Property name="captionFont" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Tahoma" size="18" style="0"/>
             </Property>
             <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-              <Insets value="[10, 30, 0, 0]"/>
+              <Insets value="[5, 30, 0, 0]"/>
             </Property>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Courier New" size="18" style="1"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="entity.itemsperreceipt" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[230, 35]"/>
             </Property>
             <Property name="required" type="boolean" value="true"/>
-          </Properties>
-        </Component>
-        <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox1">
-          <Properties>
-            <Property name="caption" type="java.lang.String" value="Show Printer Dialog?"/>
-            <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-              <Insets value="[0, 30, 0, 0]"/>
-            </Property>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="14" style="1"/>
-            </Property>
-            <Property name="name" type="java.lang.String" value="entity.showprinterdialog" noResource="true"/>
-            <Property name="showCaption" type="boolean" value="false"/>
-            <Property name="text" type="java.lang.String" value=" Show printer dialog?"/>
           </Properties>
         </Component>
         <Container class="com.rameses.rcp.control.XSeparator" name="xSeparator2">
@@ -101,7 +106,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="699" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="651" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -114,6 +119,7 @@
         <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField3">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Amount Due"/>
+            <Property name="name" type="java.lang.String" value="entity.amount" noResource="true"/>
             <Property name="captionFont" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Tahoma" size="18" style="0"/>
             </Property>
@@ -127,7 +133,33 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Tahoma" size="18" style="1"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="entity.amount" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[230, 35]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField8">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Check Amount"/>
+            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+              <StringArray count="1">
+                <StringItem index="0" value="entity.totalcash"/>
+              </StringArray>
+            </Property>
+            <Property name="name" type="java.lang.String" value="check.amount" noResource="true"/>
+            <Property name="captionFont" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Tahoma" size="18" style="0"/>
+            </Property>
+            <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[0, 30, 0, 0]"/>
+            </Property>
+            <Property name="disabledTextColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="0" type="rgb"/>
+            </Property>
+            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Courier New" size="18" style="1"/>
+            </Property>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[230, 35]"/>
             </Property>
@@ -136,34 +168,38 @@
         <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField7">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Cash Tendered"/>
+            <Property name="name" type="java.lang.String" value="entity.cashtendered" noResource="true"/>
             <Property name="captionFont" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Tahoma" size="18" style="0"/>
             </Property>
             <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
               <Insets value="[0, 30, 0, 0]"/>
             </Property>
+            <Property name="enabled" type="boolean" value="false"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Courier New" size="18" style="1"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="entity.totalcash" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[230, 35]"/>
             </Property>
           </Properties>
         </Component>
-        <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField8">
+        <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField9">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Change"/>
+            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+              <StringArray count="3">
+                <StringItem index="0" value="entity.totalcash"/>
+                <StringItem index="1" value="check"/>
+                <StringItem index="2" value="entity.amount"/>
+              </StringArray>
+            </Property>
+            <Property name="name" type="java.lang.String" value="entity.change" noResource="true"/>
             <Property name="captionFont" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Tahoma" size="18" style="0"/>
             </Property>
             <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
               <Insets value="[0, 30, 0, 0]"/>
-            </Property>
-            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
-              <StringArray count="1">
-                <StringItem index="0" value="entity.totalcash"/>
-              </StringArray>
             </Property>
             <Property name="disabledTextColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="cc" type="rgb"/>
@@ -172,7 +208,6 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Courier New" size="18" style="1"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="change" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[230, 35]"/>
             </Property>
@@ -246,5 +281,76 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="com.rameses.rcp.control.XButton" name="xButton2">
+      <Properties>
+        <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+          <StringArray count="1">
+            <StringItem index="0" value="check"/>
+          </StringArray>
+        </Property>
+        <Property name="disableWhen" type="java.lang.String" value="#{check.amount &gt; 0}"/>
+        <Property name="name" type="java.lang.String" value="addCheck" noResource="true"/>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Tahoma" size="18" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Check"/>
+      </Properties>
+    </Component>
+    <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox2">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="entity.confirmbeforeprint" noResource="true"/>
+        <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[0, 30, 0, 0]"/>
+        </Property>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Tahoma" size="14" style="1"/>
+        </Property>
+        <Property name="showCaption" type="boolean" value="false"/>
+        <Property name="text" type="java.lang.String" value=" Confirm before printing receipt?"/>
+      </Properties>
+    </Component>
+    <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox3">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="entity.showprinterdialog" noResource="true"/>
+        <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[0, 30, 0, 0]"/>
+        </Property>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Tahoma" size="14" style="1"/>
+        </Property>
+        <Property name="showCaption" type="boolean" value="false"/>
+        <Property name="text" type="java.lang.String" value=" Show printer dialog?"/>
+      </Properties>
+    </Component>
+    <Component class="com.rameses.rcp.control.XButton" name="xButton4">
+      <Properties>
+        <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+          <StringArray count="1">
+            <StringItem index="0" value="check"/>
+          </StringArray>
+        </Property>
+        <Property name="name" type="java.lang.String" value="addCash" noResource="true"/>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Tahoma" size="18" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Cash"/>
+      </Properties>
+    </Component>
+    <Component class="com.rameses.rcp.control.XButton" name="xButton5">
+      <Properties>
+        <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+          <StringArray count="3">
+            <StringItem index="0" value="check"/>
+            <StringItem index="1" value="entity.totalcash"/>
+            <StringItem index="2" value="entity.amount"/>
+          </StringArray>
+        </Property>
+        <Property name="name" type="java.lang.String" value="clearPayments" noResource="true"/>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Tahoma" size="18" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Clear Payments"/>
+      </Properties>
+    </Component>
   </SubComponents>
 </Form>

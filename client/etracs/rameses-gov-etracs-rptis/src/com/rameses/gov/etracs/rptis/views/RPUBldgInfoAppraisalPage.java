@@ -343,6 +343,9 @@ public class RPUBldgInfoAppraisalPage extends javax.swing.JPanel {
 
         tabAppraisal1.addTab("Actual Uses and Floor Information", jSplitPane3);
 
+        xDataTable12.setDepends(new String[] {"selectedAdditionalItem"});
+        xDataTable12.setHandler("paramListHandler");
+        xDataTable12.setName("selectedParam"); // NOI18N
         xDataTable12.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "param.caption"}
@@ -376,32 +379,32 @@ public class RPUBldgInfoAppraisalPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })
         });
-        xDataTable12.setDepends(new String[] {"selectedAdditionalItem"});
         xDataTable12.setDynamic(true);
-        xDataTable12.setHandler("paramListHandler");
-        xDataTable12.setName("selectedParam"); // NOI18N
         xDataTable12.setPreferredSize(new java.awt.Dimension(0, 50));
 
         xFormPanel2.setPadding(new java.awt.Insets(0, 0, 0, 0));
 
-        xComboBox2.setAllowNull(false);
         xComboBox2.setCaption("Floor");
         xComboBox2.setDepends(new String[] {"selectedStructuralType", "selectedFloor"});
-        xComboBox2.setDynamic(true);
-        xComboBox2.setExpression("#{item.floorno} - (#{item.bldgtypecode}) - #{item.actualusename}");
-        xComboBox2.setImmediate(true);
+        xComboBox2.setExpression("#{item.floorno} - (#{item.bldgtypecode}) - #{item.actualusename} - #{item.bldgkindname}");
         xComboBox2.setItems("floors");
         xComboBox2.setName("floor"); // NOI18N
+        xComboBox2.setAllowNull(false);
+        xComboBox2.setDynamic(true);
+        xComboBox2.setImmediate(true);
         xComboBox2.setPreferredSize(new java.awt.Dimension(250, 22));
         xFormPanel2.add(xComboBox2);
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
+        xDataTable8.setDepends(new String[] {"selectedStructuralType", "floor"});
+        xDataTable8.setHandler("additionalItemHandler");
+        xDataTable8.setName("selectedAdditionalItem"); // NOI18N
         xDataTable8.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", null}
-                , new Object[]{"caption", "Code*"}
-                , new Object[]{"width", 50}
+                , new Object[]{"caption", "Additional or Adjustment Type*"}
+                , new Object[]{"width", 220}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", false}
@@ -412,12 +415,12 @@ public class RPUBldgInfoAppraisalPage extends javax.swing.JPanel {
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler("#{item.additionalitem.code}", "lookupAdditionalItem")}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler("#{item.additionalitem.name}", "lookupAdditionalItem")}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "additionalitem.name"}
-                , new Object[]{"caption", "Additional or Adjustment Type"}
-                , new Object[]{"width", 200}
+                new Object[]{"name", "depreciate"}
+                , new Object[]{"caption", "Depreciate?"}
+                , new Object[]{"width", 90}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", false}
@@ -426,28 +429,13 @@ public class RPUBldgInfoAppraisalPage extends javax.swing.JPanel {
                 , new Object[]{"editable", false}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "expr"}
-                , new Object[]{"caption", "Computation"}
-                , new Object[]{"width", 150}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.CheckBoxColumnHandler(java.lang.Boolean.class, true, false)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "amount"}
                 , new Object[]{"caption", "Amount"}
-                , new Object[]{"width", 100}
+                , new Object[]{"width", 120}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", false}
@@ -460,11 +448,8 @@ public class RPUBldgInfoAppraisalPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 0)}
             })
         });
-        xDataTable8.setDepends(new String[] {"selectedStructuralType", "floor"});
         xDataTable8.setDynamic(true);
-        xDataTable8.setHandler("additionalItemHandler");
         xDataTable8.setImmediate(true);
-        xDataTable8.setName("selectedAdditionalItem"); // NOI18N
         jPanel1.add(xDataTable8, java.awt.BorderLayout.CENTER);
 
         jPanel2.setLayout(new java.awt.BorderLayout());

@@ -267,21 +267,23 @@ public class CashReceiptBatchSelectPage extends javax.swing.JPanel {
         xFormPanel2.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
 
         xIntegerField1.setCaption("No. of Paid Properties");
+        xIntegerField1.setDepends(new String[] {"selectedItem"});
+        xIntegerField1.setName("entity.itemcount"); // NOI18N
         xIntegerField1.setCaptionWidth(170);
         xIntegerField1.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xIntegerField1.setEnabled(false);
         xIntegerField1.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
-        xIntegerField1.setName("entity.itemcount"); // NOI18N
         xIntegerField1.setPreferredSize(new java.awt.Dimension(80, 25));
         xFormPanel2.add(xIntegerField1);
 
         xDecimalField1.setCaption("Amount");
+        xDecimalField1.setDepends(new String[] {"selectedItem"});
+        xDecimalField1.setName("entity.amount"); // NOI18N
         xDecimalField1.setCaptionWidth(90);
         xDecimalField1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
         xDecimalField1.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField1.setEnabled(false);
         xDecimalField1.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
-        xDecimalField1.setName("entity.amount"); // NOI18N
         xDecimalField1.setPreferredSize(new java.awt.Dimension(170, 25));
         xFormPanel2.add(xDecimalField1);
 

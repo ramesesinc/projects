@@ -134,7 +134,7 @@ class RPTCertificationOnlineService {
 		required('refdate', params.refdate);
 		required('purpose', params.purpose);
 
-		validatedFaas(params.faas);
+		validateFaas(params.faas);
 
 		params.certid = 'RC' + new java.rmi.server.UID()
 		params.faases = []
@@ -184,14 +184,15 @@ class RPTCertificationOnlineService {
 		required('refdate', params.refdate);
 		required('purpose', params.purpose);
 
-		def year = dtSvc.getServerYear()
+		def currYear = dtSvc.getServerYear()
+		def currQtr = dtSvc.getServerQtr()
 		params.certid = 'RC' + new java.rmi.server.UID()
 
 		def reporttype = null;
 
 		params.faases.each {
-			validatedFaas(it)
-			def ledger = em_ledger.select('lastyearpaid,lastqtrpaid,taxable,totalav,txntype.objid').find([faasid: it.objid]).first()
+			validateFaas(it)
+			def ledger = getLedger(it)
 			if (ledger) {
 				it.rptcertificationid = params.certid 
 				it.refid = it.objid
@@ -230,9 +231,9 @@ class RPTCertificationOnlineService {
         	certifiedby      : 'SYSTEM',
         	certifiedbytitle : 'SYSTEM',
         	purpose          : params.purpose,
-			asofyear         : year,
-			year 			 : year,
-			qtr 			 : 4,
+			asofyear         : (currQtr == 1 ? currYear - 1 : currYear),
+			year 			 : (currQtr == 1 ? currYear - 1 : currYear),
+			qtr 			 : (currQtr == 1 ? 4 : currQtr - 1),
 			items 			 : params.faases,
         	oramount         : 0.0,
         	stampamount      : 0.0,
@@ -247,7 +248,7 @@ class RPTCertificationOnlineService {
 	def initNoa(params) {
 		required('faas', params.faas);
 		required('faas.objid', params.faas.objid);
-		validatedFaas(params.faas);
+		validateFaas(params.faas);
 
 		def noa = [objid: 'NOA' + new java.rmi.server.UID()]
 		noa.taxpayer = params.faas.taxpayer
@@ -278,7 +279,8 @@ class RPTCertificationOnlineService {
 		if (!value) throw new Exception(caption + ' must be specified');
 	}
 
-	void validatedFaas(entity) {
+	void validateFaas(entity) {
+		println 'entity => ' + entity
 		def fields = 'objid,state,effectivityyear,taxpayer.objid,taxpayer.name,taxpayer.address.text,administrator.name,administrator.address'
 		def faas = em_faas.select(fields).find([objid: entity.objid]).first()
 		if (!faas) {
@@ -291,6 +293,18 @@ class RPTCertificationOnlineService {
 		}
 		if (!faas) throw new Exception('FAAS ' + entity.tdno + ' does not exist or has been deleted.')
 		if (faas.state.matches('INTERIM|PENDING')) throw new Exception('FAAS ' + entity.tdno + ' is not yet approved.')
+	}
+
+	def getLedger(faas) {
+		def fields = 'lastyearpaid,lastqtrpaid,taxable,totalav,txntype.objid'
+		def ledger = em_ledger.select(fields).find([faasid: faas.objid]).first()
+		if (!ledger) {
+			ledger = em_ledger.select(fields).find([tdno: faas.objid]).first()
+		}
+		if (!ledger) {
+			ledger = em_ledger.select(fields).find([tdno: faas.tdno]).first()
+		}
+		return ledger
 	}
 
 	def getOnlineCert(params, certtype) {

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="subdivision:info" 
+            action="init" 
+            caption="Assistance" 
+            index="1900"/>
+
+        <invoker type="formActions" 
+            action="refresh" 
+            caption="Refresh" 
+            mnemonic="r" />
+
+        <invoker type="formActions" 
+            action="addTaxmapper" 
+            caption="Add Taxmapper" 
+            mnemonic="t" 
+            visibleWhen="#{showActions == true}" />
+
+        <invoker type="formActions" 
+            action="addAppraiser" 
+            caption="Add Appraiser" 
+            mnemonic="a" 
+            visibleWhen="#{showActions == true}" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.models.SubdivisionAssistModel">
+    </code>
+    <pages> 
+        <page template="com.rameses.gov.etracs.rptis.views.SubdivisionAssistPage"/>
+    </pages>
+</workunit>
+
+

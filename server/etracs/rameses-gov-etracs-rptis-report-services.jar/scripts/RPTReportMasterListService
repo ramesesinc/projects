@@ -10,7 +10,6 @@ class RPTReportMasterListService
 
     @ActiveDB('rptreport_masterlist')
     def em
-
     
     @DataContext('propertyclassification')
     def propertyclassification
@@ -25,42 +24,16 @@ class RPTReportMasterListService
     @Async
     @ProxyMethod
     public def getMasterListing( params ) {
-    	params.lguid = (params.lgu ? params.lgu.objid :'%')
-		params.barangayid = (params.barangay ? params.barangay.objid : '%')
+		buildFilters(params)
+		buildTitle(params)
 
-		params.classidfilter = ''
-		if( params.classification ) {
-			params.classidfilter = ' AND r.classification_objid = $P{classid} '
-		}
-
-		params.sectionfilter = ''
-		if( params.section ) { 
-			params.sectionfilter = ' AND rp.section = $P{section} '
-		}
-
-		params.orderbyclause = ''
-		if( params.orderby ) { 
-			params.orderbyclause = 'ORDER BY ' + params.orderby.fieldname
-		}
-
-		
-		def title = 'Master List of Real Property' 
-
-		params.txntypeid = 'GR'
-        params.txntypefilter = '' 
-        if ('GR'.equalsIgnoreCase(params.reporttype)){
-            params.txntypefilter = ' AND f.txntype_objid = $P{txntypeid} '
-            title = 'General Revision Master List of Real Property'
-        }
-        else if ('MAINTENANCE'.equalsIgnoreCase(params.reporttype)){
-            params.txntypefilter = ' AND f.txntype_objid <> $P{txntypeid} '  
-            title = 'Maintenance Master List of Real Property' 
-        }
-
-
-		params.currentyear = dtSvc.serverYear
-		params.classid = params.classification.objid 
-		def list = em.getMasterListing(params)
+		def list = []
+		if (!params.state) 
+			list = em.getListing(params)
+		else if ('CURRENT'.equalsIgnoreCase(params.state)) 
+			list = em.getCurrentListing(params)
+		else 
+			list = em.getCancelledListing(params)
 
 		if( ! list ) throw new Exception('Record not found.')
 		list.each{
@@ -90,9 +63,9 @@ class RPTReportMasterListService
 		}
 
 		def p = [
-			CLASSIFICATION : params.classification.name,
+			CLASSIFICATION : (params.classification ? params.classification.name  :  'ALL'),
             FORLGUNAME : forlguname,
-            TITLE    : title,
+            TITLE    : params.title,
         ]
 
 		return [
@@ -105,6 +78,77 @@ class RPTReportMasterListService
     public def getClassifications(){
     	return propertyclassification.find([state:'APPROVED']).orderBy('orderno').list()
     }
+
+
+	void buildTitle(params) {
+		def titles = []
+		
+        if ('GR'.equalsIgnoreCase(params.reporttype)){
+            titles << 'General Revision Master List of'
+        } else if ('MAINTENANCE'.equalsIgnoreCase(params.reporttype)){
+            params.title = 'Maintenance Master List of' 
+        } else {
+			titles << 'Master List of' 
+		}
+
+		if (params.taxability) {
+			titles << params.taxability[0] + params.taxability.substring(1).toLowerCase()
+		}
+		if (params.classification) {
+			titles << params.classification.name[0] + params.classification.name.substring(1).toLowerCase()
+		}
+		titles << 'Real Properties'
+
+		if (params.state && 'CANCELLED'.equalsIgnoreCase(params.state))  {
+			titles << '( Cancelled )'
+		}
+		params.title = titles.join(' ')
+	}
+
+	void buildFilters(params) {
+		params.currentyear = dtSvc.serverYear
+
+		def filters = []
+		if (params.lgu) {
+			params.lguid = params.lgu.objid 
+			filters << ' f.lguid = $P{lguid} '
+		}
+		if (params.barangay) {
+			params.barangayid = params.barangay.objid
+			filters << ' rp.barangayid = $P{barangayid} '
+		}
+		if (params.classification) {
+			params.classid = params.classification.objid
+			filters << ' r.classification_objid = $P{classid} '
+		}
+		if (params.rputype) {
+			filters << ' r.rputype = $P{rputype} '
+		}
+		if (params.taxability) {
+			params.taxable = 1
+			if ('EXEMPT'.equalsIgnoreCase(params.taxability)) params.taxable = 0
+			filters << ' r.taxable = $P{taxable} '
+		}
+		if (params.section) { 
+			filters << ' rp.section = $P{section} '
+		}
+
+		params.txntypeid = 'GR'
+		if ('GR'.equalsIgnoreCase(params.reporttype)){
+            filters << ' f.txntype_objid = $P{txntypeid} '
+        }
+        else if ('MAINTENANCE'.equalsIgnoreCase(params.reporttype)){
+            filters = ' f.txntype_objid <> $P{txntypeid} '  
+            title = 'Maintenance Master List of Real Property' 
+        }
+
+		params.filters = ' AND ' + filters.join(' AND ')
+
+		params.orderbyclause = ''
+		if( params.orderby ) { 
+			params.orderbyclause = 'ORDER BY ' + params.orderby.fieldname
+		}
+	}
 
 
 }

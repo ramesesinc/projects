@@ -1,5 +1,7 @@
 import com.rameses.annotations.*
 import com.rameses.util.*
+import com.rameses.services.extended.*
+
 
 class MachRPUGRService
 {
@@ -21,6 +23,10 @@ class MachRPUGRService
     @Service('RPTUtil')
     def util 
 
+    @DataContext('machdetail')
+    def em_machdetail
+
+
     @ProxyMethod
     public def reviseMachRpu(rpu){
         rpu.dtappraised = dtSvc.serverDate 
@@ -39,6 +45,7 @@ class MachRPUGRService
         
         rpu.machuses.removeAll( deletedItems )
         machRpuSvc.calculateAssessment(rpu)
+        println 'rpu =>  ' + rpu 
         return rpu
     }
 
@@ -57,6 +64,14 @@ class MachRPUGRService
                     mach.feracid = ferac.objid
                     mach.ferac   = ferac.forex 
                 }
+            }
+
+            if (mach.smvid) {
+                def prevmach = em_machdetail.find([objid: mach._prevobjid]).first();
+                mach.params = prevmach.params
+                mach.smv = lookupSvc.lookupMachineSmvsByPrevId(mach.smvid)
+                mach.smvid = mach.smv?.objid 
+                mach.originalcost = machRpuSvc.computeOriginalCost(mach)
             }
 
             if ((mach.estimatedlife == null || mach.estimatedlife == 0) && (mach.yearacquired != null && mach.yearacquired != 0)){

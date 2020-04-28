@@ -8,7 +8,7 @@
         <invoker type="formActions" action="init"     caption="New"      shourtcut="n" mnemonic="n"  index="3"  visibleWhen="#{mode != 'create'}" icon="images/toolbars/create.png" />        
     </invokers>
     <pages>
-        <page template="com.rameses.gov.etracs.rpt.report.certification.RPTCertificationPage" />
+        <page template="com.rameses.gov.etracs.rptis.report.views.CertificationInitPage" />
         <page name="preview" template="com.rameses.gov.etracs.rpt.report.PreviewPage" />
     </pages>
 </workunit>

@@ -78,6 +78,9 @@ class RPTLedgerService
     @DataContext('vw_rptledger_avdifference')
     def vw_rptledger_avdifference
 
+    @DataContext('rpttaxcredit')
+    def em_credit
+
 
     @ProxyMethod
     public void validateAndBuildManualLedger(ledger){
@@ -124,6 +127,11 @@ class RPTLedgerService
     public void delete( ledger ) {
         em_rptbill_ledger.find([rptledgerid:ledger.objid]).delete() 
         em_rptledger_item.find([parentid:ledger.objid]).delete() 
+
+        def credits = em_credit.select('objid').find([rptledger_objid: ledger.objid]).list()
+        credits.each{
+            em_credit.find([objid: it.objid]).delete()
+        }
     }
 
     @ProxyMethod
@@ -1208,7 +1216,7 @@ class RPTLedgerService
     }
 
     @ProxyMethod
-    public void buildMessageList(ledger) {
+    public def buildMessageList(ledger) {
         ledger._messagelist = []
         def subledger = em_rptledger_subledger.find([objid:ledger.objid]).first()
         if (subledger) {
@@ -1227,6 +1235,8 @@ class RPTLedgerService
         if (restrictions) {
             ledger._messagelist = 'Ledger has active restrictions.'
         }
+        
+        return ledger
     }
 
     @ProxyMethod
@@ -1282,6 +1292,12 @@ class RPTLedgerService
             def amtpaid = numSvc.round(qtrlyamt * ledger.lastqtrpaid)
             em_rptledger_item.find([objid: it.objid]).update([amtpaid: amtpaid])
         }
+    }
+
+
+    @ProxyMethod
+    public void clearLedgerEntries(ledger) {
+        em_rptledger_item.find([parentid: ledger.objid]).delete()
     }
 }
 

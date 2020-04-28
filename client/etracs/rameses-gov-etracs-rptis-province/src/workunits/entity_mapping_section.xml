@@ -1,0 +1,27 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+      entitySchemaName="entity_mapping" 
+      schemaName="vw_entity_mapping" 
+      windowTitle="LGU Entity Mappings"
+      allowEdit="false" 
+      allowOpen="false"
+      cols="entityno,name,address.text,address.municipality" 
+      orderBy="entityno" >
+    <invokers>
+        <invoker type="entityindividual:section" 
+                 action="init" caption="LGU Entity Mappings"  
+                 index="1000" 
+                 role="ADMIN" 
+                 permission="entity.reconcile" />
+         <invoker type="entityjuridical:section" 
+                 action="init" caption="LGU Entity Mappings"  
+                 index="1000" 
+                 role="ADMIN" 
+                 permission="entity.reconcile" />
+         <invoker type="entitymultiple:section" 
+                 action="init" caption="LGU Entity Mappings"  
+                 index="1000" 
+                 role="ADMIN" 
+                 permission="entity.reconcile" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.province.models.EntityMappingSectionModel" />
+</workunit>

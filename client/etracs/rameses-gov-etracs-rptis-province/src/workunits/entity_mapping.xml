@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <invoker type="entity_mapping:create" 
+            action="init"
+             caption="LGU Entity Mapping"  
+             role="ADMIN" 
+             permission="entity.reconcile" 
+             target="popup"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.province.models.EntityMappingModel" />
+    <pages>
+    	<page template="com.rameses.gov.etracs.rptis.province.views.EntityMappingPage" />
+    </pages>
+</workunit>

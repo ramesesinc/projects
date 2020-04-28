@@ -1,0 +1,9 @@
+<workunit extends="wtemplates/LookupController.xml">
+    
+    <invokers>
+        <invoker type="rptreceipt:lookup" caption="Realty Tax Receipt Lookup" width="1024"/>
+    </invokers>
+   
+    <code class="com.rameses.gov.etracs.landtax.models.RPTReceiptLookupModel">
+    </code>
+</workunit>

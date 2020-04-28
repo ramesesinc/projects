@@ -183,7 +183,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="-4"
+						y="0"
 						width="882"
 						height="19"
 						key="textField-36"/>
@@ -191,7 +191,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-Bold" size="14" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{TITLE} + ( $P{CLASSIFICATION}  == null ? "" : " - " + $P{CLASSIFICATION} )]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{TITLE}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -858,7 +858,7 @@ tivity]]></text>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="56"
+						x="97"
 						y="65"
 						width="192"
 						height="13"
@@ -878,7 +878,7 @@ tivity]]></text>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="56"
+						x="97"
 						y="79"
 						width="192"
 						height="13"
@@ -898,7 +898,7 @@ tivity]]></text>
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="56"
+						x="97"
 						y="39"
 						width="192"
 						height="12"
@@ -918,7 +918,7 @@ tivity]]></text>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="536"
+						x="577"
 						y="65"
 						width="192"
 						height="13"
@@ -938,7 +938,7 @@ tivity]]></text>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="536"
+						x="577"
 						y="79"
 						width="192"
 						height="13"
@@ -958,7 +958,7 @@ tivity]]></text>
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="536"
+						x="577"
 						y="39"
 						width="192"
 						height="12"

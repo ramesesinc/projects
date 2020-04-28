@@ -31,6 +31,7 @@ public class FAASModel
     
     def taskstate;
     def assignee; 
+    def assistant;
     
     //callbacks
     def afterCreate = {};
@@ -156,6 +157,7 @@ public class FAASModel
     
     
     def save(){
+        getEntity().assistant = assistant;
         if (mode == MODE_CREATE){
             getEntity().putAll(service.createFaas(getEntity()));
             if (afterCreate) afterCreate(getEntity());
@@ -297,9 +299,16 @@ public class FAASModel
             if (taskstate && !taskstate.matches('receiver|appraiser|provappraiser|taxmapper|provtaxmapper|recommender')) 
                 return false;
         }
-        if (OsirisContext.env.USERID != getEntity().assignee.objid) return false;
+        if (!isAssignee()) return false;
         if (mode != MODE_READ) return false;
         return true;
+    }
+
+    def isAssignee() {
+        if (OsirisContext.env.USERID == getEntity().assignee.objid || assistant) {
+            return true;
+        }
+        return false;
     }
         
     /*===============================================

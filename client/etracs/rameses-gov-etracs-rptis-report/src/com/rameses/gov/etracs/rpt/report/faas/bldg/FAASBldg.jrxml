@@ -146,6 +146,8 @@
 	<field name="provrecommender.name" class="java.lang.String"/>
 	<field name="provrecommender.dtsigned" class="java.util.Date"/>
 	<field name="objid" class="java.lang.String"/>
+	<field name="dtconstructured" class="java.util.Date"/>
+	<field name="additionalparams" class="java.lang.Object"/>
 
 
 		<group  name="Part1" isStartNewPage="true" >
@@ -1970,130 +1972,14 @@
 		<group  name="Part2" isStartNewPage="true" >
 			<groupExpression><![CDATA[]]></groupExpression>
 			<groupHeader>
-			<band height="442"  isSplitAllowed="true" >
+			<band height="191"  isSplitAllowed="true" >
 				<printWhenExpression><![CDATA[new Boolean($P{PRINTPAGE} == null || $P{PRINTPAGE} == "back")]]></printWhenExpression>
-				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="376"
-						y="234"
-						width="176"
-						height="46"
-						key="image-8"
-						positionType="Float">
-							<printWhenExpression><![CDATA[new Boolean($F{recommender.name} == null)]]></printWhenExpression>
-						</reportElement>
-					<box></box>
-					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.io.InputStream"><![CDATA[$F{signatories}.source.provrecommender.signatureis]]></imageExpression>
-				</image>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="376"
-						y="366"
-						width="176"
-						height="12"
-						key="textField-69"
-						positionType="Float"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{approver.title}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="190"
-						y="366"
-						width="176"
-						height="12"
-						key="textField-81"
-						positionType="Float">
-							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
-						</reportElement>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provappraiser.title}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="0"
-						y="366"
-						width="176"
-						height="12"
-						key="textField-86"
-						positionType="Float">
-							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
-						</reportElement>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provtaxmapper.title}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="0"
-						y="376"
-						width="176"
-						height="12"
-						key="textField-85"
-						positionType="Float">
-							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
-						</reportElement>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
-					</textElement>
-				<textFieldExpression   class="java.util.Date"><![CDATA[$F{provtaxmapper.dtsigned}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="190"
-						y="352"
-						width="176"
-						height="14"
-						key="textField-82"
-						positionType="Float">
-							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
-						</reportElement>
-					<box>					<pen lineWidth="0.0" lineColor="#0000FF"/>
-					<topPen lineWidth="0.0" lineColor="#0000FF"/>
-					<leftPen lineWidth="0.0" lineColor="#0000FF"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000FF"/>
-					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provappraiser.name}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="376"
-						y="352"
-						width="176"
-						height="14"
-						key="textField-72"
-						positionType="Float"/>
-					<box>					<pen lineWidth="0.0" lineColor="#0000FF"/>
-					<topPen lineWidth="0.0" lineColor="#0000FF"/>
-					<leftPen lineWidth="0.0" lineColor="#0000FF"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000FF"/>
-					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{approver.name}]]></textFieldExpression>
-				</textField>
 				<staticText>
 					<reportElement
-						x="295"
+						x="283"
 						y="46"
-						width="256"
-						height="88"
+						width="268"
+						height="117"
 						key="staticText-297"
 						positionType="Float"/>
 					<box leftPadding="3" topPadding="3">					<pen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
@@ -2135,7 +2021,350 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="164"
+						y="32"
+						width="267"
+						height="14"
+						forecolor="#0000CC"
+						key="staticText-288"
+						positionType="Float"/>
+					<box leftPadding="2" topPadding="3"></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[PROPERTY APPRAISAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="46"
+						width="283"
+						height="117"
+						forecolor="#0000CC"
+						key="staticText-291"
+						positionType="Float"/>
+					<box leftPadding="3" rightPadding="3" topPadding="3" bottomPadding="3">					<pen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<text><![CDATA[Construction Cost:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="163"
+						width="106"
+						height="14"
+						forecolor="#0000CC"
+						key="staticText-292"
+						positionType="Float"/>
+					<box leftPadding="3" topPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="9"/>
+					</textElement>
+				<text><![CDATA[Total Construction Cost:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="106"
+						y="163"
+						width="160"
+						height="14"
+						key="textField"
+						positionType="Float"/>
+					<box leftPadding="3" topPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{subtotal}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="0"
+						y="177"
+						width="106"
+						height="14"
+						forecolor="#0000CC"
+						key="staticText-293"
+						positionType="Float"/>
+					<box leftPadding="3" topPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="9"/>
+					</textElement>
+				<text><![CDATA[Depreciation Rate:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="106"
+						y="177"
+						width="160"
+						height="14"
+						key="textField"
+						positionType="Float"/>
+					<box leftPadding="3" topPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{depreciation}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="266"
+						y="163"
+						width="79"
+						height="14"
+						forecolor="#0000CC"
+						key="staticText-294"
+						positionType="Float"/>
+					<box leftPadding="3" topPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="9"/>
+					</textElement>
+				<text><![CDATA[Depreciation Cost:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="345"
+						y="163"
+						width="206"
+						height="14"
+						key="textField"
+						positionType="Float"/>
+					<box leftPadding="3" topPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{rpu.depreciationvalue}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="266"
+						y="177"
+						width="79"
+						height="14"
+						forecolor="#0000CC"
+						key="staticText-300"
+						positionType="Float"/>
+					<box leftPadding="3" topPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="9"/>
+					</textElement>
+				<text><![CDATA[Market Value: ]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="345"
+						y="177"
+						width="206"
+						height="14"
+						key="textField"
+						positionType="Float"/>
+					<box leftPadding="3" topPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{rpu.totalmv}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="4"
+						y="60"
+						width="276"
+						height="70"
+						key="textField-18"
+						positionType="Float"/>
+					<box topPadding="3"></box>
+					<textElement>
+						<font fontName="Courier New" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rpu.bldgcorecomputations}]]></textFieldExpression>
+				</textField>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="289"
+						y="48"
+						width="254"
+						height="114"
+						key="subreport-7"
+						positionType="Float"/>
+					<dataSourceExpression><![CDATA[$F{additionalparams}]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["AdditionalParams.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="PART2INFO" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="287"  isSplitAllowed="true" >
+				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="376"
+						y="76"
+						width="176"
+						height="46"
+						key="image-8"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{recommender.name} == null)]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.io.InputStream"><![CDATA[$F{signatories}.source.provrecommender.signatureis]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="376"
+						y="208"
+						width="176"
+						height="12"
+						key="textField-69"
+						positionType="Float"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{approver.title}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="190"
+						y="208"
+						width="176"
+						height="12"
+						key="textField-81"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provappraiser.title}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="208"
+						width="176"
+						height="12"
+						key="textField-86"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provtaxmapper.title}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="218"
+						width="176"
+						height="12"
+						key="textField-85"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{provtaxmapper.dtsigned}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="190"
+						y="194"
+						width="176"
+						height="14"
+						key="textField-82"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
+						</reportElement>
+					<box>					<pen lineWidth="0.0" lineColor="#0000FF"/>
+					<topPen lineWidth="0.0" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.0" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provappraiser.name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="376"
+						y="194"
+						width="176"
+						height="14"
+						key="textField-72"
+						positionType="Float"/>
+					<box>					<pen lineWidth="0.0" lineColor="#0000FF"/>
+					<topPen lineWidth="0.0" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.0" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{approver.name}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="0"
+						y="6"
 						width="552"
 						height="14"
 						forecolor="#0000CC"
@@ -2150,7 +2379,7 @@
 				<subreport  isUsingCache="true">
 					<reportElement
 						x="0"
-						y="179"
+						y="21"
 						width="551"
 						height="14"
 						key="subreport-4"
@@ -2168,7 +2397,7 @@
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="390"
+						y="232"
 						width="551"
 						height="52"
 						forecolor="#000000"
@@ -2189,212 +2418,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="32"
-						width="267"
-						height="14"
-						forecolor="#0000CC"
-						key="staticText-288"
-						positionType="Float"/>
-					<box leftPadding="2"></box>
-					<textElement verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<text><![CDATA[PROPERTY APPRAISAL]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="0"
-						y="46"
-						width="295"
-						height="88"
-						forecolor="#0000CC"
-						key="staticText-291"
-						positionType="Float"/>
-					<box leftPadding="3" rightPadding="3" topPadding="3" bottomPadding="3">					<pen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Top">
-						<font fontName="Tahoma" size="8"/>
-					</textElement>
-				<text><![CDATA[Construction Cost:]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="0"
-						y="134"
-						width="106"
-						height="14"
-						forecolor="#0000CC"
-						key="staticText-292"
-						positionType="Float"/>
-					<box leftPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
-					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="9"/>
-					</textElement>
-				<text><![CDATA[Total Construction Cost:]]></text>
-				</staticText>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="106"
-						y="134"
-						width="160"
-						height="14"
-						key="textField"
-						positionType="Float"/>
-					<box leftPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
-					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{subtotal}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement
-						x="0"
-						y="148"
-						width="106"
-						height="14"
-						forecolor="#0000CC"
-						key="staticText-293"
-						positionType="Float"/>
-					<box leftPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
-					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="9"/>
-					</textElement>
-				<text><![CDATA[Depreciation Rate:]]></text>
-				</staticText>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="106"
-						y="148"
-						width="160"
-						height="14"
-						key="textField"
-						positionType="Float"/>
-					<box leftPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
-					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{depreciation}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement
-						x="266"
-						y="134"
-						width="79"
-						height="14"
-						forecolor="#0000CC"
-						key="staticText-294"
-						positionType="Float"/>
-					<box leftPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
-					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="9"/>
-					</textElement>
-				<text><![CDATA[Depreciation Cost:]]></text>
-				</staticText>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="345"
-						y="134"
-						width="206"
-						height="14"
-						key="textField"
-						positionType="Float"/>
-					<box leftPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
-					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{rpu.depreciationvalue}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement
-						x="266"
-						y="148"
-						width="79"
-						height="14"
-						forecolor="#0000CC"
-						key="staticText-300"
-						positionType="Float"/>
-					<box leftPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
-					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="9"/>
-					</textElement>
-				<text><![CDATA[Market Value: ]]></text>
-				</staticText>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="345"
-						y="148"
-						width="206"
-						height="14"
-						key="textField"
-						positionType="Float"/>
-					<box leftPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
-					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{rpu.totalmv}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="4"
-						y="60"
-						width="285"
-						height="70"
-						key="textField-18"
-						positionType="Float"/>
-					<box></box>
-					<textElement>
-						<font fontName="Courier New" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rpu.bldgcorecomputations}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement
-						x="0"
-						y="196"
+						y="38"
 						width="40"
 						height="14"
 						forecolor="#0000CC"
@@ -2409,7 +2433,7 @@
 				<staticText>
 					<reportElement
 						x="198"
-						y="196"
+						y="38"
 						width="175"
 						height="14"
 						forecolor="#0000CC"
@@ -2424,7 +2448,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="373"
-						y="196"
+						y="38"
 						width="163"
 						height="14"
 						key="textField-38"
@@ -2443,7 +2467,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="41"
-						y="196"
+						y="38"
 						width="35"
 						height="14"
 						key="textField-39"
@@ -2462,7 +2486,7 @@
 				<staticText>
 					<reportElement
 						x="87"
-						y="196"
+						y="38"
 						width="42"
 						height="14"
 						forecolor="#0000CC"
@@ -2477,7 +2501,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="130"
-						y="196"
+						y="38"
 						width="35"
 						height="14"
 						key="textField-40"
@@ -2496,7 +2520,7 @@
 				<staticText>
 					<reportElement
 						x="373"
-						y="210"
+						y="52"
 						width="82"
 						height="10"
 						forecolor="#0000CC"
@@ -2511,7 +2535,7 @@
 				<staticText>
 					<reportElement
 						x="455"
-						y="210"
+						y="52"
 						width="82"
 						height="10"
 						forecolor="#0000CC"
@@ -2526,7 +2550,7 @@
 				<image  scaleImage="RetainShape" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
-						y="317"
+						y="159"
 						width="176"
 						height="46"
 						key="image-2"
@@ -2540,7 +2564,7 @@
 				<image  scaleImage="RetainShape" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="1"
-						y="234"
+						y="76"
 						width="174"
 						height="46"
 						key="image-3"
@@ -2552,7 +2576,7 @@
 				<image  scaleImage="RetainShape" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
-						y="234"
+						y="76"
 						width="176"
 						height="46"
 						key="image-4"
@@ -2564,7 +2588,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
-						y="284"
+						y="126"
 						width="176"
 						height="12"
 						key="textField-68"
@@ -2578,7 +2602,7 @@
 				<staticText>
 					<reportElement
 						x="1"
-						y="225"
+						y="67"
 						width="176"
 						height="14"
 						forecolor="#3300FF"
@@ -2593,7 +2617,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="1"
-						y="270"
+						y="112"
 						width="176"
 						height="14"
 						key="textField-70"
@@ -2612,7 +2636,7 @@
 				<staticText>
 					<reportElement
 						x="376"
-						y="226"
+						y="68"
 						width="176"
 						height="14"
 						forecolor="#3300FF"
@@ -2627,7 +2651,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
-						y="270"
+						y="112"
 						width="176"
 						height="14"
 						key="textField-71"
@@ -2646,7 +2670,7 @@
 				<staticText>
 					<reportElement
 						x="376"
-						y="307"
+						y="149"
 						width="176"
 						height="14"
 						forecolor="#3300FF"
@@ -2661,7 +2685,7 @@
 				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
-						y="376"
+						y="218"
 						width="176"
 						height="12"
 						key="textField-73"
@@ -2675,7 +2699,7 @@
 				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="1"
-						y="294"
+						y="136"
 						width="176"
 						height="12"
 						key="textField-74"
@@ -2689,7 +2713,7 @@
 				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
-						y="294"
+						y="136"
 						width="176"
 						height="12"
 						key="textField-75"
@@ -2703,7 +2727,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="1"
-						y="284"
+						y="126"
 						width="176"
 						height="12"
 						key="textField-76"
@@ -2717,7 +2741,7 @@
 				<image  scaleImage="RetainShape" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="190"
-						y="233"
+						y="75"
 						width="176"
 						height="46"
 						key="image-5"
@@ -2729,7 +2753,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="190"
-						y="283"
+						y="125"
 						width="176"
 						height="12"
 						key="textField-78"
@@ -2743,7 +2767,7 @@
 				<staticText>
 					<reportElement
 						x="190"
-						y="225"
+						y="67"
 						width="176"
 						height="14"
 						forecolor="#3300FF"
@@ -2758,7 +2782,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="190"
-						y="269"
+						y="111"
 						width="176"
 						height="14"
 						key="textField-79"
@@ -2777,7 +2801,7 @@
 				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="190"
-						y="293"
+						y="135"
 						width="176"
 						height="12"
 						key="textField-80"
@@ -2791,7 +2815,7 @@
 				<image  scaleImage="RetainShape" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="190"
-						y="317"
+						y="159"
 						width="176"
 						height="46"
 						key="image-6"
@@ -2805,7 +2829,7 @@
 				<staticText>
 					<reportElement
 						x="190"
-						y="307"
+						y="149"
 						width="176"
 						height="14"
 						forecolor="#3300FF"
@@ -2822,7 +2846,7 @@
 				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="190"
-						y="376"
+						y="218"
 						width="176"
 						height="12"
 						key="textField-83"
@@ -2838,7 +2862,7 @@
 				<image  scaleImage="RetainShape" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="317"
+						y="159"
 						width="174"
 						height="46"
 						key="image-7"
@@ -2852,7 +2876,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="352"
+						y="194"
 						width="176"
 						height="14"
 						key="textField-84"
@@ -2873,7 +2897,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="307"
+						y="149"
 						width="176"
 						height="14"
 						forecolor="#3300FF"
@@ -2890,7 +2914,7 @@
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="310"
+						y="152"
 						width="365"
 						height="78"
 						key="textField-87"
@@ -2911,7 +2935,7 @@
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="32"
-						y="238"
+						y="80"
 						width="495"
 						height="66"
 						forecolor="#FF0000"
@@ -2926,7 +2950,7 @@
 				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
-						y="294"
+						y="136"
 						width="176"
 						height="12"
 						key="textField-94"
@@ -2942,7 +2966,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
-						y="284"
+						y="126"
 						width="176"
 						height="12"
 						key="textField-95"
@@ -2958,7 +2982,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
-						y="270"
+						y="112"
 						width="176"
 						height="14"
 						key="textField-96"

@@ -1,0 +1,19 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker folderid="/menucategory/rpt/cert" 
+            action="init" 
+            caption="Issue New Certification"  
+            target="window" 
+            index="5" 
+            role="CERTIFICATION_ISSUER,RECORD" 
+            icon="home/icons/certifications.png" />
+        
+        <invoker type="formActions" action="_close" caption="Close" />
+        <invoker type="formActions" action="issue" caption="Issue" />
+        
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.report.models.CertificationSelectModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.report.views.CertificationSelectPage" />
+    </pages>
+</workunit>

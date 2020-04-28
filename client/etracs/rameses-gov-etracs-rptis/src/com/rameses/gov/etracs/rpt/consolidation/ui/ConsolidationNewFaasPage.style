@@ -1,0 +1,7 @@
+"info.*" [mode != 'edit'] {
+    enabled: false;
+}
+
+"info.*" [mode == 'edit'] {
+    enabled: true;
+}

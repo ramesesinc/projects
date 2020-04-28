@@ -48,14 +48,29 @@ class RPTUtil
     public static def toDecimal(value){
         if (value instanceof BigDecimal ) 
         return value;
-        return new BigDecimal(value.toString())
+
+        def val = 0;
+        try {
+            val = new BigDecimal(value.toString());
+        } catch( e) {
+            e.printStackTrace();
+        }
+        return val;
     }
     
     public static def toInteger(value){
-        if (value instanceof Integer)
-        return value;
-        def bd = new BigDecimal(value.toString())
-        return bd.intValue();
+        if (value instanceof Integer) {
+            return value;
+        }
+
+        def val = 0;
+        try {
+            def bd = new BigDecimal(value.toString());
+            val = bd.intValue();
+        } catch (e) {
+            e.printStackTrace();
+        }
+        return val;
     }
     
      
@@ -96,11 +111,6 @@ class RPTUtil
 
         def sectionlen = getSectionLength(varSvc?.get('pin_section_length'), entity.pintype)
         def parcellen = getParcelLength(varSvc?.get('pin_parcel_length'), entity.pintype)
-        
-        if (entity.pintype == 'old'){
-            sectionlen = 2;
-            parcellen = 3;
-        }
         
         if( entity.isection > 0 ) {
             ssection = entity.isection.toString();

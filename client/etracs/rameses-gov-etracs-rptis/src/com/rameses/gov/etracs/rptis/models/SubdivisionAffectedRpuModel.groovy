@@ -27,10 +27,29 @@ class SubdivisionAffectedRpuModel
     def lands;
     def affectedrpus;
     def mode;
+    def landpin;
+    def rputype;
+    def rputypes = ['bldg', 'mach', 'plantree', 'misc'];
     
     
     def MODE_READ = 'read';
     def MODE_EDIT = 'edit';
+
+    @PropertyChangeListener
+    def listener = [
+        'landpin|rputype' : {
+            if (landpin || rputype) {
+                def params = [:]
+                params.subdivisionid = entity.objid;
+                params.realpropertyid  = landpin?.newrpid;
+                params.rputype = rputype;
+                affectedrpus = svc.getAffectedRpusByLand(params);
+            } else {
+                affectedrpus = svc.getAffectedRpus(entity.objid);
+            }
+            listHandler?.load();
+        }
+    ]
     
     void init(){
         lands = svc.getSubdividedLands(entity.objid);
@@ -38,7 +57,7 @@ class SubdivisionAffectedRpuModel
         listHandler?.load();
         mode = MODE_READ;
     }
-    
+
     def getOpener(){
         if (selectedItem && selectedItem.newfaasid) {
             return InvokerUtil.lookupOpener('faasdata:open',[
@@ -87,10 +106,10 @@ class SubdivisionAffectedRpuModel
                 
         validate : { li -> 
             def arpu = li.item;
-            RPTUtil.required('New PIN', arpu.newpin);
-            RPTUtil.required('New Suffix', arpu.newsuffix)
-            validateNewPin(arpu)
-            arpu.putAll(svc.saveAffectedRpuAndFaas(arpu));
+            if (arpu.newpin && arpu.newsuffix) {
+                validateNewPin(arpu)
+                arpu.putAll(svc.saveAffectedRpuAndFaas(arpu));    
+            }
         }
         
     ] as EditorListModel 

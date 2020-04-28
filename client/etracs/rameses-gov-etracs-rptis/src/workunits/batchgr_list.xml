@@ -1,7 +1,10 @@
-<workunit schemaName="batchgr" 
+<workunit schemaName="vw_batchgr" 
+          entitySchemaName="batchgr"
           windowTitle="Batch Revisions"
+          allowCreate="false" 
           allowDelete="false" 
-          cols="state,ry,lgu.name,barangay.name,section,rputype,classification.name" 
+          cols="state,txnno,ry,lgu.name,barangay.name,section,rputype,classification.name" 
+          hiddenCols="taskid,taskstate,assignee.objid"
           orderBy="ry,lgu.name,barangay.name,section,rputype,classification.name" >
     <invokers>
         <invoker folderid="/menucategory/rpt/mgmt" 
@@ -10,8 +13,14 @@
                  role="SHARED" 
                  permission="batchgr.viewlist" 
                 icon="home/icons/batchgrs.png" />
+
+        <invoker type="quick_launcher" code="BGR00"
+                 action="init" caption="View Batch Revisions"  
+                 index="1000" 
+                 role="SHARED" 
+                 permission="batchgr.viewlist" />
     </invokers>
-    <code class="com.rameses.seti2.models.CrudListModel"/>
+    <code class="com.rameses.gov.etracs.rptis.models.BatchGRListModel"/>
     <pages>
         <page template="com.rameses.seti2.views.CrudListPage"/>
     </pages>

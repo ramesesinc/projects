@@ -58,6 +58,9 @@ class RPTReceiptService
 	@DataContext('faas_restriction')
 	def em_faas_restriction
 
+	@DataContext('cashreceipt_rpt_share_forposting')
+	def em_cashreceipt_forposting
+
 	@ProxyMethod
 	public def create(receipt) {
 		validateTotals(receipt)
@@ -395,10 +398,20 @@ class RPTReceiptService
 		receipt.ledgers.each{ledger ->
 			def ledgerpmt = createLedgerPayment(receipt, ledger)
 			postPaidItems(ledgerpmt, ledger.postingitems)
-			postShares(ledgerpmt, ledger)
 			updateLedgerPaidYearQtr(ledger)
 			unrestrictProperty(receipt, ledger)
+			createForPostingShareEntry(receipt, ledger)
 		}
+	}
+
+	void createForPostingShareEntry(receipt, ledger) {
+		em_cashreceipt_forposting.create([
+			objid: 'FP' + new java.rmi.server.UID(),
+			receiptid: receipt.objid, 
+			rptledgerid: ledger.objid, 
+			txndate: receipt.txndate,
+			error: 0
+		])
 	}
 
 	void updateLedgerPaidYearQtr(ledger){
@@ -451,26 +464,6 @@ class RPTReceiptService
 		em_rptledger.closePaidAvDifference(ledgerpmt)
 	}
 
-	void postShares(ledgerpmt, ledger){
-		ledger.shares.each{
-			it.parentid = ledgerpmt.objid 
-			it.item = it.payableitem
-			em_rptpayment_share.create(it)
-		}
-		ledger.billitems.each{
-			def share = [:]
-			share.parentid = ledgerpmt.objid 
-			share.revtype = it.revtype
-			share.revperiod = it.revperiod
-			share.sharetype = it.sharetype 
-			share.item = [objid:it.item.objid]
-			share.amount = it.amount - it.share 
-			share.discount = it.discount - it.sharedisc 
-			em_rptpayment_share.create(share)
-		}
-	}
-
-
 	/*=================================================================================
 	// Apply partial proportionally between amtdue, interest and discount.
 	// If multiple items with same priority,
@@ -493,7 +486,8 @@ class RPTReceiptService
 	// partial sef   : 40 * 100/128 = 31.25
 	// partial int   : 40 - 31.25   =  8.75
 	=================================================================================*/
-	void distributePartial(partialamt, items){
+	@ProxyMethod
+	public void distributePartial(partialamt, items){
 		if (items.size() == 1){
 			distributePartialProportionally(partialamt, items.first())
 		} 

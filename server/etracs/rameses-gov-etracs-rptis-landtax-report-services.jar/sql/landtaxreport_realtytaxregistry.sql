@@ -45,6 +45,7 @@ from rptpayment rp
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
 where rp.refid = $P{objid}
     and cv.objid is null    
+    and rp.voided = 0
 group by 
     rp.receiptno,
     rp.receiptdate,
@@ -63,3 +64,92 @@ group by
     rp.postedby,
     rp.paidby_name
     
+
+[findRptar]    
+select 
+    rl.fullpin,
+    b.name as barangay,
+    case when c.objid is not null then c.name else m.name end as lgu,
+    p.name as province,
+    rp.street
+from rptledger rl 
+left join faas f on rl.faasid = f.objid 
+left join realproperty rp on f.realpropertyid = rp.objid 
+inner join barangay b on rl.barangayid = b.objid 
+left join municipality m on b.parentid = m.objid 
+left join province p on m.parentid = p.objid 
+left join district d on b.parentid = d.objid 
+left join city c on d.parentid = c.objid 
+where rl.objid = $P{objid}
+
+
+[getOwnerships]
+select distinct 
+    f.owner_name,
+    f.owner_address,
+    f.dtapproved
+from rptledger rl 
+inner join rptledgerfaas rlf on rl.objid = rlf.rptledgerid 
+inner join faas f on rlf.faasid = f.objid 
+where rl.objid = $P{objid}
+order by f.dtapproved 
+
+
+[getPayments]
+select 
+    x.tdno, 
+    x.assessedvalue,
+    x.taxyear,
+    x.receiptno,
+    x.receiptdate,
+    x.paidby_name,
+    sum(x.basic) as basic,
+    sum(x.basicint) as basicint,
+    sum(x.basicdisc) as basicdisc,
+    sum(x.sef) as sef,
+    sum(x.sefint) as sefint,
+    sum(x.sefdisc) as sefdisc,
+    sum(x.firecode) as firecode,
+    sum(x.basicidle) as basicidle,
+    sum(x.basicidleint) as basicidleint,
+    sum(x.basicidledisc) as basicidledisc,
+    sum(x.sh) as sh,
+    sum(x.shint) as shint,
+    sum(x.shdisc) as shdisc
+from ( 
+    select 
+        rlf.tdno,
+        rlf.assessedvalue,
+        rpi.year as taxyear,
+        rp.receiptno,
+        rp.receiptdate,
+        rp.paidby_name,
+        rpi.basic,
+        rpi.basicint,
+        rpi.basicdisc,
+        rpi.sef, 
+        rpi.sefint,
+        rpi.sefdisc,
+        rpi.basicidle,
+        rpi.basicidleint,
+        rpi.basicidledisc,
+        rpi.firecode,
+        rpi.sh,
+        rpi.shint,
+        rpi.shdisc
+    from rptledger rl 
+    inner join rptpayment rp on rl.objid = rp.refid 
+    inner join vw_rptpayment_item rpi on rp.objid = rpi.parentid
+    inner join rptledgerfaas rlf on rpi.rptledgerfaasid = rlf.objid 
+    where rl.objid = $P{objid} 
+    and rp.voided = 0
+) x 
+group by 
+    x.tdno, 
+    x.assessedvalue,
+    x.taxyear,
+    x.receiptno,
+    x.receiptdate,
+    x.paidby_name
+order by x.taxyear 
+

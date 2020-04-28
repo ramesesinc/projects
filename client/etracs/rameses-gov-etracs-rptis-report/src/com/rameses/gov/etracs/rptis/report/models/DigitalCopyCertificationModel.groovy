@@ -61,15 +61,15 @@ public class DigitalCopyCertificationModel extends com.rameses.gov.etracs.rpt.re
         }
 
         def folderName = opener.handle.getFolderName();
-        entity.properties = [];
+        entity.properties = [faases:[]];
         selectedItems.each {
-            entity.properties <<  [filename: it.filepath];
+            entity.properties.faases <<  [filename: it.filepath];
         }
     }
 
     def getReportData(){
         def list = [];
-        entity.properties.each {
+        entity.properties.faases.each {
             it.putAll(entity);
             list << it;
         }

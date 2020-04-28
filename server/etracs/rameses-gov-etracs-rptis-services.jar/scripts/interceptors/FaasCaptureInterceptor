@@ -19,7 +19,7 @@ class FAASCaptureInterceptor
 	}
 
 	
-	@Before(pattern="FAASService.updateFaas", eval="#{args[0].datacapture==1 || args[0].datacapture==true}") 
+	@Before(pattern="FAASService.updateFaas", eval="#{!args[0]._approvetransmittal_ && (args[0].datacapture==1 || args[0].datacapture==true)}") 
 	public void validateDataCapture( evt ) {
 		def faas = evt.args[0]
 		util.required('Property Owner', faas.taxpayer)
@@ -41,7 +41,7 @@ class FAASCaptureInterceptor
 	}
 
 
-	@After(pattern="FAASService.(createFaas|updateFaas)", eval="#{result.datacapture==1 || result.datacapture==true}") 
+	@After(pattern="FAASService.(createFaas|updateFaas)", eval="#{!result._approvetransmittal_ && (result.datacapture==1 || result.datacapture==true)}") 
 	public void doDeleteDefaultTasks( evt ) {
 		def faas = evt.result 
 		em_faas_task.find([refid:faas.objid]).delete()

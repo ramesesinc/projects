@@ -32,7 +32,7 @@ class RPTLedgerRuleInterceptor
             return
         }
 
-        if (items.first().taxdifference) {
+        if (!items || items.first().taxdifference) {
             return 
         }
 

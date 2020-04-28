@@ -113,7 +113,22 @@ FROM subdivisionaffectedrpu sar
 WHERE sar.subdivisionid = $P{subdivisionid}	
 ORDER BY sar.prevpin
 
-
+[getAffectedRpusByLand]
+SELECT 
+	sar.*, 
+	f.owner_name, 
+	f.owner_address,
+	f.state AS prevstate,
+	f.owner_name,
+	f.owner_address,
+	f.lguid 
+FROM subdivisionaffectedrpu sar 
+	inner join faas_list nf on sar.newfaasid = nf.objid 
+	left join faas_list f on sar.prevfaasid = f.objid 
+WHERE sar.subdivisionid = $P{subdivisionid}	
+AND nf.realpropertyid LIKE $P{realpropertyid} 
+AND nf.rputype LIKE $P{rputype}
+ORDER BY sar.prevpin
 
 [getAffectedRpusForCreate]
 select distinct 
@@ -560,3 +575,63 @@ FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	LEFT JOIN rptledger rl ON f.objid = rl.faasid 
 WHERE f.objid = $P{faasid}
+
+
+
+
+
+[getAssignees]
+select
+	x.objid,
+	x.taskstate,
+	x.assignee_objid,
+	x.assignee_name,
+	sum(x.parcelcount) as parcelcount,
+	sum(x.parcelcreated) as parcelcreated
+from (
+	select 
+		a.objid, 
+		a.taskstate, 
+		a.assignee_objid,
+		u.name as assignee_name,
+		i.parcelcount,
+		i.parcelcreated
+	from subdivision_assist a 
+	inner join sys_user u on a.assignee_objid = u.objid 
+	left join subdivision_assist_item i on a.objid = i.parent_objid
+	where a.parent_objid = $P{objid}
+	and a.taskstate like $P{role}
+) x 
+group by 
+	x.objid,
+	x.taskstate,
+	x.assignee_objid,
+	x.assignee_name
+order by x.assignee_name
+
+
+[getUsersByRole]
+select distinct 
+	u.objid, u.name, u.jobtitle
+from sys_user u 
+inner join sys_usergroup_member m on u.objid = m.user_objid
+inner join sys_usergroup g on m.usergroup_objid = g.objid 
+where g.role = $P{role}
+order by u.name
+
+
+[findAssistItemStatus]
+select 
+	i.*, count(*) as appraisedcount
+from subdividedland sl 
+inner join faas f on sl.newfaasid = f.objid 
+inner join realproperty rp on f.realpropertyid = rp.objid
+inner join subdivision_assist_item i on sl.subdivisionid = i.subdivision_objid
+where sl.subdivisionid = $P{subdivisionid}
+and i.parent_objid = $P{assistid}
+and rp.section = i.section 
+and rp.parcel >= i.startparcel 
+and rp.parcel <= i.endparcel
+and exists(select * from landdetail where landrpuid = f.rpuid) 
+
+

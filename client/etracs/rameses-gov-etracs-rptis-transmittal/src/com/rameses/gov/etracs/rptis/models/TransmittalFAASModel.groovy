@@ -33,6 +33,7 @@ class TransmittalFAASModel extends TransmittalModel
             },
             
             multiSelect : true,
+
         ])
     }
     
@@ -69,6 +70,10 @@ class TransmittalFAASModel extends TransmittalModel
             def exist = entity.items.find{it.refid == faas.objid}
             if (exist) throw new Exception('FAAS ' + refno + ' has already been added.');
         }
+    }
+
+    def view() {
+        return Inv.lookupOpener('faasdata:open', [entity: [objid:selectedItem.refid]]);
     }
     
 }

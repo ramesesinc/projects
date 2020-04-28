@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptledger:section" action="init" caption="Credits" index="100"/> 
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.landtax.models.RPTLedgerCreditModel">
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.RPTLedgerCreditPage" />
+    </pages>
+</workunit>

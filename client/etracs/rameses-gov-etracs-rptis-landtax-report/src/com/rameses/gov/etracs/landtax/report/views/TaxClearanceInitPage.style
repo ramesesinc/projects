@@ -35,3 +35,12 @@
     enabled:true;
 
 }
+
+"entity.txnno" [manualCertificationNo] {
+    visible:true;
+    required:true;
+}
+
+"entity.txnno" [!manualCertificationNo] {
+    visible:false;
+}

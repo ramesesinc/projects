@@ -2,6 +2,11 @@
 <workunit>
     <invokers>
         <invoker type="rptledger:section" action="init" caption="Entries" index="10"/> 
+
+        <invoker type="itemActions" 
+        	action="clearEntries" 
+        	caption="Clear Entries" 
+        	role="ADMIN" permission="rptledger.clearitems" />
     </invokers>
     
     <code class="com.rameses.gov.etracs.landtax.models.RPTLedgerEntryModel">

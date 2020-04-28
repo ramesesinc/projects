@@ -33,6 +33,7 @@ public class RPTManualApprovalPage extends javax.swing.JPanel {
         xDateField1 = new com.rameses.rcp.control.XDateField();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setPadding(new java.awt.Insets(25, 10, 10, 10));
         xTitledBorder1.setTitle("Approval Information");
         xFormPanel2.setBorder(xTitledBorder1);
         xFormPanel2.setCaptionWidth(100);

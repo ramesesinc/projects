@@ -30,10 +30,17 @@ public class RPUBldgInfoGeneralPage extends javax.swing.JPanel {
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
+        xDateField2 = new com.rameses.rcp.control.XDateField();
         xDateField5 = new com.rameses.rcp.control.XDateField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xTextField11 = new com.rameses.rcp.control.XTextField();
         xDateField9 = new com.rameses.rcp.control.XDateField();
+        xSeparator1 = new com.rameses.rcp.control.XSeparator();
+        xTextField8 = new com.rameses.rcp.control.XTextField();
+        xDateField7 = new com.rameses.rcp.control.XDateField();
+        xDateField8 = new com.rameses.rcp.control.XDateField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        xTextArea2 = new com.rameses.rcp.control.XTextArea();
         formPanel12 = new com.rameses.rcp.util.FormPanel();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xIntegerField3 = new com.rameses.rcp.control.XIntegerField();
@@ -41,13 +48,6 @@ public class RPUBldgInfoGeneralPage extends javax.swing.JPanel {
         xNumberField12 = new com.rameses.rcp.control.XNumberField();
         xNumberField13 = new com.rameses.rcp.control.XNumberField();
         xNumberField15 = new com.rameses.rcp.control.XNumberField();
-        jPanel1 = new javax.swing.JPanel();
-        formPanel5 = new com.rameses.rcp.util.FormPanel();
-        xTextField8 = new com.rameses.rcp.control.XTextField();
-        xDateField7 = new com.rameses.rcp.control.XDateField();
-        xDateField8 = new com.rameses.rcp.control.XDateField();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        xTextArea2 = new com.rameses.rcp.control.XTextArea();
         formPanel15 = new com.rameses.rcp.util.FormPanel();
         xCheckBox5 = new com.rameses.rcp.control.XCheckBox();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
@@ -55,7 +55,7 @@ public class RPUBldgInfoGeneralPage extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout());
 
-        jPanel3.setPreferredSize(new java.awt.Dimension(702, 170));
+        jPanel3.setPreferredSize(new java.awt.Dimension(702, 300));
 
         formPanel1.setCaptionWidth(125);
         formPanel1.setOpaque(true);
@@ -87,6 +87,13 @@ public class RPUBldgInfoGeneralPage extends javax.swing.JPanel {
         xIntegerField2.setRequired(true);
         formPanel1.add(xIntegerField2);
 
+        xDateField2.setCaption("Date Constructed");
+        xDateField2.setName("entity.rpu.dtconstructed"); // NOI18N
+        xDateField2.setCaptionWidth(125);
+        xDateField2.setIndex(-5);
+        xDateField2.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel1.add(xDateField2);
+
         xDateField5.setCaption("Date Completed");
         xDateField5.setCaptionWidth(125);
         xDateField5.setIndex(-6);
@@ -95,9 +102,9 @@ public class RPUBldgInfoGeneralPage extends javax.swing.JPanel {
         formPanel1.add(xDateField5);
 
         xDateField1.setCaption("Date Occupied");
+        xDateField1.setName("entity.rpu.dtoccupied"); // NOI18N
         xDateField1.setCaptionWidth(125);
         xDateField1.setIndex(-5);
-        xDateField1.setName("entity.rpu.dtoccupied"); // NOI18N
         xDateField1.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel1.add(xDateField1);
 
@@ -108,11 +115,62 @@ public class RPUBldgInfoGeneralPage extends javax.swing.JPanel {
         formPanel1.add(xTextField11);
 
         xDateField9.setCaption("Permit Issue Date");
+        xDateField9.setName("entity.rpu.permitdate"); // NOI18N
         xDateField9.setCaptionWidth(125);
         xDateField9.setIndex(-6);
-        xDateField9.setName("entity.rpu.permitdate"); // NOI18N
         xDateField9.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel1.add(xDateField9);
+
+        xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
+
+        javax.swing.GroupLayout xSeparator1Layout = new javax.swing.GroupLayout(xSeparator1);
+        xSeparator1.setLayout(xSeparator1Layout);
+        xSeparator1Layout.setHorizontalGroup(
+            xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 365, Short.MAX_VALUE)
+        );
+        xSeparator1Layout.setVerticalGroup(
+            xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
+
+        formPanel1.add(xSeparator1);
+
+        xTextField8.setCaption("Condominium Certificate of Title");
+        xTextField8.setName("entity.rpu.condocerttitle"); // NOI18N
+        xTextField8.setCaptionWidth(200);
+        xTextField8.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
+        xTextField8.setPreferredSize(new java.awt.Dimension(0, 18));
+        formPanel1.add(xTextField8);
+
+        xDateField7.setCaption("Certificate of Completion Issuance");
+        xDateField7.setName("entity.rpu.dtcertcompletion"); // NOI18N
+        xDateField7.setCaptionWidth(200);
+        xDateField7.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
+        xDateField7.setIndex(-6);
+        xDateField7.setPreferredSize(new java.awt.Dimension(0, 18));
+        formPanel1.add(xDateField7);
+
+        xDateField8.setCaption("Date of Certificate of Occupancy");
+        xDateField8.setName("entity.rpu.dtcertoccupancy"); // NOI18N
+        xDateField8.setCaptionWidth(200);
+        xDateField8.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
+        xDateField8.setIndex(-6);
+        xDateField8.setPreferredSize(new java.awt.Dimension(0, 18));
+        formPanel1.add(xDateField8);
+
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(0, 60));
+
+        xTextArea2.setCaption("Additional Information");
+        xTextArea2.setLineWrap(true);
+        xTextArea2.setName("entity.rpu.additionalinfo"); // NOI18N
+        xTextArea2.setWrapStyleWord(true);
+        xTextArea2.setCaptionWidth(125);
+        xTextArea2.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
+        xTextArea2.setPreferredSize(new java.awt.Dimension(164, 30));
+        jScrollPane2.setViewportView(xTextArea2);
+
+        formPanel1.add(jScrollPane2);
 
         formPanel12.setCaptionWidth(125);
         formPanel12.setOpaque(true);
@@ -167,63 +225,6 @@ public class RPUBldgInfoGeneralPage extends javax.swing.JPanel {
         xNumberField15.setRequired(true);
         formPanel12.add(xNumberField15);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(formPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(formPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(33, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(formPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addComponent(formPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-        );
-
-        add(jPanel3, java.awt.BorderLayout.NORTH);
-
-        formPanel5.setCaptionWidth(95);
-
-        xTextField8.setCaption("Condominium Certificate of Title");
-        xTextField8.setName("entity.rpu.condocerttitle"); // NOI18N
-        xTextField8.setCaptionWidth(200);
-        xTextField8.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
-        xTextField8.setPreferredSize(new java.awt.Dimension(0, 18));
-        formPanel5.add(xTextField8);
-
-        xDateField7.setCaption("Certificate of Completion Issuance");
-        xDateField7.setCaptionWidth(200);
-        xDateField7.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
-        xDateField7.setIndex(-6);
-        xDateField7.setName("entity.rpu.dtcertcompletion"); // NOI18N
-        xDateField7.setPreferredSize(new java.awt.Dimension(0, 18));
-        formPanel5.add(xDateField7);
-
-        xDateField8.setCaption("Date of Certificate of Occupancy");
-        xDateField8.setCaptionWidth(200);
-        xDateField8.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
-        xDateField8.setIndex(-6);
-        xDateField8.setName("entity.rpu.dtcertoccupancy"); // NOI18N
-        xDateField8.setPreferredSize(new java.awt.Dimension(0, 18));
-        formPanel5.add(xDateField8);
-
-        jScrollPane2.setPreferredSize(new java.awt.Dimension(0, 60));
-
-        xTextArea2.setLineWrap(true);
-        xTextArea2.setWrapStyleWord(true);
-        xTextArea2.setCaption("Additional Information");
-        xTextArea2.setCaptionWidth(125);
-        xTextArea2.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
-        xTextArea2.setName("entity.rpu.additionalinfo"); // NOI18N
-        xTextArea2.setPreferredSize(new java.awt.Dimension(164, 30));
-        jScrollPane2.setViewportView(xTextArea2);
-
-        formPanel5.add(jScrollPane2);
-
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setPadding(new java.awt.Insets(25, 10, 10, 0));
         xTitledBorder1.setTitle("Sworn Statement Information");
@@ -255,34 +256,38 @@ public class RPUBldgInfoGeneralPage extends javax.swing.JPanel {
         xCheckBox4.setText("Use Sworn Amount?");
         formPanel15.add(xCheckBox4);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(formPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(formPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addComponent(formPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(formPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(formPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(formPanel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(formPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(formPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(formPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(formPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 38, Short.MAX_VALUE))
         );
 
-        add(jPanel1, java.awt.BorderLayout.CENTER);
+        add(jPanel3, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.util.FormPanel formPanel1;
     private com.rameses.rcp.util.FormPanel formPanel12;
     private com.rameses.rcp.util.FormPanel formPanel15;
-    private com.rameses.rcp.util.FormPanel formPanel5;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
     private com.rameses.rcp.control.XCheckBox xCheckBox4;
@@ -291,6 +296,7 @@ public class RPUBldgInfoGeneralPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XDateField xDateField1;
+    private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDateField xDateField5;
     private com.rameses.rcp.control.XDateField xDateField7;
     private com.rameses.rcp.control.XDateField xDateField8;
@@ -302,6 +308,7 @@ public class RPUBldgInfoGeneralPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XNumberField xNumberField12;
     private com.rameses.rcp.control.XNumberField xNumberField13;
     private com.rameses.rcp.control.XNumberField xNumberField15;
+    private com.rameses.rcp.control.XSeparator xSeparator1;
     private com.rameses.rcp.control.XTextArea xTextArea2;
     private com.rameses.rcp.control.XTextField xTextField11;
     private com.rameses.rcp.control.XTextField xTextField8;

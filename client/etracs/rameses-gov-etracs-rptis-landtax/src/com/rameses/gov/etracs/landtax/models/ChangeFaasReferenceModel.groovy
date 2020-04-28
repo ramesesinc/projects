@@ -53,7 +53,7 @@ public class ChangeLedgerFaasController
         if (entity.faasid == faas.objid)
             throw new Exception('FAAS is the same with the Ledger reference.');
         if (entity.rputype != faas.rputype)
-            throw new Exception('FAAS proeprty type is invalid. Only ' + entity.rputpe + ' property type is allowed.');
+            throw new Exception('FAAS proeprty type is invalid. Only ' + entity.rputype + ' property type is allowed.');
     }
     
 }

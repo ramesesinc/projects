@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="consolidation:newconsolidatedfaas" action="init" caption="Consolidated FAAS"  />
+        
+        <invoker type="formActions" action="edit" caption="Edit" 
+            visibleWhen="#{ allowEdit &amp;&amp; mode == 'read' }"  />
+
+        <invoker type="formActions" action="create" caption="Save" 
+            visibleWhen="#{ mode == 'edit' }"  />
+   </invokers>
+   
+   <code class="com.rameses.gov.etracs.rpt.consolidation.ui.ConsolidatedNewFaasModel">
+   </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.consolidation.ui.ConsolidationNewFaasPage"/>
+    </pages>    
+</workunit>
+
+

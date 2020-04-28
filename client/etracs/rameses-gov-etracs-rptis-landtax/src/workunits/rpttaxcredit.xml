@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit schemaName="rpttaxcredit"
+    allowEdit="#{entity.state == 'DRAFT'}"
+    allowCreate="false"
+>
+    <invokers>
+        <invoker type="rpttaxcredit:create" 
+                 action="create" caption="Realty Tax Credit (New)" 
+                 role="LANDTAX,ADMIN" permission="rpttaxcredit.create"/> 
+
+         <invoker folderid="/menucategory/landtax/txn" 
+                 action="create" caption="New Realty Tax Credit" 
+                 index="35"
+                 role="LANDTAX,ADMIN" permission="rpttaxcredit.create"/> 
+
+         <invoker type="rpttaxcredit:open" 
+                 action="open" caption="Realty Tax Credit" 
+                 role="SHARED" /> 
+
+         <invoker type="formActions" 
+                action="approve" 
+                caption="Approve" 
+                visibleWhen="#{entity.state=='DRAFT' &amp;&amp; mode == 'read'}" 
+                role="ADMIN" permission="rpttaxcredit.approve"/>
+
+        <invoker type="formActions" 
+                action="apply" 
+                caption="Apply" 
+                visibleWhen="#{entity.state=='APPROVED' &amp;&amp; mode == 'read'}" 
+                role="ADMIN" permission="rpttaxcredit.post"/>
+
+        <invoker type="formActions" 
+                action="openLedger" 
+                caption="Open Ledger" 
+                visibleWhen="#{mode == 'read'}"  />
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.landtax.models.RPTTaxCreditModel">
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.RPTTaxCreditPage" />
+    </pages>
+</workunit>
+

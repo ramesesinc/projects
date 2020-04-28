@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:actions" 
+            action="init" 
+            caption="Update FAAS and Ledger Mapping"
+            target="popup"  
+            role="ADMIN" permission="faas.update_ledger_mapping"
+            actiontype="update_faas_ledger_mapping" 
+            visibleWhen="#{entity.state=='CURRENT'}" />
+
+   </invokers>
+   <code class="com.rameses.gov.etracs.rptis.models.FAASLedgerMappingModel" >
+    </code>   
+  <pages>
+    <page name="reassign" template="com.rameses.gov.etracs.rptis.views.FAASLedgerMappingPage" />
+  </pages>
+</workunit>
+
+

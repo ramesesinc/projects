@@ -1,0 +1,336 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.util.*
+import com.rameses.services.extended.*
+
+
+class RPTTaxCreditService
+{
+    @Env
+    def env
+
+    @DataContext('rpttaxcredit')
+    def em_credit
+
+    @DataContext('rptledger')
+    def em_rptledger
+
+    @DataContext('rptledger_item')
+    def em_rptledger_item
+
+    @DataContext('rptpayment')
+    def em_rptpayment
+
+    @DataContext('rptpayment_item')
+    def em_rptpayment_item
+
+    @Service('DateService')
+    def dtSvc
+
+    @Service('NumberService')
+    def numSvc
+
+    @Service('RPTBillingService')
+    def billingSvc
+
+    @Service('RPTReceiptService')
+    def receiptSvc
+
+    @Service('SequenceService')
+    def seqSvc
+
+
+    def STATE_DRAFT = 'DRAFT'
+    def STATE_APPROVED = 'APPROVED'
+    def STATE_CLOSED = 'CLOSED'
+
+
+    def OVER_PAYMENT = 'OVER_PAYMENT'
+    def DOUBLE_PAYMENT = 'DOUBLE_PAYMENT'
+    def WRONG_LEDGER = 'WRONG_LEDGER'
+
+    def TYPE_CASHRECEIPT = 'cashreceipt'
+    def TYPE_CREDIT_ADVISE = 'credit_advise'
+
+    @ProxyMethod
+    public def getCreditTypes() {
+        return [
+            OVER_PAYMENT, 
+            DOUBLE_PAYMENT, 
+            WRONG_LEDGER
+        ]
+    }
+
+    @ProxyMethod
+    public def getReferenceTypes(type) {
+        def types = [
+            TYPE_CASHRECEIPT, 
+            TYPE_CREDIT_ADVISE
+        ]
+
+        if (WRONG_LEDGER.equalsIgnoreCase(type)) {
+            types.remove(TYPE_CREDIT_ADVISE)
+        }
+        return types
+    }
+
+    @ProxyMethod
+    public def beforeCreate(credit) {
+        credit.txnno = getNextSeries()
+        credit.txndate = dtSvc.serverDate
+        credit.amtapplied = 0
+        validateCreate(credit)
+    }
+
+    @ProxyMethod
+    public def approve(credit) {
+        def old = em_credit.read(credit)
+        if (!old) 
+            throw new Exception('Record does not exist or has already been deleted.')
+        if (STATE_APPROVED.equalsIgnoreCase(old.state)) 
+            throw new Exception('Record has already been approved.')
+        if (STATE_CLOSED.equalsIgnoreCase(old.state)) 
+            throw new Exception('Record has already been closed.')
+
+        def approvedby = [:]
+        approvedby.objid = env.USERID
+        approvedby.name = env.NAME
+        approvedby.title = env.JOBTITLE
+
+        credit.state = STATE_APPROVED
+        credit.approvedby = approvedby
+        em_credit.update(credit)
+        return credit
+    }
+
+    @ProxyMethod
+    public def apply(credit) {
+        def old = em_credit.read(credit)
+        if (!old) {
+            throw new Exception('Record does not exist or has already been deleted.')
+        }
+        if (STATE_DRAFT.equalsIgnoreCase(old.state)) {
+            throw new Exception('Record has not yet been approved.')
+        }
+        if (STATE_CLOSED.equalsIgnoreCase(old.state)) {
+            throw new Exception('Record has already been closed.')
+        }
+        if (old.balance == 0) {
+            if (STATE_APPROVED.equalsIgnoreCase(old.state)) {
+                old.state = STATE_CLOSED
+                em_credit.update(old)
+            }
+            throw new Exception('Credit has already been fully applied.')
+        }
+
+        generateBilling(credit)
+            
+        switch (credit.type) {
+            case 'WRONG_LEDGER':
+                postWrongLedgerPayment(credit)
+                break
+            case 'OVER_PAYMENT' : 
+            case 'DOUBLE_PAYMENT' : 
+                postOverPayment(credit)
+                break
+        }
+
+        if (credit.amtapplied >= credit.amount) {
+            credit.state = STATE_CLOSED
+            credit.amtapplied = credit.amount
+        }
+        em_credit.update(credit)
+        return credit
+    }
+
+    @ProxyMethod
+    public def getCredits(ledger) {
+        def param = [objid: ledger.objid, state: STATE_DRAFT]
+        return em_credit.where('rptledger_objid = :objid AND state <> :state', param)
+                        .orderBy('txnno desc')
+                        .list()
+    }
+
+    @ProxyMethod
+    public void buildMessageList(ledger) {
+        def credits = getCredits(ledger)
+        if (credits.find{ it.balance > 0}) {
+            ledger._messagelist << 'Ledger has open credit.'
+        }
+    }
+
+
+    def getNextSeries() {
+        def lguid = env.ORGID.replaceAll('-','')
+        def key = 'RPT-CREDIT-' + lguid
+        return 'TC' + lguid + seqSvc.getNextFormattedSeries(key)
+    }
+
+    void validateCreate(credit) {
+        if (credit.amount <= 0) {
+            throw new Exception('Amount should be greater than zero.')
+        }
+
+        if (!credit.refdate) return
+        credit.refdate = dtSvc.parse('yyyy-MM-dd', credit.refdate)
+        if (credit.refdate > dtSvc.serverDate) {
+            throw new Exception('Reference date must not be greater then current date.')
+        }
+
+        if (!WRONG_LEDGER.equalsIgnoreCase(credit.type)) {
+            credit.refid = null
+        }
+    }    
+
+    void postWrongLedgerPayment(credit) {
+        revertSourceLedgerPayment(credit)
+        applyTargetLedgerCredit(credit)
+    }
+
+    void revertSourceLedgerPayment(credit) {
+        def pmt = em_rptpayment.find([receiptid: credit.refid, refid: credit.srcledger.objid]).first()
+        if (!pmt) {
+            throw new Exception('Unable to apply credit.\nThe payment record does not exist or has been delete.')
+        }
+
+        // revert last year/qtr paid
+        def info = [:]
+        info.lastyearpaid = (pmt.fromqtr == 1 ? pmt.fromyear - 1 : pmt.fromyear)
+        info.lastqtrpaid = (pmt.fromqtr == 1 ? 4 : pmt.fromqtr - 1)
+        em_rptledger.find([objid: credit.srcledger.objid])
+                    .update(info)
+
+        // clear ledger item 
+        em_rptledger_item.find([parentid: credit.srcledger.objid]).delete()
+
+        //set void status
+        pmt.voided = true
+        em_rptpayment.update(pmt)
+    }
+
+    void applyTargetLedgerCredit(credit) {
+        postOverPayment(credit)
+    }
+
+    void postOverPayment(credit) {
+        distributeCredit(credit)
+        postRptPayment(credit)
+    }
+
+    void distributeCredit(credit) {
+        def credititems = []
+        def partialamt = credit.balance
+
+        def postingitems = credit.remove('postingitems')
+        if (!postingitems) {
+            throw new Exception('Credit posting items must be specified.')
+        }
+        
+        def priorities = postingitems.priority.unique().sort()
+        def yrs = postingitems.year.unique().sort();
+
+        def toqtr = 4
+        for (int idx = 0; idx < yrs.size(); idx++){
+            if (partialamt <= 0) break;
+
+            def yritems = postingitems.findAll{it.year == yrs[idx]}
+            def qtrs = yritems.qtr.unique().sort();
+
+            for (int q = 0; q < qtrs.size(); q++){
+                if (partialamt <= 0) break;
+
+                def qtritems = yritems.findAll{ it.qtr == qtrs[q]}
+                for (int i = 0; i < priorities.size(); i++){
+                    if (partialamt <= 0) break;
+
+                    def items = qtritems.findAll{it.priority == priorities[i]}
+                    def itemtotal = numSvc.round(items.total.sum())
+                    if (partialamt >= itemtotal){
+                        partialamt -= itemtotal 
+                        credititems += items 
+                        continue
+                    }
+                    else if (partialamt > 0){
+                        def partialledqtr = items.first().qtr 
+                        toqtr = partialledqtr
+                        receiptSvc.distributePartial(partialamt, items)
+                        credititems += items 
+                        partialamt = 0
+                        break;
+                    }
+                }
+            }
+        }
+        credit._amtcredited = (credit.balance - partialamt)
+        credit.amtapplied += credit._amtcredited
+        credit.items = credititems
+    }
+
+    void generateBilling(credit) {
+        credit.rptledger = em_rptledger.find([objid: credit.rptledger.objid]).first()
+        def bill = billingSvc.generateBillByLedger(credit.rptledger)
+        credit.postingitems = bill.ledgers[0].postingitems
+    }
+
+    void postRptPayment(credit) {
+        def pmt = [objid: 'RP' + new java.rmi.server.UID()]
+        pmt.type = 'credit'
+        pmt.refid = credit.rptledger.objid
+        pmt.reftype = 'rptledger'
+        pmt.receiptid = credit.objid
+        pmt.receiptno = credit.txnno
+        pmt.receiptdate = dtSvc.serverDate
+        pmt.paidby = [:]
+        pmt.paidby.name = credit.rptledger.taxpayer.name
+        pmt.paidby.address = credit.rptledger.taxpayer.address.text
+        pmt.postedby = env.FULLNAME
+        pmt.postedbytitle = env.JOBTITLE
+        pmt.dtposted = dtSvc.serverDate
+        pmt.amount = credit.items.total.sum()
+        pmt.voided = false
+        pmt.fromyear = credit.items.first().year
+        pmt.fromqtr = credit.items.first().qtr
+        pmt.toyear = credit.items.last().year
+        pmt.toqtr = credit.items.last().qtr
+        em_rptpayment.create(pmt)
+
+        credit.items.each{
+            it.parentid = pmt.objid 
+            it.partialled = it.partialled ? it.partialled : false
+            em_rptpayment_item.create(it)
+            def item = em_rptledger_item.find([objid: it.itemid]).first()
+            if (!item) throw new Exception('Credited ledger item does not exist or has been deleted.')
+            item.amtpaid += it.amount
+            em_rptledger_item.update(item)
+        }
+
+        em_rptledger_item.where('parentid = :objid and amount <= amtpaid', credit.rptledger).delete()
+
+        def fullypaiditems = credit.items.findAll{ !it.partialled }
+        if (fullypaiditems) {
+            def lastitem = fullypaiditems.last()
+            em_rptledger.find([objid: credit.rptledger.objid])
+                        .update([lastyearpaid: lastitem.year, lastqtrpaid: lastitem.qtr])
+        }
+    }
+
+    def calcLastQtrPaid(item) {
+        def qtrlyamt = numSvc.round(item.amount / 4)
+        def runningamt = qtrlyamt;
+        def qtrpmt = [qtr: 1, partialled: false]
+
+        for (int qtr = 1; qtr <= 4; qtr++) {
+            qtrpmt.qtr = qtr
+            if (item.amtpaid < runningamt) {
+                qtrpmt.partialled = true
+                break
+            } else if (item.amtpaid == runningamt) {
+                qtrpmt.partialled = false
+                break
+            }
+            runningamt = numSvc.round(runningamt + qtrlyamt)
+        }
+        return qtrpmt 
+    }
+}
+

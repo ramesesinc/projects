@@ -71,10 +71,10 @@
 		<variableExpression><![CDATA[$F{appno}]]></variableExpression>
 	</variable>
 	<variable name="TOTAL_CAPITAL" class="java.lang.Number" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[($F{declaredcapital}? $F{declaredcapital} : 0.0)]]></variableExpression>
+		<variableExpression><![CDATA[($F{capital}? $F{capital} : 0.0)]]></variableExpression>
 	</variable>
 	<variable name="TOTAL_GROSS" class="java.lang.Number" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[($F{declaredgross}? $F{declaredgross} : 0.0)]]></variableExpression>
+		<variableExpression><![CDATA[($F{gross}? $F{gross} : 0.0)]]></variableExpression>
 	</variable>
 	<variable name="TOTALCOUNTPERLOB" class="java.lang.Integer" resetType="Report" calculation="Count">
 		<variableExpression><![CDATA[$F{businessid}]]></variableExpression>
@@ -87,10 +87,10 @@
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 	<variable name="CAPITAL" class="java.lang.Number" resetType="None" calculation="Nothing">
-		<variableExpression><![CDATA[$F{declaredcapital}]]></variableExpression>
+		<variableExpression><![CDATA[$F{capital}]]></variableExpression>
 	</variable>
 	<variable name="GROSS" class="java.lang.Number" resetType="None" calculation="Nothing">
-		<variableExpression><![CDATA[$F{declaredgross}]]></variableExpression>
+		<variableExpression><![CDATA[$F{gross}]]></variableExpression>
 	</variable>
 
 		<group  name="groupa" >
@@ -156,7 +156,7 @@
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
-					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[($P{PARENTLGUFORMALNAME}? $P{PARENTLGUFORMALNAME}: $P{LGUFORMALNAME})]]></textFieldExpression>
@@ -176,7 +176,7 @@
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
-					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[($P{PARENTLGUFORMALNAME}? $P{LGUFORMALNAME}: "")]]></textFieldExpression>

@@ -1,87 +1,9 @@
 <workunit extends="wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/bpls" action="init" role="REPORT" 
-            caption="Quarterly Paid Business Listing" target="window" />
-        
+        <invoker folderid="/explorer/report/bpls" 
+                 caption="Quarterly Paid Business Listing" action="init" 
+                 role="REPORT" target="window" />
     </invokers>
     
-    <code>
-    <![CDATA[
-import com.rameses.rcp.common.*;
-import com.rameses.rcp.annotations.*;
-import com.rameses.osiris2.common.*;
-import com.rameses.osiris2.client.*;
-import com.rameses.osiris2.reports.*;
-
-public class QuarterlyPaidBusinessListingReportController extends ReportController {
-
-    @Service('BPQuarterlypPaidReportService')
-    def svc;
-
-    @Service('BusinessPermitTypeService')
-    def permitTypeSvc;    
-    
-    @Script('ReportPeriod') 
-    def periodUtil; 
-    
-    String title = "Quarterly Paid Business Listing";
-    String reportpath = 'com/rameses/gov/etracs/bpls/reports/';
-    String reportName = reportpath + 'QtrlyPaidBusinessListing.jasper'; 
-    
-    def formControl = [
-        getControlList: { 
-            return [
-                [type:'combo', caption:'Permit Type', name:'entity.permittype', required:true, preferredSize:'0,20', captionWidth:100, items:'permitTypes',  expression:'#{item.title}'],
-                [type:'combo', caption:'Period', name:'entity.period', required:true, items:'periodTypes',  expression:'#{item.title}', preferredSize:'100,20', captionWidth:100],
-                [type:'integer', caption:'Year', name:'entity.year', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type.matches("yearly|quarterly|monthly")==true }', preferredSize:'100,20', captionWidth:100 ], 
-                [type:'label', caption:''], 
-                [type:'checkbox', caption:'', name:'entity.showtaxonly', text:'Show Tax Only', preferredSize:'0,20', captionWidth:100 ] 
-            ]; 
-        } 
-    ] as FormPanelModel; 
-
-
-    def permitTypes; 
-    def periodTypes;
-    def params = [:];  
-    
-    def initReport() {
-        def outcome = super.initReport(); 
-        permitTypes = permitTypeSvc.getList(); 
-        entity.permittype = (permitTypes? permitTypes[0] : null); 
-        entity.period = periodUtil.types[0]; 
-        entity.year = new java.sql.Date( System.currentTimeMillis() ).toString().split("-")[0]; 
-        
-        periodTypes = periodUtil.types.findAll{( it.type.toString() == 'yearly' )}
-        return outcome; 
-    } 
-    
-    def getReportData() { 
-        def m = periodUtil.build( entity.period.type, entity ); 
-        entity.startdate = m.startdate;
-        entity.enddate = m.enddate; 
-        return svc.getReport( entity ); 
-    } 
-
-    Map getParameters() { 
-        def periodtitle = null; 
-        if ( entity.period.type == 'yearly' ) {
-            periodtitle = periodUtil.getPeriodTitle([ year: entity.year ]);
-        } else if ( entity.period.type == 'quarterly' ) { 
-            periodtitle = periodUtil.getPeriodTitle([ year: entity.year, qtr: entity.qtr ]);
-        } else if ( entity.period.type == 'monthly' ) {
-            periodtitle = periodUtil.getPeriodTitle([ year: entity.year, month: entity.month.index ]);
-        } else if ( entity.period.type == 'daily' ) {
-            periodtitle = periodUtil.getPeriodTitle([ date: entity.date ]);
-        } else if ( entity.period.type == 'range' ) {
-            periodtitle = periodUtil.getPeriodTitle([ startdate: entity.startdate, enddate: entity.enddate ]);
-        } 
-
-        params.PERIOD = periodtitle; 
-        params.SHOW_TAX_ONLY = entity.showtaxonly.toString().matches('true|1'); 
-        return params; 
-    } 
-} 
-    ]]>
-    </code>
+    <code class="com.rameses.gov.etracs.bpls.reports.models.BPQtrPaidBusinessListingReportModel"/>
 </workunit>

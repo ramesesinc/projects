@@ -1,10 +1,14 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="lob_report_category_mapping" 
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="lob_report_category_mapping" 
           allowOpen="false" allowCreate="false">
     <invokers>
-        <invoker folderid="explorer/report/bpls" caption="Lob Report Category Mapping" action="init"/>   
-        <invoker folderid="explorer/txn/bpls" caption="Lob Report Category Mapping" action="init"/>         
+        <invoker xfolderid="explorer/master/bpls" 
+                 caption="Lob Report Category Mapping" action="init" 
+                 role="MASTER" />
     </invokers>
+
     <code class="com.rameses.gov.etracs.bpls.reports.models.ReportCategoryModel" />
+    
     <pages>
         <page template="com.rameses.gov.etracs.bpls.reports.views.ReportCategoryMappingListPage" />
     </pages>

@@ -58,10 +58,10 @@
 		<variableExpression><![CDATA[($F{tradename}? 1: 0)]]></variableExpression>
 	</variable>
 	<variable name="CAPITAL" class="java.lang.Number" resetType="None" calculation="Nothing">
-		<variableExpression><![CDATA[$F{declaredcapital}]]></variableExpression>
+		<variableExpression><![CDATA[$F{capital}]]></variableExpression>
 	</variable>
 	<variable name="GROSS" class="java.lang.Number" resetType="None" calculation="Nothing">
-		<variableExpression><![CDATA[$F{declaredgross}]]></variableExpression>
+		<variableExpression><![CDATA[$F{gross}]]></variableExpression>
 	</variable>
 
 		<group  name="data1" >
@@ -422,7 +422,7 @@
 				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Center" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
-						x="279"
+						x="242"
 						y="0"
 						width="55"
 						height="50"
@@ -880,7 +880,7 @@
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="599"
+						x="630"
 						y="77"
 						width="192"
 						height="13"
@@ -900,7 +900,7 @@
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="599"
+						x="630"
 						y="90"
 						width="192"
 						height="13"
@@ -920,7 +920,7 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="599"
+						x="630"
 						y="51"
 						width="192"
 						height="12"

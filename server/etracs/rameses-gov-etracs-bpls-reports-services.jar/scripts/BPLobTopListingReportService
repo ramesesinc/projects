@@ -9,21 +9,40 @@ class BPLobTopListingReportService
 
 	@ProxyMethod
 	public def getReport( params ) { 
-		params.filter = '';
-		if ( params.txntype ) {
-			params.filter = ''' AND ba.apptype=$P{txntype} '''; 
-		} else { 
-			params.filter = " AND ba.apptype IN ('NEW','RENEW') "; 
+		if ( !params.topsize ) throw new Exception("topsize parameter is required"); 
+		if ( !params.year ) throw new Exception("year parameter is required"); 
+		if ( !params.permittype ) throw new Exception("permittype parameter is required"); 
+
+		if ( params.apptypes ) {
+			params.apptypefilter = params.apptypes.findAll{( it?.objid )}.collect{"'"+ it.objid +"'"}.join(','); 
+		} else {
+			throw new Exception("Please specify at least 1 application type"); 
 		} 
+
+		if ( params.appstates ) {
+			params.appstatefilter = params.appstates.findAll{( it?.objid )}.collect{"'"+ it.objid +"'"}.join(','); 
+		} else {
+			throw new Exception("Please specify at least 1 application status"); 
+		} 
+
+		params.permittypeid = params.permittype.objid; 
 
 		if ( params.classification?.objid ) { 
 			params.classificationid = params.classification.objid; 
-			params.filter += ''' AND lob.classification_objid=$P{classificationid} '''; 	
-		} 		
-		if ( params.permittype?.objid ) { 
-			params.permittypeid = params.permittype.objid; 
-			params.filter += ''' AND b.permittype=$P{permittypeid} '''; 	
-		} 
+		} else {
+			params.classificationid = '%'; 
+		}
+
+		def filters = []; 
+		if ( params.withpayment.toString().matches('true|1') ) {
+			filters << " paymentcount > 0 "; 
+		}
+
+		if ( filters ) { 
+			params.filter = " AND "+ filters.join(" AND "); 
+		} else {
+			params.filter = ""; 
+		}
 
 		def list = em.getBusinessTopList( params );
 		if ( !list ) throw new Exception('No records found.'); 
@@ -34,7 +53,7 @@ class BPLobTopListingReportService
 
 		return [ 
 			title : buildTitle( params ), 
-			items : list 
+			reportdata : list 
 		]; 
 	} 
 

@@ -27,14 +27,12 @@ class BPMasterListReportService {
 		params.enddate = resolveDate( dateSvc.add( enddate, '1d' )); 
 		params.permittypeid = params.permittype.objid;  
 
-		params.apptypefilter = '';
 		if ( params.apptypes ) { 
 			params.apptypefilter = params.apptypes.findAll{( it?.objid )}.collect{"'"+ it.objid +"'"}.join(','); 
 		} else { 
 			params.apptypefilter = "''";	
 		}
 
-		params.appstatefilter = ''; 
 		if ( params.appstates ) { 
 			params.appstatefilter = params.appstates.findAll{( it?.objid )}.collect{"'"+ it.objid +"'"}.join(','); 
 		} else { 
@@ -57,7 +55,7 @@ class BPMasterListReportService {
 				it.owner.address = it.owner.address.toString().replaceAll("\\s"," ").trim(); 
 			}
 		} 
-		return list; 
+		return [reportdata: list]; 
 	} 
 
 	private def round( decformat, value ) {

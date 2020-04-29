@@ -29,7 +29,9 @@ class BPQuarterlypPaidReportService {
 
 		if ( params.showtaxonly.toString().matches('true|1')) {
 			params.taxfeetypefilter = " AND br.taxfeetype = 'TAX' "; 
-		}
+		} else { 
+			params.taxfeetypefilter = ''; 
+		} 
 
 		def list = em.getQtrlyPaidBusinessList( params );
 		if ( !list ) throw new Exception('No record(s) found that matches your criteria.');

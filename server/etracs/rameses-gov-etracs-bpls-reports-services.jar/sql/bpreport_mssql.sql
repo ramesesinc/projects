@@ -285,7 +285,7 @@ from (
 			inner join business_receivable br on br.applicationid = ba.objid 
 		where p.refdate >= $P{startdate} 
 			and p.refdate <  $P{enddate} 
-			and p.voided = 0 ${filter} 
+			and p.voided = 0 ${filter} ${taxfeetypefilter} 
 		group by b.objid, ba.objid 
 	)tt1  
 		inner join business_receivable br on br.applicationid = tt1.applicationid 

@@ -1,0 +1,38 @@
+import com.rameses.annotations.*;
+
+class BPReportDTICompetitivenessIndexService {
+
+	@ActiveDB('bpreport_dti_competitiveness_index')
+	def report_db; 
+
+	@Service 
+	def self;
+
+    @Async
+	@ProxyMethod
+	public def getReport( param ) { 	
+		if ( !param.permittype?.objid ) 
+			throw new Exception('permit type parameter is required'); 
+		if ( !param.year ) 
+			throw new Exception('year parameter is required'); 
+
+		param.templateid = param.template?.objid;
+		param.permittypeid = param.permittype.objid; 
+
+		def result = [info: [:]];
+		result.reportdata = self.getReportData( param ); 
+		if ( !result.reportdata ) { 
+			result.reportdata = report_db.getList( param ); 
+		} 
+
+		if ( !result.reportdata ) throw new Exception('No record(s) found that matches your criteria.'); 
+
+		result.info.YEAR = param.year;
+		return result; 
+	} 
+
+	@ProxyMethod 
+	public def getReportData( param ) {
+		return [];
+	}
+} 

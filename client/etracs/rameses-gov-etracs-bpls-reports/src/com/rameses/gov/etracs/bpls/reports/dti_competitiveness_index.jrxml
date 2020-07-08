@@ -24,29 +24,16 @@
 	<import value="net.sf.jasperreports.engine.*" />
 	<import value="net.sf.jasperreports.engine.data.*" />
 
-	<parameter name="AssessmentRollItem" isForPrompting="false" class="java.lang.Object"/>
 	<parameter name="PRINTEDBY" isForPrompting="true" class="java.lang.String"/>
 	<parameter name="PRINTDATE" isForPrompting="true" class="java.util.Date"/>
-	<parameter name="LOGOLGU" isForPrompting="false" class="java.io.InputStream"/>
-	<parameter name="PARENTLGUNAME" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="LGUFORMALNAME" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="USERFULLNAME" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="USERJOBTITLE" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="TREASURERNAME" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="TREASURERTITLE" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="TREASUREROFFICENAME" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="STATE" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="BARANGAYNAME" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="CLASSIFICATION" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="LOB" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="APPYEAR" isForPrompting="false" class="java.lang.Integer"/>
 	<parameter name="PARENTLGUFORMALNAME" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="PERIOD" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="APPTYPE" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="WITH_GROSS" isForPrompting="false" class="java.lang.Integer"/>
-	<parameter name="WITH_CAPITAL" isForPrompting="false" class="java.lang.Integer"/>
-	<parameter name="PERMIT_OPTION" isForPrompting="false" class="java.lang.Object"/>
-	<parameter name="ASSESSMENT_TYPE" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="YEAR" isForPrompting="false" class="java.lang.Number"/>
 
 	<field name="permitno" class="java.lang.String"/>
@@ -68,7 +55,7 @@
 			</band>
 		</background>
 		<title>
-			<band height="121"  isSplitAllowed="true" >
+			<band height="140"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
@@ -93,7 +80,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Top">
 						<font pdfFontName="Helvetica-Bold" size="14" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["CITIES AND MUNICIPALITIES COMPETITIVENESS INDEX "+ ($P{YEAR} + 1)]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["CITIES AND MUNICIPALITIES COMPETITIVENESS INDEX "]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -111,7 +98,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="72"
+						y="94"
 						width="900"
 						height="14"
 						key="textField-4"/>
@@ -119,12 +106,12 @@
 					<textElement textAlignment="Center" verticalAlignment="Top">
 						<font pdfFontName="Helvetica" size="8" isBold="false"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["For the Indicator No. 3 Structure of Local Economy (ED), please provide list of the approved business permit registration for the year "+ $P{YEAR} +", new and renewal using this template"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["For the Indicator No. 3 Structure of Local Economy (ED), please provide list of the approved business permit registration, new and renewal using this template"]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="85"
+						y="107"
 						width="900"
 						height="14"
 						key="textField-5"/>
@@ -140,7 +127,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="99"
+						y="121"
 						width="900"
 						height="14"
 						key="textField-6"/>
@@ -152,6 +139,19 @@
 						<font pdfFontName="Helvetica" size="8" isBold="false"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["2) Share the data to TransUnion Information Solutions Inc. in support with the Government's continuing efforts to improve the Philippine competitiveness ranking in the Ease of Doing Business."]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="67"
+						width="900"
+						height="16"
+						key="textField-17"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PERIOD}]]></textFieldExpression>
 				</textField>
 			</band>
 		</title>

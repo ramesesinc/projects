@@ -173,6 +173,7 @@ class BusinessChangeService  {
 		checkRequired( o, "businessid,applicationid,ownername,ownerid,owneraddress,owneraddressid,orgtype" );
 		em.changeBusinessOwnerName(o);
 		em.changeApplicationOwnerName(o);
+		em.changeChildApplicationOwnerName(o);
 		o.particulars = o.oldvalue + "->"  + o.newvalue;
 		log( o );
 	}
@@ -180,8 +181,9 @@ class BusinessChangeService  {
 	@ProxyMethod
 	public void updateOwner(def o ) {
 		checkRequired( o, "businessid,applicationid,owneraddress,owneraddressid" );
-		em.updateApplicationOwnerAddress(o);
 		em.updateBusinessOwnerAddress(o);
+		em.updateApplicationOwnerAddress(o);
+		em.updateApplicationOwnerAddress(o);
 		o.particulars = o.oldvalue + "->"  + o.newvalue;
 		log( o );
 	}

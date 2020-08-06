@@ -13,6 +13,8 @@ public class BillDate {
     int day;
     Date monthEnd = null;
     Date validUntil;
+
+    private int numericDate;
     
     public BillDate(Date d) {
         this.date = d;
@@ -21,9 +23,12 @@ public class BillDate {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             String s = df.format( this.date );
             this.date = df.parse( s );
+            this.numericDate = Integer.parseInt( s.replace('-','' ));
         }
-        catch(Exception ign){;}
+        catch(Throwable ign){;}
         
+
+
         Calendar cal = Calendar.getInstance();
 	    cal.setTime( d );
         this.month = cal.get( Calendar.MONTH ) + 1;
@@ -56,5 +61,7 @@ public class BillDate {
         return year;
     }
     
-    
+    public int getNumericDate() {
+        return this.numericDate;
+    }    
 }

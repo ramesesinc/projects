@@ -16,6 +16,7 @@ public class CalcSurcharge implements RuleActionHandler {
 		try {
 			if( amt == null )
 				throw new Exception("Amount in CalcSurcharge must not be null");
+
 			tf.surcharge = NS.round(amt);
 
 			//do not remove this. this is needed for partial payment

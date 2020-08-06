@@ -107,15 +107,23 @@ public class BusinessBillingService  {
 			facts << app;
 		}
 
+		def qtrdates = [];
+
 		//insert the deadline facts
 		def years = o.taxfees*.year; 
 		years << currYear; 
 		years.unique().each { y->
 			(1..4).each { q->
 				def qtr = new QtrDeadline(y, q);	
-				qtr.deadline = expiryDateSvc.findExpiryDate( [year:y, qtr:q] );
-				facts << qtr;
-			}
+				qtr.deadline = expiryDateSvc.findExpiryDate([ year:y, qtr:q ]);
+				facts << qtr; 
+
+				def qtrinfo = [ qtr: q ];
+				if ( o.app?.appyear == currYear ) {
+					qtrinfo.duedate = qtr.deadline;
+				}
+				qtrdates << qtrinfo;
+			} 
 		}
 
 		def result = ruleSvc.execute( facts );
@@ -156,7 +164,8 @@ public class BusinessBillingService  {
 		def r = summarizeTotals( newtaxfees ); 
 		return [ 
 			taxfees: newtaxfees, excess: result.excess, totals: r, 
-			expirydate: result.validUntil, nextbilldate: result.validUntil  
+			expirydate: result.validUntil, nextbilldate: result.validUntil, 
+			qtrdates: qtrdates 
 		]; 
 	} 
 
@@ -211,7 +220,7 @@ public class BusinessBillingService  {
 			receiptItems << p;
 		}
 		
-		def sur = result.taxfees.groupBy{it.surchargeaccount};
+		def sur = result.taxfees.groupBy{it.surchargeaccount} 
 		sur.each { k,v->
 			if(k!=null) {
 				receiptItems << [item: k, amount: v.sum{it.surcharge}, remarks:'', type:'surcharge', indexno:100];
@@ -225,7 +234,7 @@ public class BusinessBillingService  {
 		}
 		
 		result.items = receiptItems.findAll{ it.amount > 0 };
-		result.items.sort{ it.indexno }.eachWithIndex{oo,i-> 
+		result.items.sort{( it.indexno ? ((Number) it.indexno).intValue() : 0 )}.eachWithIndex{oo,i-> 
 			def title = oo.item.title;
 			try {
 				oo.item = ba.findAccount( [objid: oo.item.objid] );

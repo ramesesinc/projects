@@ -8,6 +8,9 @@ public class BusinessApplicationWorkflowService extends ActiveWorkflowService {
 	@ActiveDB("business_application_task")
 	def taskDB;
 
+	@DataContext("business_application_task_lock")
+	def lockDB;
+
 	@ActiveDB("business_application")
 	def ba;
 
@@ -50,7 +53,7 @@ public class BusinessApplicationWorkflowService extends ActiveWorkflowService {
 		}
 	}
 
-	void beforeSignal(def r) { 
+	void beforeSignal( r ) { 
 		def data = env.data;
 		def blockaction = r.state + (r.action? '-'+r.action: ''); 
 		def redflags = redflagSvc.getOpenIssues( [businessid: data.business?.objid, blockaction:blockaction]);
@@ -67,6 +70,10 @@ public class BusinessApplicationWorkflowService extends ActiveWorkflowService {
 
 		def syswft = sys_wf_transition.find([ processname: processname, action: r.action, parentid: r.state ]).first(); 
 		if ( syswft ) r.to = syswft.to; 
+
+		def lockinfo = [refid: r.refid, state: r.to];  
+		lockDB.create( lockinfo ); 
+		lockDB.where('refid = :refid and state <> :state', lockinfo).delete();  
 
 		env.TASK_MESSAGE = r.message;
 		if( r.state == 'assign-assessor') {

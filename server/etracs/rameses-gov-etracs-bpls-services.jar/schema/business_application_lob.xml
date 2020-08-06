@@ -8,11 +8,6 @@
 		<field name="lobid" required="true"/>
 		<field name="name" required="true"/>
 		<field name="assessmenttype" required="true"/>
-		<field name="particulars" />
-
-		<complex name="lob" ref="lob" jointype="many-to-one" includefields="name,classification.objid,psic.objid">
-			<key field="lobid" target="objid"/>
-		</complex>	
 	</element>
 
 </schema>

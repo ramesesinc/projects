@@ -24,13 +24,19 @@ UPDATE business_application SET tradename=$P{tradename} WHERE parentapplicationi
 
 #business address
 [updateBusinessBusinessAddress]
-UPDATE business SET address_objid=$P{addressid}, address_text=$P{addresstext} WHERE objid=$P{businessid}	
+UPDATE business SET 
+	address_objid=$P{addressid}, address_text=$P{addresstext} 
+WHERE objid=$P{businessid}	
 
 [updateApplicationBusinessAddress]
-UPDATE business_application SET businessaddress=$P{addresstext} WHERE objid=$P{applicationid}	
+UPDATE business_application SET 
+	businessaddress=$P{addresstext} 
+WHERE objid=$P{applicationid}
 
 [updateChildApplicationBusinessAddress]
-UPDATE business_application SET businessaddress=$P{addresstext} WHERE parentapplicationid=$P{applicationid}
+UPDATE business_application SET 
+	businessaddress=$P{addresstext} 
+WHERE parentapplicationid=$P{applicationid}
 
 #contact
 [updateBusinessContact]
@@ -39,11 +45,19 @@ phoneno=$P{phoneno},
 email=$P{email} WHERE objid=$P{businessid}
 
 #change owner
-[changeApplicationOwnerName]
-UPDATE business_application SET ownername=$P{ownername} WHERE objid=$P{applicationid}
-
 [changeBusinessOwnerName]
-UPDATE business SET owner_name=$P{ownername}, owner_objid=$P{ownerid}, orgtype=$P{orgtype}, 
-owner_address_text=$P{owneraddress}, owner_address_objid=$P{owneraddressid}
+UPDATE business SET 
+	owner_name=$P{ownername}, owner_objid=$P{ownerid}, 
+	orgtype=$P{orgtype}, owner_address_text=$P{owneraddress}, 
+	owner_address_objid=$P{owneraddressid}
 WHERE objid=$P{businessid}
 
+[changeApplicationOwnerName]
+UPDATE business_application SET 
+	ownername=$P{ownername} 
+WHERE objid=$P{applicationid}
+
+[changeChildApplicationOwnerName]
+UPDATE business_application SET 
+	ownername=$P{ownername} 
+WHERE parentapplicationid=$P{applicationid}

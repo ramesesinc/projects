@@ -111,6 +111,13 @@ public class RenewBusinessApplicationInterceptor {
 	@Before(pattern="BusinessApplicationService.create", eval="#{args[0].apptype=='RENEW' && args[0].txnmode == 'ONLINE' }")
 	public void beforeCreate(def evt) { 
 		def app = evt.args[0];
+		app.requirements?.findAll{( it.step.toString() == 'info' )}.each{
+			if ( !it.completed.toString().matches('true|1')) 
+				throw new Exception('Please complete the '+ it.title +' requirement'); 
+			if ( !it.refno ) 
+				throw new Exception(''+ it.title +' requires a reference number');  
+		} 
+
 		def b = bizSvc.open(app.business);
 		if ( !b.address?.objid ) b.address = app.business.address; 
 		if ( !b.owner?.address?.objid ) b.owner?.address = app.business.owner?.address;

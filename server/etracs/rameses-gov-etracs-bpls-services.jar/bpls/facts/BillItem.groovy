@@ -107,6 +107,16 @@ public class BillItem {
         return item;
     }
 
+    public void removeSurcharge() {
+        this.surcharge = 0.0; 
+        this.surchargeaccount = null; 
+        updateTotal(); 
+    }
+
+    public void updateTotal() {
+        this.total = (this.amtdue + this.surcharge + this.interest) - this.discount; 
+    }
+
     public void printInfo() {
         println "-------------------------"
         println "amtpaid " + this.amtpaid;

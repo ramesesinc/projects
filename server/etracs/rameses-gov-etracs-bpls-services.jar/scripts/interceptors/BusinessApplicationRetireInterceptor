@@ -76,6 +76,13 @@ public class BusinessApplicationRetireInterceptor {
 	@Before(pattern="BusinessApplicationService.create", eval="#{args[0].apptype=='RETIRE' && args[0].txnmode == 'ONLINE' }")
 	public void beforeCreate( evt ) { 
 		def app = evt.args[0];
+		app.requirements?.findAll{( it.step.toString() == 'info' )}.each{
+			if ( !it.completed.toString().matches('true|1')) 
+				throw new Exception('Please complete the '+ it.title +' requirement'); 
+			if ( !it.refno ) 
+				throw new Exception(''+ it.title +' requires a reference number');  
+		} 
+		
 		def apps = business_application.getOpenApplications( [businessid: app.business.objid, filter: '' ] ); 
 		def b = bizSvc.open(app.business);
 		b.state = 'PROCESSING';

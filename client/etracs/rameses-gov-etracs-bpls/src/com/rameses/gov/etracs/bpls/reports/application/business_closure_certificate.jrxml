@@ -57,6 +57,9 @@
 	<field name="closure.remarks" class="java.lang.String"/>
 	<field name="ownerfulladdress" class="java.lang.String"/>
 	<field name="fulldtissued" class="java.lang.String"/>
+	<field name="businessfulladdress" class="java.lang.String"/>
+	<field name="dtgiven" class="java.util.Date"/>
+	<field name="fulldtgiven" class="java.lang.String"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
@@ -188,10 +191,9 @@
 					<textElement textAlignment="Justified" isStyledText="true">
 						<font fontName="Tahoma" size="11"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["     This is to certify that per record in this office, <style isBold=\"true\">"+ $F{fullname}.toUpperCase() +"</style> of "+ 
-$F{ownerfulladdress} +", had ceased the business operation of "+ $F{tradename} +" on " + 
-new java.text.SimpleDateFormat("MMMMM dd, yyyy").format($F{closure.dtceased}) +"."
-]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["     This is to certify that per record in this office, "+ $F{fullname}.toUpperCase() +" of "+ 
+$F{ownerfulladdress} +", had ceased the business operation of "+ $F{tradename} +"  located at  "+ $F{businessfulladdress} +
+" Tanjay City on "+ new java.text.SimpleDateFormat("MMMMM dd, yyyy").format($F{closure.dtceased}) +"."]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -217,17 +219,17 @@ new java.text.SimpleDateFormat("MMMMM dd, yyyy").format($F{closure.dtceased}) +"
 					<textElement textAlignment="Justified" isStyledText="true">
 						<font fontName="Tahoma" size="11"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["     Given this "+ $F{fulldtissued} +" at "+ $P{LGUFORMALNAME} +"."]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["     Given this "+ $F{fulldtgiven} +" at Tanjay City, Negros Oriental Philippines."]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="288"
-						y="342"
-						width="240"
+						y="349"
+						width="217"
 						height="21"
 						key="textField-29"/>
 					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
+					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{TREASURERNAME}]]></textFieldExpression>
@@ -235,12 +237,12 @@ new java.text.SimpleDateFormat("MMMMM dd, yyyy").format($F{closure.dtceased}) +"
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="288"
-						y="363"
-						width="240"
+						y="370"
+						width="217"
 						height="21"
 						key="textField-30"/>
 					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Top">
+					<textElement textAlignment="Right" verticalAlignment="Top">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{TREASURERTITLE}]]></textFieldExpression>

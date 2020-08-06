@@ -72,6 +72,7 @@ public class BPBillingRuleService  {
 		actions.addCommand( "add_sysvar", new AddSysVar(request:req, comparator: comparator));
 		actions.addCommand( "assert_sysvars", new AssertSysVars(request:req));
 		actions.addCommand( "print_test", new PrintTest());
+		actions.addCommand( "select_one_surcharge", new SelectOneSurcharge(request:req));
 		return actions;
 	}
 

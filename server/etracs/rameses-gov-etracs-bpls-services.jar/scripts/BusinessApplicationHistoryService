@@ -12,7 +12,7 @@ public class BusinessApplicationHistoryService  {
 	public def getList(o) {
 		def list = em.getListByBusiness( o );
 		list.each {
-			if( it.apptype.matches('NEW|RENEW|RETIRE|ADDITIONAL')  ) {
+			if( it.apptype.matches('NEW|RENEW|RETIRE|ADDITIONAL|RETIRELOB')  ) {
 				it.filetype = 'business_application';
 			}
 			else {

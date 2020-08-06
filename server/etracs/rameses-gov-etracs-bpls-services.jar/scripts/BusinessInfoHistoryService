@@ -25,24 +25,14 @@ class BusinessInfoHistoryService {
 		def rows = em.getLobAttribute(o);
 		def valueMap = em.getValues(o).groupBy{ [it.lobname, it.attrname] };
 		
-		def numformatter = new java.text.DecimalFormat('#,##0'); 
-		def decformatter = new java.text.DecimalFormat('#,##0.00'); 
 		rows.each { row->
 			def k = [row.lobname, row.attrname];
 			valueMap.get( k ).each {
 				def v = null;
-				if ( it.decimalvalue instanceof Number ) {
-					v = decformatter.format( it.decimalvalue ); 
-				} 
-				else if ( it.intvalue instanceof Number ) {
-					v = numformatter.format( it.intvalue ); 	
-				}
-				else if ( it.stringvalue != null ) { 
-					v = it.stringvalue.toString(); 
-				} 
-				else if ( it.boolvalue != null ) { 
-					v = (it.boolvalue.toString() == '1');  
-				} 
+				if( it.decimalvalue !=null ) v = it.decimalvalue;
+				else if( it.intvalue!=null) v = it.intvalue;
+				else if( it.stringvalue!=null) v = it.stringvalue;
+				else if( it.boolvalue!=null) v = it.boolvalue;
 				row.put( ""+it.appyear, v );
 			}			
 		}

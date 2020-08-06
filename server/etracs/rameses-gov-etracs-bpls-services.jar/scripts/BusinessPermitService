@@ -226,6 +226,18 @@ class BusinessPermitService  {
 		if ( perm.permittype.toString().toUpperCase() == 'TEMPORARY') {
 			perm.pendingrequirements = em.getPendingRequirements([ applicationid: perm.applicationid ]); 
 		} 
+
+		if ( perm.orgtype == 'SING') perm.orgtypedesc = 'SINGLE PROPRIETORSHIP';
+		else if ( perm.orgtype == 'CORP') perm.orgtypedesc = 'CORPORATION';
+		else if ( perm.orgtype == 'COOP') perm.orgtypedesc = 'COOPERATIVE';
+		else if ( perm.orgtype == 'ASSO') perm.orgtypedesc = 'ASSOCIATION';
+		else if ( perm.orgtype == 'REL') perm.orgtypedesc = 'RELIGIOUS';
+		else if ( perm.orgtype == 'FOUND') perm.orgtypedesc = 'FOUNDATION';
+		else if ( perm.orgtype == 'PART') perm.orgtypedesc = 'PARTNERSHIP';
+		else if ( perm.orgtype == 'GOV') perm.orgtypedesc = 'GOVERNMENT';
+		else if ( perm.orgtype == 'SCH') perm.orgtypedesc = 'SCHOOL';
+		else if ( perm.orgtype == 'NGO') perm.orgtypedesc = 'NON-GOVERNMENT ORGANIZATION';
+		else perm.orgtypedesc = perm.orgtype; 
 		return perm;
 	}
 
@@ -264,7 +276,6 @@ class BusinessPermitService  {
 			addr.province = (addr.province ? addr.province : porg.name);
 
 		} else if ( orgclasstype=='CITY' ) { 
-			if ( rorg.name ) rorg.name = rorg.name+' CITY'; 
 			addr.city = (addr.city ? addr.city : rorg.name); 
 
 		} else if ( orgclasstype=='PROVINCE' ) {

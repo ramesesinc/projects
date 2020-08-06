@@ -158,6 +158,7 @@ where businessid=$P{businessid} and activeyear=$P{activeyear}
 [findPermit]
 select * from business_permit 
 where businessid=$P{businessid} and applicationid=$P{applicationid} 
+   and state = 'ACTIVE' 
 
 
 [updateRemarks]

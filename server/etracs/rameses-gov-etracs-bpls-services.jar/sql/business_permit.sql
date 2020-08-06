@@ -97,7 +97,9 @@ select
 	bp.*, ba.appno, ba.apptype, ba.ownername, ba.owneraddress, ba.tradename, 
 	ba.businessaddress, b.bin, b.pin, b.address_objid, b.owner_address_objid, 
 	(SELECT photo FROM entityindividual WHERE objid=b.owner_objid) AS photo, 
-	ba.parentapplicationid  
+	(select citizenship from entityindividual where objid=b.owner_objid) AS citizenship, 
+	(select civilstatus from entityindividual where objid=b.owner_objid) AS civilstatus, 
+	ba.parentapplicationid, b.orgtype   
 from business_application ba 
 	inner join business_permit bp on bp.objid=ba.permit_objid 
 	inner join business b on bp.businessid=b.objid 
@@ -111,7 +113,10 @@ select
 	bp.*, ba.appno, ba.apptype, ba.ownername, ba.owneraddress, ba.tradename, 
 	ba.businessaddress, b.bin, b.pin, b.address_objid, b.owner_address_objid, ba.parentapplicationid, 
 	(select apptype from business_application where objid=ba.parentapplicationid) as parentapptype,  
-	(select photo from entityindividual where objid=b.owner_objid) AS photo 
+	(select photo from entityindividual where objid=b.owner_objid) AS photo, 
+	(select citizenship from entityindividual where objid=b.owner_objid) AS citizenship, 
+	(select civilstatus from entityindividual where objid=b.owner_objid) AS civilstatus, 
+	b.orgtype  
 from ( 
 	select objid as appid from business_application 
 	where objid=$P{applicationid} and state='COMPLETED'  
@@ -166,7 +171,7 @@ where businessid=$P{businessid} and activeyear=$P{activeyear}
 [findPermit]
 select * from business_permit 
 where businessid=$P{businessid} and applicationid=$P{applicationid} 
-
+   and state = 'ACTIVE' 
 
 [updateRemarks]
 update business_permit set remarks=$P{remarks} where objid=$P{objid} 
